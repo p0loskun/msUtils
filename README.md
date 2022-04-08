@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <a href="https://stdrp.ga/discord">
-    <img src="https://discordapp.com/api/guilds/704273784378753124/widget.png?style=shield" alt="Discord">
+  <a href="https://whomine.ga/discord">
+    <img src="https://discordapp.com/api/guilds/928575868643733535/widget.png?style=shield" alt="Discord">
   </a>
   <img src="https://img.shields.io/github/languages/code-size/minersstudios/msUtils.svg" alt="Code-Size">
 </p>
