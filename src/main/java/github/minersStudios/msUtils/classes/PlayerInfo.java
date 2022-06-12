@@ -121,6 +121,7 @@ public final class PlayerInfo {
      */
     public void setFirstname(@Nonnull String firstname){
         if(!this.hasPlayerDataFile()) return;
+        this.firstname = firstname;
         this.yamlConfiguration.set("name.firstname", firstname);
         this.savePlayerDataFile();
     }
@@ -141,6 +142,7 @@ public final class PlayerInfo {
      */
     public void setLastName(@Nonnull String lastname){
         if(!this.hasPlayerDataFile()) return;
+        this.lastname = lastname;
         this.yamlConfiguration.set("name.lastname", lastname);
         this.savePlayerDataFile();
     }
@@ -163,6 +165,7 @@ public final class PlayerInfo {
      */
     public void setPatronymic(@Nonnull String patronymic){
         if(!this.hasPlayerDataFile()) return;
+        this.patronymic = patronymic;
         this.yamlConfiguration.set("name.patronymic", patronymic);
         this.savePlayerDataFile();
     }
