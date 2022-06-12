@@ -4,9 +4,9 @@ import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.scarsz.discordsrv.util.DiscordUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,18 +22,20 @@ public class SpitCommand implements CommandExecutor {
         if (!(sender instanceof Player player)) {
             ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
             return true;
+        }
+        if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
+        PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+        if (!playerInfo.isMuted()) {
+            Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(0.8d)).toLocation(player.getWorld()).add(0.0d, 1.0d, 0.0d);
+            player.getWorld().spawnEntity(location, EntityType.LLAMA_SPIT).setVelocity(player.getEyeLocation().getDirection().multiply(1));
+            player.getWorld().getPlayers().stream().filter((p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(25, 2.0d)).forEach((p) -> p.playSound(player.getLocation(), Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f));
+            ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
+                    + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
+                    + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
+                    + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getSpitMessage() : Pronouns.HE.getSpitMessage())
+                    + "*");
         } else {
-            if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
-            PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-            if (!playerInfo.isMuted()) {
-                Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(0.8D)).toLocation(player.getWorld()).add(0.0D, 1.0D, 0.0D);
-                player.getWorld().spawnEntity(location, EntityType.LLAMA_SPIT).setVelocity(player.getEyeLocation().getDirection().multiply(1));
-                String message = playerInfo.getPronouns() != null ? playerInfo.getPronouns().getSpitMessage() : Pronouns.HE.getSpitMessage();
-                ChatUtils.sendRPEventMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
-                DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
-            } else {
-                ChatUtils.sendWarning(player, "Вы замучены");
-            }
+            ChatUtils.sendWarning(player, "Вы замучены");
         }
         return true;
     }

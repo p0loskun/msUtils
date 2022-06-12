@@ -4,7 +4,6 @@ import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.scarsz.discordsrv.util.DiscordUtil;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,9 +26,11 @@ public class FartCommand implements CommandExecutor {
                 Location location = player.getLocation();
                 player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
                 player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
-                String message = playerInfo.getPronouns() != null ? playerInfo.getPronouns().getFartMessage() : Pronouns.HE.getFartMessage();
-                ChatUtils.sendRPEventMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
-                DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
+                ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
+                        + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
+                        + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
+                        + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getFartMessage() : Pronouns.HE.getFartMessage())
+                        + "*");
             } else {
                 ChatUtils.sendWarning(player, "Вы замучены");
             }

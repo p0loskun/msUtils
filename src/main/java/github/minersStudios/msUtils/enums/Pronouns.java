@@ -13,20 +13,39 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public enum Pronouns {
-    HE("зашёл на сервер", "вышел из сервера", "плюнул", "пукнул", "тебе", "путник"),
-    SHE("зашла на сервер", "вышла из сервера", "плюнула", "пукнула", "тебе", "путница"),
-    THEY("зашли на сервер", "вышли из сервера", "плюнули", "пукнули", "вам", "путник");
+    HE("зашёл на сервер", "вышел из сервера", "плюнул", "пукнул", "тебе", "путник", "сел", "встал"),
+    SHE("зашла на сервер", "вышла из сервера", "плюнула", "пукнула", "тебе", "путница", "села", "встала"),
+    THEY("зашли на сервер", "вышли из сервера", "плюнули", "пукнули", "вам", "путник", "сели", "встали");
 
-    @Getter private final String joinMessage, quitMessage, spitMessage, fartMessage, pronouns, traveler;
+    @Getter private final String
+            joinMessage,
+            quitMessage,
+            spitMessage,
+            fartMessage,
+            pronouns,
+            traveler,
+            sitMessage,
+            unSitMessage;
     public static final String NAME = ChatColor.DARK_GRAY + "Выберите форму обращения";
 
-    Pronouns(String joinMessage, String quitMessage, String spitMessage, String fartMessage, String pronouns, String traveler){
+    Pronouns(
+            String joinMessage,
+            String quitMessage,
+            String spitMessage,
+            String fartMessage,
+            String pronouns,
+            String traveler,
+            String sitMessage,
+            String unSitMessage
+    ){
         this.joinMessage = joinMessage;
         this.quitMessage = quitMessage;
         this.spitMessage = spitMessage;
         this.fartMessage = fartMessage;
         this.pronouns = pronouns;
         this.traveler = traveler;
+        this.sitMessage = sitMessage;
+        this.unSitMessage = unSitMessage;
     }
 
     /**

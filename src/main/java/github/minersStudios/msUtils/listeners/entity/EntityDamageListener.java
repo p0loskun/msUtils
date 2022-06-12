@@ -1,4 +1,4 @@
-package github.minersStudios.msUtils.listeners.player;
+package github.minersStudios.msUtils.listeners.entity;
 
 import github.minersStudios.msUtils.Main;
 import org.bukkit.entity.Player;

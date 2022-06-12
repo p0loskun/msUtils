@@ -3,7 +3,6 @@ package github.minersStudios.msUtils.commands.roleplay;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.scarsz.discordsrv.util.DiscordUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,19 +20,18 @@ public class TryCommand implements CommandExecutor {
             ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
             return true;
         } else {
-            if (args.length < 1) {
-                return false;
+            if (args.length < 1) return false;
+            if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
+            PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+            if (!playerInfo.isMuted()) {
+                ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
+                        + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
+                        + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
+                        + ChatUtils.extractMessage(args, 0) + " "
+                        + new String[]{org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)]
+                        + ChatColor.GOLD + "*");
             } else {
-                if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
-                PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-                if (!playerInfo.isMuted()) {
-                    String message = ChatUtils.extractMessage(args, 0),
-                            result = new String[] {org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)];
-                    ChatUtils.sendRPEventMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + " " + result + ChatColor.GOLD + "*");
-                    DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + " - " + result + "*");
-                } else {
-                    ChatUtils.sendWarning(player, "Вы замучены");
-                }
+                ChatUtils.sendWarning(player, "Вы замучены");
             }
         }
         return true;

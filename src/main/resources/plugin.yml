@@ -25,6 +25,10 @@ commands:
   fart:
     usage: ' ꀑ §cИспользуй: /<command>'
     description: Пердани вкусно на публику
+  sit:
+    usage: ' ꀑ §cИспользуй: /<command>'
+    aliases: [ sit, s ]
+    description: Сядь на картаны и порви жопу
   mute:
     usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] <причина>'
     permission: msUtils.mute

@@ -2,6 +2,7 @@ package github.minersStudios.msUtils.listeners.player;
 
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
+import github.minersStudios.msUtils.classes.SitPlayer;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,6 +18,10 @@ public class PlayerQuitListener implements Listener {
     public void onPlayerQuit(@Nonnull PlayerQuitEvent event) {
         Player player = event.getPlayer();
         PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+        SitPlayer sitPlayer = new SitPlayer(player);
+        if (sitPlayer.isSitting()) {
+            sitPlayer.setSitting(false);
+        }
         event.setQuitMessage(null);
         if (playerInfo.hasPlayerDataFile() && player.getWorld() != Main.worldDark) {
             Location playerLocation = player.getLocation();
