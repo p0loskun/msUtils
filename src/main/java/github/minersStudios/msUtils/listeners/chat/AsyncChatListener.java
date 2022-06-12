@@ -32,7 +32,7 @@ public class AsyncChatListener implements Listener {
                 ChatUtils.sendMessageToChat(playerInfo, null, -1, ChatUtils.removeFirstChar(message));
                 Main.chatBuffer.receiveChat(player, message);
             } else if(Objects.equals(String.valueOf(message.charAt(0)), "*")){
-                ChatUtils.sendMessage(player, 25,  " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + ChatUtils.removeFirstChar(message) + "*");
+                ChatUtils.sendRPEventMessage(player, 25,  " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + ChatUtils.removeFirstChar(message) + "*");
                 DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + ChatUtils.removeFirstChar(message) + "*");
             } else {
                 ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), 25, message);

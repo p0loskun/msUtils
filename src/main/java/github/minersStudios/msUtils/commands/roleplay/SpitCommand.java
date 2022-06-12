@@ -29,7 +29,7 @@ public class SpitCommand implements CommandExecutor {
                 Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(0.8D)).toLocation(player.getWorld()).add(0.0D, 1.0D, 0.0D);
                 player.getWorld().spawnEntity(location, EntityType.LLAMA_SPIT).setVelocity(player.getEyeLocation().getDirection().multiply(1));
                 String message = playerInfo.getPronouns() != null ? playerInfo.getPronouns().getSpitMessage() : Pronouns.HE.getSpitMessage();
-                ChatUtils.sendMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
+                ChatUtils.sendRPEventMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
                 DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
             } else {
                 ChatUtils.sendWarning(player, "Вы замучены");

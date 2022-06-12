@@ -5,9 +5,9 @@ import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.classes.RegistrationProcess;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +26,7 @@ public class PlayerJoinListener implements Listener {
 
         Main.scoreboardHideTagsTeam.addEntry(player.getName());
         player.setScoreboard(Main.scoreboardHideTags);
+        player.setDisplayName("[" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname());
 
         if(playerInfo.getIP() != null && !Objects.equals(playerInfo.getIP(), Objects.requireNonNull(player.getAddress()).getHostName())){
             ChatUtils.sendWarning(null,

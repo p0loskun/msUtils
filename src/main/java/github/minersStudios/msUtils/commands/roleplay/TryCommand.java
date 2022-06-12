@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
+import java.util.Random;
 
 public class TryCommand implements CommandExecutor {
 
@@ -27,8 +28,8 @@ public class TryCommand implements CommandExecutor {
                 PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
                 if (!playerInfo.isMuted()) {
                     String message = ChatUtils.extractMessage(args, 0),
-                            result = ChatUtils.randomResult();
-                    ChatUtils.sendMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + " " + result + ChatColor.GOLD + "*");
+                            result = new String[] {org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)];
+                    ChatUtils.sendRPEventMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + " " + result + ChatColor.GOLD + "*");
                     DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + " - " + result + "*");
                 } else {
                     ChatUtils.sendWarning(player, "Вы замучены");

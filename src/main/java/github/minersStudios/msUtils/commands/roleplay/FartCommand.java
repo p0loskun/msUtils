@@ -28,7 +28,7 @@ public class FartCommand implements CommandExecutor {
                 player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
                 player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
                 String message = playerInfo.getPronouns() != null ? playerInfo.getPronouns().getFartMessage() : Pronouns.HE.getFartMessage();
-                ChatUtils.sendMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
+                ChatUtils.sendRPEventMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
                 DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
             } else {
                 ChatUtils.sendWarning(player, "Вы замучены");

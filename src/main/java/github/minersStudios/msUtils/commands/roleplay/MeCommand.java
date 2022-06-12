@@ -27,7 +27,7 @@ public class MeCommand implements CommandExecutor {
                 PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
                 if (!playerInfo.isMuted()) {
                     String message = ChatUtils.extractMessage(args, 0);
-                    ChatUtils.sendMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
+                    ChatUtils.sendRPEventMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
                     DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
                 } else {
                     ChatUtils.sendWarning(player, "Вы замучены");
