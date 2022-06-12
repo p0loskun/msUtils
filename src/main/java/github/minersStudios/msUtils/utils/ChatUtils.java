@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.function.BiFunction;
 
 import static github.scarsz.discordsrv.DiscordSRV.*;
@@ -77,20 +79,30 @@ public final class ChatUtils {
     /**
      * Sends message to chat
      *
-     * @param senderName name of sender
+     * @param playerInfo player info
      * @param location sender location
      * @param radius message radius
      * @param message message
      */
-    public static void sendMessageToChat(@Nonnull String senderName, @Nullable Location location, int radius, @Nonnull String message) {
+    public static void sendMessageToChat(@Nonnull PlayerInfo playerInfo, @Nullable Location location, int radius, @Nonnull String message) {
+        String senderName = " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname();
         if (radius > -1 && location != null) {
+            String localMessage = ChatColor.of("#aba494") + senderName + " : " + ChatColor.of("#f2f0e3") + message;
             location.getBlock().getWorld().getPlayers().stream().filter(
                     (player) -> location.distanceSquared(player.getLocation()) <= Math.pow(radius, 2.0D)
             ).forEach(
-                    (player) -> player.sendMessage(ChatColor.of("#aba494") + " " + senderName + " : " + ChatColor.of("#f2f0e3") + message)
+                    (player) -> player.sendMessage(localMessage)
             );
+            DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), localMessage);
+            Bukkit.getLogger().info(localMessage);
         } else {
-            Bukkit.broadcastMessage(ChatColor.of("#aba494") + " [CTD] " + senderName + " : " + ChatColor.of("#f2f0e3") + message);
+            String globalMessage = senderName + " : " + ChatColor.of("#f2f0e3") + message;
+            Bukkit.getOnlinePlayers().forEach((player) -> {
+                if(player.getWorld() != Main.worldDark) player.sendMessage(ChatColor.of("#aba494") + " [CTD]" + globalMessage);
+            });
+            DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), globalMessage);
+            DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), " [CTD]" + globalMessage);
+            Bukkit.getLogger().info(globalMessage);
         }
     }
 
@@ -108,35 +120,41 @@ public final class ChatUtils {
     }
 
     /**
-     * Broadcasts join message
+     * Sends join message
      *
      * @param playerInfo playerInfo
      */
-    public static void broadcastJoinMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player){
-        Bukkit.broadcastMessage(
+    public static void sendJoinMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player){
+        String joinMessage =
                 ChatColor.of("#fcf5c7") + " [" + playerInfo.getID() + "] "
-                        + ChatColor.of("#ffee93") + playerInfo.getFirstname() + " "
-                        + playerInfo.getLastname() + " "
-                        + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getJoinMessage()
-                        : Pronouns.HE.getJoinMessage())
-        );
+                + ChatColor.of("#ffee93") + playerInfo.getFirstname() + " "
+                + playerInfo.getLastname() + " "
+                + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getJoinMessage()
+                : Pronouns.HE.getJoinMessage());
+        Bukkit.getOnlinePlayers().forEach((onlinePlayer) -> {
+            if(player.getWorld() != Main.worldDark) player.sendMessage(joinMessage);
+        });
         Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> ChatUtils.sendJoinMessage(player, playerInfo));
+        Bukkit.getLogger().info(joinMessage);
     }
 
     /**
-     * Broadcasts leave message
+     * Sends leave message
      *
      * @param playerInfo playerInfo
      */
-    public static void broadcastLeaveMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player){
-        Bukkit.broadcastMessage(
+    public static void sendLeaveMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player){
+        String leaveMessage =
                 ChatColor.of("#fcf5c7") + " [" + playerInfo.getID() + "] "
                         + ChatColor.of("#ffee93") + playerInfo.getFirstname() + " "
                         + playerInfo.getLastname() + " "
                         + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getQuitMessage()
-                        : Pronouns.HE.getQuitMessage())
-        );
+                        : Pronouns.HE.getQuitMessage());
+        Bukkit.getOnlinePlayers().forEach((onlinePlayer) -> {
+            if(player.getWorld() != Main.worldDark) player.sendMessage(leaveMessage);
+        });
         Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> ChatUtils.sendLeaveMessage(player, playerInfo));
+        Bukkit.getLogger().info(leaveMessage);
     }
 
     /**
@@ -239,5 +257,21 @@ public final class ChatUtils {
                 debug("Not sending leave message due to it being disabled");
             }
         }
+    }
+
+    @Nonnull public static String extractMessage(@Nonnull String[] args, int start) {
+        return String.join(" ", Arrays.copyOfRange(args, start, args.length));
+    }
+
+    public static void sendMessage(Player player, int radius, String message) {
+        if (radius > -1) {
+            player.getWorld().getPlayers().stream().filter((p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(radius, 2.0D)).forEach((p) -> p.sendMessage(message));
+        } else {
+            Bukkit.getOnlinePlayers().forEach((p) -> p.sendMessage(message));
+        }
+    }
+
+    public static String randomResult() {
+        return new String[] {org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)];
     }
 }

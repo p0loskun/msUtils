@@ -3,7 +3,7 @@ package github.minersStudios.msUtils.commands.mute;
 import github.minersStudios.msUtils.classes.PlayerID;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.minersStudios.msUtils.utils.CommandUtils;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -20,20 +20,37 @@ public class MuteCommand implements CommandExecutor {
         if (args.length < 2) {
             return false;
         } else {
-            if (!args[0].matches("[0-99]+") || !args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)")) return false;
+            if (!args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)")) return false;
             long time = (long) (Float.parseFloat(args[1]) * 86400000 + System.currentTimeMillis());
-            String reason = args.length > 2 ? CommandUtils.extractMessage(args, 2) : "неизвестно";
-            OfflinePlayer player = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-            if (player != null) {
-                PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-                if(!playerInfo.isBanned()){
-                    playerInfo.setMuted(true, time, reason);
-                    ChatUtils.sendFine(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GREEN + playerInfo.getFirstname() + " " + playerInfo.getLastname() + "\" был замучен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
+            String reason = args.length > 2 ? ChatUtils.extractMessage(args, 2) : "неизвестно";
+            if (args[0].matches("[0-99]+") ){
+                OfflinePlayer player = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
+                if (player != null) {
+                    PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+                    if(!playerInfo.isMuted()){
+                        playerInfo.setMuted(true, time, reason);
+                        ChatUtils.sendFine(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GREEN + playerInfo.getFirstname() + " " + playerInfo.getLastname() + "\" был замучен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
+                    } else {
+                        ChatUtils.sendWarning(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + "\" уже замучен");
+                    }
                 } else {
-                    ChatUtils.sendWarning(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + "\" уже замучен");
+                    ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                }
+            } else if(args[0].length() > 2) {
+                OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+                if (offlinePlayer == null) {
+                    ChatUtils.sendError(sender, "Что-то пошло не так...");
+                    return true;
+                }
+                PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
+                if (!playerInfo.isMuted()) {
+                    playerInfo.setMuted(true, time, reason);
+                    ChatUtils.sendFine(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GREEN + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " (" + args[0] + ")\" был замучен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
+                } else {
+                    ChatUtils.sendWarning(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " (" + args[0] + ")\" уже замучен");
                 }
             } else {
-                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
             }
         }
         return true;

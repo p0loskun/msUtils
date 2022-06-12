@@ -22,7 +22,7 @@ public class PlayerQuitListener implements Listener {
             Location playerLocation = player.getLocation();
             playerInfo.setLastLeaveLocation(player.getWorld(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ(), playerLocation.getYaw(), playerLocation.getPitch());
             if(playerInfo.hasName()){
-                ChatUtils.broadcastLeaveMessage(playerInfo, player);
+                ChatUtils.sendLeaveMessage(playerInfo, player);
             }
         }
     }

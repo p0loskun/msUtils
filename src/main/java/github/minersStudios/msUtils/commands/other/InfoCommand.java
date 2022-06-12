@@ -3,7 +3,6 @@ package github.minersStudios.msUtils.commands.other;
 import github.minersStudios.msUtils.classes.PlayerID;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.minersStudios.msUtils.utils.CommandUtils;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -20,9 +19,8 @@ public class InfoCommand implements CommandExecutor {
         if (args.length < 1) {
             return false;
         } else {
-            String ID = CommandUtils.extractMessage(args, 0);
-            if(!ID.matches("[0-99]+")) return false;
-            OfflinePlayer player = new PlayerID().getPlayerByID(Integer.parseInt(ID));
+            if(!args[0].matches("[0-99]+")) return false;
+            OfflinePlayer player = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
             if (player != null) {
                 PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
                 Location lastLeaveLocation = playerInfo.getLastLeaveLocation(),

@@ -26,23 +26,23 @@ commands:
     usage: ' ꀑ §cИспользуй: /<command>'
     description: Пердани вкусно на публику
   mute:
-    usage: ' ꀑ §cИспользуй: /<command> [ID] [время] <причина>'
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] <причина>'
     permission: msUtils.mute
     description: Замутить игрока
   unmute:
-    usage: ' ꀑ §cИспользуй: /<command> [ID]'
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname]'
     permission: msUtils.mute
     description: Размутить игрока
   ban:
-    usage: ' ꀑ §cИспользуй: /<command> [ID] [время] <причина>'
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] <причина>'
     permission: msUtils.ban
     description: Забанить игрока
   unban:
-    usage: ' ꀑ §cИспользуй: /<command> [ID]'
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname]'
     permission: msUtils.ban
     description: Разбанить игрока
   kick:
-    usage: ' ꀑ §cИспользуй: /<command> [ID] <причина>'
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] <причина>'
     permission: msUtils.kick
     description: Кикнуть игрока
   getmaploc:
@@ -57,6 +57,10 @@ commands:
     usage: ' ꀑ §cИспользуй: /<command> [ID]'
     permission: msUtils.info
     description: Выводит в чат информацию про игрока
+  whitelist:
+    usage: ' ꀑ §cИспользуй: /<command> [add/remove/reload] [ID/Nickname]'
+    permission: msUtils.whitelist
+    description: Удаляет/добавляет игрока в вайтлист
 
 permissions:
   msUtils.info:
@@ -68,4 +72,6 @@ permissions:
   msUtils.kick:
     default: op
   msUtils.mapLocation:
+    default: op
+  msUtils.whitelist:
     default: op

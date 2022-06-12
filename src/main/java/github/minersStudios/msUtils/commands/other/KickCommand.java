@@ -3,7 +3,7 @@ package github.minersStudios.msUtils.commands.other;
 import github.minersStudios.msUtils.classes.PlayerID;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.minersStudios.msUtils.utils.CommandUtils;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,30 +19,35 @@ public class KickCommand implements CommandExecutor {
         if (args.length < 1) {
             return false;
         } else {
-            if (!args[0].matches("[0-99]+")) return false;
-            String reason = args.length > 1 ? CommandUtils.extractMessage(args, 1) : "неизвестно";
-            OfflinePlayer player = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-
-            if (player != null) {
-                PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-                if(player.isOnline() && player.getPlayer() != null){
-                    player.getPlayer().kickPlayer(
-                            ChatColor.RED + "\n§lВы были кикнуты"
-                                    + ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-                                    + ChatColor.GRAY + "\nПричина :\n\""
-                                    + reason
-                                    + "\""
-                                    + ChatColor.DARK_GRAY + "\n<---====+====--->\n"
-                    );
-                    ChatUtils.sendFine(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GREEN + playerInfo.getFirstname() + " " + playerInfo.getLastname() + "\" был кикнут : " + "\n    - Причина : \"" + reason);
+            String reason = args.length > 1 ? ChatUtils.extractMessage(args, 1) : "неизвестно";
+            if (args[0].matches("[0-99]+")) {
+                OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
+                if (offlinePlayer != null) {
+                    PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+                    if (PlayerUtils.kickPlayer(offlinePlayer, reason)) {
+                        ChatUtils.sendFine(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GREEN + playerInfo.getFirstname() + " " + playerInfo.getLastname() + "\" был кикнут : " + "\n    - Причина : \"" + reason);
+                    } else {
+                        ChatUtils.sendWarning(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + "\" не в сети!");
+                    }
                 } else {
-                    ChatUtils.sendWarning(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + "\" не в сети!");
+                    ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                }
+            } else if (args[0].length() > 2) {
+                OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+                if(offlinePlayer == null){
+                    ChatUtils.sendError(sender, "Что-то пошло не так...");
+                    return true;
+                }
+                PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+                if (PlayerUtils.kickPlayer(offlinePlayer, reason)) {
+                    ChatUtils.sendFine(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GREEN + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " (" + args[0] + ")\" был кикнут : " + "\n    - Причина : \"" + reason);
+                } else {
+                    ChatUtils.sendWarning(sender, "Игрок : \"" + ChatColor.GRAY + "[" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " (" + args[0] + ")\" не в сети!");
                 }
             } else {
-                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
             }
         }
         return true;
     }
-
 }

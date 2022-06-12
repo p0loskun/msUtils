@@ -25,12 +25,19 @@ public final class PlayerInfo {
     private final YamlConfiguration yamlConfiguration;
     @Getter private final UUID uuid;
     private Player onlinePlayer;
-    private String firstname, lastname, patronymic;
+    private String nickname, firstname, lastname, patronymic;
 
     public PlayerInfo(@Nonnull UUID uuid){
         this.dataFile = new File(Main.plugin.getDataFolder(), "players/" + uuid + ".yml");
         this.yamlConfiguration = YamlConfiguration.loadConfiguration(dataFile);
         this.uuid = uuid;
+    }
+
+    public PlayerInfo(@Nonnull UUID uuid, @Nonnull String nickname){
+        this.dataFile = new File(Main.plugin.getDataFolder(), "players/" + uuid + ".yml");
+        this.yamlConfiguration = YamlConfiguration.loadConfiguration(dataFile);
+        this.uuid = uuid;
+        this.nickname = nickname;
     }
 
     /**
@@ -49,6 +56,7 @@ public final class PlayerInfo {
      *
      * @return player ip
      */
+    @Nullable
     public String getIP(){
         return this.yamlConfiguration.getString("ip");
     }
@@ -92,7 +100,7 @@ public final class PlayerInfo {
      * @return player nickname
      */
     public String getNickname(){
-        return getOfflinePlayer().getName();
+        return this.nickname == null ? this.nickname = this.getOfflinePlayer().getName() : this.nickname;
     }
 
 
@@ -237,7 +245,9 @@ public final class PlayerInfo {
      * @param reason mute reason
      */
     public void setMuted(boolean value, long time, @Nullable String reason){
-        if(!this.hasPlayerDataFile()) return;
+        if(!this.hasPlayerDataFile()){
+            this.createPlayerDataFile();
+        }
         this.yamlConfiguration.set("bans.muted", value);
         this.yamlConfiguration.set("time.muted-to", time);
         this.yamlConfiguration.set("bans.mute-reason", reason);
@@ -265,7 +275,7 @@ public final class PlayerInfo {
      * @return True if player is banned
      */
     public boolean isBanned(){
-        return this.yamlConfiguration.getBoolean("bans.banned", false);
+        return Bukkit.getBanList(BanList.Type.NAME).isBanned(this.getNickname()) || this.yamlConfiguration.getBoolean("bans.banned", false);
     }
 
     /**
@@ -276,13 +286,15 @@ public final class PlayerInfo {
      * @param reason ban reason
      */
     public void setBanned(boolean value, long time, @Nullable String reason, @Nullable String source){
-        if(!this.hasPlayerDataFile()) return;
+        if(!this.hasPlayerDataFile()){
+            this.createPlayerDataFile();
+        }
         this.yamlConfiguration.set("bans.banned", value);
         this.yamlConfiguration.set("time.banned-to", time);
         this.yamlConfiguration.set("bans.ban-reason", reason);
         if(value){
             Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, new Date(time), source);
-            Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
+            if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
             if(this.getOnlinePlayer() != null) {
                 Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(this.getOnlinePlayer().getAddress()).getHostName(), reason, new Date(time), source);
                 this.getOnlinePlayer().kickPlayer(
@@ -297,7 +309,7 @@ public final class PlayerInfo {
             }
         } else {
             Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
-            Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
+            if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
         }
         savePlayerDataFile();
     }
@@ -361,7 +373,7 @@ public final class PlayerInfo {
         player.teleport(this.getLastLeaveLocation());
         player.setGravity(true);
         player.removePotionEffect(PotionEffectType.INVISIBILITY);
-        ChatUtils.broadcastJoinMessage(this, this.getOnlinePlayer());
+        ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
     }
 
     /**
@@ -441,16 +453,14 @@ public final class PlayerInfo {
     /**
      * Creates new player data file in "plugins/msUtils/players/uuid.yml"
      */
-    public void createPlayerDataFile(){
-        if(this.getOnlinePlayer() != null){
-            this.yamlConfiguration.set("nickname", this.getNickname());
+    public void createPlayerDataFile() {
+        this.yamlConfiguration.set("nickname", this.getNickname());
+        if (this.getOnlinePlayer() != null) {
             this.yamlConfiguration.set("ip", this.getOnlinePlayer().getAddress() == null ? null : this.getOnlinePlayer().getAddress().getHostName());
             this.yamlConfiguration.set("time.first-join", System.currentTimeMillis());
-            this.savePlayerDataFile();
-            ChatUtils.sendFine(null, "Создан файл с данными игрока : \"" + this.getNickname() + "\" с названием : \"" + this.uuid + ".yml\"");
-        } else {
-            ChatUtils.sendError(null, "PlayerInfo#createPlayerDataFile() online player = null");
         }
+        this.savePlayerDataFile();
+        ChatUtils.sendFine(null, "Создан файл с данными игрока : \"" + this.getNickname() + "\" с названием : \"" + this.uuid + ".yml\"");
     }
 
     /**

@@ -7,16 +7,15 @@ import github.minersStudios.msUtils.commands.ban.BanCommand;
 import github.minersStudios.msUtils.commands.ban.UnBanCommand;
 import github.minersStudios.msUtils.commands.mute.MuteCommand;
 import github.minersStudios.msUtils.commands.mute.UnMuteCommand;
-import github.minersStudios.msUtils.commands.other.GetMapLocationCommand;
-import github.minersStudios.msUtils.commands.other.InfoCommand;
-import github.minersStudios.msUtils.commands.other.KickCommand;
-import github.minersStudios.msUtils.commands.other.ResourcePackCommand;
+import github.minersStudios.msUtils.commands.other.*;
 import github.minersStudios.msUtils.commands.roleplay.FartCommand;
 import github.minersStudios.msUtils.commands.roleplay.MeCommand;
 import github.minersStudios.msUtils.commands.roleplay.SpitCommand;
 import github.minersStudios.msUtils.commands.roleplay.TryCommand;
 import github.minersStudios.msUtils.listeners.RegEvents;
+import github.minersStudios.msUtils.listeners.chat.DiscordSRVListener;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
@@ -43,6 +42,7 @@ public final class Main extends JavaPlugin {
         plugin = this;
         authmeApi = AuthMeApi.getInstance();
         worldDark = this.getServer().getWorld("world_dark");
+
 
         if(!new File(plugin.getDataFolder(), "config.yml").exists()){
             this.saveResource("config.yml", false);
@@ -79,6 +79,7 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("resourcepack")).setExecutor(new ResourcePackCommand());
         Objects.requireNonNull(this.getCommand("rp")).setExecutor(new ResourcePackCommand());
         Objects.requireNonNull(this.getCommand("info")).setExecutor(new InfoCommand());
+        Objects.requireNonNull(this.getCommand("whitelist")).setExecutor(new WhitelistCommand());
 
         Objects.requireNonNull(this.getCommand("spit")).setExecutor(new SpitCommand());
         Objects.requireNonNull(this.getCommand("fart")).setExecutor(new FartCommand());

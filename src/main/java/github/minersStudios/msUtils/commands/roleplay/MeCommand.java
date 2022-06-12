@@ -3,7 +3,6 @@ package github.minersStudios.msUtils.commands.roleplay;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.minersStudios.msUtils.utils.CommandUtils;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -27,8 +26,8 @@ public class MeCommand implements CommandExecutor {
                 if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
                 PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
                 if (!playerInfo.isMuted()) {
-                    String message = CommandUtils.extractMessage(args, 0);
-                    CommandUtils.sendMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
+                    String message = ChatUtils.extractMessage(args, 0);
+                    ChatUtils.sendMessage(player, 25, " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
                     DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + message + "*");
                 } else {
                     ChatUtils.sendWarning(player, "Вы замучены");
