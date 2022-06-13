@@ -115,6 +115,7 @@ public final class ChatUtils {
     public static void sendRPEventMessage(@Nonnull Player player, int radius, @Nonnull String message) {
         player.getWorld().getPlayers().stream().filter((p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(radius, 2.0D)).forEach((p) -> p.sendMessage(" ꀓ " +message));
         DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), message);
+        Bukkit.getLogger().info(message);
     }
 
     /**

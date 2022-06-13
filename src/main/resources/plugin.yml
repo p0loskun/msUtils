@@ -14,10 +14,10 @@ softdepend:
 
 commands:
   me:
-    usage: ' ꀑ §cИспользуй: /<command> <сообщение>'
+    usage: ' ꀑ §cИспользуй: /<command> [сообщение]'
     description: Проигрывает событие в чате в радиусе 25 блоков
   try:
-    usage: ' ꀑ §cИспользуй: /<command> <сообщение>'
+    usage: ' ꀑ §cИспользуй: /<command> [сообщение]'
     description: Рандомно определяет исход события и проигрывает его в радиусе 25 блоков
   spit:
     usage: ' ꀑ §cИспользуй: /<command>'
@@ -30,7 +30,7 @@ commands:
     aliases: [ sit, s ]
     description: Сядь на картаны и порви жопу
   mute:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] <причина>'
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] [причина]'
     permission: msUtils.mute
     description: Замутить игрока
   unmute:
@@ -38,7 +38,7 @@ commands:
     permission: msUtils.mute
     description: Размутить игрока
   ban:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] <причина>'
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] [причина]'
     permission: msUtils.ban
     description: Забанить игрока
   unban:
@@ -46,7 +46,7 @@ commands:
     permission: msUtils.ban
     description: Разбанить игрока
   kick:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] <причина>'
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [причина]'
     permission: msUtils.kick
     description: Кикнуть игрока
   getmaploc:
