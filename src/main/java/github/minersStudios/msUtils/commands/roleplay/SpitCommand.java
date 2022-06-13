@@ -28,7 +28,7 @@ public class SpitCommand implements CommandExecutor {
         if (!playerInfo.isMuted()) {
             Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(0.8d)).toLocation(player.getWorld()).add(0.0d, 1.0d, 0.0d);
             player.getWorld().spawnEntity(location, EntityType.LLAMA_SPIT).setVelocity(player.getEyeLocation().getDirection().multiply(1));
-            player.getWorld().getPlayers().stream().filter((p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(25, 2.0d)).forEach((p) -> p.playSound(player.getLocation(), Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f));
+            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f);
             ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
                     + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
                     + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
