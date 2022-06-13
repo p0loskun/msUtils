@@ -25,7 +25,7 @@ public class PlayerID {
      */
     public void addPlayer(@Nonnull UUID uuid){
         List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
-        int ID = list.size() > 0 ? (int) list.get(list.size() - 1) + 1 : 0;
+        int ID = list.size();
         this.yamlConfiguration.set(uuid.toString(), ID);
         try {
             this.yamlConfiguration.save(this.idFile);
