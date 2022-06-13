@@ -144,7 +144,7 @@ public final class ChatUtils {
                 + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getJoinMessage()
                 : Pronouns.HE.getJoinMessage());
         Bukkit.getOnlinePlayers().forEach((onlinePlayer) -> {
-            if(player.getWorld() != Main.worldDark) player.sendMessage(joinMessage);
+            if(player.getWorld() != Main.worldDark) onlinePlayer.sendMessage(joinMessage);
         });
         Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> ChatUtils.sendJoinMessage(player, playerInfo));
         Bukkit.getLogger().info(joinMessage);
@@ -163,7 +163,7 @@ public final class ChatUtils {
                         + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getQuitMessage()
                         : Pronouns.HE.getQuitMessage());
         Bukkit.getOnlinePlayers().forEach((onlinePlayer) -> {
-            if(player.getWorld() != Main.worldDark) player.sendMessage(leaveMessage);
+            if(player.getWorld() != Main.worldDark) onlinePlayer.sendMessage(leaveMessage);
         });
         Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> ChatUtils.sendLeaveMessage(player, playerInfo));
         Bukkit.getLogger().info(leaveMessage);
