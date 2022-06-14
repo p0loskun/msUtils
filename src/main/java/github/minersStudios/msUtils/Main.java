@@ -72,7 +72,7 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         for(UUID uuid : this.seats.keySet()) {
             SitPlayer sitPlayer = new SitPlayer(Bukkit.getPlayer(uuid));
-            sitPlayer.setSitting(false);
+            sitPlayer.setSitting(null);
         }
     }
 

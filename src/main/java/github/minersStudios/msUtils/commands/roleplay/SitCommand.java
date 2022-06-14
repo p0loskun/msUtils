@@ -21,12 +21,12 @@ public class SitCommand implements CommandExecutor {
             if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
             SitPlayer sitPlayer = new SitPlayer(player);
             if (sitPlayer.isSitting()) {
-                sitPlayer.setSitting(false);
+                sitPlayer.setSitting(null);
             } else if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
                 ChatUtils.sendWarning(player, "Сидеть в воздухе нельзя!");
                 return true;
             } else {
-                sitPlayer.setSitting(true);
+                sitPlayer.setSitting(player.getLocation());
             }
         }
         return true;

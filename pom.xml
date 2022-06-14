@@ -10,6 +10,10 @@
     <packaging>jar</packaging>
 
     <name>msUtils</name>
+    <organization>
+        <name>The game development team creates quality content. Currently, creating plugins for WhoMine</name>
+        <url>https://github.com/MinersStudios</url>
+    </organization>
 
     <description>A Minecraft plugin with custom features for WhoMine</description>
     <properties>

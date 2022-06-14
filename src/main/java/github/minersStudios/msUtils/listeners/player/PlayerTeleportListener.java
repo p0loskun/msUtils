@@ -13,7 +13,7 @@ public class PlayerTeleportListener implements Listener {
     public void onPlayerTeleport(@Nonnull PlayerTeleportEvent event){
         SitPlayer sitPlayer = new SitPlayer(event.getPlayer());
         if (sitPlayer.isSitting()) {
-            sitPlayer.setSitting(false);
+            sitPlayer.setSitting(null);
         }
     }
 }

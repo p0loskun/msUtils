@@ -20,7 +20,7 @@ public class PlayerQuitListener implements Listener {
         PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
         SitPlayer sitPlayer = new SitPlayer(player);
         if (sitPlayer.isSitting()) {
-            sitPlayer.setSitting(false);
+            sitPlayer.setSitting(null);
         }
         event.setQuitMessage(null);
         if (playerInfo.hasPlayerDataFile() && player.getWorld() != Main.worldDark) {
