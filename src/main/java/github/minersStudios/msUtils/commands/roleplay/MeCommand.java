@@ -22,17 +22,16 @@ public class MeCommand implements CommandExecutor {
             if (args.length < 1) return false;
             if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
             PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-            if (!playerInfo.isMuted()) {
-                ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
-                        + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
-                        + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
-                        + ChatUtils.extractMessage(args, 0)
-                        + "*");
-            } else {
+            if (playerInfo.isMuted()) {
                 ChatUtils.sendWarning(player, "Вы замучены");
+                return true;
             }
+            ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
+                    + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
+                    + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
+                    + ChatUtils.extractMessage(args, 0)
+                    + "*");
         }
         return true;
     }
-
 }

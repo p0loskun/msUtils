@@ -106,6 +106,21 @@ public final class ChatUtils {
     }
 
     /**
+     * Sends private message
+     *
+     * @param sender private message sender
+     * @param receiver private message receiver
+     * @param message private message
+     */
+    public static void sendPrivateMessage(@Nonnull PlayerInfo sender, @Nonnull PlayerInfo receiver, @Nonnull String message){
+        if(sender.getOnlinePlayer() == null || receiver.getOnlinePlayer() == null) return;
+        String senderName = " [" + sender.getID() + "] " + sender.getFirstname() + " " + sender.getLastname(),
+                receiverName = " [" + receiver.getID() + "] " + receiver.getFirstname() + " " + receiver.getLastname();
+        sender.getOnlinePlayer().sendMessage(" \uA015" + ChatColor.of("#aba494") + " Вы" + " ->" + receiverName + " : " + ChatColor.of("#f2f0e3") + message);
+        receiver.getOnlinePlayer().sendMessage(" \uA015" + ChatColor.of("#aba494") + senderName + " -> " + "Вам" + " : " + ChatColor.of("#f2f0e3") + message);
+    }
+
+    /**
      * Sends rp event message to chat
      *
      * @param player player

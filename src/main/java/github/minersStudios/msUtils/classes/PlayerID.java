@@ -1,6 +1,7 @@
 package github.minersStudios.msUtils.classes;
 
 import github.minersStudios.msUtils.Main;
+import lombok.Getter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -13,7 +14,7 @@ import java.util.*;
 public class PlayerID {
 
     private final File idFile;
-    private final YamlConfiguration yamlConfiguration;
+    @Getter private final YamlConfiguration yamlConfiguration;
 
     public PlayerID(){
         this.idFile = new File(Main.plugin.getDataFolder(), "ids.yml");

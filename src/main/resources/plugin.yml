@@ -33,6 +33,10 @@ commands:
     usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] [причина]'
     permission: msUtils.mute
     description: Замутить игрока
+  privatemessage:
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [сообщение]'
+    aliases: [ privatemessage, pm ]
+    description: Отправь другому игроку приватное сообщение
   unmute:
     usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname]'
     permission: msUtils.mute

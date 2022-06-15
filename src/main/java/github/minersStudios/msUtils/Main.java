@@ -10,6 +10,10 @@ import github.minersStudios.msUtils.commands.mute.*;
 import github.minersStudios.msUtils.commands.other.*;
 import github.minersStudios.msUtils.commands.roleplay.*;
 import github.minersStudios.msUtils.listeners.RegEvents;
+import github.minersStudios.msUtils.tabComplete.AllBannedPlayers;
+import github.minersStudios.msUtils.tabComplete.AllLocalPlayers;
+import github.minersStudios.msUtils.tabComplete.AllMutedPlayers;
+import github.minersStudios.msUtils.tabComplete.AllPlayers;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import lombok.Getter;
 import org.bukkit.*;
@@ -78,18 +82,28 @@ public final class Main extends JavaPlugin {
 
     private void registerCommands() {
         Objects.requireNonNull(this.getCommand("ban")).setExecutor(new BanCommand());
+        Objects.requireNonNull(this.getCommand("ban")).setTabCompleter(new AllPlayers());
         Objects.requireNonNull(this.getCommand("unban")).setExecutor(new UnBanCommand());
+        Objects.requireNonNull(this.getCommand("unban")).setTabCompleter(new AllBannedPlayers());
 
         Objects.requireNonNull(this.getCommand("mute")).setExecutor(new MuteCommand());
+        Objects.requireNonNull(this.getCommand("mute")).setTabCompleter(new AllPlayers());
         Objects.requireNonNull(this.getCommand("unmute")).setExecutor(new UnMuteCommand());
+        Objects.requireNonNull(this.getCommand("unmute")).setTabCompleter(new AllMutedPlayers());
 
         Objects.requireNonNull(this.getCommand("kick")).setExecutor(new KickCommand());
+        Objects.requireNonNull(this.getCommand("kick")).setTabCompleter(new AllLocalPlayers());
 
         Objects.requireNonNull(this.getCommand("getmaploc")).setExecutor(new GetMapLocationCommand());
         Objects.requireNonNull(this.getCommand("resourcepack")).setExecutor(new ResourcePackCommand());
         Objects.requireNonNull(this.getCommand("rp")).setExecutor(new ResourcePackCommand());
         Objects.requireNonNull(this.getCommand("info")).setExecutor(new InfoCommand());
+        Objects.requireNonNull(this.getCommand("info")).setTabCompleter(new AllPlayers());
         Objects.requireNonNull(this.getCommand("whitelist")).setExecutor(new WhitelistCommand());
+        Objects.requireNonNull(this.getCommand("privatemessage")).setExecutor(new PrivateMessageCommand());
+        Objects.requireNonNull(this.getCommand("privatemessage")).setTabCompleter(new AllLocalPlayers());
+        Objects.requireNonNull(this.getCommand("pm")).setExecutor(new PrivateMessageCommand());
+        Objects.requireNonNull(this.getCommand("pm")).setTabCompleter(new AllLocalPlayers());
 
         Objects.requireNonNull(this.getCommand("sit")).setExecutor(new SitCommand());
         Objects.requireNonNull(this.getCommand("s")).setExecutor(new SitCommand());

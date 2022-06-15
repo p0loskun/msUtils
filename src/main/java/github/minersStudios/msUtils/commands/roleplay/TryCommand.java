@@ -23,16 +23,16 @@ public class TryCommand implements CommandExecutor {
             if (args.length < 1) return false;
             if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
             PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-            if (!playerInfo.isMuted()) {
-                ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
-                        + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
-                        + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
-                        + ChatUtils.extractMessage(args, 0) + " "
-                        + new String[]{org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)]
-                        + ChatColor.GOLD + "*");
-            } else {
+            if (playerInfo.isMuted()) {
                 ChatUtils.sendWarning(player, "Вы замучены");
+                return true;
             }
+            ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
+                    + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
+                    + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
+                    + ChatUtils.extractMessage(args, 0) + " "
+                    + new String[]{org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)]
+                    + ChatColor.GOLD + "*");
         }
         return true;
     }

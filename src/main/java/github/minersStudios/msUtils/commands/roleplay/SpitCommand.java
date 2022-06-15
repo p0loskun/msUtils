@@ -25,19 +25,18 @@ public class SpitCommand implements CommandExecutor {
         }
         if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
         PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-        if (!playerInfo.isMuted()) {
-            Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(0.8d)).toLocation(player.getWorld()).add(0.0d, 1.0d, 0.0d);
-            player.getWorld().spawnEntity(location, EntityType.LLAMA_SPIT).setVelocity(player.getEyeLocation().getDirection().multiply(1));
-            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f);
-            ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
-                    + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
-                    + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
-                    + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getSpitMessage() : Pronouns.HE.getSpitMessage())
-                    + "*");
-        } else {
+        if (playerInfo.isMuted()) {
             ChatUtils.sendWarning(player, "Вы замучены");
+            return true;
         }
+        Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(0.8d)).toLocation(player.getWorld()).add(0.0d, 1.0d, 0.0d);
+        player.getWorld().spawnEntity(location, EntityType.LLAMA_SPIT).setVelocity(player.getEyeLocation().getDirection().multiply(1));
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f);
+        ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
+                + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
+                + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
+                + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getSpitMessage() : Pronouns.HE.getSpitMessage())
+                + "*");
         return true;
     }
-
 }
