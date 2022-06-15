@@ -30,7 +30,6 @@ public class AsyncChatListener implements Listener {
             String message = event.getMessage();
             if(Objects.equals(String.valueOf(message.charAt(0)), "!")){
                 ChatUtils.sendMessageToChat(playerInfo, null, -1, ChatUtils.removeFirstChar(message));
-                Main.chatBuffer.receiveChat(player, message);
             } else if(Objects.equals(String.valueOf(message.charAt(0)), "*")){
                 ChatUtils.sendRPEventMessage(player, 25,  " ꀓ " + ChatColor.GOLD + "*" + ChatColor.GRAY + " [" + playerInfo.getID() + "] " + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + ChatUtils.removeFirstChar(message) + "*");
                 DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), "*" + " [" + playerInfo.getID() + "] " + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " " + ChatUtils.removeFirstChar(message) + "*");
