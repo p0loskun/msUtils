@@ -9,13 +9,42 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public enum Pronouns {
-    HE("зашёл на сервер", "вышел из сервера", "плюнул", "пукнул", "тебе", "путник", "сел", "встал"),
-    SHE("зашла на сервер", "вышла из сервера", "плюнула", "пукнула", "тебе", "путница", "села", "встала"),
-    THEY("зашли на сервер", "вышли из сервера", "плюнули", "пукнули", "вам", "путник", "сели", "встали");
+    HE(
+            "зашёл на сервер",
+            "вышел из сервера",
+            "плюнул",
+            "пукнул",
+            "тебе",
+            "путник",
+            "сел",
+            "встал",
+            "умер"
+    ),
+    SHE(
+            "зашла на сервер",
+            "вышла из сервера",
+            "плюнула",
+            "пукнула",
+            "тебе",
+            "путница",
+            "села",
+            "встала",
+            "умерла"
+    ),
+    THEY(
+            "зашли на сервер",
+            "вышли из сервера",
+            "плюнули",
+            "пукнули",
+            "вам",
+            "путник",
+            "сели",
+            "встали",
+            "умерли"
+    );
 
     @Getter private final String
             joinMessage,
@@ -25,7 +54,8 @@ public enum Pronouns {
             pronouns,
             traveler,
             sitMessage,
-            unSitMessage;
+            unSitMessage,
+            deathMessage;
     public static final String NAME = ChatColor.DARK_GRAY + "Выберите форму обращения";
 
     Pronouns(
@@ -36,7 +66,8 @@ public enum Pronouns {
             String pronouns,
             String traveler,
             String sitMessage,
-            String unSitMessage
+            String unSitMessage,
+            String deathMessage
     ){
         this.joinMessage = joinMessage;
         this.quitMessage = quitMessage;
@@ -46,19 +77,19 @@ public enum Pronouns {
         this.traveler = traveler;
         this.sitMessage = sitMessage;
         this.unSitMessage = unSitMessage;
+        this.deathMessage = deathMessage;
     }
 
     /**
      * @param pronouns pronouns
      * @return Pronouns by string
      */
-    @Nullable
+    @Nonnull
     public static Pronouns getPronounsByString(@Nonnull String pronouns){
         return switch (pronouns) {
             case "THEY" -> THEY;
             case "SHE" -> SHE;
-            case "HE" -> HE;
-            default -> null;
+            default -> HE;
         };
     }
 

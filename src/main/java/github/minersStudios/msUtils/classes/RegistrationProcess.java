@@ -3,9 +3,9 @@ package github.minersStudios.msUtils.classes;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
-import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -15,41 +15,43 @@ import java.util.Arrays;
 public class RegistrationProcess {
     private Player player;
     private PlayerInfo playerInfo;
+    private Location playerLocation;
+    private static final String regex = "[А-ЯҐІЇЁ][-А-яҐґІіЇїЁё]+";
 
     public void registerPlayer(@Nonnull PlayerInfo playerInfo){
         this.playerInfo = playerInfo;
         this.player = playerInfo.getOnlinePlayer();
-
         if(this.player == null) return;
-        player.playSound(player.getLocation(), Sound.MUSIC_DISC_FAR, 0.15f, 1.25f);
+        this.playerLocation = this.player.getLocation();
+        this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, 0.15f, 1.25f);
+        playerInfo.createPlayerDataFile();
 
-        if(!playerInfo.hasPlayerDataFile()){
-            playerInfo.createPlayerDataFile();
-        }
-        ChatUtils.sendDialogueMessage(player, "оу...", 100L);
-        ChatUtils.sendDialogueMessage(player, "Крайне странное местечко", 150L);
-        ChatUtils.sendDialogueMessage(player, "Ничего не напоминает?", 225L);
-        ChatUtils.sendDialogueMessage(player, "Ну ладно...", 300L);
-        ChatUtils.sendDialogueMessage(player, "Где-то я уже тебя видел", 350L);
-        ChatUtils.sendDialogueMessage(player, "Напомни ка своё имя", 400L);
-        ChatUtils.sendDialogueMessage(player, "Только говори честно, иначе буду тебя ошибочно называть до конца дней своих", 450L);
+        this.sendDialogueMessage("оу...", 100L);
+        this.sendDialogueMessage("Крайне странное местечко", 150L);
+        this.sendDialogueMessage("Ничего не напоминает?", 225L);
+        this.sendDialogueMessage("Ну ладно...", 300L);
+        this.sendDialogueMessage("Где-то я уже тебя видел", 350L);
+        this.sendDialogueMessage("Напомни ка своё имя", 400L);
+        this.sendDialogueMessage("Только говори честно, иначе буду тебя ошибочно называть до конца дней своих", 450L);
+
         Bukkit.getScheduler().runTaskLater(Main.plugin, this::setFirstname, 550L);
     }
 
     private void setFirstname(){
-        SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите выше", "имя"))
+        SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "имя"))
                 .reopenIfFail(true)
                 .response((player, strings) -> {
-                    if (strings[0].matches("[А-ЯЁ][-А-яЁё]+")) {
+                    if (strings[0].matches(regex)) {
                         this.playerInfo.setFirstname(strings[0]);
-                        ChatUtils.sendDialogueMessage(this.player, "Интересно...", 25L);
-                        ChatUtils.sendDialogueMessage(this.player, "За свою жизнь, я многих повидал с таким именем", 100L);
-                        ChatUtils.sendDialogueMessage(this.player, "Но тебя вижу впервые", 225L);
-                        ChatUtils.sendDialogueMessage(this.player, "Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
+
+                        this.sendDialogueMessage("Интересно...", 25L);
+                        this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем", 100L);
+                        this.sendDialogueMessage("Но тебя вижу впервые", 225L);
+                        this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
+
                         Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
                     } else {
-                        this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу");
-                        return false;
+                        return this.sendWarningMessage();
                     }
                     return true;
                 });
@@ -57,15 +59,14 @@ public class RegistrationProcess {
     }
 
     private void setLastname(){
-        SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите выше", "фамилию"))
+        SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите вашу", "фамилию"))
                 .reopenIfFail(true)
                 .response((player, strings) -> {
-                    if (strings[0].matches("[А-ЯЁ][-А-яЁё]+")) {
+                    if (strings[0].matches(regex)) {
                         this.playerInfo.setLastName(strings[0]);
-                        this.setPatronymic();
+                        Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
                     } else {
-                        this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу");
-                        return false;
+                        return this.sendWarningMessage();
                     }
                     return true;
                 });
@@ -73,24 +74,25 @@ public class RegistrationProcess {
     }
 
     private void setPatronymic() {
-        SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите выше", "отчество"))
+        SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "отчество"))
                 .reopenIfFail(true)
                 .response((player, strings) -> {
-                    if (strings[0].matches("[А-ЯЁ][-А-яЁё]+")) {
+                    if (strings[0].matches(regex)) {
                         this.playerInfo.setPatronymic(strings[0]);
                         new PlayerID().addPlayer(this.player.getUniqueId());
-                        ChatUtils.sendDialogueMessage(player,
+
+                        this.sendDialogueMessage(
                                 "Ну вот и отлично, "
                                         + ChatColor.GRAY + "[" + this.playerInfo.getID() + "] "
                                         + ChatColor.WHITE + this.playerInfo.getFirstname() + " "
                                         + this.playerInfo.getLastname() + " "
                                         + this.playerInfo.getPatronymic(), 25L);
-                        ChatUtils.sendDialogueMessage(this.player, "Слушай...", 100L);
-                        ChatUtils.sendDialogueMessage(this.player, "А как мне к тебе обращаться?", 150L);
+                        this.sendDialogueMessage("Слушай...", 100L);
+                        this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
+
                         Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
                     } else {
-                        this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу");
-                        return false;
+                        return this.sendWarningMessage();
                     }
                     return true;
                 });
@@ -100,16 +102,17 @@ public class RegistrationProcess {
     public void setPronouns(@Nonnull PlayerInfo playerInfo){
         this.playerInfo = playerInfo;
         this.player = playerInfo.getOnlinePlayer();
-        if(playerInfo.getPronouns() == null) return;
-        ChatUtils.sendDialogueMessage(this.player, "Славно", 25L);
-        ChatUtils.sendDialogueMessage(this.player, "Ну что же...", 75L);
-        ChatUtils.sendDialogueMessage(this.player, "Мне уже пора", 125L);
-        ChatUtils.sendDialogueMessage(this.player, "Хорошей " + playerInfo.getPronouns().getPronouns() + " дороги, " + playerInfo.getPronouns().getTraveler(), 175L);
+
+        this.sendDialogueMessage("Славно", 25L);
+        this.sendDialogueMessage("Ну что же...", 75L);
+        this.sendDialogueMessage("Мне уже пора", 125L);
+        this.sendDialogueMessage("Хорошей " + playerInfo.getPronouns().getPronouns() + " дороги, " + playerInfo.getPronouns().getTraveler(), 175L);
+
         Bukkit.getScheduler().runTaskLater(Main.plugin, this::setOther, 225L);
     }
 
     private void setOther(){
-        this.player.setDisplayName("[" + this.playerInfo.getID() + "] " + this.playerInfo.getFirstname() + " " + this.playerInfo.getLastname());
+        this.player.setDisplayName(this.playerInfo.getDefaultName());
         if(this.playerInfo.getResourcePackType() == null){
             Bukkit.getScheduler().runTask(Main.plugin, () -> this.player.openInventory(ResourcePackType.getInventory()));
         } else if (this.playerInfo.getResourcePackType() == ResourcePackType.NONE){
@@ -117,5 +120,18 @@ public class RegistrationProcess {
         } else {
             ResourcePackType.setResourcePack(this.playerInfo);
         }
+    }
+
+    @SuppressWarnings("SameReturnValue")
+    private boolean sendWarningMessage(){
+        this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу, без пробелов");
+        return false;
+    }
+
+    private void sendDialogueMessage(@Nonnull String message, long delay){
+        Bukkit.getScheduler().runTaskLater(Main.plugin, () -> {
+            this.player.sendMessage(net.md_5.bungee.api.ChatColor.of("#aba494") + " [0] Незнакомец : " + net.md_5.bungee.api.ChatColor.of("#f2f0e3") + message);
+            this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
+        }, delay);
     }
 }

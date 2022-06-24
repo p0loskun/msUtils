@@ -23,7 +23,7 @@ public class InventoryCloseListener implements Listener {
             }
         }
         if (event.getView().getTitle().equalsIgnoreCase(Pronouns.NAME)) {
-            if(new PlayerInfo(player.getUniqueId()).getPronouns() == null){
+            if(new PlayerInfo(player.getUniqueId()).getYamlConfiguration().getString("pronouns") == null){
                 Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(Pronouns.getInventory()));
             }
         }

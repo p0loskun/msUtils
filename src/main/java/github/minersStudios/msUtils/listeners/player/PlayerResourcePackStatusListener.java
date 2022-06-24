@@ -18,31 +18,29 @@ public class PlayerResourcePackStatusListener implements Listener {
     public void onPlayerResourcepackStatus(@Nonnull PlayerResourcePackStatusEvent event) {
         Player player = event.getPlayer();
         PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-
-        if(playerInfo.getResourcePackType() != null) {
-            if (event.getStatus().equals(PlayerResourcePackStatusEvent.Status.ACCEPTED)) {
-                ChatUtils.sendFine(null, player.getName() + " принял ресурспак");
-            }
-            if (event.getStatus().equals(PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED)) {
+        if (playerInfo.getResourcePackType() == null) return;
+        switch (event.getStatus()) {
+            case ACCEPTED -> ChatUtils.sendFine(null, player.getName() + " принял ресурспак");
+            case SUCCESSFULLY_LOADED -> {
                 ChatUtils.sendFine(null, player.getName() + " успешно загрузил ресурспак");
                 playerInfo.teleportToLastLeaveLocation();
             }
-            if (event.getStatus().equals(PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD)) {
+            case FAILED_DOWNLOAD -> {
                 ChatUtils.sendWarning(null, player.getName() + " не установился ресурспак, диск : " + playerInfo.getDiskType());
-                if(playerInfo.getDiskType() == DiskType.DROPBOX){
+                if (playerInfo.getDiskType() == DiskType.DROPBOX) {
                     playerInfo.setDiskType(DiskType.YANDEX_DISK);
                     player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL());
                 } else {
                     playerInfo.setResourcePackType(ResourcePackType.NONE);
                     player.kickPlayer(
                             ChatColor.RED + "\n§lКажеться, что-то пошло не так"
-                            + ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-                            + ChatColor.GRAY + "\nОбратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n\"Без текстурпака\""
-                            + ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+                                    + ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+                                    + ChatColor.GRAY + "\nОбратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n\"Без текстурпака\""
+                                    + ChatColor.DARK_GRAY + "\n<---====+====--->\n"
                     );
                 }
             }
-            if (event.getStatus().equals(PlayerResourcePackStatusEvent.Status.DECLINED)) {
+            case DECLINED -> {
                 ChatUtils.sendWarning(null, player.getName() + " не принял ресурспак");
                 player.kickPlayer(
                         ChatColor.RED + "\n§lКажеться, что-то пошло не так"

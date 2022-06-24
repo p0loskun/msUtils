@@ -2,6 +2,7 @@ package github.minersStudios.msUtils.utils;
 
 import com.google.common.base.Charsets;
 import github.minersStudios.msUtils.Main;
+import github.minersStudios.msUtils.classes.PlayerInfo;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.*;
 import org.jetbrains.annotations.Nullable;
@@ -31,8 +32,8 @@ public class PlayerUtils {
             Properties properties = new Properties();
             properties.load(input);
             isOnlineMode = Boolean.parseBoolean(properties.getProperty("online-mode"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
         if(isOnlineMode){
             try {
@@ -42,11 +43,11 @@ public class PlayerUtils {
                         "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
                         "$1-$2-$3-$4-$5"
                 ));
-            } catch (IOException | ParseException e) {
-                e.printStackTrace();
+            } catch (IOException | ParseException exception) {
+                exception.printStackTrace();
             }
         } else {
-            return java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + nickname).getBytes(Charsets.UTF_8));
+            return UUID.nameUUIDFromBytes(("OfflinePlayer:" + nickname).getBytes(Charsets.UTF_8));
         }
         return null;
     }
@@ -60,10 +61,7 @@ public class PlayerUtils {
     @Nullable
     public static OfflinePlayer getOfflinePlayerByNick(@Nonnull String nickname){
         UUID UUID = PlayerUtils.getUUID(nickname);
-        if (UUID == null) {
-            return null;
-        }
-        return Bukkit.getOfflinePlayer(UUID);
+        return UUID != null ? Bukkit.getOfflinePlayer(UUID) : null;
     }
 
     /**
@@ -118,6 +116,7 @@ public class PlayerUtils {
      */
     public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String reason){
         if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null) return false;
+        new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation(offlinePlayer.getPlayer().getLocation());
         offlinePlayer.getPlayer().kickPlayer(
                 ChatColor.RED + "\n§lВы были кикнуты"
                         + ChatColor.DARK_GRAY + "\n\n<---====+====--->"

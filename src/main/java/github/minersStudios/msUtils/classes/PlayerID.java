@@ -25,6 +25,7 @@ public class PlayerID {
      * Adds player id in "plugins/msUtils/ids.yml"
      */
     public int addPlayer(@Nonnull UUID uuid){
+        if(!new PlayerInfo(uuid).hasPlayerDataFile()) return 0;
         List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
         int ID = this.createNewID(list, null);
         this.yamlConfiguration.set(uuid.toString(), ID);
@@ -48,12 +49,14 @@ public class PlayerID {
      * @param ID player's ID
      * @return player by ID
      */
-    @Nullable public OfflinePlayer getPlayerByID(int ID){
+    @Nullable
+    public OfflinePlayer getPlayerByID(int ID){
         Map<String, Object> map = this.yamlConfiguration.getValues(true);
         return map.containsValue(ID) ? Main.plugin.getServer().getOfflinePlayer(UUID.fromString(Objects.requireNonNull(getKeyByValue(map, ID)))) : null;
     }
 
-    @Nullable private static <String, Object> String getKeyByValue(@Nonnull Map<String, Object> map, @Nonnull Object value) {
+    @Nullable
+    private static <String, Object> String getKeyByValue(@Nonnull Map<String, Object> map, @Nonnull Object value) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             if (Objects.equals(value, entry.getValue())) {
                 return entry.getKey();

@@ -22,22 +22,42 @@ import java.util.UUID;
 
 public final class PlayerInfo {
     private final File dataFile;
-    private final YamlConfiguration yamlConfiguration;
-    @Getter private final UUID uuid;
+    @Getter private final YamlConfiguration yamlConfiguration;
+    @Getter @Nonnull private final UUID uuid;
     private Player onlinePlayer;
     private String nickname, firstname, lastname, patronymic;
 
     public PlayerInfo(@Nonnull UUID uuid){
         this.dataFile = new File(Main.plugin.getDataFolder(), "players/" + uuid + ".yml");
-        this.yamlConfiguration = YamlConfiguration.loadConfiguration(dataFile);
+        this.yamlConfiguration = YamlConfiguration.loadConfiguration(this.dataFile);
         this.uuid = uuid;
     }
 
     public PlayerInfo(@Nonnull UUID uuid, @Nonnull String nickname){
         this.dataFile = new File(Main.plugin.getDataFolder(), "players/" + uuid + ".yml");
-        this.yamlConfiguration = YamlConfiguration.loadConfiguration(dataFile);
+        this.yamlConfiguration = YamlConfiguration.loadConfiguration(this.dataFile);
         this.uuid = uuid;
         this.nickname = nickname;
+    }
+
+    @Nonnull
+    public String getDefaultName(){
+        return "[" + this.getID() + "] " + this.getFirstname() + " " + this.getLastname();
+    }
+
+    @Nonnull
+    public String getGoldenName(){
+        return net.md_5.bungee.api.ChatColor.of("#fcf5c7") + "[" + this.getID() + "] " + net.md_5.bungee.api.ChatColor.of("#ffee93") + this.getFirstname() + " " + this.getLastname();
+    }
+
+    @Nonnull
+    public String getGrayIDGoldName(){
+        return ChatColor.GRAY + "[" + this.getID() + "] " + ChatColor.GOLD + this.getFirstname() + " " + this.getLastname();
+    }
+
+    @Nonnull
+    public String getGrayIDGreenName(){
+        return ChatColor.GRAY + "[" + this.getID() + "] " + ChatColor.GREEN + this.getFirstname() + " " + this.getLastname();
     }
 
     /**
@@ -78,8 +98,7 @@ public final class PlayerInfo {
      */
     @Nullable
     public Player getOnlinePlayer(){
-        return this.onlinePlayer == null
-                ? this.onlinePlayer = this.getOfflinePlayer().getPlayer() != null && this.getOfflinePlayer().isOnline()
+        return this.onlinePlayer == null ? this.onlinePlayer = this.getOfflinePlayer().getPlayer() != null && this.getOfflinePlayer().isOnline()
                     ? this.getOfflinePlayer().getPlayer()
                     : null
                 : this.onlinePlayer;
@@ -99,6 +118,7 @@ public final class PlayerInfo {
      *
      * @return player nickname
      */
+    @Nullable
     public String getNickname(){
         return this.nickname == null ? this.nickname = this.getOfflinePlayer().getName() : this.nickname;
     }
@@ -111,7 +131,9 @@ public final class PlayerInfo {
      */
     @Nonnull
     public String getFirstname(){
-        return this.firstname == null ? this.firstname = this.yamlConfiguration.getString("name.firstname", "Иван") : this.firstname;
+        return this.yamlConfiguration == null ? "Иван"
+                : this.firstname == null ? this.firstname = this.yamlConfiguration.getString("name.firstname", "Иван")
+                : this.firstname;
     }
 
     /**
@@ -132,7 +154,9 @@ public final class PlayerInfo {
      * @return player lastname if it's != null, else returns default lastname
      */
     public String getLastname(){
-        return this.lastname == null ? this.lastname = this.yamlConfiguration.getString("name.lastname", "Иванов") : this.lastname;
+        return this.yamlConfiguration == null ? "Иванов"
+                : this.lastname == null ? this.lastname = this.yamlConfiguration.getString("name.lastname", "Иванов")
+                : this.lastname;
     }
 
     /**
@@ -155,7 +179,9 @@ public final class PlayerInfo {
      */
     @Nonnull
     public String getPatronymic(){
-        return this.patronymic == null ? this.patronymic = this.yamlConfiguration.getString("name.patronymic", "Иваныч") : this.patronymic;
+        return this.yamlConfiguration == null ? "Иваныч"
+                : this.patronymic == null ? this.patronymic = this.yamlConfiguration.getString("name.patronymic", "Иваныч")
+                : this.patronymic;
     }
 
     /**
@@ -175,9 +201,9 @@ public final class PlayerInfo {
      *
      * @return player pronouns if it's != null, else returns null
      */
-    @Nullable
+    @Nonnull
     public Pronouns getPronouns(){
-        return Pronouns.getPronounsByString(this.yamlConfiguration.getString("pronouns", "NULL"));
+        return Pronouns.getPronounsByString(this.yamlConfiguration.getString("pronouns", "HE"));
     }
 
     /**
@@ -247,10 +273,9 @@ public final class PlayerInfo {
      * @param time mutes for time
      * @param reason mute reason
      */
-    public void setMuted(boolean value, long time, @Nullable String reason){
-        if(!this.hasPlayerDataFile()){
-            this.createPlayerDataFile();
-        }
+    public boolean setMuted(boolean value, long time, @Nullable String reason){
+        if(this.getNickname() == null) return false;
+        this.createPlayerDataFile();
         this.yamlConfiguration.set("bans.muted", value);
         this.yamlConfiguration.set("time.muted-to", time);
         this.yamlConfiguration.set("bans.mute-reason", reason);
@@ -262,6 +287,7 @@ public final class PlayerInfo {
             ChatUtils.sendFine(this.getOnlinePlayer(), "Вы были размучены");
         }
         savePlayerDataFile();
+        return true;
     }
 
     /**
@@ -278,7 +304,7 @@ public final class PlayerInfo {
      * @return True if player is banned
      */
     public boolean isBanned(){
-        return Bukkit.getBanList(BanList.Type.NAME).isBanned(this.getNickname()) || this.yamlConfiguration.getBoolean("bans.banned", false);
+        return this.getNickname() != null && (Bukkit.getBanList(BanList.Type.NAME).isBanned(this.getNickname()) || this.yamlConfiguration.getBoolean("bans.banned", false));
     }
 
     /**
@@ -288,10 +314,9 @@ public final class PlayerInfo {
      * @param time bans for time
      * @param reason ban reason
      */
-    public void setBanned(boolean value, long time, @Nullable String reason, @Nullable String source){
-        if(!this.hasPlayerDataFile()){
-            this.createPlayerDataFile();
-        }
+    public boolean setBanned(boolean value, long time, @Nullable String reason, @Nullable String source){
+        if(this.getNickname() == null) return false;
+        this.createPlayerDataFile();
         this.yamlConfiguration.set("bans.banned", value);
         this.yamlConfiguration.set("time.banned-to", time);
         this.yamlConfiguration.set("bans.ban-reason", reason);
@@ -300,6 +325,7 @@ public final class PlayerInfo {
             if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
             if(this.getOnlinePlayer() != null) {
                 Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(this.getOnlinePlayer().getAddress()).getHostName(), reason, new Date(time), source);
+                this.setLastLeaveLocation(this.getOnlinePlayer().getLocation());
                 this.getOnlinePlayer().kickPlayer(
                         ChatColor.RED + "\n§lВы были забанены"
                                 + ChatColor.DARK_GRAY + "\n\n<---====+====--->"
@@ -315,6 +341,7 @@ public final class PlayerInfo {
             if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
         }
         savePlayerDataFile();
+        return true;
     }
 
     /**
@@ -388,9 +415,9 @@ public final class PlayerInfo {
     public Location getLastLeaveLocation(){
         return new Location(
                 Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-leave-location.world", "world")),
-                this.yamlConfiguration.getDouble("locations.last-leave-location.x", 54.0d),
-                this.yamlConfiguration.getDouble("locations.last-leave-location.y", 65.0d),
-                this.yamlConfiguration.getDouble("locations.last-leave-location.z", -23.0d),
+                this.yamlConfiguration.getDouble("locations.last-leave-location.x", 25.0d),
+                this.yamlConfiguration.getDouble("locations.last-leave-location.y", 66.0d),
+                this.yamlConfiguration.getDouble("locations.last-leave-location.z", 36.0d),
                 (float) this.yamlConfiguration.getDouble("locations.last-leave-location.yaw", 0.0f),
                 (float) this.yamlConfiguration.getDouble("locations.last-leave-location.pitch", 0.0f)
         );
@@ -399,20 +426,15 @@ public final class PlayerInfo {
     /**
      * Sets last leave location of player
      *
-     * @param world last leave world
-     * @param x last leave x coordinate
-     * @param y last leave y coordinate
-     * @param z last leave z coordinate
-     * @param yaw last leave yaw
-     * @param pitch last leave pitch
+     * @param location last leave location
      */
-    public void setLastLeaveLocation(@Nonnull World world, double x, double y, double z, float yaw, float pitch){
-        this.yamlConfiguration.set("locations.last-leave-location.world", world.getName());
-        this.yamlConfiguration.set("locations.last-leave-location.x", x);
-        this.yamlConfiguration.set("locations.last-leave-location.y", y);
-        this.yamlConfiguration.set("locations.last-leave-location.z", z);
-        this.yamlConfiguration.set("locations.last-leave-location.yaw", yaw);
-        this.yamlConfiguration.set("locations.last-leave-location.pitch", pitch);
+    public void setLastLeaveLocation(@Nonnull Location location){
+        this.yamlConfiguration.set("locations.last-leave-location.world", location.getBlock().getWorld().getName());
+        this.yamlConfiguration.set("locations.last-leave-location.x", location.getX());
+        this.yamlConfiguration.set("locations.last-leave-location.y", location.getY());
+        this.yamlConfiguration.set("locations.last-leave-location.z", location.getZ());
+        this.yamlConfiguration.set("locations.last-leave-location.yaw", location.getYaw());
+        this.yamlConfiguration.set("locations.last-leave-location.pitch", location.getPitch());
         this.savePlayerDataFile();
     }
 
@@ -436,20 +458,15 @@ public final class PlayerInfo {
     /**
      * Sets last death location of player
      *
-     * @param world last death world
-     * @param x last death x coordinate
-     * @param y last death y coordinate
-     * @param z last death z coordinate
-     * @param yaw last death yaw
-     * @param pitch last death pitch
+     * @param location last death location
      */
-    public void setLastDeathLocation(@Nonnull World world, double x, double y, double z, float yaw, float pitch){
-        this.yamlConfiguration.set("locations.last-death-location.world", world.getName());
-        this.yamlConfiguration.set("locations.last-death-location.x", x);
-        this.yamlConfiguration.set("locations.last-death-location.y", y);
-        this.yamlConfiguration.set("locations.last-death-location.z", z);
-        this.yamlConfiguration.set("locations.last-death-location.yaw", yaw);
-        this.yamlConfiguration.set("locations.last-death-location.pitch", pitch);
+    public void setLastDeathLocation(@Nonnull Location location){
+        this.yamlConfiguration.set("locations.last-death-location.world", location.getBlock().getWorld().getName());
+        this.yamlConfiguration.set("locations.last-death-location.x", location.getX());
+        this.yamlConfiguration.set("locations.last-death-location.y", location.getY());
+        this.yamlConfiguration.set("locations.last-death-location.z", location.getZ());
+        this.yamlConfiguration.set("locations.last-death-location.yaw", location.getYaw());
+        this.yamlConfiguration.set("locations.last-death-location.pitch", location.getPitch());
         this.savePlayerDataFile();
     }
 
@@ -457,6 +474,7 @@ public final class PlayerInfo {
      * Creates new player data file in "plugins/msUtils/players/uuid.yml"
      */
     public void createPlayerDataFile() {
+        if(this.hasPlayerDataFile()) return;
         this.yamlConfiguration.set("nickname", this.getNickname());
         if (this.getOnlinePlayer() != null) {
             this.yamlConfiguration.set("ip", this.getOnlinePlayer().getAddress() == null ? null : this.getOnlinePlayer().getAddress().getHostName());
@@ -492,5 +510,4 @@ public final class PlayerInfo {
                 && this.yamlConfiguration.getString("name.lastname") != null
                 && this.yamlConfiguration.getString("name.patronymic") != null;
     }
-
 }

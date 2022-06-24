@@ -17,24 +17,18 @@ public class TryCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
-            return true;
-        } else {
-            if (args.length < 1) return false;
-            if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return true;
+            return ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+        } else if (player.getWorld() != Main.worldDark && Main.authmeApi.isAuthenticated(player)) {
             PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-            if (playerInfo.isMuted()) {
-                ChatUtils.sendWarning(player, "Вы замучены");
-                return true;
-            }
-            ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
-                    + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
-                    + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
-                    + ChatUtils.extractMessage(args, 0) + " "
+            if (playerInfo.isMuted()) return ChatUtils.sendWarning(player, "Вы замучены");
+            ChatUtils.sendRPEventMessage(player, 25,
+                    ChatColor.GOLD + "* "
+                    + playerInfo.getGrayIDGoldName()
+                    + ChatColor.GOLD + ChatUtils.extractMessage(args, 0) + " "
                     + new String[]{org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)]
-                    + ChatColor.GOLD + "*");
+                    + ChatColor.GOLD + "*"
+            );
         }
         return true;
     }
-
 }

@@ -1,19 +1,15 @@
 package github.minersStudios.msUtils;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import fr.xephi.authme.api.v3.AuthMeApi;
-import github.minersStudios.msUtils.classes.ChatBubbles;
-import github.minersStudios.msUtils.classes.ChatBuffer;
-import github.minersStudios.msUtils.classes.RotateSeatTask;
-import github.minersStudios.msUtils.classes.SitPlayer;
+import github.minersStudios.msUtils.classes.*;
 import github.minersStudios.msUtils.commands.ban.*;
 import github.minersStudios.msUtils.commands.mute.*;
 import github.minersStudios.msUtils.commands.other.*;
 import github.minersStudios.msUtils.commands.roleplay.*;
 import github.minersStudios.msUtils.listeners.RegEvents;
-import github.minersStudios.msUtils.tabComplete.AllBannedPlayers;
-import github.minersStudios.msUtils.tabComplete.AllLocalPlayers;
-import github.minersStudios.msUtils.tabComplete.AllMutedPlayers;
-import github.minersStudios.msUtils.tabComplete.AllPlayers;
+import github.minersStudios.msUtils.tabComplete.*;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import lombok.Getter;
 import org.bukkit.*;
@@ -40,6 +36,7 @@ public final class Main extends JavaPlugin {
     public static final ChatBuffer chatBuffer = new ChatBuffer();
     public static Scoreboard scoreboardHideTags;
     public static Team scoreboardHideTagsTeam;
+    public static ProtocolManager protocolManager;
 
     @Getter private final Map<UUID, ArmorStand> seats = new HashMap<>();
 
@@ -48,6 +45,7 @@ public final class Main extends JavaPlugin {
         plugin = this;
         authmeApi = AuthMeApi.getInstance();
         worldDark = this.getServer().getWorld("world_dark");
+        protocolManager = ProtocolLibrary.getProtocolManager();
 
         if(!new File(plugin.getDataFolder(), "config.yml").exists()){
             this.saveResource("config.yml", false);
@@ -78,18 +76,23 @@ public final class Main extends JavaPlugin {
             SitPlayer sitPlayer = new SitPlayer(Bukkit.getPlayer(uuid));
             sitPlayer.setSitting(null);
         }
+        for (Player player : Bukkit.getOnlinePlayers()){
+            PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+            playerInfo.setLastLeaveLocation(player.getLocation());
+            player.kickPlayer("Ну шо грифер, запустил свою лаг машину?");
+        }
     }
 
     private void registerCommands() {
         Objects.requireNonNull(this.getCommand("ban")).setExecutor(new BanCommand());
         Objects.requireNonNull(this.getCommand("ban")).setTabCompleter(new AllPlayers());
         Objects.requireNonNull(this.getCommand("unban")).setExecutor(new UnBanCommand());
-        Objects.requireNonNull(this.getCommand("unban")).setTabCompleter(new AllBannedPlayers());
+        Objects.requireNonNull(this.getCommand("unban")).setTabCompleter(new AllPlayers());
 
         Objects.requireNonNull(this.getCommand("mute")).setExecutor(new MuteCommand());
         Objects.requireNonNull(this.getCommand("mute")).setTabCompleter(new AllPlayers());
         Objects.requireNonNull(this.getCommand("unmute")).setExecutor(new UnMuteCommand());
-        Objects.requireNonNull(this.getCommand("unmute")).setTabCompleter(new AllMutedPlayers());
+        Objects.requireNonNull(this.getCommand("unmute")).setTabCompleter(new AllPlayers());
 
         Objects.requireNonNull(this.getCommand("kick")).setExecutor(new KickCommand());
         Objects.requireNonNull(this.getCommand("kick")).setTabCompleter(new AllLocalPlayers());
@@ -100,6 +103,7 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("info")).setExecutor(new InfoCommand());
         Objects.requireNonNull(this.getCommand("info")).setTabCompleter(new AllPlayers());
         Objects.requireNonNull(this.getCommand("whitelist")).setExecutor(new WhitelistCommand());
+        Objects.requireNonNull(this.getCommand("whitelist")).setTabCompleter(new WhiteList());
         Objects.requireNonNull(this.getCommand("privatemessage")).setExecutor(new PrivateMessageCommand());
         Objects.requireNonNull(this.getCommand("privatemessage")).setTabCompleter(new AllLocalPlayers());
         Objects.requireNonNull(this.getCommand("pm")).setExecutor(new PrivateMessageCommand());
@@ -142,12 +146,9 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    @Nullable @Override
+    @Override
+    @Nullable
     public ChunkGenerator getDefaultWorldGenerator(@Nonnull String worldName, String id) {
-        if ("empty".equals(id)) {
-            return new ChunkGenerator() {};
-        } else {
-            return null;
-        }
+        return "empty".equals(id) ? new ChunkGenerator() {} : null;
     }
 }

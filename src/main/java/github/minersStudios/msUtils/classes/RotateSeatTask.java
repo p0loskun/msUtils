@@ -22,19 +22,19 @@ public class RotateSeatTask extends BukkitRunnable {
                 public void align(ArmorStand armorStand, float yaw) {
                     try {
                         this.method.invoke(armorStand, yaw, 0);
-                    } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException var4) {
-                        var4.printStackTrace();
+                    } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException exception) {
+                        exception.printStackTrace();
                     }
                 }
             };
-        } catch (SecurityException | NoSuchMethodException var3) {
+        } catch (SecurityException | NoSuchMethodException exception) {
             this.alignArmorStand = (armorStand, yaw) -> {
                 try {
                     Object entityArmorStand = armorStand.getClass().getMethod("getHandle").invoke(armorStand);
                     Field yawField = entityArmorStand.getClass().getField("yaw");
                     yawField.set(entityArmorStand, yaw);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchFieldException | NoSuchMethodException var5) {
-                    var5.printStackTrace();
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchFieldException | NoSuchMethodException exception1) {
+                    exception1.printStackTrace();
                 }
             };
         }

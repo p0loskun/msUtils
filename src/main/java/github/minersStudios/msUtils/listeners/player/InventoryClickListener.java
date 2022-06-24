@@ -66,7 +66,11 @@ public class InventoryClickListener implements Listener {
             } else if (event.getSlot() == 6 || event.getSlot() == 7 || event.getSlot() == 8) {
                 playerInfo.setPronouns(Pronouns.THEY);
             }
-            new RegistrationProcess().setPronouns(playerInfo);
+            if (playerInfo.getResourcePackType() == null) {
+                new RegistrationProcess().setPronouns(playerInfo);
+            } else {
+                playerInfo.teleportToLastLeaveLocation();
+            }
             player.closeInventory();
             event.setCancelled(true);
             player.updateInventory();

@@ -4,7 +4,6 @@ import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.classes.SitPlayer;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,8 +23,7 @@ public class PlayerQuitListener implements Listener {
         }
         event.setQuitMessage(null);
         if (playerInfo.hasPlayerDataFile() && player.getWorld() != Main.worldDark) {
-            Location playerLocation = player.getLocation();
-            playerInfo.setLastLeaveLocation(player.getWorld(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ(), playerLocation.getYaw(), playerLocation.getPitch());
+            playerInfo.setLastLeaveLocation(player.getLocation());
             if(playerInfo.hasName()){
                 ChatUtils.sendLeaveMessage(playerInfo, player);
             }

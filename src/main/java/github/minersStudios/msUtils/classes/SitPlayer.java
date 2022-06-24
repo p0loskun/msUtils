@@ -1,7 +1,6 @@
 package github.minersStudios.msUtils.classes;
 
 import github.minersStudios.msUtils.Main;
-import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,12 +17,14 @@ public record SitPlayer(Player player) {
                 armorStand.setGravity(false);
                 armorStand.setVisible(false);
                 armorStand.addPassenger(this.player);
+                armorStand.addScoreboardTag("customDecor");
                 Main.plugin.getSeats().put(this.player.getUniqueId(), armorStand);
-                ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
-                        + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
-                        + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
-                        + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getSitMessage() : Pronouns.HE.getSitMessage())
-                        + "*");
+                ChatUtils.sendRPEventMessage(player, 25,
+                        "* "
+                        + playerInfo.getGrayIDGoldName() + " "
+                        + ChatColor.GOLD + playerInfo.getPronouns().getSitMessage()
+                        + "*"
+                );
             });
         } else if (sitLocation == null && this.isSitting()) {
             ArmorStand armorStand = Main.plugin.getSeats().get(this.player.getUniqueId());
@@ -31,11 +32,12 @@ public record SitPlayer(Player player) {
             this.player.eject();
             this.player.teleport(armorStand.getLocation().add(0.0d, 1.7d, 0.0d));
             armorStand.remove();
-            ChatUtils.sendRPEventMessage(player, 25, ChatColor.GOLD + "*"
-                    + ChatColor.GRAY + " [" + playerInfo.getID() + "] "
-                    + ChatColor.GOLD + playerInfo.getFirstname() + " " + playerInfo.getLastname() + " "
-                    + (playerInfo.getPronouns() != null ? playerInfo.getPronouns().getUnSitMessage() : Pronouns.HE.getUnSitMessage())
-                    + "*");
+            ChatUtils.sendRPEventMessage(player, 25,
+                    "* "
+                    + playerInfo.getGrayIDGoldName() + " "
+                    + ChatColor.GOLD + playerInfo.getPronouns().getUnSitMessage()
+                    + "*"
+            );
         }
     }
 
