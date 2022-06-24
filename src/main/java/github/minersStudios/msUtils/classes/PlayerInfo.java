@@ -413,13 +413,14 @@ public final class PlayerInfo {
      */
     @Nonnull
     public Location getLastLeaveLocation(){
+        Location spawnLocation = Main.overworld.getSpawnLocation();
         return new Location(
-                Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-leave-location.world", "world")),
-                this.yamlConfiguration.getDouble("locations.last-leave-location.x", 25.0d),
-                this.yamlConfiguration.getDouble("locations.last-leave-location.y", 66.0d),
-                this.yamlConfiguration.getDouble("locations.last-leave-location.z", 36.0d),
-                (float) this.yamlConfiguration.getDouble("locations.last-leave-location.yaw", 0.0f),
-                (float) this.yamlConfiguration.getDouble("locations.last-leave-location.pitch", 0.0f)
+                Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-leave-location.world", spawnLocation.getBlock().getWorld().getName())),
+                this.yamlConfiguration.getDouble("locations.last-leave-location.x", spawnLocation.getX()),
+                this.yamlConfiguration.getDouble("locations.last-leave-location.y", spawnLocation.getY()),
+                this.yamlConfiguration.getDouble("locations.last-leave-location.z", spawnLocation.getZ()),
+                (float) this.yamlConfiguration.getDouble("locations.last-leave-location.yaw", spawnLocation.getYaw()),
+                (float) this.yamlConfiguration.getDouble("locations.last-leave-location.pitch", spawnLocation.getPitch())
         );
     }
 
@@ -446,7 +447,7 @@ public final class PlayerInfo {
     @Nonnull
     public Location getLastDeathLocation(){
         return new Location(
-                Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-death-location.world", "world")),
+                Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-death-location.world", Main.overworld.getName())),
                 this.yamlConfiguration.getDouble("locations.last-death-location.x"),
                 this.yamlConfiguration.getDouble("locations.last-death-location.y"),
                 this.yamlConfiguration.getDouble("locations.last-death-location.z"),

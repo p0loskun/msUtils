@@ -22,16 +22,13 @@ import org.bukkit.scoreboard.Team;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 public final class Main extends JavaPlugin {
     public static Main plugin;
     public static AuthMeApi authmeApi;
-    public static World worldDark;
+    public static World worldDark, overworld;
     public static final ChatBubbles bubbles = new ChatBubbles();
     public static final ChatBuffer chatBuffer = new ChatBuffer();
     public static Scoreboard scoreboardHideTags;
@@ -46,6 +43,16 @@ public final class Main extends JavaPlugin {
         authmeApi = AuthMeApi.getInstance();
         worldDark = this.getServer().getWorld("world_dark");
         protocolManager = ProtocolLibrary.getProtocolManager();
+
+        try {
+            BufferedReader is = new BufferedReader(new FileReader("server.properties"));
+            Properties properties = new Properties();
+            properties.load(is);
+            is.close();
+            overworld = Bukkit.getWorld(properties.getProperty("level-name"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if(!new File(plugin.getDataFolder(), "config.yml").exists()){
             this.saveResource("config.yml", false);

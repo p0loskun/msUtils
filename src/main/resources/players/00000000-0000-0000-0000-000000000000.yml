@@ -12,23 +12,20 @@ bans:
   mute-reason: Bruh
   banned: false
   ban-reason: Bruh
-  banned-ip: false
-  ban-ip-reason: Bruh
 time:
-  first-join: 0000000000000
-  muted-to: 0000000000000
-  banned-to: 0000000000000
-  banned-ip-to: 0000000000000
+  first-join: 0
+  muted-to: 0
+  banned-to: 0
 locations:
   last-death-location:
-    world: world
+    world: overworld
     x: 0.0
     y: 0.0
     z: 0.0
     yaw: 0.0
     pitch: 0.0
   last-leave-location:
-    world: world
+    world: overworld
     x: 0.0
     y: 0.0
     z: 0.0
