@@ -63,7 +63,7 @@ public class PlayerJoinListener implements Listener {
 							player.openInventory(Pronouns.getInventory());
 						} else {
 							if (playerInfo.getResourcePackType() == ResourcePackType.NONE) {
-								playerInfo.teleportToLastLeaveLocation();
+								playerInfo.teleportToLastLocation();
 							} else {
 								ResourcePackType.setResourcePack(playerInfo);
 							}
