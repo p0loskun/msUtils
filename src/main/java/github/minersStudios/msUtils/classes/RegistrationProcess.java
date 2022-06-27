@@ -21,7 +21,7 @@ public class RegistrationProcess {
 	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
 		player = playerInfo.getOnlinePlayer();
 
-		assert player != null
+		assert player != null;
 
 		playerLocation = player.getLocation();
 		player.playSound(playerLocation, Sound.MUSIC_DISC_FAR, 0.15f, 1.25f);	// Не працює
