@@ -315,7 +315,7 @@ public final class PlayerInfo {
 	 * @param time bans for time
 	 * @param reason ban reason
 	 */
-	public boolean setBanned(boolean value, long time, @Nullable String reason, @nullable String source){
+	public boolean setBanned(boolean value, long time, @Nullable String reason, @Nullable String source){
 		if(this.getNickname() == null) return false;
 		this.createPlayerDataFile();
 		this.yamlConfiguration.set("bans.banned", value);
@@ -339,7 +339,7 @@ public final class PlayerInfo {
 			}
 		} else {
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
-			if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
+			if (this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
 		}
 		savePlayerDataFile();
 		return true;
@@ -390,17 +390,17 @@ public final class PlayerInfo {
 		final Player player = this.getOnlinePlayer();
 		player.setGameMode(GameMode.SPECTATOR);
 		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d));
-		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 255, true, false));
+		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, -1, true, false));
 	}
 
 	/**
-	 * Teleport player to their last location and removes some effects
+	 * Teleport player to their last leave location and removes some effects
 	 */
-	public void teleportToLastLocation(){
+	public void teleportToLastLeaveLocation(){
 		if (this.getOnlinePlayer() == null) return;
 		final Player player = this.getOnlinePlayer();
 		player.setGameMode(GameMode.SURVIVAL);
-		player.teleport(this.getLastLocation());
+		player.teleport(this.getLastLeaveLocation());
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
 	}

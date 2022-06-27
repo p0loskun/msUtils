@@ -20,7 +20,6 @@ import java.util.function.BiFunction;
 
 import static github.scarsz.discordsrv.DiscordSRV.*;
 
-@SuppressWarnings("SameReturnValue")
 public final class ChatUtils {
 
 	public static final String discordGlobalChannelID = Main.plugin.getConfig().getString("discord-global-channel-id");
@@ -140,10 +139,7 @@ public final class ChatUtils {
 	 * @return message without first char
 	 */
 	public static String removeFirstChar(String message) {
-		if (message == null || message.length() == 0) {
-			return message;
-		}
-		return message.substring(1);
+		return message == null || message.length() == 0 ? message : message.substring(1);
 	}
 
 	/**

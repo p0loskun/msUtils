@@ -21,7 +21,6 @@ public final class SignMenu {
 	private static final Map<Player, SignMenu> inputs = new HashMap<>();
 	private final List<String> text;
 	private BiPredicate<Player, String[]> response;
-	private boolean reopenIfFail;
 	private Location location;
 
 	public SignMenu(List<String> text) {
@@ -37,7 +36,7 @@ public final class SignMenu {
 				event.setCancelled(true);
 				menu.location.setY(200);
 
-				if (!menu.response.test(player, event.getPacket().getStringArrays().read(0)) && menu.reopenIfFail) {
+				if (!menu.response.test(player, event.getPacket().getStringArrays().read(0))) {
 					Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
 				}
 				Bukkit.getScheduler().runTask(this.plugin, () -> {
@@ -47,11 +46,6 @@ public final class SignMenu {
 				});
 			}
 		});
-	}
-
-	public SignMenu reopenIfFail(boolean value) {
-		this.reopenIfFail = value;
-		return this;
 	}
 
 	public SignMenu response(@Nonnull BiPredicate<Player, String[]> response) {

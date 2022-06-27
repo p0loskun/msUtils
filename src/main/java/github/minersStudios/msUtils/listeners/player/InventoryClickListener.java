@@ -30,7 +30,7 @@ public class InventoryClickListener implements Listener {
 			if (event.getSlot() == 0 || event.getSlot() == 1) {
 				playerInfo.setResourcePackType(ResourcePackType.NONE);
 				if(player.getWorld() == Main.worldDark){
-					playerInfo.teleportToLastLocation();
+					playerInfo.teleportToLastLeaveLocation();
 				}
 				player.closeInventory();
 				if(playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE){
@@ -69,7 +69,7 @@ public class InventoryClickListener implements Listener {
 			if (playerInfo.getResourcePackType() == null) {
 				new RegistrationProcess().setPronouns(playerInfo);
 			} else {
-				playerInfo.teleportToLastLocation();
+				playerInfo.teleportToLastLeaveLocation();
 			}
 			player.closeInventory();
 			event.setCancelled(true);

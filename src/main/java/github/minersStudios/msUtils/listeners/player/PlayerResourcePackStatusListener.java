@@ -23,7 +23,7 @@ public class PlayerResourcePackStatusListener implements Listener {
 			case ACCEPTED -> ChatUtils.sendFine(null, player.getName() + " принял ресурспак");
 			case SUCCESSFULLY_LOADED -> {
 				ChatUtils.sendFine(null, player.getName() + " успешно загрузил ресурспак");
-				playerInfo.teleportToLastLocation();
+				playerInfo.teleportToLastLeaveLocation();
 			}
 			case FAILED_DOWNLOAD -> {
 				ChatUtils.sendWarning(null, player.getName() + " не установился ресурспак, диск : " + playerInfo.getDiskType());

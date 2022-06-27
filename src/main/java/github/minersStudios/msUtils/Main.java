@@ -30,7 +30,6 @@ public final class Main extends JavaPlugin {
 	public static AuthMeApi authmeApi;
 	public static World worldDark, overworld;
 	public static final ChatBubbles bubbles = new ChatBubbles();
-	public static final ChatBuffer chatBuffer = new ChatBuffer();
 	public static Scoreboard scoreboardHideTags;
 	public static Team scoreboardHideTagsTeam;
 	public static ProtocolManager protocolManager;

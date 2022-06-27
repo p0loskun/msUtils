@@ -1,6 +1,7 @@
 package github.minersStudios.msUtils.listeners.chat;
 
 import github.minersStudios.msUtils.Main;
+import github.minersStudios.msUtils.classes.ChatBuffer;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.entity.Player;
@@ -32,7 +33,7 @@ public class AsyncChatListener implements Listener {
 				ChatUtils.sendRPEventMessage(player, 25, "* " + playerInfo.getGrayIDGoldName() + " " + ChatUtils.removeFirstChar(message) + "*");
 			} else {
 				ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), 25, message);
-				Main.chatBuffer.receiveChat(player, message);
+				ChatBuffer.receiveMessage(player, message);
 			}
 		} else {
 			ChatUtils.sendWarning(player, "Вы замучены");

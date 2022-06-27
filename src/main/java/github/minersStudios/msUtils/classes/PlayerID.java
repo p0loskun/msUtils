@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class PlayerID {
-
 	private final File idFile;
 	@Getter private final YamlConfiguration yamlConfiguration;
 
@@ -24,10 +23,10 @@ public class PlayerID {
 	/**
 	 * Adds player id in "plugins/msUtils/ids.yml"
 	 */
-	public Integer addPlayer(@Nonnull UUID uuid){
+	public int addPlayer(@Nonnull UUID uuid){
 		if(!new PlayerInfo(uuid).hasPlayerDataFile()) return 0;
 		List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
-		int ID = this.createNewID(list, null);
+		int ID = this.createNewID(list, -1);
 		this.yamlConfiguration.set(uuid.toString(), ID);
 		try {
 			this.yamlConfiguration.save(this.idFile);
@@ -41,7 +40,7 @@ public class PlayerID {
 	 * @param uuid player's uuid
 	 * @return player's id int
 	 */
-	public Integer getPlayerID(@Nonnull UUID uuid){
+	public int getPlayerID(@Nonnull UUID uuid){
 		return this.yamlConfiguration.getValues(true).containsKey(uuid.toString()) ? this.yamlConfiguration.getInt(uuid.toString()) : this.addPlayer(uuid);
 	}
 
@@ -65,8 +64,8 @@ public class PlayerID {
 		return null;
 	}
 
-	private Integer createNewID(@Nonnull List<Object> IDs, @Nullable Integer ID){
-		if(ID == null){
+	private int createNewID(@Nonnull List<Object> IDs, int ID){
+		if(ID == -1){
 			ID = IDs.size();
 		}
 		return IDs.contains(ID) ? createNewID(IDs, ID + 1) : ID;
