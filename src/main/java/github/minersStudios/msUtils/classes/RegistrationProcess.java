@@ -16,7 +16,7 @@ public class RegistrationProcess {
 	private Player player;
 	private PlayerInfo playerInfo;
 	private Location playerLocation;
-	private static final String regex = "[А-ЯҐІЇЁ][-А-яҐґІіЇїЁё]+";
+	private static final String regex = "[-А-яҐґІіЇїЁё]+";
 
 	public void registerPlayer(@Nonnull PlayerInfo playerInfo){
 		this.playerInfo = playerInfo;
@@ -26,12 +26,12 @@ public class RegistrationProcess {
 		this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, 0.15f, 1.25f);
 		playerInfo.createPlayerDataFile();
 
-		this.sendDialogueMessage("оу...", 100L);
+		this.sendDialogueMessage("Оу...", 100L);
 		this.sendDialogueMessage("Крайне странное местечко", 150L);
 		this.sendDialogueMessage("Ничего не напоминает?", 225L);
 		this.sendDialogueMessage("Ну ладно...", 300L);
 		this.sendDialogueMessage("Где-то я уже тебя видел", 350L);
-		this.sendDialogueMessage("Напомни ка своё имя", 400L);
+		this.sendDialogueMessage("Напомни-ка своё имя", 400L);
 		this.sendDialogueMessage("Только говори честно, иначе буду тебя ошибочно называть до конца дней своих", 450L);
 
 		Bukkit.getScheduler().runTaskLater(Main.plugin, this::setFirstname, 550L);
@@ -42,11 +42,12 @@ public class RegistrationProcess {
 				.reopenIfFail(true)
 				.response((player, strings) -> {
 					if (strings[0].matches(regex)) {
-						this.playerInfo.setFirstname(strings[0]);
+						String firstname = strings[0].toLowerCase();
+						this.playerInfo.setFirstname(firstname.substring(0, 1).toUpperCase() + firstname.substring(1));
 
-						this.sendDialogueMessage("Интересно...", 25L);
-						this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем", 100L);
-						this.sendDialogueMessage("Но тебя вижу впервые", 225L);
+						this.sendDialogueMessage("Интересно. . .", 25L);
+						this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем,", 100L);
+						this.sendDialogueMessage("но тебя вижу впервые", 225L);
 						this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
 
 						Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
@@ -63,7 +64,8 @@ public class RegistrationProcess {
 				.reopenIfFail(true)
 				.response((player, strings) -> {
 					if (strings[0].matches(regex)) {
-						this.playerInfo.setLastName(strings[0]);
+						String lastname = strings[0].toLowerCase();
+						this.playerInfo.setLastName(lastname.substring(0, 1).toUpperCase() + lastname.substring(1));
 						Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
 					} else {
 						return this.sendWarningMessage();
@@ -78,8 +80,8 @@ public class RegistrationProcess {
 				.reopenIfFail(true)
 				.response((player, strings) -> {
 					if (strings[0].matches(regex)) {
-						this.playerInfo.setPatronymic(strings[0]);
-						new PlayerID().addPlayer(this.player.getUniqueId());
+						String patronymic = strings[0].toLowerCase();
+						this.playerInfo.setPatronymic(patronymic.substring(0, 1).toUpperCase() + patronymic.substring(1));
 
 						this.sendDialogueMessage(
 								"Ну вот и отлично, "
@@ -87,8 +89,8 @@ public class RegistrationProcess {
 										+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
 										+ this.playerInfo.getLastname() + " "
 										+ this.playerInfo.getPatronymic(), 25L);
-						this.sendDialogueMessage("Слушай...", 100L);
-						this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
+						this.sendDialogueMessage("Слушай,", 100L);
+						this.sendDialogueMessage("а как мне к тебе обращаться?", 150L);
 
 						Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
 					} else {
@@ -124,7 +126,7 @@ public class RegistrationProcess {
 
 	@SuppressWarnings("SameReturnValue")
 	private boolean sendWarningMessage(){
-		this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу, без пробелов");
+		this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу, без пробелов!");
 		return false;
 	}
 

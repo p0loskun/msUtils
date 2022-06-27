@@ -9,6 +9,7 @@ public enum DiskType {
 	 * @param name Disk name
 	 * @return DiskType by name
 	 */
+	@Nonnull
 	public static DiskType getDiskTypeByString(@Nonnull String name){
 		return name.equals("YANDEX_DISK") ? YANDEX_DISK : DROPBOX;
 	}

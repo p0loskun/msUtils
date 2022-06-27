@@ -116,7 +116,8 @@ public class PlayerUtils {
 	 */
 	public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String reason){
 		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null) return false;
-		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation(offlinePlayer.getPlayer().getLocation());
+		PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+		if (playerInfo.hasPlayerDataFile() && offlinePlayer.getPlayer().getWorld() != Main.worldDark) playerInfo.setLastLeaveLocation(offlinePlayer.getPlayer().getLocation());
 		offlinePlayer.getPlayer().kickPlayer(
 				ChatColor.RED + "\n§lВы были кикнуты"
 						+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"

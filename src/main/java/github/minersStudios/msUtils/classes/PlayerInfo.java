@@ -153,6 +153,7 @@ public final class PlayerInfo {
 	 *
 	 * @return player lastname if it's != null, else returns default lastname
 	 */
+	@Nonnull
 	public String getLastname(){
 		return this.yamlConfiguration == null ? "Иванов"
 				: this.lastname == null ? this.lastname = this.yamlConfiguration.getString("name.lastname", "Иванов")
@@ -325,7 +326,7 @@ public final class PlayerInfo {
 			if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
 			if(this.getOnlinePlayer() != null) {
 				Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(this.getOnlinePlayer().getAddress()).getHostName(), reason, new Date(time), source);
-				this.setLastLeaveLocation(this.getOnlinePlayer().getLocation());
+				if (this.getOnlinePlayer().getWorld() != Main.worldDark) this.setLastLeaveLocation(this.getOnlinePlayer().getLocation());
 				this.getOnlinePlayer().kickPlayer(
 						ChatColor.RED + "\n§lВы были забанены"
 								+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
@@ -389,7 +390,6 @@ public final class PlayerInfo {
 		final Player player = this.getOnlinePlayer();
 		player.setGameMode(GameMode.SPECTATOR);
 		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d));
-		player.setGravity(false);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 255, true, false));
 	}
 
@@ -401,7 +401,6 @@ public final class PlayerInfo {
 		final Player player = this.getOnlinePlayer();
 		player.setGameMode(GameMode.SURVIVAL);
 		player.teleport(this.getLastLeaveLocation());
-		player.setGravity(true);
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
 	}

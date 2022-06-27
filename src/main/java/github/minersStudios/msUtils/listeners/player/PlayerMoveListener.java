@@ -14,6 +14,5 @@ public class PlayerMoveListener implements Listener {
 	public void onPlayerMove(@Nonnull PlayerMoveEvent event){
 		Player player = event.getPlayer();
 		event.setCancelled(player.getWorld() == Main.worldDark);
-		player.setGravity(player.getWorld() != Main.worldDark && player.hasGravity());
 	}
 }
