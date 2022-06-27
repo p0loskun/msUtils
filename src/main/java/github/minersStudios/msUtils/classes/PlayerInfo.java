@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import javax.annotation.Nonnull;
-import javax.annotation.nullable;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -76,7 +76,7 @@ public final class PlayerInfo {
 	 *
 	 * @return player ip
 	 */
-	@nullable
+	@Nullable
 	public String getIP(){
 		return this.yamlConfiguration.getString("ip");
 	}
@@ -96,7 +96,7 @@ public final class PlayerInfo {
 	 *
 	 * @return online player if it's online, else null
 	 */
-	@nullable
+	@Nullable
 	public Player getOnlinePlayer(){
 		return this.onlinePlayer == null ? this.onlinePlayer = this.getOfflinePlayer().getPlayer() != null && this.getOfflinePlayer().isOnline()
 					? this.getOfflinePlayer().getPlayer()
@@ -118,7 +118,7 @@ public final class PlayerInfo {
 	 *
 	 * @return player nickname
 	 */
-	@nullable
+	@Nullable
 	public String getNickname(){
 		return this.nickname == null ? this.nickname = this.getOfflinePlayer().getName() : this.nickname;
 	}
@@ -223,9 +223,9 @@ public final class PlayerInfo {
 	 *
 	 * @return player resource pack type if it's != null, else returns null
 	 */
-	@nullable
+	@Nullable
 	public ResourcePackType getResourcePackType(){
-		return ResourcePackType.getResourcePackByString(this.yamlConfiguration.getString("resource-pack", "null"));
+		return ResourcePackType.getResourcePackByString(this.yamlConfiguration.getString("resource-pack", "NULL"));
 	}
 
 	/**
@@ -274,7 +274,7 @@ public final class PlayerInfo {
 	 * @param time mutes for time
 	 * @param reason mute reason
 	 */
-	public boolean setMuted(boolean value, long time, @nullable String reason){
+	public boolean setMuted(boolean value, long time, @Nullable String reason){
 		if(this.getNickname() == null) return false;
 		this.createPlayerDataFile();
 		this.yamlConfiguration.set("bans.muted", value);
@@ -315,7 +315,7 @@ public final class PlayerInfo {
 	 * @param time bans for time
 	 * @param reason ban reason
 	 */
-	public boolean setBanned(boolean value, long time, @nullable String reason, @nullable String source){
+	public boolean setBanned(boolean value, long time, @Nullable String reason, @nullable String source){
 		if(this.getNickname() == null) return false;
 		this.createPlayerDataFile();
 		this.yamlConfiguration.set("bans.banned", value);
@@ -325,7 +325,7 @@ public final class PlayerInfo {
 			Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, new Date(time), source);
 			if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
 			if(this.getOnlinePlayer() != null) {
-				Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonnull(this.getOnlinePlayer().getAddress()).getHostName(), reason, new Date(time), source);
+				Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(this.getOnlinePlayer().getAddress()).getHostName(), reason, new Date(time), source);
 				if (this.getOnlinePlayer().getWorld() != Main.worldDark) this.setLastLeaveLocation(this.getOnlinePlayer().getLocation());
 				this.getOnlinePlayer().kickPlayer(
 						ChatColor.RED + "\n§lВы были забанены"
