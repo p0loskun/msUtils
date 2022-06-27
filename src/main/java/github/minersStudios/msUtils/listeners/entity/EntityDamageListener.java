@@ -10,8 +10,8 @@ import javax.annotation.Nonnull;
 
 public class EntityDamageListener implements Listener {
 
-    @EventHandler
-    public void onEntityDamage(@Nonnull EntityDamageEvent event) {
-        event.setCancelled(event.getEntity().getWorld() == Main.worldDark && event.getEntity() instanceof Player);
-    }
+	@EventHandler
+	public void onEntityDamage(@Nonnull EntityDamageEvent event) {
+		event.setCancelled(event.getEntity().getWorld() == Main.worldDark && event.getEntity() instanceof Player);
+	}
 }

@@ -13,29 +13,29 @@ import java.util.Objects;
 
 public class AsyncChatListener implements Listener {
 
-    @EventHandler
-    public void onChat(@Nonnull AsyncPlayerChatEvent event) {
-        event.setCancelled(true);
-        Player player = event.getPlayer();
-        if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return;
-        PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+	@EventHandler
+	public void onChat(@Nonnull AsyncPlayerChatEvent event) {
+		event.setCancelled(true);
+		Player player = event.getPlayer();
+		if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return;
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
-        if(playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0){
-            playerInfo.setMuted(false, 0, null);
-        }
+		if(playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0){
+			playerInfo.setMuted(false, 0, null);
+		}
 
-        if (!playerInfo.isMuted()) {
-            String message = event.getMessage();
-            if(Objects.equals(String.valueOf(message.charAt(0)), "!")){
-                ChatUtils.sendMessageToChat(playerInfo, null, -1, ChatUtils.removeFirstChar(message));
-            } else if(Objects.equals(String.valueOf(message.charAt(0)), "*")){
-                ChatUtils.sendRPEventMessage(player, 25, "*" + playerInfo.getGrayIDGoldName() + " " + ChatUtils.removeFirstChar(message) + "*");
-            } else {
-                ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), 25, message);
-                Main.chatBuffer.receiveChat(player, message);
-            }
-        } else {
-            ChatUtils.sendWarning(player, "Вы замучены");
-        }
-    }
+		if (!playerInfo.isMuted()) {
+			String message = event.getMessage();
+			if(Objects.equals(String.valueOf(message.charAt(0)), "!")){
+				ChatUtils.sendMessageToChat(playerInfo, null, -1, ChatUtils.removeFirstChar(message));
+			} else if(Objects.equals(String.valueOf(message.charAt(0)), "*")){
+				ChatUtils.sendRPEventMessage(player, 25, "*" + playerInfo.getGrayIDGoldName() + " " + ChatUtils.removeFirstChar(message) + "*");
+			} else {
+				ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), 25, message);
+				Main.chatBuffer.receiveChat(player, message);
+			}
+		} else {
+			ChatUtils.sendWarning(player, "Вы замучены");
+		}
+	}
 }

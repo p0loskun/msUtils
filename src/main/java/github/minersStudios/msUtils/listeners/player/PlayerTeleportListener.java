@@ -9,11 +9,11 @@ import javax.annotation.Nonnull;
 
 public class PlayerTeleportListener implements Listener {
 
-    @EventHandler
-    public void onPlayerTeleport(@Nonnull PlayerTeleportEvent event){
-        SitPlayer sitPlayer = new SitPlayer(event.getPlayer());
-        if (sitPlayer.isSitting()) {
-            sitPlayer.setSitting(null);
-        }
-    }
+	@EventHandler
+	public void onPlayerTeleport(@Nonnull PlayerTeleportEvent event){
+		SitPlayer sitPlayer = new SitPlayer(event.getPlayer());
+		if (sitPlayer.isSitting()) {
+			sitPlayer.setSitting(null);
+		}
+	}
 }

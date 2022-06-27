@@ -10,14 +10,14 @@ import javax.annotation.Nonnull;
 
 public class ResourcePackCommand implements CommandExecutor {
 
-    @Override
-    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-        if (!(sender instanceof Player player)) {
-            return ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
-        } else {
-            player.openInventory(ResourcePackType.getInventory());
-        }
-        return true;
-    }
+	@Override
+	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+		if (!(sender instanceof Player player)) {
+			return ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+		} else {
+			player.openInventory(ResourcePackType.getInventory());
+		}
+		return true;
+	}
 
 }

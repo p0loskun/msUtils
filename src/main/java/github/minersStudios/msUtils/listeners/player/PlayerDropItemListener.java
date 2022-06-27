@@ -10,12 +10,12 @@ import javax.annotation.Nonnull;
 
 public class PlayerDropItemListener implements Listener {
 
-    @EventHandler
-    public void onPlayerDropItem(@Nonnull PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        if(player.getWorld() == Main.worldDark) {
-            event.setCancelled(true);
-            player.updateInventory();
-        }
-    }
+	@EventHandler
+	public void onPlayerDropItem(@Nonnull PlayerDropItemEvent event) {
+		Player player = event.getPlayer();
+		if(player.getWorld() == Main.worldDark) {
+			event.setCancelled(true);
+			player.updateInventory();
+		}
+	}
 }

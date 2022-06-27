@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 
 public class PlayerArmorStandManipulateListener implements Listener {
 
-    @EventHandler
-    public void onPlayerArmorStandManipulate(@Nonnull PlayerArmorStandManipulateEvent event){
-        event.setCancelled(Main.plugin.getSeats().containsValue(event.getRightClicked()));
-    }
+	@EventHandler
+	public void onPlayerArmorStandManipulate(@Nonnull PlayerArmorStandManipulateEvent event){
+		event.setCancelled(Main.plugin.getSeats().containsValue(event.getRightClicked()));
+	}
 }

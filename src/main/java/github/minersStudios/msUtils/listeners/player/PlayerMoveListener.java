@@ -10,10 +10,10 @@ import javax.annotation.Nonnull;
 
 public class PlayerMoveListener implements Listener {
 
-    @EventHandler
-    public void onPlayerMove(@Nonnull PlayerMoveEvent event){
-        Player player = event.getPlayer();
-        event.setCancelled(player.getWorld() == Main.worldDark);
-        player.setGravity(player.getWorld() != Main.worldDark && player.hasGravity());
-    }
+	@EventHandler
+	public void onPlayerMove(@Nonnull PlayerMoveEvent event){
+		Player player = event.getPlayer();
+		event.setCancelled(player.getWorld() == Main.worldDark);
+		player.setGravity(player.getWorld() != Main.worldDark && player.hasGravity());
+	}
 }

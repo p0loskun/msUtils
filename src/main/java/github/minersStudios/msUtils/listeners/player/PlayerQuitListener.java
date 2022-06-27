@@ -13,20 +13,20 @@ import javax.annotation.Nonnull;
 
 public class PlayerQuitListener implements Listener {
 
-    @EventHandler
-    public void onPlayerQuit(@Nonnull PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-        SitPlayer sitPlayer = new SitPlayer(player);
-        if (sitPlayer.isSitting()) {
-            sitPlayer.setSitting(null);
-        }
-        event.setQuitMessage(null);
-        if (playerInfo.hasPlayerDataFile() && player.getWorld() != Main.worldDark) {
-            playerInfo.setLastLeaveLocation(player.getLocation());
-            if(playerInfo.hasName()){
-                ChatUtils.sendLeaveMessage(playerInfo, player);
-            }
-        }
-    }
+	@EventHandler
+	public void onPlayerQuit(@Nonnull PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		SitPlayer sitPlayer = new SitPlayer(player);
+		if (sitPlayer.isSitting()) {
+			sitPlayer.setSitting(null);
+		}
+		event.setQuitMessage(null);
+		if (playerInfo.hasPlayerDataFile() && player.getWorld() != Main.worldDark) {
+			playerInfo.setLastLeaveLocation(player.getLocation());
+			if(playerInfo.hasName()){
+				ChatUtils.sendLeaveMessage(playerInfo, player);
+			}
+		}
+	}
 }

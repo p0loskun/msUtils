@@ -12,20 +12,20 @@ import javax.annotation.Nonnull;
 
 public class SitCommand implements CommandExecutor {
 
-    @Override
-    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-        if (!(sender instanceof Player player)) {
-            return ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
-        } else if (player.getWorld() != Main.worldDark && Main.authmeApi.isAuthenticated(player)) {
-            SitPlayer sitPlayer = new SitPlayer(player);
-            if (sitPlayer.isSitting()) {
-                sitPlayer.setSitting(null);
-            } else if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
-                return ChatUtils.sendWarning(player, "Сидеть в воздухе нельзя!");
-            } else {
-                sitPlayer.setSitting(player.getLocation());
-            }
-        }
-        return true;
-    }
+	@Override
+	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+		if (!(sender instanceof Player player)) {
+			return ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+		} else if (player.getWorld() != Main.worldDark && Main.authmeApi.isAuthenticated(player)) {
+			SitPlayer sitPlayer = new SitPlayer(player);
+			if (sitPlayer.isSitting()) {
+				sitPlayer.setSitting(null);
+			} else if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
+				return ChatUtils.sendWarning(player, "Сидеть в воздухе нельзя!");
+			} else {
+				sitPlayer.setSitting(player.getLocation());
+			}
+		}
+		return true;
+	}
 }

@@ -13,19 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WhiteList implements TabCompleter {
-    @Nullable
-    @Override
-    public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-        List<String> completions = new ArrayList<>();
-        if(args.length == 1) {
-            completions.add("add");
-            completions.add("remove");
-        } else if(args.length == 2 && args[0].equalsIgnoreCase("remove")) {
-            for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
-                completions.add(String.valueOf(new PlayerID().getPlayerID(offlinePlayer.getUniqueId())));
-                completions.add(offlinePlayer.getName());
-            }
-        }
-        return completions;
-    }
+	@Nullable
+	@Override
+	public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+		List<String> completions = new ArrayList<>();
+		if(args.length == 1) {
+			completions.add("add");
+			completions.add("remove");
+		} else if(args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+			for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
+				completions.add(String.valueOf(new PlayerID().getPlayerID(offlinePlayer.getUniqueId())));
+				completions.add(offlinePlayer.getName());
+			}
+		}
+		return completions;
+	}
 }

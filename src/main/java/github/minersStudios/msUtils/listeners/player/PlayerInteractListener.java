@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 
 public class PlayerInteractListener implements Listener {
 
-    @EventHandler
-    public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
-        event.setCancelled(event.getPlayer().getWorld() == Main.worldDark);
-    }
+	@EventHandler
+	public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
+		event.setCancelled(event.getPlayer().getWorld() == Main.worldDark);
+	}
 }

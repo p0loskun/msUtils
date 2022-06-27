@@ -18,64 +18,64 @@ import java.util.Map;
 import java.util.function.BiPredicate;
 
 public final class SignMenu {
-    private static final Map<Player, SignMenu> inputs = new HashMap<>();
-    private final List<String> text;
-    private BiPredicate<Player, String[]> response;
-    private boolean reopenIfFail;
-    private Location location;
+	private static final Map<Player, SignMenu> inputs = new HashMap<>();
+	private final List<String> text;
+	private BiPredicate<Player, String[]> response;
+	private boolean reopenIfFail;
+	private Location location;
 
-    public SignMenu(List<String> text) {
-        this.text = text;
+	public SignMenu(List<String> text) {
+		this.text = text;
 
-        Main.protocolManager.addPacketListener(new PacketAdapter(Main.plugin, PacketType.Play.Client.UPDATE_SIGN) {
-            @Override
-            public void onPacketReceiving(PacketEvent event) {
-                Player player = event.getPlayer();
-                SignMenu menu = inputs.remove(player);
+		Main.protocolManager.addPacketListener(new PacketAdapter(Main.plugin, PacketType.Play.Client.UPDATE_SIGN) {
+			@Override
+			public void onPacketReceiving(PacketEvent event) {
+				Player player = event.getPlayer();
+				SignMenu menu = inputs.remove(player);
 
-                if (menu == null) return;
-                event.setCancelled(true);
-                menu.location.setY(200);
+				if (menu == null) return;
+				event.setCancelled(true);
+				menu.location.setY(200);
 
-                if (!menu.response.test(player, event.getPacket().getStringArrays().read(0)) && menu.reopenIfFail) {
-                    Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
-                }
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    if (player.isOnline()) {
-                        player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
-                    }
-                });
-            }
-        });
-    }
+				if (!menu.response.test(player, event.getPacket().getStringArrays().read(0)) && menu.reopenIfFail) {
+					Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
+				}
+				Bukkit.getScheduler().runTask(this.plugin, () -> {
+					if (player.isOnline()) {
+						player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
+					}
+				});
+			}
+		});
+	}
 
-    public SignMenu reopenIfFail(boolean value) {
-        this.reopenIfFail = value;
-        return this;
-    }
+	public SignMenu reopenIfFail(boolean value) {
+		this.reopenIfFail = value;
+		return this;
+	}
 
-    public SignMenu response(@Nonnull BiPredicate<Player, String[]> response) {
-        this.response = response;
-        return this;
-    }
+	public SignMenu response(@Nonnull BiPredicate<Player, String[]> response) {
+		this.response = response;
+		return this;
+	}
 
-    public void open(@Nonnull Player player) {
-        if (!player.isOnline()) return;
-        this.location = player.getLocation();
-        this.location.setY(200);
+	public void open(@Nonnull Player player) {
+		if (!player.isOnline()) return;
+		this.location = player.getLocation();
+		this.location.setY(200);
 
-        player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
-        player.sendSignChange(this.location, this.text.toArray(new String[4]));
+		player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
+		player.sendSignChange(this.location, this.text.toArray(new String[4]));
 
-        PacketContainer openSign = Main.protocolManager.createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
-        BlockPosition position = new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ());
-        openSign.getBlockPositionModifier().write(0, position);
-        try {
-            Main.protocolManager.sendServerPacket(player, openSign);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+		PacketContainer openSign = Main.protocolManager.createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
+		BlockPosition position = new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ());
+		openSign.getBlockPositionModifier().write(0, position);
+		try {
+			Main.protocolManager.sendServerPacket(player, openSign);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
 
-        inputs.put(player, this);
-    }
+		inputs.put(player, this);
+	}
 }

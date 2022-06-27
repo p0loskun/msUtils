@@ -14,41 +14,41 @@ import javax.annotation.Nonnull;
 
 public class PlayerResourcePackStatusListener implements Listener {
 
-    @EventHandler
-    public void onPlayerResourcepackStatus(@Nonnull PlayerResourcePackStatusEvent event) {
-        Player player = event.getPlayer();
-        PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-        if (playerInfo.getResourcePackType() == null) return;
-        switch (event.getStatus()) {
-            case ACCEPTED -> ChatUtils.sendFine(null, player.getName() + " принял ресурспак");
-            case SUCCESSFULLY_LOADED -> {
-                ChatUtils.sendFine(null, player.getName() + " успешно загрузил ресурспак");
-                playerInfo.teleportToLastLeaveLocation();
-            }
-            case FAILED_DOWNLOAD -> {
-                ChatUtils.sendWarning(null, player.getName() + " не установился ресурспак, диск : " + playerInfo.getDiskType());
-                if (playerInfo.getDiskType() == DiskType.DROPBOX) {
-                    playerInfo.setDiskType(DiskType.YANDEX_DISK);
-                    player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL());
-                } else {
-                    playerInfo.setResourcePackType(ResourcePackType.NONE);
-                    player.kickPlayer(
-                            ChatColor.RED + "\n§lКажеться, что-то пошло не так"
-                                    + ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-                                    + ChatColor.GRAY + "\nОбратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n\"Без текстурпака\""
-                                    + ChatColor.DARK_GRAY + "\n<---====+====--->\n"
-                    );
-                }
-            }
-            case DECLINED -> {
-                ChatUtils.sendWarning(null, player.getName() + " не принял ресурспак");
-                player.kickPlayer(
-                        ChatColor.RED + "\n§lКажеться, что-то пошло не так"
-                                + ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-                                + ChatColor.GRAY + "\nВ настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\""
-                                + ChatColor.DARK_GRAY + "\n<---====+====--->\n"
-                );
-            }
-        }
-    }
+	@EventHandler
+	public void onPlayerResourcepackStatus(@Nonnull PlayerResourcePackStatusEvent event) {
+		Player player = event.getPlayer();
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		if (playerInfo.getResourcePackType() == null) return;
+		switch (event.getStatus()) {
+			case ACCEPTED -> ChatUtils.sendFine(null, player.getName() + " принял ресурспак");
+			case SUCCESSFULLY_LOADED -> {
+				ChatUtils.sendFine(null, player.getName() + " успешно загрузил ресурспак");
+				playerInfo.teleportToLastLeaveLocation();
+			}
+			case FAILED_DOWNLOAD -> {
+				ChatUtils.sendWarning(null, player.getName() + " не установился ресурспак, диск : " + playerInfo.getDiskType());
+				if (playerInfo.getDiskType() == DiskType.DROPBOX) {
+					playerInfo.setDiskType(DiskType.YANDEX_DISK);
+					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL());
+				} else {
+					playerInfo.setResourcePackType(ResourcePackType.NONE);
+					player.kickPlayer(
+							ChatColor.RED + "\n§lКажеться, что-то пошло не так"
+									+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+									+ ChatColor.GRAY + "\nОбратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n\"Без текстурпака\""
+									+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+					);
+				}
+			}
+			case DECLINED -> {
+				ChatUtils.sendWarning(null, player.getName() + " не принял ресурспак");
+				player.kickPlayer(
+						ChatColor.RED + "\n§lКажеться, что-то пошло не так"
+								+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+								+ ChatColor.GRAY + "\nВ настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\""
+								+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+				);
+			}
+		}
+	}
 }
