@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 
@@ -17,7 +18,7 @@ public class RegistrationProcess {
 	private Location playerLocation;
 	private static final String regex = "[-А-яҐґІіЇїЁё]+";
 
-	public int registerPlayer(@Nonnull PlayerInfo playerInfo) {
+	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
 		player = playerInfo.getOnlinePlayer();
 
 		assert player != null
@@ -66,7 +67,7 @@ public class RegistrationProcess {
 			sendWarningMessage();
 			menu.open(player);
 			return 1;
-		}
+		});
 	}
 
 	private int setLastname() {
@@ -81,7 +82,7 @@ public class RegistrationProcess {
 			sendWarningMessage();
 			menu.open(player);
 			return 1;
-		}
+		});
 	}
 
 	private int setPatronymic() {
@@ -111,7 +112,7 @@ public class RegistrationProcess {
 			sendWarningMessage();
 			menu.open(player);
 			return 1;
-		}
+		});
 	}
 
 	public void setPronouns(@Nonnull PlayerInfo playerInfo) {
