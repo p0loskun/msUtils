@@ -24,7 +24,7 @@ public class PlayerID {
 	 * Adds player id in "plugins/msUtils/ids.yml"
 	 */
 	public int addPlayer(@Nonnull UUID uuid) {
-		assert (new PlayerInfo(uuid).hasPlayerDataFile()) == null;
+		assert (new PlayerInfo(uuid).hasPlayerDataFile()) == false;
 		List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
 		int ID = this.createNewID(list, -1);
 		this.yamlConfiguration.set(uuid.toString(), ID);
