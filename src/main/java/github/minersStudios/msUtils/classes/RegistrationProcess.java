@@ -21,7 +21,7 @@ public class RegistrationProcess {
 	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 		this.player = playerInfo.getOnlinePlayer();
-		if (this.player == null) return;
+		assert this.player != null;
 		this.playerLocation = this.player.getLocation();
 		this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, 0.15f, 1.25f);
 		playerInfo.createPlayerDataFile();
@@ -49,10 +49,9 @@ public class RegistrationProcess {
 				this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
 
 				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
-			} else {
-				return this.sendWarningMessage();
+				return true;
 			}
-			return true;
+			this.sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
@@ -63,10 +62,9 @@ public class RegistrationProcess {
 				String lastname = strNormalize(strings[0]);
 				this.playerInfo.setLastName(lastname);
 				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
-			} else {
-				return this.sendWarningMessage();
+				return true;
 			}
-			return true;
+			this.sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
@@ -87,10 +85,9 @@ public class RegistrationProcess {
 				this.sendDialogueMessage("как мне к тебе обращаться?", 150L);
 
 				Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
-			} else {
-				return this.sendWarningMessage();
+				return true;
 			}
-			return true;
+			this.sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
@@ -120,12 +117,11 @@ public class RegistrationProcess {
 
 	private void sendWarningMessage() {
 		this.player.sendMessage(ChatColor.GOLD + "Используйте только кириллицу, без пробелов!");
-		return;
 	}
 
 	private void sendDialogueMessage(@Nonnull String message, long delay) {
 		Bukkit.getScheduler().runTaskLater(Main.plugin, () -> {
-			this.player.sendMessage(net.md_5.bungee.api.ChatColor.of("#aba494") + " [0] Незнакомец : " + net.md_5.bungee.api.ChatColor.of("#f2f0e3") + message);
+			this.player.sendMessage(net.md_5.bungee.api.ChatColor.of("#aba494") + "[0] Незнакомец : " + net.md_5.bungee.api.ChatColor.of("#f2f0e3") + message);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);
 	}
