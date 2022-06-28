@@ -118,8 +118,8 @@ public class RegistrationProcess {
 		}
 	}
 
-	private boolean sendWarningMessage() {
-		return this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу, без пробелов!");
+	private void sendWarningMessage() {
+		this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу, без пробелов!");
 	}
 
 	private void sendDialogueMessage(@Nonnull String message, long delay) {
