@@ -53,7 +53,7 @@ public final class SignMenu {
 	}
 
 	public void open(@Nonnull Player player) {
-		assert player.isOnline != null;
+		assert this.player.isOnline != null;
 		this.location = player.getLocation();
 		this.location.setY(200);
 
