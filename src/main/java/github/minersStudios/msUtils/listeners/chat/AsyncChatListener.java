@@ -25,7 +25,6 @@ public class AsyncChatListener implements Listener {
 			playerInfo.setMuted(false, 0, null);
 		}
 
-		ChatBuffer chatBuffer = new ChatBuffer();
 		if (!playerInfo.isMuted()) {
 			String message = event.getMessage();
 			if(Objects.equals(String.valueOf(message.charAt(0)), "!")) {
@@ -34,7 +33,7 @@ public class AsyncChatListener implements Listener {
 				ChatUtils.sendRPEventMessage(player, 25, "* " + playerInfo.getGrayIDGoldName() + " " + ChatUtils.removeFirstChar(message) + "*");
 			} else {
 				ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), 25, message);
-				chatBuffer.receiveMessage(player, message);
+				ChatBuffer.receiveMessage(player, message);
 			}
 		} else {
 			ChatUtils.sendWarning(player, "Вы замучены");

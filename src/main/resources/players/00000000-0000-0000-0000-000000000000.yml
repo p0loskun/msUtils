@@ -9,9 +9,9 @@ resource-pack: FULL/LITE/NONE
 disk-type: DROPBOX/YANDEX_DISK
 bans:
   muted: false
-  mute-reason: NULL
+  mute-reason: null
   banned: false
-  ban-reason: NULL
+  ban-reason: null
 time:
   first-join: 0
   muted-to: 0

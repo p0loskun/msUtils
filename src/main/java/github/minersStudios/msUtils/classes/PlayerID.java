@@ -56,16 +56,14 @@ public class PlayerID {
 
 	@Nullable
 	private static <String, Object> String getKeyByValue(@Nonnull Map<String, Object> map, @Nonnull Object value) {
-		for (Map.Entry<String, Object> entry : map.entrySet()) {
-			if (Objects.equals(value, entry.getValue())) {
+		for (Map.Entry<String, Object> entry : map.entrySet())
+			if (Objects.equals(value, entry.getValue()))
 				return entry.getKey();
-			}
-		}
 		return null;
 	}
 
 	private int createNewID(@Nonnull List<Object> IDs, @Nullable int ID) {
-		if(ID == -1) {
+		if (ID == -1) {
 			ID = IDs.size();
 		}
 		return IDs.contains(ID) ? createNewID(IDs, ID + 1) : ID;

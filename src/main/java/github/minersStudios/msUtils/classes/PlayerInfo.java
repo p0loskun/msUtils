@@ -339,7 +339,7 @@ public final class PlayerInfo {
 			}
 		} else {
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
-			if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
+			if (this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
 		}
 		savePlayerDataFile();
 		return true;
@@ -385,8 +385,9 @@ public final class PlayerInfo {
 	/**
 	 * Teleport player to dark world and adds some effects
 	 */
-	public void teleportToDarkWorld() {
-		assert this.getOnlinePlayer() != null;
+	public void teleportToDarkWorld(){
+		if (this.getOnlinePlayer() == null) return;
+
 		final Player player = this.getOnlinePlayer();
 		player.setGameMode(GameMode.SPECTATOR);
 		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d));
@@ -394,10 +395,11 @@ public final class PlayerInfo {
 	}
 
 	/**
-	 * Teleport player to last leave location and removes some effects
+	 * Teleport player to their last leave location and removes some effects
 	 */
-	public void teleportToLastLeaveLocation() {
-		assert this.getOnlinePlayer() != null;
+	public void teleportToLastLeaveLocation(){
+		if (this.getOnlinePlayer() == null) return;
+
 		final Player player = this.getOnlinePlayer();
 		player.setGameMode(GameMode.SURVIVAL);
 		player.teleport(this.getLastLeaveLocation());

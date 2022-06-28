@@ -40,9 +40,8 @@ public final class SignMenu {
 					Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
 				}
 				Bukkit.getScheduler().runTask(this.plugin, () -> {
-					if (player.isOnline()) {
+					if (player.isOnline())
 						player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
-					}
 				});
 			}
 		});

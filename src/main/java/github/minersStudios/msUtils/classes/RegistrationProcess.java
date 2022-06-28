@@ -21,7 +21,7 @@ public class RegistrationProcess {
 	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 		this.player = playerInfo.getOnlinePlayer();
-		assert this.player != null;
+		if (this.player == null) return;
 		this.playerLocation = this.player.getLocation();
 		this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, 0.15f, 1.25f);
 		playerInfo.createPlayerDataFile();
@@ -40,10 +40,9 @@ public class RegistrationProcess {
 	private void setFirstname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "имя")).response((player, strings) -> {
 			if (strings[0].matches(regex)) {
-				String firstname = strNormalize(strings[0]);
-				this.playerInfo.setFirstname(firstname);
+				this.playerInfo.setFirstname(strNormalize(strings[0]));
 
-				this.sendDialogueMessage("Интересно. . .", 25L);
+				this.sendDialogueMessage("Интересно...", 25L);
 				this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем,", 100L);
 				this.sendDialogueMessage("но тебя вижу впервые", 225L);
 				this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
@@ -59,8 +58,7 @@ public class RegistrationProcess {
 	private void setLastname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите вашу", "фамилию")).response((player, strings) -> {
 			if (strings[0].matches(regex)) {
-				String lastname = strNormalize(strings[0]);
-				this.playerInfo.setLastName(lastname);
+				this.playerInfo.setLastName(strNormalize(strings[0]));
 				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
 				return true;
 			}
@@ -72,8 +70,7 @@ public class RegistrationProcess {
 	private void setPatronymic() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "отчество")).response((player, strings) -> {
 			if (strings[0].matches(regex)) {
-				String patronymic = strNormalize(strings[0]);
-				this.playerInfo.setPatronymic(patronymic);
+				this.playerInfo.setPatronymic(strNormalize(strings[0]));
 
 				this.sendDialogueMessage(
 					"Ну вот и отлично, "
