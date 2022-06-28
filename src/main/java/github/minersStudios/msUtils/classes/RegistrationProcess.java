@@ -51,7 +51,7 @@ public class RegistrationProcess {
 				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
 				return true;
 			}
-			sendWarningMessage();
+			return this.sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
@@ -64,7 +64,7 @@ public class RegistrationProcess {
 				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
 				return true;
 			}
-			sendWarningMessage();
+			return this.sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
@@ -87,7 +87,7 @@ public class RegistrationProcess {
 				Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
 				return true;
 			}
-			sendWarningMessage();
+			return this.sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
@@ -115,8 +115,9 @@ public class RegistrationProcess {
 		}
 	}
 
-	private void sendWarningMessage() {
+	private boolean sendWarningMessage() {
 		this.player.sendMessage(ChatColor.GOLD + "Используйте только кириллицу, без пробелов!");
+		return false;
 	}
 
 	private void sendDialogueMessage(@Nonnull String message, long delay) {
