@@ -40,11 +40,11 @@ public class ChatBuffer {
 
 	private static void queueMessage(@Nonnull Player player, @Nonnull String message) {
 		String UUID = player.getUniqueId().toString();
-		if (!this.chatQueue.containsKey(UUID)) {
-			this.chatQueue.put(UUID, new LinkedList<>());
+		if (!chatQueue.containsKey(UUID)) {
+			chatQueue.put(UUID, new LinkedList<>());
 			scheduleMessageUpdate(player, UUID, 0);
 		}
-		this.chatQueue.get(UUID).add(message);
+		chatQueue.get(UUID).add(message);
 	}
 
 	private static void scheduleMessageUpdate(@Nonnull Player player, @Nonnull String UUID, int timer) {
