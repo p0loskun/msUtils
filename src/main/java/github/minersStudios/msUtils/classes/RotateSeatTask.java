@@ -20,10 +20,11 @@ public class RotateSeatTask extends BukkitRunnable {
 				{this.method = Entity.class.getMethod("setRotation", Float.TYPE, Float.TYPE);}
 
 				public void align(ArmorStand armorStand, float yaw) {
-					try
+					try {
 						this.method.invoke(armorStand, yaw, 0);
-					catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException exception)
+					} catch { (IllegalArgumentException | InvocationTargetException | IllegalAccessException exception)
 						exception.printStackTrace();
+					}
 				}
 			};
 		} catch (SecurityException | NoSuchMethodException exception) {
