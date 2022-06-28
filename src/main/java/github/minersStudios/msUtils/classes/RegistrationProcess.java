@@ -125,7 +125,6 @@ public class RegistrationProcess {
 	}
 
 	@Nonnull
-	private static String strNormalize(@Nonnull String string) {
+	private static String strNormalize(@Nonnull String string)
 		return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
-	}
 }
