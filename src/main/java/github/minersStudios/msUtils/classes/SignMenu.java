@@ -32,7 +32,7 @@ public final class SignMenu {
 				Player player = event.getPlayer();
 				SignMenu menu = inputs.remove(player);
 
-				if (menu == null) return;
+				assert menu != null;
 				event.setCancelled(true);
 				menu.location.setY(200);
 
@@ -40,9 +40,8 @@ public final class SignMenu {
 					Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
 				}
 				Bukkit.getScheduler().runTask(this.plugin, () -> {
-					if (player.isOnline()) {
+					if (player.isOnline())
 						player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
-					}
 				});
 			}
 		});
@@ -54,7 +53,7 @@ public final class SignMenu {
 	}
 
 	public void open(@Nonnull Player player) {
-		if (!player.isOnline()) return;
+		assert player.isOnline == null;
 		this.location = player.getLocation();
 		this.location.setY(200);
 
