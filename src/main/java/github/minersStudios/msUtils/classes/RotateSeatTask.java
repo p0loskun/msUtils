@@ -33,8 +33,9 @@ public class RotateSeatTask extends BukkitRunnable {
 					Object entityArmorStand = armorStand.getClass().getMethod("getHandle").invoke(armorStand);
 					Field yawField = entityArmorStand.getClass().getField("yaw");
 					yawField.set(entityArmorStand, yaw);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchFieldException | NoSuchMethodException exception1)
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchFieldException | NoSuchMethodException exception1) {
 					exception1.printStackTrace();
+				}
 			};
 		}
 		this.runTaskTimerAsynchronously(Main.plugin, 0L, 1L);
