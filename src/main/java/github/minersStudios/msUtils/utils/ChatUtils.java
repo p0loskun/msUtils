@@ -20,7 +20,6 @@ import java.util.function.BiFunction;
 
 import static github.scarsz.discordsrv.DiscordSRV.*;
 
-@SuppressWarnings("SameReturnValue")
 public final class ChatUtils {
 
 	public static final String discordGlobalChannelID = Main.plugin.getConfig().getString("discord-global-channel-id");
@@ -32,7 +31,7 @@ public final class ChatUtils {
 	 * @param target target
 	 * @param message warning message
 	 */
-	public static boolean sendFine(@Nullable Object target, @Nonnull String message){
+	public static boolean sendFine(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
 			player.sendMessage(" ꀒ " + ChatColor.GREEN + message);
 		} else if (target instanceof CommandSender sender) {
@@ -49,7 +48,7 @@ public final class ChatUtils {
 	 * @param target target
 	 * @param message warning message
 	 */
-	public static boolean sendWarning(@Nullable Object target, @Nonnull String message){
+	public static boolean sendWarning(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
 			player.sendMessage(" ꀓ " + ChatColor.GOLD + message);
 		} else if (target instanceof CommandSender sender) {
@@ -66,7 +65,7 @@ public final class ChatUtils {
 	 * @param target target
 	 * @param message warning message
 	 */
-	public static boolean sendError(@Nullable Object target, @Nonnull String message){
+	public static boolean sendError(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
 			player.sendMessage(" ꀑ " + ChatColor.RED + message);
 		} else if (target instanceof CommandSender sender) {
@@ -113,7 +112,7 @@ public final class ChatUtils {
 	 * @param receiver private message receiver
 	 * @param message private message
 	 */
-	public static void sendPrivateMessage(@Nonnull PlayerInfo sender, @Nonnull PlayerInfo receiver, @Nonnull String message){
+	public static void sendPrivateMessage(@Nonnull PlayerInfo sender, @Nonnull PlayerInfo receiver, @Nonnull String message) {
 		if(sender.getOnlinePlayer() == null || receiver.getOnlinePlayer() == null) return;
 		sender.getOnlinePlayer().sendMessage(" \uA015 " + ChatColor.of("#aba494") + "Вы" + " -> " + receiver.getDefaultName() + " : " + ChatColor.of("#f2f0e3") + message);
 		receiver.getOnlinePlayer().sendMessage(" \uA015 " + ChatColor.of("#aba494") + sender.getDefaultName() + " -> " + "Вам" + " : " + ChatColor.of("#f2f0e3") + message);
@@ -140,10 +139,7 @@ public final class ChatUtils {
 	 * @return message without first char
 	 */
 	public static String removeFirstChar(String message) {
-		if (message == null || message.length() == 0) {
-			return message;
-		}
-		return message.substring(1);
+		return message == null || message.length() == 0 ? message : message.substring(1);
 	}
 
 	/**
@@ -151,7 +147,7 @@ public final class ChatUtils {
 	 *
 	 * @param playerInfo playerInfo
 	 */
-	public static void sendJoinMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player){
+	public static void sendJoinMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player) {
 		String joinMessage =
 				" " + playerInfo.getGoldenName() + " "
 				+ ChatColor.of("#ffee93") + playerInfo.getPronouns().getJoinMessage();
@@ -170,7 +166,7 @@ public final class ChatUtils {
 	 *
 	 * @param playerInfo playerInfo
 	 */
-	public static void sendLeaveMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player){
+	public static void sendLeaveMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player) {
 		String leaveMessage =
 				" " + playerInfo.getGoldenName() + " "
 				+ ChatColor.of("#ffee93") + playerInfo.getPronouns().getQuitMessage();

@@ -18,11 +18,11 @@ public class AllPlayers implements TabCompleter {
 	public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
 		List<String> completions = new ArrayList<>();
 		if(args.length == 1) {
-			for(OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()){
+			for(OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
 				if (offlinePlayer != null) {
 					PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 					String ID = String.valueOf(playerInfo.getID());
-					switch (command.getName()){
+					switch (command.getName()) {
 						case "mute" -> {
 							if(playerInfo.isMuted()) break;
 							completions.add(ID);

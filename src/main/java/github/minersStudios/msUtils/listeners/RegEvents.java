@@ -10,7 +10,7 @@ import static github.minersStudios.msUtils.Main.plugin;
 
 public class RegEvents {
 
-	public RegEvents(){
+	public RegEvents() {
 		PluginManager pluginManager = plugin.getServer().getPluginManager();
 
 		DiscordSRV.api.subscribe(new DiscordSRVListener());

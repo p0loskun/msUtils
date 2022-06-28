@@ -85,7 +85,7 @@ public enum Pronouns {
 	 * @return Pronouns by string
 	 */
 	@Nonnull
-	public static Pronouns getPronounsByString(@Nonnull String pronouns){
+	public static Pronouns getPronounsByString(@Nonnull String pronouns) {
 		return switch (pronouns) {
 			case "THEY" -> THEY;
 			case "SHE" -> SHE;

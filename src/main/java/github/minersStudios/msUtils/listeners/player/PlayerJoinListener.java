@@ -20,7 +20,7 @@ import java.util.Objects;
 public class PlayerJoinListener implements Listener {
 
 	@EventHandler
-	public void onPlayerJoin(@Nonnull PlayerJoinEvent event){
+	public void onPlayerJoin(@Nonnull PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 
 		Player player = event.getPlayer();
@@ -44,7 +44,7 @@ public class PlayerJoinListener implements Listener {
 		if(
 				(playerInfo.isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
 						|| (playerInfo.isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(player.getName()))
-		){
+		) {
 			playerInfo.setBanned(false, 0, null, null);
 		}
 
@@ -59,7 +59,7 @@ public class PlayerJoinListener implements Listener {
 						new RegistrationProcess().registerPlayer(playerInfo);
 					} else {
 						this.cancel();
-						if (playerInfo.getYamlConfiguration().getString("pronouns") == null){
+						if (playerInfo.getYamlConfiguration().getString("pronouns") == null) {
 							player.openInventory(Pronouns.getInventory());
 						} else {
 							if (playerInfo.getResourcePackType() == ResourcePackType.NONE) {

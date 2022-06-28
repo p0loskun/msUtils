@@ -13,6 +13,3 @@
 A Minecraft plugin with custom features for WhoMine <br>
   (Project is in development, so there is shit code)
 </p>
-  
-
-

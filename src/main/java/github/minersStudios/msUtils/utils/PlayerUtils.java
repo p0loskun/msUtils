@@ -35,7 +35,7 @@ public class PlayerUtils {
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
-		if(isOnlineMode){
+		if(isOnlineMode) {
 			try {
 				String UUIDJson = IOUtils.toString(new URL("https://api.mojang.com/users/profiles/minecraft/" + nickname), Charset.defaultCharset());
 				if (UUIDJson.isEmpty()) return null;
@@ -59,7 +59,7 @@ public class PlayerUtils {
 	 * @return offline player
 	 */
 	@Nullable
-	public static OfflinePlayer getOfflinePlayerByNick(@Nonnull String nickname){
+	public static OfflinePlayer getOfflinePlayerByNick(@Nonnull String nickname) {
 		UUID UUID = PlayerUtils.getUUID(nickname);
 		return UUID != null ? Bukkit.getOfflinePlayer(UUID) : null;
 	}
@@ -73,7 +73,7 @@ public class PlayerUtils {
 	 */
 	public static boolean removePlayerFromWhitelist(@Nonnull OfflinePlayer offlinePlayer, @Nullable String nickname) {
 		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) return false;
-		if(nickname == null){
+		if(nickname == null) {
 			offlinePlayer.setWhitelisted(false);
 		} else {
 			Bukkit.getScheduler().callSyncMethod(Main.plugin, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist remove " + nickname));
@@ -101,7 +101,7 @@ public class PlayerUtils {
 		if (Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) return false;
 		try {
 			Bukkit.getScheduler().callSyncMethod(Main.plugin, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist add " + nickname));
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return true;
@@ -114,7 +114,7 @@ public class PlayerUtils {
 	 * @param reason kick reason
 	 * @return True if player successfully kicked
 	 */
-	public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String reason){
+	public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String reason) {
 		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null) return false;
 		PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 		if (playerInfo.hasPlayerDataFile() && offlinePlayer.getPlayer().getWorld() != Main.worldDark) playerInfo.setLastLeaveLocation(offlinePlayer.getPlayer().getLocation());

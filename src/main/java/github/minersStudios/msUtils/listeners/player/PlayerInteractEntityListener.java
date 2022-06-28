@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 public class PlayerInteractEntityListener implements Listener {
 
 	@EventHandler
-	public void onPlayerInteractEntity(@Nonnull PlayerInteractEntityEvent event){
+	public void onPlayerInteractEntity(@Nonnull PlayerInteractEntityEvent event) {
 		if (event.getRightClicked() instanceof Player player) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 			event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(playerInfo.getGoldenName() + " " + playerInfo.getPatronymic()));
