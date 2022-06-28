@@ -51,7 +51,7 @@ public class RegistrationProcess {
 				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
 				return true;
 			}
-			this.sendWarningMessage();
+			sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
@@ -64,7 +64,7 @@ public class RegistrationProcess {
 				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
 				return true;
 			}
-			this.sendWarningMessage();
+			sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
@@ -87,7 +87,7 @@ public class RegistrationProcess {
 				Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
 				return true;
 			}
-			this.sendWarningMessage();
+			sendWarningMessage();
 		});
 		menu.open(this.player);
 	}
