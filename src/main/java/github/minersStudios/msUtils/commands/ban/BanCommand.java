@@ -38,7 +38,7 @@ public class BanCommand implements CommandExecutor {
 			if (!playerInfo.isBanned()) {
 				playerInfo.setBanned(true, time, reason, sender.getName());
 				ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был забанен : " + "\n	- Причина : \"" + reason + "\"\n	- До : " + new Date(time));
-				return;
+				return true;
 			}
 			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" уже забанен");
 		}
