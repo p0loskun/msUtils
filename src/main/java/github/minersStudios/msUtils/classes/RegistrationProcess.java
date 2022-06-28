@@ -18,7 +18,7 @@ public class RegistrationProcess {
 	private Location playerLocation;
 	private static final String regex = "[-А-яҐґІіЇїЁё]+";
 
-	public void registerPlayer(@Nonnull PlayerInfo playerInfo){
+	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 		this.player = playerInfo.getOnlinePlayer();
 		assert this.player != null;
@@ -125,6 +125,7 @@ public class RegistrationProcess {
 	}
 
 	@Nonnull
-	private static String strNormalize(@Nonnull String string)
+	private static String strNormalize(@Nonnull String string) {
 		return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+	}
 }
