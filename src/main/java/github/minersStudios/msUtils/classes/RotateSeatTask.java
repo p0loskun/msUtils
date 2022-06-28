@@ -22,7 +22,7 @@ public class RotateSeatTask extends BukkitRunnable {
 				public void align(ArmorStand armorStand, float yaw) {
 					try {
 						this.method.invoke(armorStand, yaw, 0);
-					} catch { (IllegalArgumentException | InvocationTargetException | IllegalAccessException exception)
+					} catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException exception) {
 						exception.printStackTrace();
 					}
 				}
