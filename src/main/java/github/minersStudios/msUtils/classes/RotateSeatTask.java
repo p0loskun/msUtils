@@ -48,6 +48,7 @@ public class RotateSeatTask extends BukkitRunnable {
 		}
 	}
 
-	private interface AlignArmorStand
+	private interface AlignArmorStand {
 		void align(ArmorStand armorStand, float value);
+	}
 }
