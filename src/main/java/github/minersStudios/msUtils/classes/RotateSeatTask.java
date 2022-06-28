@@ -20,11 +20,10 @@ public class RotateSeatTask extends BukkitRunnable {
 				{this.method = Entity.class.getMethod("setRotation", Float.TYPE, Float.TYPE);}
 
 				public void align(ArmorStand armorStand, float yaw) {
-					try {
+					try
 						this.method.invoke(armorStand, yaw, 0);
-					} catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException exception) {
+					catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException exception)
 						exception.printStackTrace();
-					}
 				}
 			};
 		} catch (SecurityException | NoSuchMethodException exception) {
@@ -33,9 +32,8 @@ public class RotateSeatTask extends BukkitRunnable {
 					Object entityArmorStand = armorStand.getClass().getMethod("getHandle").invoke(armorStand);
 					Field yawField = entityArmorStand.getClass().getField("yaw");
 					yawField.set(entityArmorStand, yaw);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchFieldException | NoSuchMethodException exception1) {
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchFieldException | NoSuchMethodException exception1)
 					exception1.printStackTrace();
-				}
 			};
 		}
 		this.runTaskTimerAsynchronously(Main.plugin, 0L, 1L);
@@ -43,13 +41,11 @@ public class RotateSeatTask extends BukkitRunnable {
 
 	public void run() {
 		for (ArmorStand armorstand : Main.plugin.getSeats().values()) {
-			for(Object passenger : armorstand.getPassengers()){
-				if(passenger instanceof Player player) this.alignArmorStand.align(armorstand, player.getLocation().getYaw());
-			}
+			for (Object passenger : armorstand.getPassengers())
+				if (passenger instanceof Player player) this.alignArmorStand.align(armorstand, player.getLocation().getYaw());
 		}
 	}
 
-	private interface AlignArmorStand {
+	private interface AlignArmorStand
 		void align(ArmorStand armorStand, float value);
-	}
 }
