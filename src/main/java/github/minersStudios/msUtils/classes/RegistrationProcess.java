@@ -40,7 +40,7 @@ public class RegistrationProcess {
 	private void setFirstname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "имя")).response((player, strings) -> {
 			if (strings[0].matches(regex)) {
-				String firstname = strings[0].strNormalize();
+				String firstname = strNormalize(strings[0]);
 				this.playerInfo.setFirstname(firstname);
 
 				this.sendDialogueMessage("Интересно. . .", 25L);
@@ -60,7 +60,7 @@ public class RegistrationProcess {
 	private void setLastname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите вашу", "фамилию")).response((player, strings) -> {
 			if (strings[0].matches(regex)) {
-				String lastname = strings[0].strNormalize();
+				String lastname = strNormalize(strings[0]);
 				this.playerInfo.setLastName(lastname);
 				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
 			} else {
@@ -74,7 +74,7 @@ public class RegistrationProcess {
 	private void setPatronymic() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "отчество")).response((player, strings) -> {
 			if (strings[0].matches(regex)) {
-				String patronymic = strings[0].strNormalize();
+				String patronymic = strNormalize(strings[0]);
 				this.playerInfo.setPatronymic(patronymic);
 
 				this.sendDialogueMessage(
