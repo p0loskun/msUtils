@@ -62,9 +62,10 @@ public class PlayerID {
 		return null;
 	}
 
-	private int createNewID(@Nonnull List<Object> IDs, int ID){
-		if(ID == -1)
+	private int createNewID(@Nonnull List<Object> IDs, @Nullable int ID) {
+		if (ID == -1) {
 			ID = IDs.size();
+		}
 		return IDs.contains(ID) ? createNewID(IDs, ID + 1) : ID;
 	}
 }

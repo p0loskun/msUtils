@@ -35,7 +35,7 @@ public enum ResourcePackType {
 	@Getter private final String dropBoxURL, yandexDiskURL;
 	public static final String NAME = ChatColor.DARK_GRAY + "Выберите нужный текстурпак";
 
-	ResourcePackType(String dropBoxURL, String yandexDiskURL){
+	ResourcePackType(String dropBoxURL, String yandexDiskURL) {
 		this.dropBoxURL = dropBoxURL;
 		this.yandexDiskURL = yandexDiskURL;
 	}
@@ -44,7 +44,7 @@ public enum ResourcePackType {
 	 * @param name ResourcePack type name
 	 * @return ResourcePackType by name
 	 */
-	@Nullable public static ResourcePackType getResourcePackByString(@Nonnull String name){
+	@Nullable public static ResourcePackType getResourcePackByString(@Nonnull String name) {
 		return switch (name) {
 			case "FULL" -> FULL;
 			case "LITE" -> LITE;
@@ -164,7 +164,7 @@ public enum ResourcePackType {
 	 *
 	 * @param playerInfo player info
 	 */
-	public static void setResourcePack(@Nonnull PlayerInfo playerInfo){
+	public static void setResourcePack(@Nonnull PlayerInfo playerInfo) {
 		if(playerInfo.getOnlinePlayer() == null) return;
 		final Player player = playerInfo.getOnlinePlayer();
 		if (playerInfo.getResourcePackType() != null) {

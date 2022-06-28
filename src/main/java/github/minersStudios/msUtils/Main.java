@@ -53,7 +53,7 @@ public final class Main extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		if(!new File(plugin.getDataFolder(), "config.yml").exists()){
+		if(!new File(plugin.getDataFolder(), "config.yml").exists()) {
 			this.saveResource("config.yml", false);
 		}
 		new RegEvents();
@@ -82,7 +82,7 @@ public final class Main extends JavaPlugin {
 			SitPlayer sitPlayer = new SitPlayer(Bukkit.getPlayer(uuid));
 			sitPlayer.setSitting(null);
 		}
-		for (Player player : Bukkit.getOnlinePlayers()){
+		for (Player player : Bukkit.getOnlinePlayers()) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 			if (player.getWorld() != worldDark) playerInfo.setLastLeaveLocation(player.getLocation());
 			player.kickPlayer("Ну шо грифер, запустил свою лаг машину?");
@@ -123,8 +123,8 @@ public final class Main extends JavaPlugin {
 		Objects.requireNonNull(this.getCommand("try")).setExecutor(new TryCommand());
 	}
 
-	private void generateWorld(){
-		if(Main.worldDark == null){
+	private void generateWorld() {
+		if(Main.worldDark == null) {
 			this.getServer().createWorld(
 					new WorldCreator("world_dark")
 							.generator("msUtils:empty")

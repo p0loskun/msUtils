@@ -21,7 +21,7 @@ public class RegistrationProcess {
 	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 		this.player = playerInfo.getOnlinePlayer();
-		assert this.player != null;
+		if (this.player == null) return;
 		this.playerLocation = this.player.getLocation();
 		this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, 0.15f, 1.25f);
 		playerInfo.createPlayerDataFile();
@@ -73,13 +73,13 @@ public class RegistrationProcess {
 				this.playerInfo.setPatronymic(strNormalize(strings[0]));
 
 				this.sendDialogueMessage(
-						"Ну вот и отлично, "
-								+ ChatColor.GRAY + "[" + this.playerInfo.getID() + "] "
-								+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
-								+ this.playerInfo.getLastname() + " "
-								+ this.playerInfo.getPatronymic(), 25L);
-				this.sendDialogueMessage("Слушай,", 100L);
-				this.sendDialogueMessage("а как мне к тебе обращаться?", 150L);
+					"Ну вот и отлично, "
+					+ ChatColor.GRAY + "[" + this.playerInfo.getID() + "] "
+					+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
+					+ this.playerInfo.getLastname() + " "
+					+ this.playerInfo.getPatronymic(), 25L);
+				this.sendDialogueMessage("Слушай, а", 100L);
+				this.sendDialogueMessage("как мне к тебе обращаться?", 150L);
 
 				Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
 				return true;
@@ -89,7 +89,7 @@ public class RegistrationProcess {
 		menu.open(this.player);
 	}
 
-	public void setPronouns(@Nonnull PlayerInfo playerInfo){
+	public void setPronouns(@Nonnull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 		this.player = playerInfo.getOnlinePlayer();
 
@@ -101,25 +101,25 @@ public class RegistrationProcess {
 		Bukkit.getScheduler().runTaskLater(Main.plugin, this::setOther, 225L);
 	}
 
-	private void setOther(){
+	private void setOther() {
 		this.player.setDisplayName(this.playerInfo.getDefaultName());
-		if (this.playerInfo.getResourcePackType() == null){
+		if (this.playerInfo.getResourcePackType() == null) {
 			Bukkit.getScheduler().runTask(Main.plugin, () -> this.player.openInventory(ResourcePackType.getInventory()));
-		} else if (this.playerInfo.getResourcePackType() == ResourcePackType.NONE){
+		} else if (this.playerInfo.getResourcePackType() == ResourcePackType.NONE) {
 			Bukkit.getScheduler().runTask(Main.plugin, this.playerInfo::teleportToLastLeaveLocation);
 		} else {
 			ResourcePackType.setResourcePack(this.playerInfo);
 		}
 	}
 
-	private boolean sendWarningMessage(){
-		this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу, без пробелов!");
+	private boolean sendWarningMessage() {
+		this.player.sendMessage(ChatColor.GOLD + "Используйте только кириллицу, без пробелов!");
 		return false;
 	}
 
-	private void sendDialogueMessage(@Nonnull String message, long delay){
+	private void sendDialogueMessage(@Nonnull String message, long delay) {
 		Bukkit.getScheduler().runTaskLater(Main.plugin, () -> {
-			this.player.sendMessage(net.md_5.bungee.api.ChatColor.of("#aba494") + " [0] Незнакомец : " + net.md_5.bungee.api.ChatColor.of("#f2f0e3") + message);
+			this.player.sendMessage(net.md_5.bungee.api.ChatColor.of("#aba494") + "[0] Незнакомец : " + net.md_5.bungee.api.ChatColor.of("#f2f0e3") + message);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);
 	}

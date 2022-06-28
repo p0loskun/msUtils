@@ -29,11 +29,11 @@ public class InventoryClickListener implements Listener {
 
 			if (event.getSlot() == 0 || event.getSlot() == 1) {
 				playerInfo.setResourcePackType(ResourcePackType.NONE);
-				if(player.getWorld() == Main.worldDark){
+				if(player.getWorld() == Main.worldDark) {
 					playerInfo.teleportToLastLeaveLocation();
 				}
 				player.closeInventory();
-				if(playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE){
+				if(playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE) {
 					player.kickPlayer(
 							ChatColor.RED + "\n§lВы были кикнуты"
 									+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
@@ -76,7 +76,7 @@ public class InventoryClickListener implements Listener {
 			player.updateInventory();
 		}
 
-		if(player.getWorld() == Main.worldDark){
+		if(player.getWorld() == Main.worldDark) {
 			event.setCancelled(true);
 			player.updateInventory();
 		}

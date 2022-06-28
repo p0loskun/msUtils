@@ -43,8 +43,9 @@ public class RotateSeatTask extends BukkitRunnable {
 
 	public void run() {
 		for (ArmorStand armorstand : Main.plugin.getSeats().values()) {
-			for (Object passenger : armorstand.getPassengers())
+			for (Object passenger : armorstand.getPassengers()) {
 				if (passenger instanceof Player player) this.alignArmorStand.align(armorstand, player.getLocation().getYaw());
+			}
 		}
 	}
 

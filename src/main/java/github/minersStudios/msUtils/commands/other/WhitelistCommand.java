@@ -24,13 +24,13 @@ public class WhitelistCommand implements CommandExecutor {
 				return true;
 			}
 			if (args.length > 1 && args[1].matches("[0-99]+")) {
-				if(args[0].equalsIgnoreCase("add")){
+				if(args[0].equalsIgnoreCase("add")) {
 					return ChatUtils.sendWarning(sender, "Для добавления игрока используйте ник!");
-				} else if(args[0].equalsIgnoreCase("remove")){
+				} else if(args[0].equalsIgnoreCase("remove")) {
 					OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[1]));
 					if (offlinePlayer == null) return ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 					PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-					if(PlayerUtils.removePlayerFromWhitelist(offlinePlayer, null)){
+					if(PlayerUtils.removePlayerFromWhitelist(offlinePlayer, null)) {
 						ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + playerInfo.getNickname() + ")\" был удалён из белого списка");
 					} else {
 						ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + playerInfo.getNickname() + ")\" не состоит в белом списке");

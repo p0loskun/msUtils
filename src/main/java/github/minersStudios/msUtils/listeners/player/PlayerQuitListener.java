@@ -24,7 +24,7 @@ public class PlayerQuitListener implements Listener {
 		event.setQuitMessage(null);
 		if (playerInfo.hasPlayerDataFile() && player.getWorld() != Main.worldDark) {
 			playerInfo.setLastLeaveLocation(player.getLocation());
-			if(playerInfo.hasName()){
+			if(playerInfo.hasName()) {
 				ChatUtils.sendLeaveMessage(playerInfo, player);
 			}
 		}

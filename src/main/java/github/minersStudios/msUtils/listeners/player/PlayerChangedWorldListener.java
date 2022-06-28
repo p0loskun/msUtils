@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 public class PlayerChangedWorldListener implements Listener {
 
 	@EventHandler
-	public void onPlayerChangedWorld(@Nonnull PlayerChangedWorldEvent event){
+	public void onPlayerChangedWorld(@Nonnull PlayerChangedWorldEvent event) {
 		Player player = event.getPlayer();
 		Main.scoreboardHideTagsTeam.addEntry(player.getName());
 		player.setScoreboard(Main.scoreboardHideTags);

@@ -35,7 +35,7 @@ public class InfoCommand implements CommandExecutor {
 		return true;
 	}
 
-	private boolean sendInfo(@Nonnull PlayerInfo playerInfo, @Nonnull CommandSender sender){
+	private boolean sendInfo(@Nonnull PlayerInfo playerInfo, @Nonnull CommandSender sender) {
 		Location lastLeaveLocation = playerInfo.getLastLeaveLocation(),
 				lastDeathLocation = playerInfo.getLastDeathLocation();
 		return ChatUtils.sendFine(sender, "UUID : "
