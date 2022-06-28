@@ -24,14 +24,15 @@ public class PlayerID {
 	 * Adds player id in "plugins/msUtils/ids.yml"
 	 */
 	public int addPlayer(@Nonnull UUID uuid) {
-		if (!new PlayerInfo(uuid).hasPlayerDataFile()) return;
+		assert (new PlayerInfo(uuid).hasPlayerDataFile()) == false;
 		List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
 		int ID = this.createNewID(list, -1);
 		this.yamlConfiguration.set(uuid.toString(), ID);
-		try
+		try {
 			this.yamlConfiguration.save(this.idFile);
-		catch (IOException exception)
+		} catch (IOException exception) {
 			exception.printStackTrace();
+		}
 		return ID;
 	}
 
@@ -39,8 +40,9 @@ public class PlayerID {
 	 * @param uuid player's uuid
 	 * @return player's id int
 	 */
-	public int getPlayerID(@Nonnull UUID uuid)
+	public int getPlayerID(@Nonnull UUID uuid) {
 		return this.yamlConfiguration.getValues(true).containsKey(uuid.toString()) ? this.yamlConfiguration.getInt(uuid.toString()) : this.addPlayer(uuid);
+	}
 
 	/**
 	 * @param ID player's ID
