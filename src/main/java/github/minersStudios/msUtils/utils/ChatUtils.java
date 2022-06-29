@@ -78,7 +78,8 @@ public final class ChatUtils {
 			sender.sendMessage(ChatColor.RED + message);
 			return true;
 		}
-		return Bukkit.getLogger().warning(ChatColor.RED + message);
+		Bukkit.getLogger().warning(ChatColor.RED + message);
+		return true;
 	}
 
 	/**

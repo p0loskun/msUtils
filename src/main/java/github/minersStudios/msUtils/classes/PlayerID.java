@@ -36,7 +36,7 @@ public class PlayerID {
 			}
 			return ID;
 		}
-		this.Bukkit.getLogger().warning("addPlayer() not necessarily called. Player has Data file already.");
+		Bukkit.getLogger().warning("addPlayer() not necessarily called. Player has Data file already.");
 		return -69;	// It must be checked somewhere, e.g. "if (ID == -69) {uuid.setValue(null)}"
 		// Тоді не потрібно буде використовувати Integer і отримувати null, це дуже тупо,
 		// краще мати exit code для помилок і потім писати помилку в консоль і щось рішати/
