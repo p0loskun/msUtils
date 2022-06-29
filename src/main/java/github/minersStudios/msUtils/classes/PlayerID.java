@@ -2,7 +2,7 @@ package github.minersStudios.msUtils.classes;
 
 import github.minersStudios.msUtils.Main;
 import lombok.Getter;
-import org,bukkit.Bukkit;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.OfflinePlayer;
 
