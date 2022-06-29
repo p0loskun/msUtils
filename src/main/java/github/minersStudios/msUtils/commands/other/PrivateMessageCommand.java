@@ -32,7 +32,8 @@ public class PrivateMessageCommand implements CommandExecutor {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) return ChatUtils.sendError(player, "Что-то пошло не так...");
 			if (offlinePlayer.getPlayer() == null) return ChatUtils.sendWarning(player, "Данный игрок не в сети");
-			return ChatUtils.sendPrivateMessage(privateMessageSender, new PlayerInfo(offlinePlayer.getUniqueId()), message);
+			ChatUtils.sendPrivateMessage(privateMessageSender, new PlayerInfo(offlinePlayer.getUniqueId()), message);
+			return true;
 		}
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 	}

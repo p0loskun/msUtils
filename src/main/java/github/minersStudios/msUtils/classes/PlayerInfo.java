@@ -287,7 +287,8 @@ public final class PlayerInfo {
 		} else if (this.getOnlinePlayer() != null) {
 			ChatUtils.sendFine(this.getOnlinePlayer(), "Вы были размучены");
 		}
-		return savePlayerDataFile();
+		savePlayerDataFile();
+		return true;
 	}
 
 	/**
@@ -340,7 +341,8 @@ public final class PlayerInfo {
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
 			if (this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
 		}
-		return savePlayerDataFile();
+		savePlayerDataFile();
+		return true;
 	}
 
 	/**

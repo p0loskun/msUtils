@@ -33,12 +33,15 @@ public final class ChatUtils {
 	 */
 	public static boolean sendFine(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
-			return player.sendMessage(" ꀒ " + ChatColor.GREEN + message);
+			player.sendMessage(" ꀒ " + ChatColor.GREEN + message);
+			return true;
 		}
 		if (target instanceof CommandSender sender) {
-			return sender.sendMessage(ChatColor.GREEN + message);
+			sender.sendMessage(ChatColor.GREEN + message);
+			return true;
 		}
-		return Bukkit.getLogger().info(ChatColor.GREEN + message);
+		Bukkit.getLogger().info(ChatColor.GREEN + message);
+		return true;
 	}
 
 	/**
@@ -49,12 +52,15 @@ public final class ChatUtils {
 	 */
 	public static boolean sendWarning(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
-			return player.sendMessage(" ꀓ " + ChatColor.GOLD + message);
+			player.sendMessage(" ꀓ " + ChatColor.GOLD + message);
+			return true;
 		}
 		if (target instanceof CommandSender sender) {
-			return sender.sendMessage(ChatColor.GOLD + message);
+			sender.sendMessage(ChatColor.GOLD + message);
+			return true;
 		}
-		return Bukkit.getLogger().warning(ChatColor.GOLD + message);
+		Bukkit.getLogger().warning(ChatColor.GOLD + message);
+		return true;
 	}
 
 	/**
@@ -65,10 +71,12 @@ public final class ChatUtils {
 	 */
 	public static boolean sendError(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
-			return player.sendMessage(" ꀑ " + ChatColor.RED + message);
+			player.sendMessage(" ꀑ " + ChatColor.RED + message);
+			return true;
 		}
 		if (target instanceof CommandSender sender) {
-			return sender.sendMessage(ChatColor.RED + message);
+			sender.sendMessage(ChatColor.RED + message);
+			return true;
 		}
 		return Bukkit.getLogger().warning(ChatColor.RED + message);
 	}
