@@ -13,40 +13,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AllPlayers implements TabCompleter {
+
 	@Nullable
 	@Override
 	public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
 		List<String> completions = new ArrayList<>();
-		if(args.length == 1) {
-			for(OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-				if (offlinePlayer != null) {
-					PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-					String ID = String.valueOf(playerInfo.getID());
-					switch (command.getName()) {
-						case "mute" -> {
-							if(playerInfo.isMuted()) break;
-							completions.add(ID);
-							completions.add(offlinePlayer.getName());
+		if (args.length == 1) {
+			if (!command.getName().equals("unban")) {
+				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+					if (offlinePlayer != null) {
+						PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+						String ID = String.valueOf(playerInfo.getID());
+						switch (command.getName()) {
+							case "mute" -> {
+								if (playerInfo.isMuted()) break;
+								if (playerInfo.hasPlayerDataFile())
+									completions.add(ID);
+								if (playerInfo.hasPlayerDataFile())
+									completions.add(offlinePlayer.getName());
+							}
+							case "unmute" -> {
+								if (!playerInfo.isMuted()) break;
+								if (playerInfo.hasPlayerDataFile())
+									completions.add(ID);
+								if (playerInfo.hasPlayerDataFile())
+									completions.add(offlinePlayer.getName());
+							}
+							case "ban" -> {
+								if (playerInfo.isBanned()) break;
+								if (playerInfo.hasPlayerDataFile())
+									completions.add(ID);
+								completions.add(offlinePlayer.getName());
+							}
+							default -> {
+								if (playerInfo.hasPlayerDataFile())
+									completions.add(ID);
+								if (playerInfo.hasPlayerDataFile())
+									completions.add(offlinePlayer.getName());
+							}
 						}
-						case "unmute" -> {
-							if(!playerInfo.isMuted()) break;
+					}
+				}
+			} else {
+				for (OfflinePlayer offlinePlayer : Bukkit.getBannedPlayers()) {
+					if (offlinePlayer != null) {
+						PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+						String ID = String.valueOf(playerInfo.getID());
+						if (playerInfo.hasPlayerDataFile())
 							completions.add(ID);
-							completions.add(offlinePlayer.getName());
-						}
-						case "ban" -> {
-							if(playerInfo.isBanned()) break;
-							completions.add(ID);
-							completions.add(offlinePlayer.getName());
-						}
-						case "unban" -> {
-							if(!playerInfo.isBanned()) break;
-							completions.add(ID);
-							completions.add(offlinePlayer.getName());
-						}
-						default -> {
-							completions.add(ID);
-							completions.add(offlinePlayer.getName());
-						}
+						completions.add(offlinePlayer.getName());
 					}
 				}
 			}

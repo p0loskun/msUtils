@@ -42,6 +42,12 @@ public final class Main extends JavaPlugin {
 		authmeApi = AuthMeApi.getInstance();
 		worldDark = this.getServer().getWorld("world_dark");
 		protocolManager = ProtocolLibrary.getProtocolManager();
+		scoreboardHideTags = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
+		scoreboardHideTags.registerNewTeam("HideTags");
+		scoreboardHideTagsTeam = scoreboardHideTags.getTeam("HideTags");
+		assert scoreboardHideTagsTeam != null;
+		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
 		try {
 			BufferedReader is = new BufferedReader(new FileReader("server.properties"));
@@ -49,24 +55,17 @@ public final class Main extends JavaPlugin {
 			properties.load(is);
 			is.close();
 			overworld = Bukkit.getWorld(properties.getProperty("level-name"));
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException exception) {
+			exception.printStackTrace();
 		}
 
-		if(!new File(plugin.getDataFolder(), "config.yml").exists()) {
-			this.saveResource("config.yml", false);
-		}
 		new RegEvents();
 		new RotateSeatTask();
 		this.generateWorld();
 		this.registerCommands();
 
-		scoreboardHideTags = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-		scoreboardHideTags.registerNewTeam("HideTags");
-		scoreboardHideTagsTeam = scoreboardHideTags.getTeam("HideTags");
-		assert scoreboardHideTagsTeam != null;
-		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
+		if (!new File(plugin.getDataFolder(), "config.yml").exists())
+			this.saveResource("config.yml", false);
 
 		if (!Bukkit.getOnlinePlayers().isEmpty()) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
@@ -78,13 +77,14 @@ public final class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		for(UUID uuid : this.seats.keySet()) {
+		for (UUID uuid : this.seats.keySet()) {
 			SitPlayer sitPlayer = new SitPlayer(Bukkit.getPlayer(uuid));
 			sitPlayer.setSitting(null);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-			if (player.getWorld() != worldDark) playerInfo.setLastLeaveLocation(player.getLocation());
+			if (player.getWorld() != worldDark)
+				playerInfo.setLastLeaveLocation(player);
 			player.kickPlayer("Ну шо грифер, запустил свою лаг машину?");
 		}
 	}
@@ -124,37 +124,36 @@ public final class Main extends JavaPlugin {
 	}
 
 	private void generateWorld() {
-		if(Main.worldDark == null) {
-			this.getServer().createWorld(
-					new WorldCreator("world_dark")
-							.generator("msUtils:empty")
-							.generateStructures(false)
-							.type(WorldType.NORMAL)
-							.environment(World.Environment.NORMAL)
-			);
-			worldDark = this.getServer().getWorld("world_dark");
-			if(worldDark != null) {
-				worldDark.setTime(18000);
-				worldDark.setDifficulty(Difficulty.PEACEFUL);
-				worldDark.setGameRule(GameRule.FALL_DAMAGE, false);
-				worldDark.setGameRule(GameRule.FIRE_DAMAGE, false);
-				worldDark.setGameRule(GameRule.DROWNING_DAMAGE, false);
-				worldDark.setGameRule(GameRule.FREEZE_DAMAGE, false);
-				worldDark.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-				worldDark.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
-				worldDark.setGameRule(GameRule.KEEP_INVENTORY, true);
-				worldDark.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-			} else {
-				ChatUtils.sendError(null, "Main#generateWorld() world_dark = null");
-				plugin.getServer().savePlayers();
-				plugin.getServer().shutdown();
-			}
+		if (Main.worldDark != null) return;
+		this.getServer().createWorld(
+				new WorldCreator("world_dark")
+						.generator("msUtils:empty")
+						.generateStructures(false)
+						.type(WorldType.NORMAL)
+						.environment(World.Environment.NORMAL)
+		);
+		worldDark = this.getServer().getWorld("world_dark");
+		if (worldDark != null) {
+			worldDark.setTime(18000);
+			worldDark.setDifficulty(Difficulty.PEACEFUL);
+			worldDark.setGameRule(GameRule.FALL_DAMAGE, false);
+			worldDark.setGameRule(GameRule.FIRE_DAMAGE, false);
+			worldDark.setGameRule(GameRule.DROWNING_DAMAGE, false);
+			worldDark.setGameRule(GameRule.FREEZE_DAMAGE, false);
+			worldDark.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+			worldDark.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
+			worldDark.setGameRule(GameRule.KEEP_INVENTORY, true);
+			worldDark.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+		} else {
+			ChatUtils.sendError(null, "Main#generateWorld() world_dark = null");
+			plugin.getServer().savePlayers();
+			plugin.getServer().shutdown();
 		}
 	}
 
-	@Override
 	@Nullable
-	public ChunkGenerator getDefaultWorldGenerator(@Nonnull String worldName, String id) {
+	@Override
+	public ChunkGenerator getDefaultWorldGenerator(@Nonnull String worldName, @Nullable String id) {
 		return "empty".equals(id) ? new ChunkGenerator() {} : null;
 	}
 }

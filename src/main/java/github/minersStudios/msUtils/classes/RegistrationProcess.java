@@ -39,52 +39,49 @@ public class RegistrationProcess {
 
 	private void setFirstname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "имя")).response((player, strings) -> {
-			if (strings[0].matches(regex)) {
-				this.playerInfo.setFirstname(strNormalize(strings[0]));
+			if (!strings[0].matches(regex))
+				return this.sendWarningMessage();
+			this.playerInfo.setFirstname(strNormalize(strings[0]));
 
-				this.sendDialogueMessage("Интересно...", 25L);
-				this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем,", 100L);
-				this.sendDialogueMessage("но тебя вижу впервые", 225L);
-				this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
+			this.sendDialogueMessage("Интересно...", 25L);
+			this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем,", 100L);
+			this.sendDialogueMessage("но тебя вижу впервые", 225L);
+			this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
 
-				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
-				return true;
-			}
-			return this.sendWarningMessage();
+			Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
+			return true;
 		});
 		menu.open(this.player);
 	}
 
 	private void setLastname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите вашу", "фамилию")).response((player, strings) -> {
-			if (strings[0].matches(regex)) {
-				this.playerInfo.setLastName(strNormalize(strings[0]));
-				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
-				return true;
-			}
-			return this.sendWarningMessage();
+			if (!strings[0].matches(regex))
+				return this.sendWarningMessage();
+			this.playerInfo.setLastName(strNormalize(strings[0]));
+			Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
+			return true;
 		});
 		menu.open(this.player);
 	}
 
 	private void setPatronymic() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "отчество")).response((player, strings) -> {
-			if (strings[0].matches(regex)) {
-				this.playerInfo.setPatronymic(strNormalize(strings[0]));
+			if (!strings[0].matches(regex))
+				return this.sendWarningMessage();
+			this.playerInfo.setPatronymic(strNormalize(strings[0]));
 
-				this.sendDialogueMessage(
+			this.sendDialogueMessage(
 					"Ну вот и отлично, "
-					+ ChatColor.GRAY + "[" + this.playerInfo.getID() + "] "
-					+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
-					+ this.playerInfo.getLastname() + " "
-					+ this.playerInfo.getPatronymic(), 25L);
-				this.sendDialogueMessage("Слушай, а", 100L);
-				this.sendDialogueMessage("как мне к тебе обращаться?", 150L);
+							+ ChatColor.GRAY + "[" + this.playerInfo.getID() + "] "
+							+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
+							+ this.playerInfo.getLastname() + " "
+							+ this.playerInfo.getPatronymic(), 25L);
+			this.sendDialogueMessage("Слушай,", 100L);
+			this.sendDialogueMessage("а как мне к тебе обращаться?", 150L);
 
-				Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
-				return true;
-			}
-			return this.sendWarningMessage();
+			Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
+			return true;
 		});
 		menu.open(this.player);
 	}
@@ -113,13 +110,13 @@ public class RegistrationProcess {
 	}
 
 	private boolean sendWarningMessage() {
-		this.player.sendMessage(ChatColor.GOLD + "Используйте только кириллицу, без пробелов!");
+		this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу, без пробелов!");
 		return false;
 	}
 
 	private void sendDialogueMessage(@Nonnull String message, long delay) {
 		Bukkit.getScheduler().runTaskLater(Main.plugin, () -> {
-			this.player.sendMessage(net.md_5.bungee.api.ChatColor.of("#aba494") + "[0] Незнакомец : " + net.md_5.bungee.api.ChatColor.of("#f2f0e3") + message);
+			this.player.sendMessage(net.md_5.bungee.api.ChatColor.of("#aba494") + " [0] Незнакомец : " + net.md_5.bungee.api.ChatColor.of("#f2f0e3") + message);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);
 	}

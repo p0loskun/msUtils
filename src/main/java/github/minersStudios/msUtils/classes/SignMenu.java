@@ -32,13 +32,12 @@ public final class SignMenu {
 				Player player = event.getPlayer();
 				SignMenu menu = inputs.remove(player);
 
-				assert menu != null;
+				if (menu == null) return;
 				event.setCancelled(true);
 				menu.location.setY(200);
 
-				if (!menu.response.test(player, event.getPacket().getStringArrays().read(0))) {
+				if (!menu.response.test(player, event.getPacket().getStringArrays().read(0)))
 					Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
-				}
 				Bukkit.getScheduler().runTask(this.plugin, () -> {
 					if (player.isOnline())
 						player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
@@ -53,7 +52,6 @@ public final class SignMenu {
 	}
 
 	public void open(@Nonnull Player player) {
-		assert player.isOnline() == true;
 		this.location = player.getLocation();
 		this.location.setY(200);
 

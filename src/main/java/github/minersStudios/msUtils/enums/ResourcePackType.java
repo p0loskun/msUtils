@@ -44,7 +44,8 @@ public enum ResourcePackType {
 	 * @param name ResourcePack type name
 	 * @return ResourcePackType by name
 	 */
-	@Nullable public static ResourcePackType getResourcePackByString(@Nonnull String name) {
+	@Nullable
+	public static ResourcePackType getResourcePackByString(@Nonnull String name) {
 		return switch (name) {
 			case "FULL" -> FULL;
 			case "LITE" -> LITE;
@@ -58,9 +59,6 @@ public enum ResourcePackType {
 	 */
 	@Nonnull
 	public static Inventory getInventory() {
-
-		//Desc
-
 		ItemStack pickRP = new ItemStack(Material.KNOWLEDGE_BOOK);
 		ItemMeta pickRPMeta = pickRP.getItemMeta();
 		assert pickRPMeta != null;
@@ -78,8 +76,6 @@ public enum ResourcePackType {
 		pickRPMeta.setLore(lore);
 		pickRP.setItemMeta(pickRPMeta);
 
-		//None
-
 		ItemStack noneRP = new ItemStack(Material.COAL_BLOCK);
 		ItemMeta noneRPMeta = noneRP.getItemMeta();
 		assert noneRPMeta != null;
@@ -91,8 +87,6 @@ public enum ResourcePackType {
 
 		noneRPMeta.setLore(lore0);
 		noneRP.setItemMeta(noneRPMeta);
-
-		//Lite
 
 		ItemStack liteRP = new ItemStack(Material.IRON_BLOCK);
 		ItemMeta liteRPMeta = liteRP.getItemMeta();
@@ -111,8 +105,6 @@ public enum ResourcePackType {
 
 		liteRPMeta.setLore(lore2);
 		liteRP.setItemMeta(liteRPMeta);
-
-		//Full
 
 		ItemStack fullRP = new ItemStack(Material.NETHERITE_BLOCK);
 		ItemMeta fullRPMeta = fullRP.getItemMeta();
@@ -166,7 +158,7 @@ public enum ResourcePackType {
 	 */
 	public static void setResourcePack(@Nonnull PlayerInfo playerInfo) {
 		if(playerInfo.getOnlinePlayer() == null) return;
-		final Player player = playerInfo.getOnlinePlayer();
+		Player player = playerInfo.getOnlinePlayer();
 		if (playerInfo.getResourcePackType() != null) {
 			if (playerInfo.getResourcePackType() == ResourcePackType.FULL) {
 				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
@@ -178,5 +170,9 @@ public enum ResourcePackType {
 		} else {
 			player.openInventory(ResourcePackType.getInventory());
 		}
+	}
+
+	public enum DiskType {
+		DROPBOX, YANDEX_DISK
 	}
 }

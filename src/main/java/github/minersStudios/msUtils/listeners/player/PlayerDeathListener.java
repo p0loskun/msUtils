@@ -17,16 +17,17 @@ public class PlayerDeathListener implements Listener {
 		Player killed = event.getEntity(), killer = event.getEntity().getKiller();
 		PlayerInfo killedInfo = new PlayerInfo(killed.getUniqueId());
 		SitPlayer sitPlayer = new SitPlayer(killed);
-		if(killer != null) {
+
+		if (killer != null) {
 			event.setDeathMessage(" " + new PlayerInfo(killer.getUniqueId()).getGoldenName() + ChatColor.of("#ffee93") + " убил " + killedInfo.getGoldenName());
 		} else {
 			event.setDeathMessage(" " + killedInfo.getGoldenName() + ChatColor.of("#ffee93") + " умер");
 		}
-		if (sitPlayer.isSitting()) {
+
+		if (sitPlayer.isSitting())
 			sitPlayer.setSitting(null);
-		}
-		if (killedInfo.hasPlayerDataFile()) {
+
+		if (killedInfo.hasPlayerDataFile())
 			killedInfo.setLastDeathLocation(killed.getLocation());
-		}
 	}
 }

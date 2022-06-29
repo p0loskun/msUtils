@@ -21,12 +21,10 @@ public class PlayerID {
 	}
 
 	/**
-	 * Adds player id in "plugins/msUtils/ids.yml"
+	 * Adds player ID in "plugins/msUtils/ids.yml"
 	 */
-	public int addPlayer(@Nonnull UUID uuid) {
-		assert (new PlayerInfo(uuid).hasPlayerDataFile()) == false;
-		List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
-		int ID = this.createNewID(list, -1);
+	private int addPlayer(@Nonnull UUID uuid) {
+		int ID = this.createNewID(new ArrayList<>(this.yamlConfiguration.getValues(true).values()), -1);
 		this.yamlConfiguration.set(uuid.toString(), ID);
 		try {
 			this.yamlConfiguration.save(this.idFile);
@@ -38,7 +36,7 @@ public class PlayerID {
 
 	/**
 	 * @param uuid player's uuid
-	 * @return player's id int
+	 * @return player's ID int
 	 */
 	public int getPlayerID(@Nonnull UUID uuid) {
 		return this.yamlConfiguration.getValues(true).containsKey(uuid.toString()) ? this.yamlConfiguration.getInt(uuid.toString()) : this.addPlayer(uuid);
@@ -62,10 +60,9 @@ public class PlayerID {
 		return null;
 	}
 
-	private int createNewID(@Nonnull List<Object> IDs, @Nullable int ID) {
-		if (ID == -1) {
+	private int createNewID(@Nonnull List<Object> IDs, int ID) {
+		if (ID == -1)
 			ID = IDs.size();
-		}
 		return IDs.contains(ID) ? createNewID(IDs, ID + 1) : ID;
 	}
 }

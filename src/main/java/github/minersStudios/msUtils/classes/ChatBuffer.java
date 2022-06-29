@@ -21,8 +21,10 @@ public class ChatBuffer {
 
 		while (message.length() > 0) {
 			delimPos = message.lastIndexOf(' ', 30);
-			if (delimPos < 0) delimPos = message.indexOf(' ', 30);
-			if (delimPos < 0) delimPos = message.length();
+			if (delimPos < 0)
+				delimPos = message.indexOf(' ', 30);
+			if (delimPos < 0)
+				delimPos = message.length();
 
 			stringBuilder.append(message, 0, delimPos);
 			message = message.substring(delimPos + 1);

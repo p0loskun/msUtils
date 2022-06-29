@@ -21,9 +21,9 @@ import java.util.function.BiFunction;
 import static github.scarsz.discordsrv.DiscordSRV.*;
 
 public final class ChatUtils {
-
-	public static final String discordGlobalChannelID = Main.plugin.getConfig().getString("discord-global-channel-id");
-	public static final String discordLocalChannelID = Main.plugin.getConfig().getString("discord-local-channel-id");
+	public static final String
+			discordGlobalChannelID = Main.plugin.getConfig().getString("discord-global-channel-id"),
+			discordLocalChannelID = Main.plugin.getConfig().getString("discord-local-channel-id");
 
 	/**
 	 * Sends fine message to target
@@ -94,15 +94,16 @@ public final class ChatUtils {
 			);
 			DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), localMessage);
 			Bukkit.getLogger().info(localMessage);
-		} else {
-			String globalMessage = playerInfo.getDefaultName() + " : " + ChatColor.of("#f2f0e3") + message;
-			Bukkit.getOnlinePlayers().forEach((player) -> {
-				if(player.getWorld() != Main.worldDark) player.sendMessage(ChatColor.of("#aba494") + " [CTD] " + globalMessage);
-			});
-			DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), globalMessage);
-			DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), ChatColor.of("#aba494") + " [CTD] " + globalMessage);
-			Bukkit.getLogger().info(globalMessage);
+			return;
 		}
+		String globalMessage = playerInfo.getDefaultName() + " : " + ChatColor.of("#f2f0e3") + message;
+		Bukkit.getOnlinePlayers().forEach((player) -> {
+			if (player.getWorld() != Main.worldDark)
+				player.sendMessage(ChatColor.of("#aba494") + " [CTD] " + globalMessage);
+		});
+		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), globalMessage);
+		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), " [CTD] " + globalMessage);
+		Bukkit.getLogger().info(globalMessage);
 	}
 
 	/**
@@ -111,12 +112,16 @@ public final class ChatUtils {
 	 * @param sender private message sender
 	 * @param receiver private message receiver
 	 * @param message private message
+	 *
+	 * @return True if sender or receiver == null
 	 */
-	public static void sendPrivateMessage(@Nonnull PlayerInfo sender, @Nonnull PlayerInfo receiver, @Nonnull String message) {
-		if(sender.getOnlinePlayer() == null || receiver.getOnlinePlayer() == null) return;
-		sender.getOnlinePlayer().sendMessage(" \uA015 " + ChatColor.of("#aba494") + "Вы" + " -> " + receiver.getDefaultName() + " : " + ChatColor.of("#f2f0e3") + message);
-		receiver.getOnlinePlayer().sendMessage(" \uA015 " + ChatColor.of("#aba494") + sender.getDefaultName() + " -> " + "Вам" + " : " + ChatColor.of("#f2f0e3") + message);
-		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), sender.getDefaultName() + " -> " + receiver.getDefaultName() + " : " + message);
+	public static boolean sendPrivateMessage(@Nonnull PlayerInfo sender, @Nonnull PlayerInfo receiver, @Nonnull String message) {
+		if (sender.getOnlinePlayer() != null && receiver.getOnlinePlayer() != null) {
+			sender.getOnlinePlayer().sendMessage(" \uA015 " + ChatColor.of("#aba494") + "Вы" + " -> " + receiver.getDefaultName() + " : " + ChatColor.of("#f2f0e3") + message);
+			receiver.getOnlinePlayer().sendMessage(" \uA015 " + ChatColor.of("#aba494") + sender.getDefaultName() + " -> " + "Вам" + " : " + ChatColor.of("#f2f0e3") + message);
+			DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), sender.getDefaultName() + " -> " + receiver.getDefaultName() + " : " + message);
+		}
+		return true;
 	}
 
 	/**
@@ -126,16 +131,18 @@ public final class ChatUtils {
 	 * @param radius message radius
 	 * @param message message
 	 */
-	public static void sendRPEventMessage(@Nonnull Player player, int radius, @Nonnull String message) {
+	public static boolean sendRPEventMessage(@Nonnull Player player, int radius, @Nonnull String message) {
 		player.getWorld().getPlayers().stream().filter((p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(radius, 2.0D)).forEach((p) -> p.sendMessage(" ꀓ " + ChatColor.GOLD + message));
 		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), message);
 		Bukkit.getLogger().info(ChatColor.GOLD + message);
+		return true;
 	}
 
 	/**
 	 * Removes first chat from message
 	 *
 	 * @param message message
+	 *
 	 * @return message without first char
 	 */
 	public static String removeFirstChar(String message) {
@@ -146,14 +153,17 @@ public final class ChatUtils {
 	 * Sends join message
 	 *
 	 * @param playerInfo playerInfo
+	 * @param player player
 	 */
 	public static void sendJoinMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player) {
 		String joinMessage =
 				" " + playerInfo.getGoldenName() + " "
 				+ ChatColor.of("#ffee93") + playerInfo.getPronouns().getJoinMessage();
-		Bukkit.getOnlinePlayers().forEach((onlinePlayer) -> {
-			if(player.getWorld() != Main.worldDark) onlinePlayer.sendMessage(joinMessage);
-		});
+
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers())
+			if (onlinePlayer.getWorld() != Main.worldDark)
+				onlinePlayer.sendMessage(joinMessage);
+
 		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> {
 			ChatUtils.sendJoinMessage(player, playerInfo, DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID));
 			ChatUtils.sendJoinMessage(player, playerInfo, DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID));
@@ -165,14 +175,17 @@ public final class ChatUtils {
 	 * Sends leave message
 	 *
 	 * @param playerInfo playerInfo
+	 * @param player player
 	 */
 	public static void sendLeaveMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player) {
 		String leaveMessage =
 				" " + playerInfo.getGoldenName() + " "
 				+ ChatColor.of("#ffee93") + playerInfo.getPronouns().getQuitMessage();
-		Bukkit.getOnlinePlayers().forEach((onlinePlayer) -> {
-			if(player.getWorld() != Main.worldDark) onlinePlayer.sendMessage(leaveMessage);
-		});
+
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers())
+			if (onlinePlayer.getWorld() != Main.worldDark)
+				onlinePlayer.sendMessage(leaveMessage);
+
 		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> {
 			ChatUtils.sendLeaveMessage(player, playerInfo, DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID));
 			ChatUtils.sendLeaveMessage(player, playerInfo, DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID));
@@ -192,14 +205,12 @@ public final class ChatUtils {
 			String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
 			String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 			BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
-				if (content == null) {
+				if (content == null)
 					return null;
-				} else {
-					content = content.replaceAll("%time%|%date%", TimeUtil.timeStamp()).replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message)).replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name).replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName).replace("%usernamenoescapes%", name).replace("%displaynamenoescapes%", displayName).replace("%embedavatarurl%", avatarUrl).replace("%botavatarurl%", botAvatarUrl).replace("%botname%", botName);
-					content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-					content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-					return content;
-				}
+				content = content.replaceAll("%time%|%date%", TimeUtil.timeStamp()).replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message)).replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name).replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName).replace("%usernamenoescapes%", name).replace("%displaynamenoescapes%", displayName).replace("%embedavatarurl%", avatarUrl).replace("%botavatarurl%", botAvatarUrl).replace("%botname%", botName);
+				content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+				content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+				return content;
 			};
 			github.scarsz.discordsrv.dependencies.jda.api.entities.Message discordMessage = translateMessage(messageFormat, translator);
 			if (discordMessage != null) {
@@ -210,7 +221,6 @@ public final class ChatUtils {
 				} else {
 					DiscordUtil.queueMessage(textChannel, discordMessage, true);
 				}
-
 			}
 		} else {
 			debug("Not sending join message due to it being disabled");
@@ -228,14 +238,12 @@ public final class ChatUtils {
 			String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
 			String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 			BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
-				if (content == null) {
+				if (content == null)
 					return null;
-				} else {
-					content = content.replaceAll("%time%|%date%", TimeUtil.timeStamp()).replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message)).replace("%username%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name)).replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName).replace("%usernamenoescapes%", name).replace("%displaynamenoescapes%", displayName).replace("%embedavatarurl%", avatarUrl).replace("%botavatarurl%", botAvatarUrl).replace("%botname%", botName);
-					content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-					content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-					return content;
-				}
+				content = content.replaceAll("%time%|%date%", TimeUtil.timeStamp()).replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message)).replace("%username%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name)).replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName).replace("%usernamenoescapes%", name).replace("%displaynamenoescapes%", displayName).replace("%embedavatarurl%", avatarUrl).replace("%botavatarurl%", botAvatarUrl).replace("%botname%", botName);
+				content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+				content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+				return content;
 			};
 			github.scarsz.discordsrv.dependencies.jda.api.entities.Message discordMessage = translateMessage(messageFormat, translator);
 			if (discordMessage != null) {
@@ -246,7 +254,6 @@ public final class ChatUtils {
 				} else {
 					DiscordUtil.queueMessage(textChannel, discordMessage, true);
 				}
-
 			}
 		} else {
 			debug("Not sending leave message due to it being disabled");

@@ -1,7 +1,6 @@
 package github.minersStudios.msUtils.listeners.player;
 
 import github.minersStudios.msUtils.classes.PlayerInfo;
-import github.minersStudios.msUtils.enums.DiskType;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.ChatColor;
@@ -27,8 +26,8 @@ public class PlayerResourcePackStatusListener implements Listener {
 			}
 			case FAILED_DOWNLOAD -> {
 				ChatUtils.sendWarning(null, player.getName() + " не установился ресурспак, диск : " + playerInfo.getDiskType());
-				if (playerInfo.getDiskType() == DiskType.DROPBOX) {
-					playerInfo.setDiskType(DiskType.YANDEX_DISK);
+				if (playerInfo.getDiskType() == ResourcePackType.DiskType.DROPBOX) {
+					playerInfo.setDiskType(ResourcePackType.DiskType.YANDEX_DISK);
 					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL());
 				} else {
 					playerInfo.setResourcePackType(ResourcePackType.NONE);

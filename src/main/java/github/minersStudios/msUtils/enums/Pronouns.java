@@ -68,7 +68,7 @@ public enum Pronouns {
 			String sitMessage,
 			String unSitMessage,
 			String deathMessage
-	){
+	) {
 		this.joinMessage = joinMessage;
 		this.quitMessage = quitMessage;
 		this.spitMessage = spitMessage;
@@ -98,9 +98,6 @@ public enum Pronouns {
 	 */
 	@Nonnull
 	public static Inventory getInventory() {
-
-		//He
-
 		ItemStack he = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
 		ItemMeta heMeta = he.getItemMeta();
 		assert heMeta != null;
@@ -110,8 +107,6 @@ public enum Pronouns {
 		heMeta.setLore(loreHe);
 		he.setItemMeta(heMeta);
 
-		//She
-
 		ItemStack she = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 		ItemMeta sheMeta = she.getItemMeta();
 		assert sheMeta != null;
@@ -120,8 +115,6 @@ public enum Pronouns {
 		loreShe.add(ChatColor.GRAY + "К вам будут обращаться как к ней");
 		sheMeta.setLore(loreShe);
 		she.setItemMeta(sheMeta);
-
-		//They
 
 		ItemStack they = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
 		ItemMeta theyMeta = they.getItemMeta();

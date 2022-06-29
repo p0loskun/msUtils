@@ -17,15 +17,14 @@ public class InventoryCloseListener implements Listener {
 	@EventHandler
 	public void onInventoryClose(@Nonnull InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
-		if (event.getView().getTitle().equalsIgnoreCase(ResourcePackType.NAME)) {
-			if(new PlayerInfo(player.getUniqueId()).getResourcePackType() == null) {
-				Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(ResourcePackType.getInventory()));
-			}
-		}
-		if (event.getView().getTitle().equalsIgnoreCase(Pronouns.NAME)) {
-			if(new PlayerInfo(player.getUniqueId()).getYamlConfiguration().getString("pronouns") == null) {
-				Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(Pronouns.getInventory()));
-			}
-		}
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		if (
+				event.getView().getTitle().equalsIgnoreCase(ResourcePackType.NAME)
+				&& playerInfo.getResourcePackType() == null
+		) Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(ResourcePackType.getInventory()));
+		if (
+				event.getView().getTitle().equalsIgnoreCase(Pronouns.NAME)
+				&& playerInfo.getYamlConfiguration().getString("pronouns") == null
+		) Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(Pronouns.getInventory()));
 	}
 }

@@ -13,9 +13,8 @@ public class PlayerDropItemListener implements Listener {
 	@EventHandler
 	public void onPlayerDropItem(@Nonnull PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
-		if(player.getWorld() == Main.worldDark) {
-			event.setCancelled(true);
-			player.updateInventory();
-		}
+		if (player.getWorld() != Main.worldDark) return;
+		event.setCancelled(true);
+		player.updateInventory();
 	}
 }
