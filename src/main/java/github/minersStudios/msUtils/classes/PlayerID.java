@@ -21,19 +21,25 @@ public class PlayerID {
 	}
 
 	/**
-	 * Adds player id in "plugins/msUtils/ids.yml"
+	 * Adds player ID to "plugins/msUtils/ids.yml"
 	 */
 	public int addPlayer(@Nonnull UUID uuid) {
-		assert (new PlayerInfo(uuid).hasPlayerDataFile()) == false;
-		List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
-		int ID = this.createNewID(list, -1);
-		this.yamlConfiguration.set(uuid.toString(), ID);
-		try {
-			this.yamlConfiguration.save(this.idFile);
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		if !(new PlayerInfo(uuid).hasPlayerDataFile()) {
+			List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
+			int ID = this.createNewID(list, -1);
+			this.yamlConfiguration.set(uuid.toString(), ID);
+			try {
+				this.yamlConfiguration.save(this.idFile);
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
+			return ID;
 		}
-		return ID;
+		this.Bukkit.getLogger().warning("addPlayer() not necessarily called. Player has Data file already.");
+		return -69;	// It must be checked somewhere, e.g. "if (ID == -69) {uuid.setValue(null)}"
+		// Тоді не потрібно буде використовувати Integer і отримувати null, це дуже тупо,
+		// краще мати exit code для помилок і потім писати помилку в консоль і щось рішати/
+		// Ну, ти зроз, я думаю.
 	}
 
 	/**
@@ -57,12 +63,13 @@ public class PlayerID {
 	@Nullable
 	private static <String, Object> String getKeyByValue(@Nonnull Map<String, Object> map, @Nonnull Object value) {
 		for (Map.Entry<String, Object> entry : map.entrySet())
-			if (Objects.equals(value, entry.getValue()))
+			if (Objects.equals(value, entry.getValue())) {
 				return entry.getKey();
+			}
 		return null;
 	}
 
-	private int createNewID(@Nonnull List<Object> IDs, @Nullable int ID) {
+	private int createNewID(@Nonnull List<Object> IDs, int ID) {
 		if (ID == -1) {
 			ID = IDs.size();
 		}

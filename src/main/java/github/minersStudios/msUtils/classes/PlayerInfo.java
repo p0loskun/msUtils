@@ -275,20 +275,19 @@ public final class PlayerInfo {
 	 * @param reason mute reason
 	 */
 	public boolean setMuted(boolean value, long time, @Nullable String reason) {
-		if(this.getNickname() == null) return false;
+		if (this.getNickname() == null) return false;
 		this.createPlayerDataFile();
 		this.yamlConfiguration.set("bans.muted", value);
 		this.yamlConfiguration.set("time.muted-to", time);
 		this.yamlConfiguration.set("bans.mute-reason", reason);
-		if(value) {
-			if(this.getOnlinePlayer() != null) {
+		if (value) {
+			if (this.getOnlinePlayer() != null) {
 				ChatUtils.sendWarning(this.getOnlinePlayer(), "Вы были замучены : " + "\n	- Причина : \"" + reason + "\"\n	- До : " + new Date(time));
 			}
-		} else if(this.getOnlinePlayer() != null) {
+		} else if (this.getOnlinePlayer() != null) {
 			ChatUtils.sendFine(this.getOnlinePlayer(), "Вы были размучены");
 		}
-		savePlayerDataFile();
-		return true;
+		return savePlayerDataFile();
 	}
 
 	/**
@@ -341,8 +340,7 @@ public final class PlayerInfo {
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
 			if (this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
 		}
-		savePlayerDataFile();
-		return true;
+		return savePlayerDataFile();
 	}
 
 	/**

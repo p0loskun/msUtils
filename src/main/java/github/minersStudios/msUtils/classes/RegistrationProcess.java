@@ -47,8 +47,7 @@ public class RegistrationProcess {
 				this.sendDialogueMessage("но тебя вижу впервые", 225L);
 				this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
 
-				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
-				return true;
+				return Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
 			}
 			return this.sendWarningMessage();
 		});
@@ -59,8 +58,7 @@ public class RegistrationProcess {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите вашу", "фамилию")).response((player, strings) -> {
 			if (strings[0].matches(regex)) {
 				this.playerInfo.setLastName(strNormalize(strings[0]));
-				Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
-				return true;
+				return Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
 			}
 			return this.sendWarningMessage();
 		});
@@ -81,8 +79,7 @@ public class RegistrationProcess {
 				this.sendDialogueMessage("Слушай, а", 100L);
 				this.sendDialogueMessage("как мне к тебе обращаться?", 150L);
 
-				Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
-				return true;
+				return Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
 			}
 			return this.sendWarningMessage();
 		});

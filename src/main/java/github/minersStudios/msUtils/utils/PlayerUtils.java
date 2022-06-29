@@ -72,20 +72,18 @@ public class PlayerUtils {
 	 * @return True if player successfully removed from whitelist
 	 */
 	public static boolean removePlayerFromWhitelist(@Nonnull OfflinePlayer offlinePlayer, @Nullable String nickname) {
-		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) return false;
-		if(nickname == null) {
-			offlinePlayer.setWhitelisted(false);
-		} else {
+		if (Bukkit.getWhitelistedPlayers().contains(offlinePlayer) && nickname != null) {
+//			if (nickname == null) offlinePlayer.setWhitelisted(false);
 			Bukkit.getScheduler().callSyncMethod(Main.plugin, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist remove " + nickname));
-		}
-		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
-			offlinePlayer.getPlayer().kickPlayer(
+			if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
+				offlinePlayer.getPlayer().kickPlayer(
 					ChatColor.RED + "\n§lВы были кикнуты"
-							+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-							+ ChatColor.GRAY + "\nПричина :\n"
-							+ ChatColor.GRAY + "\n\"Вас удалили из белого списка\""
-							+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
-			);
+						+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+						+ ChatColor.GRAY + "\nПричина :\n"
+						+ ChatColor.GRAY + "\n\"Ви негроїд))\""
+						+ ChatColor.DARK_GRAY + "\n<---====+підр====--->\n"
+				);
+			}
 		}
 		return true;
 	}
