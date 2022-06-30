@@ -73,14 +73,14 @@ public class PlayerUtils {
 	 * @return True if player successfully removed from whitelist
 	 */
 	public static boolean removePlayerFromWhitelist(@Nonnull OfflinePlayer offlinePlayer, @Nullable String nickname) {
-		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer))
-			return false;
+		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) return false;
 		if (nickname == null) {
 			offlinePlayer.setWhitelisted(false);
-		} else {
-			Bukkit.getScheduler().callSyncMethod(Main.plugin, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist remove " + nickname));
+			return true;
 		}
-		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null)
+		Bukkit.getScheduler().callSyncMethod(Main.plugin, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist remove " + nickname));
+
+		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
 			offlinePlayer.getPlayer().kickPlayer(
 					ChatColor.RED + "\n§lВы были кикнуты"
 							+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
@@ -88,6 +88,7 @@ public class PlayerUtils {
 							+ ChatColor.GRAY + "\n\"Вас удалили из белого списка\""
 							+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 			);
+		}
 		return true;
 	}
 
