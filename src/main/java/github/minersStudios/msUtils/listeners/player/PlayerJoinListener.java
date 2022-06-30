@@ -21,11 +21,10 @@ public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(@Nonnull PlayerJoinEvent event) {
-		event.setJoinMessage(null);
-
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
+		event.setJoinMessage(null);
 		Main.scoreboardHideTagsTeam.addEntry(player.getName());
 		player.setScoreboard(Main.scoreboardHideTags);
 		player.setDisplayName(playerInfo.getDefaultName());
@@ -41,12 +40,10 @@ public class PlayerJoinListener implements Listener {
 			playerInfo.setIP(player.getAddress().getHostName());
 		}
 
-		if(
+		if (
 				(playerInfo.isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
-						|| (playerInfo.isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(player.getName()))
-		) {
-			playerInfo.setBanned(false, 0, null, null);
-		}
+				|| (playerInfo.isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(player.getName()))
+		) playerInfo.setBanned(false, 0, null, null);
 
 		new BukkitRunnable() {
 			public void run() {

@@ -20,9 +20,8 @@ public class ChatBubbles {
 		spawnPoint.setY(-1);
 
 		Entity vehicle = player;
-		for (int i = chatLines.length - 1 ; i >= 0 ; i--) {
+		for (int i = chatLines.length - 1 ; i >= 0 ; i--)
 			vehicle = spawnNameTag(vehicle, chatLines[i], spawnPoint, duration, i == 0);
-		}
 		return duration;
 	}
 

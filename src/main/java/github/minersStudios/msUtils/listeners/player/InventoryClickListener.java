@@ -23,34 +23,32 @@ public class InventoryClickListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onInventoryClick(@Nonnull InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-
 		if (event.getView().getTitle().equalsIgnoreCase(ResourcePackType.NAME) && !(event.getClickedInventory() instanceof PlayerInventory)) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-
 			if (event.getSlot() == 0 || event.getSlot() == 1) {
 				playerInfo.setResourcePackType(ResourcePackType.NONE);
-				if(player.getWorld() == Main.worldDark) {
-					playerInfo.teleportToLastLeaveLocation();
-				}
 				player.closeInventory();
-				if(playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE) {
+				if (player.getWorld() == Main.worldDark)
+					playerInfo.teleportToLastLeaveLocation();
+				if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE) {
 					player.kickPlayer(
 							ChatColor.RED + "\n§lВы были кикнуты"
-									+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-									+ ChatColor.GRAY + "\nПричина :\n\""
-									+ "Этот параметр требует перезахода на сервер"
-									+ "\""
-									+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+							+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+							+ ChatColor.GRAY + "\nПричина :\n\""
+							+ "Этот параметр требует перезахода на сервер" + "\""
+							+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 					);
 				}
 			} else if (event.getSlot() == 2 || event.getSlot() == 3 || event.getSlot() == 5 || event.getSlot() == 6) {
 				playerInfo.setResourcePackType(ResourcePackType.FULL);
 				playerInfo.setDiskType(playerInfo.getDiskType());
 				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
+				player.closeInventory();
 			} else if (event.getSlot() == 7 || event.getSlot() == 8) {
 				playerInfo.setResourcePackType(ResourcePackType.LITE);
 				playerInfo.setDiskType(playerInfo.getDiskType());
 				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
+				player.closeInventory();
 			}
 			event.setCancelled(true);
 			player.updateInventory();
@@ -58,25 +56,26 @@ public class InventoryClickListener implements Listener {
 
 		if (event.getView().getTitle().equalsIgnoreCase(Pronouns.NAME) && !(event.getClickedInventory() instanceof PlayerInventory)) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-
 			if (event.getSlot() == 0 || event.getSlot() == 1 || event.getSlot() == 2) {
 				playerInfo.setPronouns(Pronouns.HE);
+				player.closeInventory();
 			} else if (event.getSlot() == 3 || event.getSlot() == 4 || event.getSlot() == 5) {
 				playerInfo.setPronouns(Pronouns.SHE);
+				player.closeInventory();
 			} else if (event.getSlot() == 6 || event.getSlot() == 7 || event.getSlot() == 8) {
 				playerInfo.setPronouns(Pronouns.THEY);
+				player.closeInventory();
 			}
-			if (playerInfo.getResourcePackType() == null) {
+			if (playerInfo.getYamlConfiguration().getString("pronouns") != null) {
 				new RegistrationProcess().setPronouns(playerInfo);
-			} else {
+			} else if (playerInfo.getResourcePackType() != null) {
 				playerInfo.teleportToLastLeaveLocation();
 			}
-			player.closeInventory();
 			event.setCancelled(true);
 			player.updateInventory();
 		}
 
-		if(player.getWorld() == Main.worldDark) {
+		if (player.getWorld() == Main.worldDark) {
 			event.setCancelled(true);
 			player.updateInventory();
 		}

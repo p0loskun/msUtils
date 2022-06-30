@@ -22,19 +22,15 @@ public class PlayerID {
 	}
 
 	/**
-	 * Adds player ID to "plugins/msUtils/ids.yml"
+	 * Adds player ID in "plugins/msUtils/ids.yml"
 	 */
-	public int addPlayer(@Nonnull UUID uuid) {
-		if (!new PlayerInfo(uuid).hasPlayerDataFile()) {
-			List<Object> list = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
-			int ID = this.createNewID(list, -1);
-			this.yamlConfiguration.set(uuid.toString(), ID);
-			try {
-				this.yamlConfiguration.save(this.idFile);
-			} catch (IOException exception) {
-				exception.printStackTrace();
-			}
-			return ID;
+	private int addPlayer(@Nonnull UUID uuid) {
+		int ID = this.createNewID(new ArrayList<>(this.yamlConfiguration.getValues(true).values()), -1);
+		this.yamlConfiguration.set(uuid.toString(), ID);
+		try {
+			this.yamlConfiguration.save(this.idFile);
+		} catch (IOException exception) {
+			exception.printStackTrace();
 		}
 		Bukkit.getLogger().warning("addPlayer() not necessarily called. Player has Data file already.");
 		return -69;	// It must be checked somewhere, e.g. "if (ID == -69) {uuid.setValue(null)}"
@@ -45,7 +41,7 @@ public class PlayerID {
 
 	/**
 	 * @param uuid player's uuid
-	 * @return player's id int
+	 * @return player's ID int
 	 */
 	public int getPlayerID(@Nonnull UUID uuid) {
 		return this.yamlConfiguration.getValues(true).containsKey(uuid.toString()) ? this.yamlConfiguration.getInt(uuid.toString()) : this.addPlayer(uuid);

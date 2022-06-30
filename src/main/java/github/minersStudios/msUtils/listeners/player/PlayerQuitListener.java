@@ -18,15 +18,13 @@ public class PlayerQuitListener implements Listener {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		SitPlayer sitPlayer = new SitPlayer(player);
-		if (sitPlayer.isSitting()) {
+		if (sitPlayer.isSitting())
 			sitPlayer.setSitting(null);
-		}
 		event.setQuitMessage(null);
 		if (playerInfo.hasPlayerDataFile() && player.getWorld() != Main.worldDark) {
-			playerInfo.setLastLeaveLocation(player.getLocation());
-			if(playerInfo.hasName()) {
+			playerInfo.setLastLeaveLocation(player);
+			if (playerInfo.hasName())
 				ChatUtils.sendLeaveMessage(playerInfo, player);
-			}
 		}
 	}
 }

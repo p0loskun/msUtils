@@ -17,25 +17,23 @@ public class GetMapLocationCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-		if (!(sender instanceof Player player)) {
+		if (!(sender instanceof Player player))
 			return ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
-		} else {
-			ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-			if (!itemInMainHand.getType().equals(Material.FILLED_MAP)) return ChatUtils.sendWarning(player, "Возьмите в правую руку карту!");
-			MapMeta mapMeta = (MapMeta) itemInMainHand.getItemMeta();
-			assert mapMeta != null;
-			MapView mapView = mapMeta.getMapView();
-			if (mapView != null && mapView.getWorld() != null) {
-				ChatUtils.sendWarning(player,
-						"Мир карты : " +
-						"\n  " + ChatColor.WHITE + mapView.getWorld().getName() +
-						"\n ꀓ " + ChatColor.GOLD + "Координаты точки центра карты : " +
-						ChatColor.GREEN + "\n	- X : " + ChatColor.WHITE + mapView.getCenterX() +
-						ChatColor.GREEN + "\n	- Y : " + ChatColor.WHITE + "~" +
-						ChatColor.GREEN + "\n	- Z : " + ChatColor.WHITE + mapView.getCenterZ()
-				);
-			}
-		}
-		return true;
+		ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+		if (!itemInMainHand.getType().equals(Material.FILLED_MAP))
+			return ChatUtils.sendWarning(player, "Возьмите в правую руку карту!");
+		MapMeta mapMeta = (MapMeta) itemInMainHand.getItemMeta();
+		assert mapMeta != null;
+		MapView mapView = mapMeta.getMapView();
+		if (mapView == null || mapView.getWorld() == null)
+			return ChatUtils.sendError(sender, "Что-то пошло не так...");
+		return ChatUtils.sendWarning(player,
+				"Мир карты : "
+				+ "\n  " + ChatColor.WHITE + mapView.getWorld().getName()
+				+ "\n ꀓ " + ChatColor.GOLD + "Координаты точки центра карты : "
+				+ ChatColor.GREEN + "\n - X : " + ChatColor.WHITE + mapView.getCenterX()
+				+ ChatColor.GREEN + "\n - Y : " + ChatColor.WHITE + "~"
+				+ ChatColor.GREEN + "\n - Z : " + ChatColor.WHITE + mapView.getCenterZ()
+		);
 	}
 }

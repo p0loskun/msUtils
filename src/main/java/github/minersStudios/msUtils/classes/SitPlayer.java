@@ -10,12 +10,13 @@ import javax.annotation.Nullable;
 
 public record SitPlayer(Player player) {
 
-	public void setSitting(@Nullable Location sitLocation) {
+	public boolean setSitting(@Nullable Location sitLocation) {
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (!this.isSitting() && sitLocation != null) {
-			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) ->{
+			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {
 				armorStand.setGravity(false);
 				armorStand.setVisible(false);
+				armorStand.setCollidable(false);
 				armorStand.addPassenger(this.player);
 				armorStand.addScoreboardTag("customDecor");
 				Main.plugin.getSeats().put(this.player.getUniqueId(), armorStand);
@@ -39,6 +40,7 @@ public record SitPlayer(Player player) {
 					+ "*"
 			);
 		}
+		return true;
 	}
 
 	public boolean isSitting() {

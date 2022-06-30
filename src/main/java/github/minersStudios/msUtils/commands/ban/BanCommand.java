@@ -15,8 +15,8 @@ import java.util.Date;
 public class BanCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-		assert args.length > 1;
-		assert (args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"));
+		if (args.length < 2 || !args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"))
+			return false;
 		long time = (long) (Float.parseFloat(args[1]) * 86400000 + System.currentTimeMillis());
 		String reason = args.length > 2 ? ChatUtils.extractMessage(args, 2) : "неизвестно";
 		if (args[0].matches("[0-99]+")) {
@@ -24,23 +24,21 @@ public class BanCommand implements CommandExecutor {
 			if (offlinePlayer == null)
 				return ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			if (!playerInfo.isBanned()) {
-				if (playerInfo.setBanned(true, time, reason, sender.getName()))
-					return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был забанен : " + "\n	- Причина : \"" + reason + "\"\n	- До : " + new Date(time));
-				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" ещё ни разу не играл на сервере, используйте пожалуйста никнем");
-			}
-			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" уже забанен");
-		} if (args[0].length() > 2) {
+			if (playerInfo.isBanned())
+				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" уже забанен");
+			if (playerInfo.setBanned(true, time, reason, sender.getName()))
+				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был забанен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
+			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" ещё ни разу не играл на сервере, используйте пожалуйста никнем");
+		}
+		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null)
 				return ChatUtils.sendError(sender, "Что-то пошло не так...");
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
-			if (!playerInfo.isBanned()) {
-				playerInfo.setBanned(true, time, reason, sender.getName());
-				ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был забанен : " + "\n	- Причина : \"" + reason + "\"\n	- До : " + new Date(time));
-				return true;
-			}
-			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" уже забанен");
+			if (playerInfo.isBanned())
+				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" уже забанен");
+			playerInfo.setBanned(true, time, reason, sender.getName());
+			return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был забанен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
 		}
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 	}

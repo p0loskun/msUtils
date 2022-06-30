@@ -1,7 +1,6 @@
 package github.minersStudios.msUtils.classes;
 
 import github.minersStudios.msUtils.Main;
-import github.minersStudios.msUtils.enums.DiskType;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
@@ -66,7 +65,7 @@ public final class PlayerInfo {
 	 * @param ip player ip
 	 */
 	public void setIP(String ip) {
-		if(this.getOnlinePlayer() == null) return;
+		if (this.getOnlinePlayer() == null) return;
 		this.yamlConfiguration.set("ip", ip);
 		this.savePlayerDataFile();
 	}
@@ -110,7 +109,7 @@ public final class PlayerInfo {
 	 * @return player ID
 	 */
 	public int getID() {
-		return new PlayerID().getPlayerID(this.uuid);
+		return this.hasPlayerDataFile() && this.getOfflinePlayer().hasPlayedBefore() ? new PlayerID().getPlayerID(this.uuid) : 0;
 	}
 
 	/**
@@ -142,7 +141,7 @@ public final class PlayerInfo {
 	 * @param firstname player's first name
 	 */
 	public void setFirstname(@Nonnull String firstname) {
-		if(!this.hasPlayerDataFile()) return;
+		if (!this.hasPlayerDataFile()) return;
 		this.firstname = firstname;
 		this.yamlConfiguration.set("name.firstname", firstname);
 		this.savePlayerDataFile();
@@ -166,7 +165,7 @@ public final class PlayerInfo {
 	 * @param lastname player's last name
 	 */
 	public void setLastName(@Nonnull String lastname) {
-		if(!this.hasPlayerDataFile()) return;
+		if (!this.hasPlayerDataFile()) return;
 		this.lastname = lastname;
 		this.yamlConfiguration.set("name.lastname", lastname);
 		this.savePlayerDataFile();
@@ -191,7 +190,7 @@ public final class PlayerInfo {
 	 * @param patronymic player's patronymic
 	 */
 	public void setPatronymic(@Nonnull String patronymic) {
-		if(!this.hasPlayerDataFile()) return;
+		if (!this.hasPlayerDataFile()) return;
 		this.patronymic = patronymic;
 		this.yamlConfiguration.set("name.patronymic", patronymic);
 		this.savePlayerDataFile();
@@ -204,7 +203,7 @@ public final class PlayerInfo {
 	 */
 	@Nonnull
 	public Pronouns getPronouns() {
-		return Pronouns.getPronounsByString(this.yamlConfiguration.getString("pronouns", "HE"));
+		return Pronouns.valueOf(this.yamlConfiguration.getString("pronouns", "HE"));
 	}
 
 	/**
@@ -213,7 +212,7 @@ public final class PlayerInfo {
 	 * @param pronouns player pronouns
 	 */
 	public void setPronouns(@Nonnull Pronouns pronouns) {
-		if(!this.hasPlayerDataFile()) return;
+		if (!this.hasPlayerDataFile()) return;
 		this.yamlConfiguration.set("pronouns", pronouns.name());
 		this.savePlayerDataFile();
 	}
@@ -234,7 +233,7 @@ public final class PlayerInfo {
 	 * @param resourcePackType resource pack type : "FULL/LITE/NONE"
 	 */
 	public void setResourcePackType(@Nonnull ResourcePackType resourcePackType) {
-		if(!this.hasPlayerDataFile()) return;
+		if (!this.hasPlayerDataFile()) return;
 		this.yamlConfiguration.set("resource-pack", resourcePackType.name());
 		savePlayerDataFile();
 	}
@@ -245,8 +244,8 @@ public final class PlayerInfo {
 	 * @return player disk type if it's != null, else returns default disk type
 	 */
 	@Nonnull
-	public DiskType getDiskType() {
-		return DiskType.getDiskTypeByString(this.yamlConfiguration.getString("disk-type", "DROPBOX"));
+	public ResourcePackType.DiskType getDiskType() {
+		return ResourcePackType.DiskType.valueOf(this.yamlConfiguration.getString("disk-type", "DROPBOX"));
 	}
 
 	/**
@@ -254,8 +253,8 @@ public final class PlayerInfo {
 	 *
 	 * @param diskType disk type : "DROPBOX/YANDEX_DISK"
 	 */
-	public void setDiskType(@Nonnull DiskType diskType) {
-		if(!this.hasPlayerDataFile()) return;
+	public void setDiskType(@Nonnull ResourcePackType.DiskType diskType) {
+		if (!this.hasPlayerDataFile()) return;
 		this.yamlConfiguration.set("disk-type", diskType.name());
 		savePlayerDataFile();
 	}
@@ -275,19 +274,16 @@ public final class PlayerInfo {
 	 * @param reason mute reason
 	 */
 	public boolean setMuted(boolean value, long time, @Nullable String reason) {
-		if (this.getNickname() == null) return false;
-		this.createPlayerDataFile();
+		if (this.getNickname() == null || !this.hasPlayerDataFile())
+			return false;
 		this.yamlConfiguration.set("bans.muted", value);
 		this.yamlConfiguration.set("time.muted-to", time);
 		this.yamlConfiguration.set("bans.mute-reason", reason);
-		if (value) {
-			if (this.getOnlinePlayer() != null) {
-				ChatUtils.sendWarning(this.getOnlinePlayer(), "Вы были замучены : " + "\n	- Причина : \"" + reason + "\"\n	- До : " + new Date(time));
-			}
-		} else if (this.getOnlinePlayer() != null) {
-			ChatUtils.sendFine(this.getOnlinePlayer(), "Вы были размучены");
-		}
 		savePlayerDataFile();
+		Player player = this.getOnlinePlayer();
+		if (player != null)
+			return value ? ChatUtils.sendWarning(player, "Вы были замучены : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time))
+					: ChatUtils.sendFine(player, "Вы были размучены");
 		return true;
 	}
 
@@ -316,32 +312,38 @@ public final class PlayerInfo {
 	 * @param reason ban reason
 	 */
 	public boolean setBanned(boolean value, long time, @Nullable String reason, @Nullable String source) {
-		if(this.getNickname() == null) return false;
-		this.createPlayerDataFile();
-		this.yamlConfiguration.set("bans.banned", value);
-		this.yamlConfiguration.set("time.banned-to", time);
-		this.yamlConfiguration.set("bans.ban-reason", reason);
-		if(value) {
+		if (this.getNickname() == null)
+			return false;
+		if (this.hasPlayerDataFile()) {
+			this.yamlConfiguration.set("bans.banned", value);
+			this.yamlConfiguration.set("time.banned-to", time);
+			this.yamlConfiguration.set("bans.ban-reason", reason);
+			savePlayerDataFile();
+		}
+		if (value) {
+			Player player = this.getOnlinePlayer();
 			Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, new Date(time), source);
-			if(this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
-			if(this.getOnlinePlayer() != null) {
-				Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(this.getOnlinePlayer().getAddress()).getHostName(), reason, new Date(time), source);
-				if (this.getOnlinePlayer().getWorld() != Main.worldDark) this.setLastLeaveLocation(this.getOnlinePlayer().getLocation());
-				this.getOnlinePlayer().kickPlayer(
+			if (this.getIP() != null)
+				Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
+			if (player != null) {
+				Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(player.getAddress()).getHostName(), reason, new Date(time), source);
+				if (player.getWorld() != Main.worldDark)
+					this.setLastLeaveLocation(player);
+				player.kickPlayer(
 						ChatColor.RED + "\n§lВы были забанены"
-								+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-								+ ChatColor.GRAY + "\nПричина :\n\""
-								+ reason
-								+ "\"\n До : \n"
-								+ new Date(time)
-								+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+						+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+						+ ChatColor.GRAY + "\nПричина :\n\""
+						+ reason
+						+ "\"\n До : \n"
+						+ new Date(time)
+						+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 				);
 			}
 		} else {
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
-			if (this.getIP() != null) Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
+			if (this.getIP() != null)
+				Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
 		}
-		savePlayerDataFile();
 		return true;
 	}
 
@@ -383,12 +385,21 @@ public final class PlayerInfo {
 	}
 
 	/**
+	 * Gets player last gamemode
+	 *
+	 * @return gamemode
+	 */
+	@Nonnull
+	public GameMode getGameMode() {
+		return GameMode.valueOf(this.yamlConfiguration.getString("gamemode", "SURVIVAL"));
+	}
+
+	/**
 	 * Teleport player to dark world and adds some effects
 	 */
-	public void teleportToDarkWorld(){
-		if (this.getOnlinePlayer() == null) return;
-
-		final Player player = this.getOnlinePlayer();
+	public void teleportToDarkWorld() {
+		Player player = this.getOnlinePlayer();
+		if (player == null) return;
 		player.setGameMode(GameMode.SPECTATOR);
 		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d));
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, -1, true, false));
@@ -397,11 +408,10 @@ public final class PlayerInfo {
 	/**
 	 * Teleport player to their last leave location and removes some effects
 	 */
-	public void teleportToLastLeaveLocation(){
-		if (this.getOnlinePlayer() == null) return;
-
-		final Player player = this.getOnlinePlayer();
-		player.setGameMode(GameMode.SURVIVAL);
+	public void teleportToLastLeaveLocation() {
+		Player player = this.getOnlinePlayer();
+		if (player == null) return;
+		player.setGameMode(this.getGameMode());
 		player.teleport(this.getLastLeaveLocation());
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
@@ -428,9 +438,11 @@ public final class PlayerInfo {
 	/**
 	 * Sets last leave location of player
 	 *
-	 * @param location last leave location
+	 * @param player online player
 	 */
-	public void setLastLeaveLocation(@Nonnull Location location) {
+	public void setLastLeaveLocation(@Nonnull Player player) {
+		Location location = player.getLocation();
+		this.yamlConfiguration.set("gamemode", player.getGameMode().toString());
 		this.yamlConfiguration.set("locations.last-leave-location.world", location.getBlock().getWorld().getName());
 		this.yamlConfiguration.set("locations.last-leave-location.x", location.getX());
 		this.yamlConfiguration.set("locations.last-leave-location.y", location.getY());
@@ -476,7 +488,7 @@ public final class PlayerInfo {
 	 * Creates new player data file in "plugins/msUtils/players/uuid.yml"
 	 */
 	public void createPlayerDataFile() {
-		if(this.hasPlayerDataFile()) return;
+		if (this.hasPlayerDataFile()) return;
 		this.yamlConfiguration.set("nickname", this.getNickname());
 		if (this.getOnlinePlayer() != null) {
 			this.yamlConfiguration.set("ip", this.getOnlinePlayer().getAddress() == null ? null : this.getOnlinePlayer().getAddress().getHostName());
