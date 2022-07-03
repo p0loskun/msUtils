@@ -11,6 +11,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
@@ -20,7 +21,7 @@ import java.util.function.BiFunction;
 
 import static github.scarsz.discordsrv.DiscordSRV.*;
 
-public final class ChatUtils {
+public class ChatUtils {
 	public static final String
 			discordGlobalChannelID = Main.plugin.getConfig().getString("discord-global-channel-id"),
 			discordLocalChannelID = Main.plugin.getConfig().getString("discord-local-channel-id");
@@ -34,13 +35,11 @@ public final class ChatUtils {
 	public static boolean sendFine(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
 			player.sendMessage(" ꀒ " + ChatColor.GREEN + message);
-			return true;
-		}
-		if (target instanceof CommandSender sender) {
+		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
 			sender.sendMessage(ChatColor.GREEN + message);
-			return true;
+		} else {
+			Bukkit.getLogger().info(ChatColor.GREEN + message);
 		}
-		Bukkit.getLogger().info(ChatColor.GREEN + message);
 		return true;
 	}
 
@@ -53,13 +52,11 @@ public final class ChatUtils {
 	public static boolean sendWarning(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
 			player.sendMessage(" ꀓ " + ChatColor.GOLD + message);
-			return true;
-		}
-		if (target instanceof CommandSender sender) {
+		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
 			sender.sendMessage(ChatColor.GOLD + message);
-			return true;
+		} else {
+			Bukkit.getLogger().warning(message);
 		}
-		Bukkit.getLogger().warning(ChatColor.GOLD + message);
 		return true;
 	}
 
@@ -72,13 +69,11 @@ public final class ChatUtils {
 	public static boolean sendError(@Nullable Object target, @Nonnull String message) {
 		if (target instanceof Player player) {
 			player.sendMessage(" ꀑ " + ChatColor.RED + message);
-			return true;
-		}
-		if (target instanceof CommandSender sender) {
+		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
 			sender.sendMessage(ChatColor.RED + message);
-			return true;
+		} else {
+			Bukkit.getLogger().severe(message);
 		}
-		Bukkit.getLogger().warning(ChatColor.RED + message);
 		return true;
 	}
 
@@ -109,7 +104,7 @@ public final class ChatUtils {
 		});
 		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), globalMessage);
 		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), " [CTD] " + globalMessage);
-		Bukkit.getLogger().info(globalMessage);
+		Bukkit.getLogger().info(ChatColor.of("#aba494") + " [CTD] " + globalMessage);
 	}
 
 	/**
@@ -184,6 +179,7 @@ public final class ChatUtils {
 	 * @param player player
 	 */
 	public static void sendLeaveMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player) {
+		if (playerInfo.hasNoName() || player.getWorld() == Main.worldDark) return;
 		String leaveMessage =
 				" " + playerInfo.getGoldenName() + " "
 				+ ChatColor.of("#ffee93") + playerInfo.getPronouns().getQuitMessage();

@@ -27,7 +27,6 @@ public class PlayerDeathListener implements Listener {
 		if (sitPlayer.isSitting())
 			sitPlayer.setSitting(null);
 
-		if (killedInfo.hasPlayerDataFile())
-			killedInfo.setLastDeathLocation(killed.getLocation());
+		killedInfo.setLastDeathLocation(killed);
 	}
 }

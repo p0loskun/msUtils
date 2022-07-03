@@ -81,19 +81,6 @@ public enum Pronouns {
 	}
 
 	/**
-	 * @param pronouns pronouns
-	 * @return Pronouns by string
-	 */
-	@Nonnull
-	public static Pronouns getPronounsByString(@Nonnull String pronouns) {
-		return switch (pronouns) {
-			case "THEY" -> THEY;
-			case "SHE" -> SHE;
-			default -> HE;
-		};
-	}
-
-	/**
 	 * @return Pronouns GUI
 	 */
 	@Nonnull

@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -19,7 +20,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class PlayerInfo {
+public class PlayerInfo {
 	private final File dataFile;
 	@Getter private final YamlConfiguration yamlConfiguration;
 	@Getter @Nonnull private final UUID uuid;
@@ -327,8 +328,7 @@ public final class PlayerInfo {
 				Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
 			if (player != null) {
 				Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(player.getAddress()).getHostName(), reason, new Date(time), source);
-				if (player.getWorld() != Main.worldDark)
-					this.setLastLeaveLocation(player);
+				this.setLastLeaveLocation(player);
 				player.kickPlayer(
 						ChatColor.RED + "\n§lВы были забанены"
 						+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
@@ -401,7 +401,7 @@ public final class PlayerInfo {
 		Player player = this.getOnlinePlayer();
 		if (player == null) return;
 		player.setGameMode(GameMode.SPECTATOR);
-		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d));
+		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, -1, true, false));
 	}
 
@@ -412,7 +412,7 @@ public final class PlayerInfo {
 		Player player = this.getOnlinePlayer();
 		if (player == null) return;
 		player.setGameMode(this.getGameMode());
-		player.teleport(this.getLastLeaveLocation());
+		player.teleport(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
 	}
@@ -441,6 +441,7 @@ public final class PlayerInfo {
 	 * @param player online player
 	 */
 	public void setLastLeaveLocation(@Nonnull Player player) {
+		if (!this.hasPlayerDataFile() || player.getWorld() == Main.worldDark) return;
 		Location location = player.getLocation();
 		this.yamlConfiguration.set("gamemode", player.getGameMode().toString());
 		this.yamlConfiguration.set("locations.last-leave-location.world", location.getBlock().getWorld().getName());
@@ -472,9 +473,11 @@ public final class PlayerInfo {
 	/**
 	 * Sets last death location of player
 	 *
-	 * @param location last death location
+	 * @param player player
 	 */
-	public void setLastDeathLocation(@Nonnull Location location) {
+	public void setLastDeathLocation(@Nonnull Player player) {
+		if (!this.hasPlayerDataFile() && player.getWorld() == Main.worldDark) return;
+		Location location = player.getLocation();
 		this.yamlConfiguration.set("locations.last-death-location.world", location.getBlock().getWorld().getName());
 		this.yamlConfiguration.set("locations.last-death-location.x", location.getX());
 		this.yamlConfiguration.set("locations.last-death-location.y", location.getY());
@@ -517,11 +520,11 @@ public final class PlayerInfo {
 	}
 
 	/**
-	 * @return True if player has name
+	 * @return True if player has no name
 	 */
-	public boolean hasName() {
-		return this.yamlConfiguration.getString("name.firstname") != null
-				&& this.yamlConfiguration.getString("name.lastname") != null
-				&& this.yamlConfiguration.getString("name.patronymic") != null;
+	public boolean hasNoName() {
+		return this.yamlConfiguration.getString("name.firstname") == null
+				|| this.yamlConfiguration.getString("name.lastname") == null
+				|| this.yamlConfiguration.getString("name.patronymic") == null;
 	}
 }

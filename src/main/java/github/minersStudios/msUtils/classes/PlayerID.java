@@ -2,15 +2,14 @@ package github.minersStudios.msUtils.classes;
 
 import github.minersStudios.msUtils.Main;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class PlayerID {
 	private final File idFile;
@@ -32,11 +31,7 @@ public class PlayerID {
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
-		Bukkit.getLogger().warning("addPlayer() not necessarily called. Player has Data file already.");
-		return -69;	// It must be checked somewhere, e.g. "if (ID == -69) {uuid.setValue(null)}"
-		// Тоді не потрібно буде використовувати Integer і отримувати null, це дуже тупо,
-		// краще мати exit code для помилок і потім писати помилку в консоль і щось рішати/
-		// Ну, ти зроз, я думаю.
+		return ID;
 	}
 
 	/**
@@ -60,16 +55,14 @@ public class PlayerID {
 	@Nullable
 	private static <String, Object> String getKeyByValue(@Nonnull Map<String, Object> map, @Nonnull Object value) {
 		for (Map.Entry<String, Object> entry : map.entrySet())
-			if (Objects.equals(value, entry.getValue())) {
+			if (Objects.equals(value, entry.getValue()))
 				return entry.getKey();
-			}
 		return null;
 	}
 
 	private int createNewID(@Nonnull List<Object> IDs, int ID) {
-		if (ID == -1) {
+		if (ID == -1)
 			ID = IDs.size();
-		}
 		return IDs.contains(ID) ? createNewID(IDs, ID + 1) : ID;
 	}
 }

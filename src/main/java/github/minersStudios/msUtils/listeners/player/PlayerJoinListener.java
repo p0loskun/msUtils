@@ -33,9 +33,9 @@ public class PlayerJoinListener implements Listener {
 		if (playerInfo.getIP() != null && player.getAddress() != null && !Objects.equals(playerInfo.getIP(), player.getAddress().getHostName())) {
 			ChatUtils.sendWarning(null,
 					"Игрок : \""
-							+ playerInfo.getGrayIDGoldName() + " "
-							+ "\" сменил свой айпи с : " + playerInfo.getIP()
-							+ "\n На : " + player.getAddress().getHostName()
+					+ playerInfo.getGrayIDGoldName() + " "
+					+ "\" сменил свой айпи с : " + playerInfo.getIP()
+					+ "\n На : " + player.getAddress().getHostName()
 			);
 			playerInfo.setIP(player.getAddress().getHostName());
 		}
@@ -51,7 +51,7 @@ public class PlayerJoinListener implements Listener {
 					this.cancel();
 				}
 				if (Main.authmeApi.isAuthenticated(player)) {
-					if (!playerInfo.hasPlayerDataFile() || (playerInfo.hasPlayerDataFile() && !playerInfo.hasName())) {
+					if (!playerInfo.hasPlayerDataFile() || (playerInfo.hasPlayerDataFile() && playerInfo.hasNoName())) {
 						this.cancel();
 						new RegistrationProcess().registerPlayer(playerInfo);
 					} else {

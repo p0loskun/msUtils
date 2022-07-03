@@ -82,9 +82,8 @@ public final class Main extends JavaPlugin {
 			sitPlayer.setSitting(null);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-			if (player.getWorld() != worldDark)
-				playerInfo.setLastLeaveLocation(player);
+			Bukkit.savePlayers();
+			new PlayerInfo(player.getUniqueId()).setLastLeaveLocation(player);
 			player.kickPlayer("Ну шо грифер, запустил свою лаг машину?");
 		}
 	}

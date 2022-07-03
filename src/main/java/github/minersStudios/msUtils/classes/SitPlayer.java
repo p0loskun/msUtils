@@ -6,6 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
 import javax.annotation.Nullable;
 
 public record SitPlayer(Player player) {
@@ -31,7 +33,7 @@ public record SitPlayer(Player player) {
 			ArmorStand armorStand = Main.plugin.getSeats().get(this.player.getUniqueId());
 			Main.plugin.getSeats().remove(this.player.getUniqueId());
 			this.player.eject();
-			this.player.teleport(armorStand.getLocation().add(0.0d, 1.7d, 0.0d));
+			this.player.teleport(armorStand.getLocation().add(0.0d, 1.7d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 			armorStand.remove();
 			ChatUtils.sendRPEventMessage(player, 25,
 					"* "

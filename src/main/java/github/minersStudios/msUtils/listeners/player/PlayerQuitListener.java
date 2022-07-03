@@ -1,6 +1,5 @@
 package github.minersStudios.msUtils.listeners.player;
 
-import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.classes.SitPlayer;
 import github.minersStudios.msUtils.utils.ChatUtils;
@@ -21,10 +20,7 @@ public class PlayerQuitListener implements Listener {
 		if (sitPlayer.isSitting())
 			sitPlayer.setSitting(null);
 		event.setQuitMessage(null);
-		if (playerInfo.hasPlayerDataFile() && player.getWorld() != Main.worldDark) {
-			playerInfo.setLastLeaveLocation(player);
-			if (playerInfo.hasName())
-				ChatUtils.sendLeaveMessage(playerInfo, player);
-		}
+		playerInfo.setLastLeaveLocation(player);
+		ChatUtils.sendLeaveMessage(playerInfo, player);
 	}
 }
