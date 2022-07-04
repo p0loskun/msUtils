@@ -13,6 +13,18 @@ import javax.annotation.Nonnull;
 import java.util.Date;
 
 public class BanCommand implements CommandExecutor {
+	SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	
+	format.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));	// After 2023 should be changed to 'Kyiv' after TZdata update
+	
+	Date date = format.parse("30-01-2014 07:48:25");
+	TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	
+	
+	
+	
+	
+	
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
 		if (args.length < 2 || !args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"))
@@ -27,7 +39,7 @@ public class BanCommand implements CommandExecutor {
 			if (playerInfo.isBanned())
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" уже забанен");
 			if (playerInfo.setBanned(true, time, reason, sender.getName()))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был забанен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
+				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был забанен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + date);
 			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" ещё ни разу не играл на сервере, используйте пожалуйста никнем");
 		}
 		if (args[0].length() > 2) {
@@ -38,7 +50,7 @@ public class BanCommand implements CommandExecutor {
 			if (playerInfo.isBanned())
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" уже забанен");
 			playerInfo.setBanned(true, time, reason, sender.getName());
-			return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был забанен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
+			return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был забанен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + date);
 		}
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 	}
