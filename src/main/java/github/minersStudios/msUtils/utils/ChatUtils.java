@@ -3,7 +3,6 @@ package github.minersStudios.msUtils.utils;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
@@ -17,9 +16,6 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.function.BiFunction;
-
-import static github.scarsz.discordsrv.DiscordSRV.*;
 
 public class ChatUtils {
 	public static final String
@@ -151,6 +147,31 @@ public class ChatUtils {
 	}
 
 	/**
+	 * Sends death message
+	 *
+	 * @param killed killed player
+	 * @param killer killer player
+	 */
+	public static void sendDeathMessage(@Nonnull Player killed, @Nullable Player killer) {
+		PlayerInfo killedInfo = new PlayerInfo(killed.getUniqueId()), killerInfo = killer != null ? new PlayerInfo(killer.getUniqueId()) : null;
+		killedInfo.setLastDeathLocation(killed);
+		String deathMessage =
+				killerInfo != null
+				? " " + killerInfo.getGoldenName() + ChatColor.of("#ffee93") + " " + killerInfo.getPronouns().getKillMessage() + " " + killedInfo.getGoldenName()
+				: " " + killedInfo.getGoldenName() + ChatColor.of("#ffee93") + " " + killedInfo.getPronouns().getDeathMessage();
+
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers())
+			if (onlinePlayer.getWorld() != Main.worldDark)
+				onlinePlayer.sendMessage(deathMessage);
+
+		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> {
+			ChatUtils.sendActionMessage(killed, DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), deathMessage, 16757024);
+			ChatUtils.sendActionMessage(killed, DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), deathMessage, 16757024);
+		});
+		Bukkit.getLogger().info(deathMessage);
+	}
+
+	/**
 	 * Sends join message
 	 *
 	 * @param playerInfo playerInfo
@@ -166,8 +187,8 @@ public class ChatUtils {
 				onlinePlayer.sendMessage(joinMessage);
 
 		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> {
-			ChatUtils.sendJoinMessage(player, playerInfo, DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID));
-			ChatUtils.sendJoinMessage(player, playerInfo, DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID));
+			ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), joinMessage, 65280);
+			ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), joinMessage, 65280);
 		});
 		Bukkit.getLogger().info(joinMessage);
 	}
@@ -189,77 +210,37 @@ public class ChatUtils {
 				onlinePlayer.sendMessage(leaveMessage);
 
 		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> {
-			ChatUtils.sendLeaveMessage(player, playerInfo, DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID));
-			ChatUtils.sendLeaveMessage(player, playerInfo, DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID));
+			ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), leaveMessage, 16711680);
+			ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), leaveMessage, 16711680);
 		});
 		Bukkit.getLogger().info(leaveMessage);
 	}
 
-
-	private static void sendJoinMessage(@Nonnull Player player, @Nonnull PlayerInfo playerInfo, @Nonnull TextChannel textChannel) {
-		MessageFormat messageFormat = new MessageFormat("", "%displayname% " + playerInfo.getPronouns().getJoinMessage(), "", "%embedavatarurl%", "", "", "", "", "", "", "", null, 65280, null, false, "", "");
-		if (messageFormat.isAnyContent()) {
-			String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? MessageUtil.strip(player.getDisplayName()) : "";
-			StringUtils.isNotBlank(null);
-			String message = "";
-			String name = player.getName();
-			String avatarUrl = getAvatarUrl(player);
-			String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-			String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-			BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
-				if (content == null)
-					return null;
-				content = content.replaceAll("%time%|%date%", TimeUtil.timeStamp()).replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message)).replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name).replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName).replace("%usernamenoescapes%", name).replace("%displaynamenoescapes%", displayName).replace("%embedavatarurl%", avatarUrl).replace("%botavatarurl%", botAvatarUrl).replace("%botname%", botName);
-				content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-				content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-				return content;
-			};
-			github.scarsz.discordsrv.dependencies.jda.api.entities.Message discordMessage = translateMessage(messageFormat, translator);
-			if (discordMessage != null) {
-				String webhookName = translator.apply(messageFormat.getWebhookName(), false);
-				String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
-				if (messageFormat.isUseWebhooks()) {
-					WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl, discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
-				} else {
-					DiscordUtil.queueMessage(textChannel, discordMessage, true);
-				}
-			}
-		} else {
-			debug("Not sending join message due to it being disabled");
-		}
-	}
-
-	private static void sendLeaveMessage(@Nonnull Player player, @Nonnull PlayerInfo playerInfo, @Nonnull TextChannel textChannel) {
-		MessageFormat messageFormat = new MessageFormat("", "%displayname% " + playerInfo.getPronouns().getQuitMessage(), "", "%embedavatarurl%", "", "", "", "", "", "", "", null, 16711680, null, false, "", "");
-		if (messageFormat.isAnyContent()) {
-			String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? MessageUtil.strip(player.getDisplayName()) : "";
-			StringUtils.isNotBlank(null);
-			String message = "";
-			String name = player.getName();
-			String avatarUrl = getAvatarUrl(player);
-			String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-			String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-			BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
-				if (content == null)
-					return null;
-				content = content.replaceAll("%time%|%date%", TimeUtil.timeStamp()).replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message)).replace("%username%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name)).replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName).replace("%usernamenoescapes%", name).replace("%displaynamenoescapes%", displayName).replace("%embedavatarurl%", avatarUrl).replace("%botavatarurl%", botAvatarUrl).replace("%botname%", botName);
-				content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-				content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-				return content;
-			};
-			github.scarsz.discordsrv.dependencies.jda.api.entities.Message discordMessage = translateMessage(messageFormat, translator);
-			if (discordMessage != null) {
-				String webhookName = translator.apply(messageFormat.getWebhookName(), false);
-				String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
-				if (messageFormat.isUseWebhooks()) {
-					WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl, discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
-				} else {
-					DiscordUtil.queueMessage(textChannel, discordMessage, true);
-				}
-			}
-		} else {
-			debug("Not sending leave message due to it being disabled");
-		}
+	private static void sendActionMessage(@Nonnull Player player, @Nonnull TextChannel textChannel, @Nonnull String actionMessage, int colorRaw) {
+		DiscordUtil.queueMessage(textChannel,
+				DiscordSRV.translateMessage(
+						new MessageFormat(
+								"",
+								actionMessage,
+								"",
+								DiscordSRV.getAvatarUrl(player),
+								"",
+								"",
+								"",
+								"",
+								"",
+								"",
+								"",
+								null,
+								colorRaw,
+								null,
+								false,
+								DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl(),
+								DiscordSRV.getPlugin().getMainGuild() != null
+								? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()
+								: DiscordUtil.getJda().getSelfUser().getName()),
+						(content, needsEscape) -> PlaceholderUtil.replacePlaceholdersToDiscord(content, player)
+				), true);
 	}
 
 	@Nonnull

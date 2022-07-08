@@ -21,7 +21,8 @@ public enum Pronouns {
 			"путник",
 			"сел",
 			"встал",
-			"умер"
+			"умер",
+			"убил"
 	),
 	SHE(
 			"зашла на сервер",
@@ -32,7 +33,8 @@ public enum Pronouns {
 			"путница",
 			"села",
 			"встала",
-			"умерла"
+			"умерла",
+			"убила"
 	),
 	THEY(
 			"зашли на сервер",
@@ -43,7 +45,8 @@ public enum Pronouns {
 			"путник",
 			"сели",
 			"встали",
-			"умерли"
+			"умерли",
+			"убили"
 	);
 
 	@Getter private final String
@@ -55,7 +58,8 @@ public enum Pronouns {
 			traveler,
 			sitMessage,
 			unSitMessage,
-			deathMessage;
+			deathMessage,
+			killMessage;
 	public static final String NAME = ChatColor.DARK_GRAY + "Выберите форму обращения";
 
 	Pronouns(
@@ -67,7 +71,8 @@ public enum Pronouns {
 			String traveler,
 			String sitMessage,
 			String unSitMessage,
-			String deathMessage
+			String deathMessage,
+			String killMessage
 	) {
 		this.joinMessage = joinMessage;
 		this.quitMessage = quitMessage;
@@ -78,6 +83,7 @@ public enum Pronouns {
 		this.sitMessage = sitMessage;
 		this.unSitMessage = unSitMessage;
 		this.deathMessage = deathMessage;
+		this.killMessage = killMessage;
 	}
 
 	/**

@@ -3,16 +3,20 @@ package github.minersStudios.msUtils.listeners.player;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.classes.RegistrationProcess;
+import github.minersStudios.msUtils.enums.Crafts;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
+import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -75,16 +79,65 @@ public class InventoryClickListener implements Listener {
 			player.updateInventory();
 		}
 
+		if (
+				event.getView().getTitle().equalsIgnoreCase(Crafts.CRAFTS_NAME)
+				&& event.getClickedInventory() != null
+				&& !(event.getClickedInventory() instanceof PlayerInventory)
+		) {
+			ItemStack lastItem = event.getClickedInventory().getItem(35),
+					firstItem = event.getClickedInventory().getItem(0);
+			if (firstItem != null) {
+				int firstItemIndex = Crafts.getItemIndex(firstItem);
+				if (event.getSlot() >= 36 && event.getSlot() <= 39 && firstItemIndex - 35 >= 0) {
+					player.openInventory(Crafts.getInventory(firstItemIndex - 35));
+				} else if (event.getSlot() == 40) {
+					player.closeInventory();
+				} else if (event.getSlot() >= 41 && event.getSlot() <= 44 && lastItem != null) {
+					player.openInventory(Crafts.getInventory(Crafts.getItemIndex(lastItem)));
+				} else if (event.getCurrentItem() != null) {
+					Crafts.openCraft(player, event.getCurrentItem(), firstItemIndex);
+				}
+			}
+			event.setCancelled(true);
+			player.updateInventory();
+		}
+
+		if (
+				event.getView().getTitle().equalsIgnoreCase(Crafts.CRAFT_NAME)
+				&& event.getClickedInventory() != null
+				&& !(event.getClickedInventory() instanceof PlayerInventory)
+		) {
+			ItemStack arrow = event.getClickedInventory().getItem(14);
+			if (arrow != null && arrow.getItemMeta() != null && event.getSlot() == 40) {
+				player.openInventory(Crafts.getInventory(arrow.getItemMeta().getCustomModelData()));
+			}
+			event.setCancelled(true);
+			player.updateInventory();
+		}
+
 		if (player.getWorld() == Main.worldDark) {
 			event.setCancelled(true);
 			player.updateInventory();
 		}
 
+		ItemStack cursor = event.getCursor(), item = event.getCurrentItem();
 		if (event.getSlot() == 39 && event.getSlotType() == InventoryType.SlotType.ARMOR) {
-			ItemStack cursor = event.getCursor(), item = event.getCurrentItem();
 			if (cursor != null && item != null && item.getType() == Material.AIR && cursor.getType() != Material.AIR) {
 				player.setItemOnCursor(null);
 				Bukkit.getScheduler().runTask(Main.plugin, () -> player.getInventory().setHelmet(cursor));
+			}
+		}
+
+		if (item != null && item.getType() != Material.AIR && event.getClickedInventory() != null) {
+			boolean remove = item.getType() == Material.BEDROCK;
+			if (!remove)
+				for (Enchantment enchantment : item.getEnchantments().keySet())
+					remove = item.getEnchantmentLevel(enchantment) > enchantment.getMaxLevel();
+			if (remove) {
+				event.setCancelled(true);
+				player.updateInventory();
+				event.getClickedInventory().setItem(event.getSlot(), new ItemStack(Material.AIR));
+				ChatUtils.sendWarning(null, " У игрока : " + player.getName() + " был убран предмет : \n" + item);
 			}
 		}
 	}
