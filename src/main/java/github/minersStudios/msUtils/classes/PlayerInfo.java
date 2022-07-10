@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Objects;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerInfo {
@@ -67,7 +67,9 @@ public class PlayerInfo {
 	 */
 	public void setIP(String ip) {
 		if (this.getOnlinePlayer() == null) return;
-		this.yamlConfiguration.set("ip", ip);
+		List<String> ips = this.yamlConfiguration.getStringList("ip");
+		ips.add(ip);
+		this.yamlConfiguration.set("ip", ips);
 		this.savePlayerDataFile();
 	}
 
@@ -77,8 +79,8 @@ public class PlayerInfo {
 	 * @return player ip
 	 */
 	@Nullable
-	public String getIP() {
-		return this.yamlConfiguration.getString("ip");
+	public List<String> getIP() {
+		return this.yamlConfiguration.getStringList("ip");
 	}
 
 	/**
@@ -254,9 +256,9 @@ public class PlayerInfo {
 	 *
 	 * @param diskType disk type : "DROPBOX/YANDEX_DISK"
 	 */
-	public void setDiskType(@Nonnull ResourcePackType.DiskType diskType) {
+	public void setDiskType(@Nullable ResourcePackType.DiskType diskType) {
 		if (!this.hasPlayerDataFile()) return;
-		this.yamlConfiguration.set("disk-type", diskType.name());
+		this.yamlConfiguration.set("disk-type", diskType != null ? diskType.name() : null);
 		savePlayerDataFile();
 	}
 
@@ -324,10 +326,7 @@ public class PlayerInfo {
 		if (value) {
 			Player player = this.getOnlinePlayer();
 			Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, new Date(time), source);
-			if (this.getIP() != null)
-				Bukkit.getBanList(BanList.Type.IP).addBan(this.getIP(), reason, new Date(time), source);
 			if (player != null) {
-				Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(player.getAddress()).getHostName(), reason, new Date(time), source);
 				this.setLastLeaveLocation(player);
 				player.kickPlayer(
 						ChatColor.RED + "\n§lВы были забанены"
@@ -341,8 +340,6 @@ public class PlayerInfo {
 			}
 		} else {
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
-			if (this.getIP() != null)
-				Bukkit.getBanList(BanList.Type.IP).pardon(this.getIP());
 		}
 		return true;
 	}
@@ -400,6 +397,8 @@ public class PlayerInfo {
 	public void teleportToDarkWorld() {
 		Player player = this.getOnlinePlayer();
 		if (player == null) return;
+		if (player.isDead())
+			player.spigot().respawn();
 		player.setGameMode(GameMode.SPECTATOR);
 		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, -1, true, false));
@@ -442,14 +441,23 @@ public class PlayerInfo {
 	 */
 	public void setLastLeaveLocation(@Nonnull Player player) {
 		if (!this.hasPlayerDataFile() || player.getWorld() == Main.worldDark) return;
-		Location location = player.getLocation();
+		Location leaveLocation = player.getLocation(), respawnLocation = player.getBedSpawnLocation() != null ? player.getBedSpawnLocation() : Main.overworld.getSpawnLocation();
 		this.yamlConfiguration.set("gamemode", player.getGameMode().toString());
-		this.yamlConfiguration.set("locations.last-leave-location.world", location.getBlock().getWorld().getName());
-		this.yamlConfiguration.set("locations.last-leave-location.x", location.getX());
-		this.yamlConfiguration.set("locations.last-leave-location.y", location.getY());
-		this.yamlConfiguration.set("locations.last-leave-location.z", location.getZ());
-		this.yamlConfiguration.set("locations.last-leave-location.yaw", location.getYaw());
-		this.yamlConfiguration.set("locations.last-leave-location.pitch", location.getPitch());
+		if (player.isDead()) {
+			this.yamlConfiguration.set("locations.last-leave-location.world", respawnLocation.getBlock().getWorld().getName());
+			this.yamlConfiguration.set("locations.last-leave-location.x", respawnLocation.getX());
+			this.yamlConfiguration.set("locations.last-leave-location.y", respawnLocation.getY());
+			this.yamlConfiguration.set("locations.last-leave-location.z", respawnLocation.getZ());
+			this.yamlConfiguration.set("locations.last-leave-location.yaw", respawnLocation.getYaw());
+			this.yamlConfiguration.set("locations.last-leave-location.pitch", respawnLocation.getPitch());
+		} else {
+			this.yamlConfiguration.set("locations.last-leave-location.world", leaveLocation.getBlock().getWorld().getName());
+			this.yamlConfiguration.set("locations.last-leave-location.x", leaveLocation.getX());
+			this.yamlConfiguration.set("locations.last-leave-location.y", leaveLocation.getY());
+			this.yamlConfiguration.set("locations.last-leave-location.z", leaveLocation.getZ());
+			this.yamlConfiguration.set("locations.last-leave-location.yaw", leaveLocation.getYaw());
+			this.yamlConfiguration.set("locations.last-leave-location.pitch", leaveLocation.getPitch());
+		}
 		this.savePlayerDataFile();
 	}
 

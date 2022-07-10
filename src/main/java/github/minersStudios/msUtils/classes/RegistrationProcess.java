@@ -44,7 +44,7 @@ public class RegistrationProcess {
 			this.playerInfo.setFirstname(strNormalize(strings[0]));
 
 			this.sendDialogueMessage("Интересно...", 25L);
-			this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем,", 100L);
+			this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем", 100L);
 			this.sendDialogueMessage("но тебя вижу впервые", 225L);
 			this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
 

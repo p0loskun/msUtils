@@ -30,6 +30,7 @@ public class PlayerResourcePackStatusListener implements Listener {
 					playerInfo.setDiskType(ResourcePackType.DiskType.YANDEX_DISK);
 					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL());
 				} else {
+					playerInfo.setDiskType(null);
 					playerInfo.setResourcePackType(ResourcePackType.NONE);
 					player.kickPlayer(
 							ChatColor.RED + "\n§lКажеться, что-то пошло не так"
