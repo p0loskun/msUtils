@@ -30,13 +30,13 @@ public class InventoryClickListener implements Listener {
 		if (event.getView().getTitle().equalsIgnoreCase(ResourcePackType.NAME) && !(event.getClickedInventory() instanceof PlayerInventory)) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 			if (event.getSlot() == 0 || event.getSlot() == 1) {
-				if (playerInfo.getResourcePackType() != ResourcePackType.NONE) {
+				if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE) {
 					player.kickPlayer(
 							ChatColor.RED + "\n§lВы были кикнуты"
-									+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-									+ ChatColor.GRAY + "\nПричина :\n\""
-									+ "Этот параметр требует перезахода на сервер" + "\""
-									+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+							+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+							+ ChatColor.GRAY + "\nПричина :\n\""
+							+ "Этот параметр требует перезахода на сервер" + "\""
+							+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 					);
 				}
 				playerInfo.setResourcePackType(ResourcePackType.NONE);
