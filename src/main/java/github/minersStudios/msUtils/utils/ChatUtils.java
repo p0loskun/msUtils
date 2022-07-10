@@ -96,11 +96,11 @@ public class ChatUtils {
 		String globalMessage = playerInfo.getDefaultName() + " : " + ChatColor.of("#f2f0e3") + message;
 		Bukkit.getOnlinePlayers().forEach((player) -> {
 			if (player.getWorld() != Main.worldDark)
-				player.sendMessage(ChatColor.of("#aba494") + " [CTD] " + globalMessage);
+				player.sendMessage(ChatColor.of("#aba494") + " [WM] " + globalMessage);
 		});
 		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), globalMessage);
-		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), " [CTD] " + globalMessage);
-		Bukkit.getLogger().info(ChatColor.of("#aba494") + " [CTD] " + globalMessage);
+		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), " [WM] " + globalMessage);
+		Bukkit.getLogger().info(ChatColor.of("#aba494") + " [WM] " + globalMessage);
 	}
 
 	/**
