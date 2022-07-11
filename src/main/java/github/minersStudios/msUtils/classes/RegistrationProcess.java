@@ -73,7 +73,7 @@ public class RegistrationProcess {
 
 			this.sendDialogueMessage(
 					"Ну вот и отлично, "
-							+ ChatColor.GRAY + "[" + this.playerInfo.getID() + "] "
+							+ ChatColor.GRAY + "[" + new PlayerID().getPlayerID(this.playerInfo.getUuid()) + "] "
 							+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
 							+ this.playerInfo.getLastname() + " "
 							+ this.playerInfo.getPatronymic(), 25L);
