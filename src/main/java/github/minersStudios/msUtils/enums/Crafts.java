@@ -1,5 +1,6 @@
 package github.minersStudios.msUtils.enums;
 
+import github.minersStudios.msBlock.crafts.planks.VerticalPlanks;
 import github.minersStudios.msDecor.crafts.home.*;
 import github.minersStudios.msDecor.crafts.home.cameras.OldCamera;
 import github.minersStudios.msDecor.crafts.home.chairs.*;
@@ -154,7 +155,16 @@ public enum Crafts {
 
     CELL(Cell.craftCell()),
 
-    BRAZIER(Brazier.craftBrazier());
+    BRAZIER(Brazier.craftBrazier()),
+
+    VERTICAL_ACACIA_PLANKS(VerticalPlanks.craftVerticalAcaciaPlanks()),
+    VERTICAL_BIRCH_PLANKS(VerticalPlanks.craftVerticalBirchPlanks()),
+    VERTICAL_CRIMSON_PLANKS(VerticalPlanks.craftVerticalCrimsonPlanks()),
+    VERTICAL_DARK_OAK_PLANKS(VerticalPlanks.craftVerticalDarkOakPlanks()),
+    VERTICAL_JUNGLE_PLANKS(VerticalPlanks.craftVerticalJunglePlanks()),
+    VERTICAL_OAK_PLANKS(VerticalPlanks.craftVerticalOakPlanks()),
+    VERTICAL_SPRUCE_PLANKS(VerticalPlanks.craftVerticalSprucePlanks()),
+    VERTICAL_WARPED_PLANKS(VerticalPlanks.craftVerticalWarpedPlanks());
 
     public static final String CRAFTS_NAME = ChatColor.DARK_GRAY + "Крафты", CRAFT_NAME = ChatColor.DARK_GRAY + "Крафт предмета";
     private final ShapedRecipe shapedRecipe;
@@ -163,7 +173,7 @@ public enum Crafts {
         this.shapedRecipe = shapedRecipe;
     }
 
-    public static int getItemIndex(@Nonnull ItemStack itemStack){
+    public static int getItemIndex(@Nonnull ItemStack itemStack) {
         for (Crafts craft : Crafts.values()) {
             if (itemStack.isSimilar(craft.shapedRecipe.getResult())) {
                 return craft.ordinal();
@@ -175,7 +185,7 @@ public enum Crafts {
     public static void openCraft(@Nonnull Player player, @Nonnull ItemStack itemStack, int pageIndex) {
         for (Crafts craft : Crafts.values()) {
             if (itemStack.isSimilar(craft.shapedRecipe.getResult())) {
-                Inventory inventory = Bukkit.createInventory(null, 5*9, CRAFT_NAME);
+                Inventory inventory = Bukkit.createInventory(null, 5 * 9, CRAFT_NAME);
                 int i = 0;
                 for (String shape : craft.shapedRecipe.getShape()) {
                     for (Character character : shape.toCharArray()) {
@@ -239,7 +249,7 @@ public enum Crafts {
     }
 
     @Nonnull
-    private static ItemStack[] getPreviousPageButton(){
+    private static ItemStack[] getPreviousPageButton() {
         ItemStack previousPage = new ItemStack(Material.WHITE_STAINED_GLASS_PANE), previousPageNoCMD = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
         ItemMeta previousPageMeta = previousPage.getItemMeta(), previousPageMetaNoCMD = previousPageNoCMD.getItemMeta();
         assert previousPageMeta != null && previousPageMetaNoCMD != null;
@@ -252,7 +262,7 @@ public enum Crafts {
     }
 
     @Nonnull
-    private static ItemStack[] getNextPageButton(){
+    private static ItemStack[] getNextPageButton() {
         ItemStack nextPage = new ItemStack(Material.WHITE_STAINED_GLASS_PANE), nextPageNoCMD = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
         ItemMeta nextPageMeta = nextPage.getItemMeta(), nextPageMetaNoCMD = nextPageNoCMD.getItemMeta();
         assert nextPageMeta != null && nextPageMetaNoCMD != null;
@@ -265,7 +275,7 @@ public enum Crafts {
     }
 
     @Nonnull
-    private static ItemStack getQuitButton(){
+    private static ItemStack getQuitButton() {
         ItemStack quit = new ItemStack(Material.BARRIER);
         ItemMeta quitMeta = quit.getItemMeta();
         assert quitMeta != null;
@@ -276,7 +286,7 @@ public enum Crafts {
     }
 
     @Nonnull
-    private static ItemStack getArrow(int pageIndex){
+    private static ItemStack getArrow(int pageIndex) {
         ItemStack arrow = new ItemStack(Material.MAGENTA_GLAZED_TERRACOTTA);
         ItemMeta arrowMeta = arrow.getItemMeta();
         assert arrowMeta != null;

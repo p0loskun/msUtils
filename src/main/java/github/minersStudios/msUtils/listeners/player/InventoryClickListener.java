@@ -44,18 +44,18 @@ public class InventoryClickListener implements Listener {
 				if (player.getWorld() == Main.worldDark)
 					playerInfo.teleportToLastLeaveLocation();
 			} else if (event.getSlot() == 2 || event.getSlot() == 3 || event.getSlot() == 5 || event.getSlot() == 6) {
+				player.closeInventory();
 				playerInfo.setResourcePackType(ResourcePackType.FULL);
 				playerInfo.setDiskType(playerInfo.getDiskType());
 				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
-				player.closeInventory();
 			} else if (event.getSlot() == 7 || event.getSlot() == 8) {
+				player.closeInventory();
 				playerInfo.setResourcePackType(ResourcePackType.LITE);
 				playerInfo.setDiskType(playerInfo.getDiskType());
 				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
-				player.closeInventory();
 			}
 			event.setCancelled(true);
-			player.updateInventory();
+			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
 		if (event.getView().getTitle().equalsIgnoreCase(Pronouns.NAME) && !(event.getClickedInventory() instanceof PlayerInventory)) {
@@ -76,7 +76,7 @@ public class InventoryClickListener implements Listener {
 				playerInfo.teleportToLastLeaveLocation();
 			}
 			event.setCancelled(true);
-			player.updateInventory();
+			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
 		if (
@@ -86,7 +86,7 @@ public class InventoryClickListener implements Listener {
 		) {
 			ItemStack lastItem = event.getClickedInventory().getItem(35),
 					firstItem = event.getClickedInventory().getItem(0);
-			if (firstItem != null) {
+			if (firstItem != null && !event.getClick().isCreativeAction()) {
 				int firstItemIndex = Crafts.getItemIndex(firstItem);
 				if (event.getSlot() >= 36 && event.getSlot() <= 39 && firstItemIndex - 35 >= 0) {
 					player.openInventory(Crafts.getInventory(firstItemIndex - 35));
@@ -98,8 +98,8 @@ public class InventoryClickListener implements Listener {
 					Crafts.openCraft(player, event.getCurrentItem(), firstItemIndex);
 				}
 			}
-			event.setCancelled(true);
-			player.updateInventory();
+			event.setCancelled(!event.getClick().isCreativeAction());
+			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
 		if (
@@ -111,13 +111,13 @@ public class InventoryClickListener implements Listener {
 			if (arrow != null && arrow.getItemMeta() != null && event.getSlot() == 40) {
 				player.openInventory(Crafts.getInventory(arrow.getItemMeta().getCustomModelData()));
 			}
-			event.setCancelled(true);
-			player.updateInventory();
+			event.setCancelled(!event.getClick().isCreativeAction());
+			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
 		if (player.getWorld() == Main.worldDark) {
 			event.setCancelled(true);
-			player.updateInventory();
+			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
 		ItemStack cursor = event.getCursor(), item = event.getCurrentItem();
@@ -134,10 +134,10 @@ public class InventoryClickListener implements Listener {
 				for (Enchantment enchantment : item.getEnchantments().keySet())
 					remove = item.getEnchantmentLevel(enchantment) > enchantment.getMaxLevel();
 			if (remove) {
-				event.setCancelled(true);
-				player.updateInventory();
 				event.getClickedInventory().setItem(event.getSlot(), new ItemStack(Material.AIR));
 				ChatUtils.sendWarning(null, " У игрока : " + player.getName() + " был убран предмет : \n" + item);
+				event.setCancelled(true);
+				Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 			}
 		}
 	}
