@@ -24,9 +24,7 @@ public class UnBanCommand implements CommandExecutor {
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (!playerInfo.isBanned())
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" не забанен");
-			if (playerInfo.setBanned(false, 0, null, null))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был разбанен");
-			return ChatUtils.sendError(sender, "Что-то пошло не так...");
+			return playerInfo.setBanned(false, sender);
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
@@ -35,9 +33,7 @@ public class UnBanCommand implements CommandExecutor {
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			if (!playerInfo.isBanned())
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" не забанен");
-			if (playerInfo.setBanned(false, 0, null, null))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был разбанен");
-			return ChatUtils.sendError(sender, "Что-то пошло не так...");
+			return playerInfo.setBanned(false, sender);
 		}
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 	}

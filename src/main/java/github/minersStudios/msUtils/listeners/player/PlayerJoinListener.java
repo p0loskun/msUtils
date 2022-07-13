@@ -40,7 +40,7 @@ public class PlayerJoinListener implements Listener {
 		if (
 				(playerInfo.isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
 				|| (playerInfo.isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(player.getName()))
-		) playerInfo.setBanned(false, 0, null, null);
+		) playerInfo.setBanned(false, null);
 
 		new BukkitRunnable() {
 			public void run() {

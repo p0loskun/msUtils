@@ -12,8 +12,10 @@ import org.json.simple.parser.ParseException;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.time.ZoneId;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -130,5 +132,22 @@ public class PlayerUtils {
 						+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 		);
 		return true;
+	}
+
+	@Nonnull
+	public static String getTimezone(@Nonnull InetSocketAddress ip) {
+		try {
+			BufferedReader stream = new BufferedReader(new InputStreamReader(new URL("http://ip-api.com/json/" + ip.getHostName()).openStream()));
+			StringBuilder entirePage = new StringBuilder();
+			String inputLine;
+			while((inputLine = stream.readLine()) != null) {
+				entirePage.append(inputLine);
+			}
+			stream.close();
+			return !entirePage.toString().contains("\"timezone\":\"") ? ZoneId.systemDefault().toString() : entirePage.toString().split("\"timezone\":\"")[1].split("\",")[0];
+		} catch (IOException exception) {
+			exception.printStackTrace();
+			return ZoneId.systemDefault().toString();
+		}
 	}
 }

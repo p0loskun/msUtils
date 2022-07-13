@@ -22,7 +22,7 @@ public class AsyncChatListener implements Listener {
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
 		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0)
-			playerInfo.setMuted(false, 0, null);
+			playerInfo.setMuted(false, null);
 
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, "Вы замучены");

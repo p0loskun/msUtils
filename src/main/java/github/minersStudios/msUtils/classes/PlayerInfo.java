@@ -4,8 +4,10 @@ import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import lombok.Getter;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -16,6 +18,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -269,6 +274,10 @@ public class PlayerInfo {
 		return this.yamlConfiguration.getBoolean("bans.muted", false);
 	}
 
+	public boolean setMuted(boolean value, CommandSender commandSender) {
+		return this.setMuted(value, 0, null, commandSender);
+	}
+
 	/**
 	 * Mutes/unmutes player
 	 *
@@ -276,17 +285,39 @@ public class PlayerInfo {
 	 * @param time mutes for time
 	 * @param reason mute reason
 	 */
-	public boolean setMuted(boolean value, long time, @Nullable String reason) {
+	public boolean setMuted(boolean value, long time, @Nullable String reason, CommandSender sender) {
 		if (this.getNickname() == null || !this.hasPlayerDataFile())
-			return false;
+			return ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
 		this.yamlConfiguration.set("bans.muted", value);
 		this.yamlConfiguration.set("time.muted-to", time);
 		this.yamlConfiguration.set("bans.mute-reason", reason);
 		savePlayerDataFile();
 		Player player = this.getOnlinePlayer();
-		if (player != null)
-			return value ? ChatUtils.sendWarning(player, "Вы были замучены : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time))
-					: ChatUtils.sendFine(player, "Вы были размучены");
+		if (value && player != null && player.getAddress() != null) {
+			ChatUtils.sendFine(
+					sender,
+					"Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был замучен : "
+					+ "\n    - Причина : \""
+					+ reason
+					+ "\"\n    - До : "
+					+ Instant.ofEpochMilli(time).atZone(
+					sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
+							? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
+							: ZoneId.systemDefault()
+					).format(DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mm z"))
+			);
+			ChatUtils.sendWarning(
+					player,
+					"Вы были замучены : "
+					+ "\n    - Причина : \""
+					+ reason
+					+ "\"\n    - До : "
+					+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mm z"))
+			);
+		} else {
+			ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был размучен");
+			ChatUtils.sendFine(player, "Вы были размучены");
+		}
 		return true;
 	}
 
@@ -307,6 +338,10 @@ public class PlayerInfo {
 		return this.getNickname() != null && (Bukkit.getBanList(BanList.Type.NAME).isBanned(this.getNickname()) || this.yamlConfiguration.getBoolean("bans.banned", false));
 	}
 
+	public boolean setBanned(boolean value, CommandSender commandSender) {
+		return this.setBanned(value, 0, null, commandSender);
+	}
+
 	/**
 	 * Bans/unbans player
 	 *
@@ -314,19 +349,19 @@ public class PlayerInfo {
 	 * @param time bans for time
 	 * @param reason ban reason
 	 */
-	public boolean setBanned(boolean value, long time, @Nullable String reason, @Nullable String source) {
+	public boolean setBanned(boolean value, long time, @Nullable String reason, @Nullable CommandSender sender) {
 		if (this.getNickname() == null)
-			return false;
+			return ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере, используйте пожалуйста никнем");
 		if (this.hasPlayerDataFile()) {
 			this.yamlConfiguration.set("bans.banned", value);
 			this.yamlConfiguration.set("time.banned-to", time);
 			this.yamlConfiguration.set("bans.ban-reason", reason);
 			savePlayerDataFile();
 		}
-		if (value) {
+		if (value && sender != null) {
 			Player player = this.getOnlinePlayer();
-			Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, new Date(time), source);
-			if (player != null) {
+			Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, new Date(time), sender.getName());
+			if (player != null && player.getAddress() != null) {
 				this.setLastLeaveLocation(player);
 				player.kickPlayer(
 						ChatColor.RED + "\n§lВы были забанены"
@@ -334,12 +369,24 @@ public class PlayerInfo {
 						+ ChatColor.GRAY + "\nПричина :\n\""
 						+ reason
 						+ "\"\n До : \n"
-						+ new Date(time)
+						+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mm z"))
 						+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 				);
 			}
+			ChatUtils.sendFine(sender,
+					"Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был забанен : "
+					+ "\n    - Причина : \""
+					+ reason
+					+ "\"\n    - До : "
+					+ Instant.ofEpochMilli(time).atZone(
+							sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
+							? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
+							: ZoneId.systemDefault()
+					).format(DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mm z"))
+			);
 		} else {
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
+			ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был разбанен");
 		}
 		return true;
 	}

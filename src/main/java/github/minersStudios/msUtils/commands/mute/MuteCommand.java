@@ -10,7 +10,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nonnull;
-import java.util.Date;
 
 public class MuteCommand implements CommandExecutor {
 
@@ -27,9 +26,7 @@ public class MuteCommand implements CommandExecutor {
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (playerInfo.isMuted())
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" уже замучен");
-			if (playerInfo.setMuted(true, time, reason))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был замучен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
-			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" ещё ни разу не играл на сервере");
+			return playerInfo.setMuted(true, time, reason, sender);
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
@@ -38,9 +35,7 @@ public class MuteCommand implements CommandExecutor {
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			if (playerInfo.isMuted())
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" уже замучен");
-			if (playerInfo.setMuted(true, time, reason))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был замучен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + new Date(time));
-			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" ещё ни разу не играл на сервере");
+			return playerInfo.setMuted(true, time, reason, sender);
 		}
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 	}

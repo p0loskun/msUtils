@@ -24,9 +24,7 @@ public class UnMuteCommand implements CommandExecutor {
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (!playerInfo.isMuted())
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" не замучен");
-			if (playerInfo.setMuted(false, 0, null))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был размучен");
-			return ChatUtils.sendError(sender, "Что-то пошло не так...");
+			return playerInfo.setMuted(false, sender);
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
@@ -35,9 +33,7 @@ public class UnMuteCommand implements CommandExecutor {
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			if (!playerInfo.isMuted())
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" не замучен");
-			if (playerInfo.setMuted(false, 0, null))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был размучен");
-			return ChatUtils.sendError(sender, "Что-то пошло не так...");
+			return playerInfo.setMuted(false, sender);
 		}
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 	}
