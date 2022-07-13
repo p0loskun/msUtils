@@ -24,7 +24,7 @@ public class KickCommand implements CommandExecutor {
 				return ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (PlayerUtils.kickPlayer(offlinePlayer, reason))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был кикнут : " + "\n	- Причина : \"" + reason);
+				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был кикнут : " + "\n    - Причина : \"" + reason);
 			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" не в сети!");
 		}
 		if (args[0].length() > 2) {
@@ -33,7 +33,7 @@ public class KickCommand implements CommandExecutor {
 				return ChatUtils.sendError(sender, "Что-то пошло не так...");
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (PlayerUtils.kickPlayer(offlinePlayer, reason))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был кикнут : " + "\n	- Причина : \"" + reason);
+				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был кикнут : " + "\n    - Причина : \"" + reason);
 			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" не в сети!");
 		}
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
