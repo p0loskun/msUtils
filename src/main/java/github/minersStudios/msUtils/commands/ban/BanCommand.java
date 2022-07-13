@@ -15,9 +15,12 @@ import java.time.*;
 public class BanCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-		ZonedDateTime now = ZonedDateTime.now("Europe/Kiev");
+		// Capture the time
+		Instant instant = Instant.now();
+		ZoneId KyivTZ = ZoneId.of("Europe/Kiev");
+		ZonedDateTime now = instant.atZone(KyivTZ);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, d-MM-yyyy H:mm:ss z");
-		String date = now.format(formatter);	// Get the current time with applied formatting already
+		String date = now.format(formatter);
 
 		if (args.length < 2 || !args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)")) return false;
 		long time = (long) (Float.parseFloat(args[1]) * 86400000 + System.currentTimeMillis());
