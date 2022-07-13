@@ -45,7 +45,7 @@ public class RegistrationProcess {
 
 			this.sendDialogueMessage("Интересно...", 25L);
 			this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем", 100L);
-			this.sendDialogueMessage("но тебя вижу впервые", 225L);
+			this.sendDialogueMessage("Но тебя вижу впервые", 225L);
 			this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
 
 			Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
@@ -77,8 +77,8 @@ public class RegistrationProcess {
 							+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
 							+ this.playerInfo.getLastname() + " "
 							+ this.playerInfo.getPatronymic(), 25L);
-			this.sendDialogueMessage("Слушай,", 100L);
-			this.sendDialogueMessage("а как мне к тебе обращаться?", 150L);
+			this.sendDialogueMessage("Слушай", 100L);
+			this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
 
 			Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
 			return true;
@@ -86,14 +86,15 @@ public class RegistrationProcess {
 		menu.open(this.player);
 	}
 
-	public void setPronouns(@Nonnull PlayerInfo playerInfo) {
+	public void setPronouns(@Nonnull Player player, @Nonnull PlayerInfo playerInfo) {
+		this.player = player;
+		this.playerLocation = player.getLocation();
 		this.playerInfo = playerInfo;
-		this.player = playerInfo.getOnlinePlayer();
 
 		this.sendDialogueMessage("Славно", 25L);
 		this.sendDialogueMessage("Ну что же...", 75L);
 		this.sendDialogueMessage("Мне уже пора", 125L);
-		this.sendDialogueMessage("Хорошей " + playerInfo.getPronouns().getPronouns() + " дороги, " + playerInfo.getPronouns().getTraveler(), 175L);
+		this.sendDialogueMessage("Хорошей " + this.playerInfo.getPronouns().getPronouns() + " дороги, " + this.playerInfo.getPronouns().getTraveler(), 175L);
 
 		Bukkit.getScheduler().runTaskLater(Main.plugin, this::setOther, 225L);
 	}

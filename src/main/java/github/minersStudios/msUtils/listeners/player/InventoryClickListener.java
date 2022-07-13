@@ -71,7 +71,7 @@ public class InventoryClickListener implements Listener {
 				player.closeInventory();
 			}
 			if (playerInfo.getYamlConfiguration().getString("pronouns") != null) {
-				new RegistrationProcess().setPronouns(playerInfo);
+				new RegistrationProcess().setPronouns(player, playerInfo);
 			} else if (playerInfo.getResourcePackType() != null) {
 				playerInfo.teleportToLastLeaveLocation();
 			}

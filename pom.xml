@@ -6,7 +6,7 @@
 
     <groupId>github.minersStudios</groupId>
     <artifactId>msUtils</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <packaging>jar</packaging>
 
     <name>msUtils</name>
@@ -117,14 +117,14 @@
             <artifactId>msDecor</artifactId>
             <scope>system</scope>
             <systemPath>C:/Users/Богдан/Documents/Miners Studios/WhoMine/msDecor/out/artifacts/msDecor_jar/msDecor.jar</systemPath>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </dependency>
         <dependency>
             <groupId>github.minersStudios</groupId>
             <artifactId>msBlock</artifactId>
             <scope>system</scope>
             <systemPath>C:/Users/Богдан/Documents/Miners Studios/WhoMine/msBlock/out/artifacts/msBlock_jar/msBlock.jar</systemPath>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </dependency>
     </dependencies>
 </project>

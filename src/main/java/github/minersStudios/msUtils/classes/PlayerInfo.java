@@ -112,7 +112,7 @@ public class PlayerInfo {
 	 * @return player ID
 	 */
 	public int getID() {
-		return this.hasPlayerDataFile() && this.getOfflinePlayer().hasPlayedBefore() ? new PlayerID().getPlayerID(this.uuid) : 0;
+		return this.hasPlayerDataFile() ? new PlayerID().getPlayerID(this.uuid) : 0;
 	}
 
 	/**
