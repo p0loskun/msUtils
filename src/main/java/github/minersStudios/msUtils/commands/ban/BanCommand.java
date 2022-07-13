@@ -10,19 +10,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nonnull;
-import java.util.Date;
-import java.util.TimeZone;
-import java.text.SimpleDateFormat;
+import java.time.*;
 
 public class BanCommand implements CommandExecutor {
 	@Override
-	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) throws ParseException {
-		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
-		format.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));	// After 2023 should be changed to 'Kyiv' after TZdata update
-
-		Date date = format.parse("30-01-2014 07:48:25");
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+		ZonedDateTime now = ZonedDateTime.now("Europe/Kiev");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, d-MM-yyyy H:mm:ss z");
+		String date = now.format(formatter);	// Get the current time with applied formatting already
 
 		if (args.length < 2 || !args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)")) return false;
 		long time = (long) (Float.parseFloat(args[1]) * 86400000 + System.currentTimeMillis());
@@ -32,10 +27,12 @@ public class BanCommand implements CommandExecutor {
 			if (offlinePlayer == null) {
 				return ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 			}
+
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (playerInfo.isBanned()) {
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" уже забанен");
 			}
+
 			if (playerInfo.setBanned(true, time, reason, sender.getName())) {
 				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был забанен : " + "\n\t- Причина : \"" + reason + "\"\n\t- До : " + date);
 			}
@@ -46,10 +43,12 @@ public class BanCommand implements CommandExecutor {
 			if (offlinePlayer == null) {
 				return ChatUtils.sendError(sender, "Что-то пошло не так...");
 			}
+
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			if (playerInfo.isBanned()) {
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" уже забанен");
 			}
+
 			playerInfo.setBanned(true, time, reason, sender.getName());
 			return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был забанен : " + "\n\t- Причина : \"" + reason + "\"\n\t- До : " + date);
 		}
