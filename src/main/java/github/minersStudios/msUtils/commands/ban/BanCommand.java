@@ -11,14 +11,16 @@ import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nonnull;
 import java.util.Date;
+import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
 public class BanCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	
+
 		format.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));	// After 2023 should be changed to 'Kyiv' after TZdata update
-	
+
 		Date date = format.parse("30-01-2014 07:48:25");
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
