@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 
 public class BanCommand implements CommandExecutor {
 	@Override
-	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 		format.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));	// After 2023 should be changed to 'Kyiv' after TZdata update
@@ -37,7 +37,7 @@ public class BanCommand implements CommandExecutor {
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" уже забанен");
 			}
 			if (playerInfo.setBanned(true, time, reason, sender.getName())) {
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был забанен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + date);
+				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был забанен : " + "\n\t- Причина : \"" + reason + "\"\n\t- До : " + date);
 			}
 			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" ещё ни разу не играл на сервере, используйте пожалуйста никнем");
 		}
@@ -51,7 +51,7 @@ public class BanCommand implements CommandExecutor {
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" уже забанен");
 			}
 			playerInfo.setBanned(true, time, reason, sender.getName());
-			return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был забанен : " + "\n    - Причина : \"" + reason + "\"\n    - До : " + date);
+			return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был забанен : " + "\n\t- Причина : \"" + reason + "\"\n\t- До : " + date);
 		}
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 	}
