@@ -13,20 +13,15 @@ import javax.annotation.Nonnull;
 import java.util.Date;
 
 public class BanCommand implements CommandExecutor {
-	SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	
-	format.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));	// After 2023 should be changed to 'Kyiv' after TZdata update
-	
-	Date date = format.parse("30-01-2014 07:48:25");
-	TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-	
-	
-	
-	
-	
-	
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	
+		format.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));	// After 2023 should be changed to 'Kyiv' after TZdata update
+	
+		Date date = format.parse("30-01-2014 07:48:25");
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
 		if (args.length < 2 || !args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"))
 			return false;
 		long time = (long) (Float.parseFloat(args[1]) * 86400000 + System.currentTimeMillis());
