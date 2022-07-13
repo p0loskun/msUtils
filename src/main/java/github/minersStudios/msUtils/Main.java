@@ -77,12 +77,12 @@ public final class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		Bukkit.savePlayers();
 		for (UUID uuid : this.seats.keySet()) {
 			SitPlayer sitPlayer = new SitPlayer(Bukkit.getPlayer(uuid));
 			sitPlayer.setSitting(null);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			Bukkit.savePlayers();
 			new PlayerInfo(player.getUniqueId()).setLastLeaveLocation(player);
 			player.kickPlayer("Ну шо грифер, запустил свою лаг машину?");
 		}
@@ -103,6 +103,7 @@ public final class Main extends JavaPlugin {
 		Objects.requireNonNull(this.getCommand("kick")).setTabCompleter(new AllLocalPlayers());
 
 		Objects.requireNonNull(this.getCommand("getmaploc")).setExecutor(new GetMapLocationCommand());
+		Objects.requireNonNull(this.getCommand("crafts")).setExecutor(new CraftsCommand());
 		Objects.requireNonNull(this.getCommand("resourcepack")).setExecutor(new ResourcePackCommand());
 		Objects.requireNonNull(this.getCommand("rp")).setExecutor(new ResourcePackCommand());
 		Objects.requireNonNull(this.getCommand("info")).setExecutor(new InfoCommand());

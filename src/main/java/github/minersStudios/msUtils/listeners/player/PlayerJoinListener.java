@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 public class PlayerJoinListener implements Listener {
 
@@ -30,12 +29,10 @@ public class PlayerJoinListener implements Listener {
 		player.setDisplayName(playerInfo.getDefaultName());
 		playerInfo.teleportToDarkWorld();
 
-		if (playerInfo.getIP() != null && player.getAddress() != null && !Objects.equals(playerInfo.getIP(), player.getAddress().getHostName())) {
+		if (playerInfo.getIP() != null && player.getAddress() != null && !playerInfo.getIP().contains(player.getAddress().getHostName())) {
 			ChatUtils.sendWarning(null,
-					"Игрок : \""
-					+ playerInfo.getGrayIDGoldName() + " "
-					+ "\" сменил свой айпи с : " + playerInfo.getIP()
-					+ "\n На : " + player.getAddress().getHostName()
+					"Игроку : \"" + playerInfo.getGrayIDGoldName() + " "
+					+ "\" был добавлен новый айпи адресс : " + player.getAddress().getHostName()
 			);
 			playerInfo.setIP(player.getAddress().getHostName());
 		}

@@ -1,5 +1,6 @@
 package github.minersStudios.msUtils.listeners;
 
+import github.minersStudios.msUtils.listeners.block.PistonListener;
 import github.minersStudios.msUtils.listeners.chat.*;
 import github.minersStudios.msUtils.listeners.entity.*;
 import github.minersStudios.msUtils.listeners.player.*;
@@ -12,6 +13,8 @@ public class RegEvents {
 
 	public RegEvents() {
 		PluginManager pluginManager = plugin.getServer().getPluginManager();
+
+		pluginManager.registerEvents(new PistonListener(), plugin);
 
 		DiscordSRV.api.subscribe(new DiscordSRVListener());
 		pluginManager.registerEvents(new AsyncChatListener(), plugin);
