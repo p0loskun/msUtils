@@ -59,7 +59,7 @@ public final class Main extends JavaPlugin {
 			exception.printStackTrace();
 		}
 
-		new RegEvents();
+		RegEvents.init();
 		new RotateSeatTask();
 		this.generateWorld();
 		this.registerCommands();
@@ -79,8 +79,7 @@ public final class Main extends JavaPlugin {
 	public void onDisable() {
 		Bukkit.savePlayers();
 		for (UUID uuid : this.seats.keySet()) {
-			SitPlayer sitPlayer = new SitPlayer(Bukkit.getPlayer(uuid));
-			sitPlayer.setSitting(null);
+			new SitPlayer(Bukkit.getPlayer(uuid)).setSitting(null);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			new PlayerInfo(player.getUniqueId()).setLastLeaveLocation(player);

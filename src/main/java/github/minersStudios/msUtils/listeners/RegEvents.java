@@ -11,7 +11,7 @@ import static github.minersStudios.msUtils.Main.plugin;
 
 public class RegEvents {
 
-	public RegEvents() {
+	public static void init() {
 		PluginManager pluginManager = plugin.getServer().getPluginManager();
 
 		pluginManager.registerEvents(new PistonListener(), plugin);

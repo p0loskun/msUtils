@@ -34,9 +34,9 @@ public class PlayerResourcePackStatusListener implements Listener {
 					playerInfo.setResourcePackType(ResourcePackType.NONE);
 					player.kickPlayer(
 							ChatColor.RED + "\n§lКажеться, что-то пошло не так"
-									+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-									+ ChatColor.GRAY + "\nОбратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n\"Без текстурпака\""
-									+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+							+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+							+ ChatColor.GRAY + "\nОбратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n\"Без текстурпака\""
+							+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 					);
 				}
 			}
@@ -44,9 +44,9 @@ public class PlayerResourcePackStatusListener implements Listener {
 				ChatUtils.sendWarning(null, player.getName() + " не принял ресурспак");
 				player.kickPlayer(
 						ChatColor.RED + "\n§lКажеться, что-то пошло не так"
-								+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-								+ ChatColor.GRAY + "\nВ настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\""
-								+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+						+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+						+ ChatColor.GRAY + "\nВ настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\""
+						+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 				);
 			}
 		}

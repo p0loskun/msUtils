@@ -85,10 +85,10 @@ public class PlayerUtils {
 		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null)
 			offlinePlayer.getPlayer().kickPlayer(
 					ChatColor.RED + "\n§lВы были кикнуты"
-							+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-							+ ChatColor.GRAY + "\nПричина :\n"
-							+ ChatColor.GRAY + "\n\"Вас удалили из белого списка\""
-							+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+					+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+					+ ChatColor.GRAY + "\nПричина :\n"
+					+ ChatColor.GRAY + "\n\"Вас удалили из белого списка\""
+					+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 			);
 		return true;
 	}
@@ -125,11 +125,11 @@ public class PlayerUtils {
 		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation(offlinePlayer.getPlayer());
 		offlinePlayer.getPlayer().kickPlayer(
 				ChatColor.RED + "\n§lВы были кикнуты"
-						+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-						+ ChatColor.GRAY + "\nПричина :\n\""
-						+ reason
-						+ "\""
-						+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+				+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
+				+ ChatColor.GRAY + "\nПричина :\n\""
+				+ reason
+				+ "\""
+				+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
 		);
 		return true;
 	}
