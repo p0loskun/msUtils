@@ -28,7 +28,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 
-@SuppressWarnings("unused")
 public enum Crafts {
     ACACIA_SMALL_CHAIR(SmallChair.craftSmallAcaciaChair()),
     BIRCH_SMALL_CHAIR(SmallChair.craftSmallBirchChair()),

@@ -5,7 +5,7 @@ authors: [MinersStudios, p0loskun]
 website: minersstudios.github.io
 
 main: github.minersStudios.msUtils.Main
-api-version: 1.18
+api-version: 1.19
 database: false
 softdepend:
   - AuthMe

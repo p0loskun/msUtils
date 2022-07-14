@@ -17,7 +17,7 @@
 
     <description>A Minecraft plugin with custom features for WhoMine</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -28,8 +28,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>16</source>
-                    <target>16</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -59,6 +59,10 @@
 
     <repositories>
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -85,7 +89,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <version>1.19-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -113,18 +117,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>github.minersStudios</groupId>
+            <groupId>com.github.MinersStudios</groupId>
             <artifactId>msDecor</artifactId>
-            <scope>system</scope>
-            <systemPath>C:/Users/Богдан/Documents/Miners Studios/WhoMine/msDecor/out/artifacts/msDecor_jar/msDecor.jar</systemPath>
-            <version>0.0.2</version>
+            <version>release-e357a50e82-1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>github.minersStudios</groupId>
+            <groupId>com.github.MinersStudios</groupId>
             <artifactId>msBlock</artifactId>
-            <scope>system</scope>
-            <systemPath>C:/Users/Богдан/Documents/Miners Studios/WhoMine/msBlock/out/artifacts/msBlock_jar/msBlock.jar</systemPath>
-            <version>0.0.2</version>
+            <version>release-91d55377ce-1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

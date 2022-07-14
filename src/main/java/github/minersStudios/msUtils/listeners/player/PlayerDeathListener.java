@@ -14,12 +14,12 @@ public class PlayerDeathListener implements Listener {
 	@EventHandler
 	public void onPlayerDeath(@Nonnull PlayerDeathEvent event) {
 		event.setDeathMessage(null);
-		Player killed = event.getEntity(), killer = event.getEntity().getKiller();
+		Player killed = event.getEntity();
 
 		SitPlayer sitPlayer = new SitPlayer(killed);
 		if (sitPlayer.isSitting())
 			sitPlayer.setSitting(null);
 
-		ChatUtils.sendDeathMessage(killed, killer);
+		ChatUtils.sendDeathMessage(killed, event.getEntity().getKiller());
 	}
 }
