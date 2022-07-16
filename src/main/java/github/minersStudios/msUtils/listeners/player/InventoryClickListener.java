@@ -84,16 +84,15 @@ public class InventoryClickListener implements Listener {
 				&& event.getClickedInventory() != null
 				&& !(event.getClickedInventory() instanceof PlayerInventory)
 		) {
-			ItemStack lastItem = event.getClickedInventory().getItem(35),
-					firstItem = event.getClickedInventory().getItem(0);
+			ItemStack firstItem = event.getClickedInventory().getItem(0);
 			if (firstItem != null && !event.getClick().isCreativeAction()) {
 				int firstItemIndex = Crafts.getItemIndex(firstItem);
 				if (event.getSlot() >= 36 && event.getSlot() <= 39 && firstItemIndex - 35 >= 0) {
-					player.openInventory(Crafts.getInventory(firstItemIndex - 35));
+					player.openInventory(Crafts.getInventory(firstItemIndex - 36));
 				} else if (event.getSlot() == 40) {
 					player.closeInventory();
-				} else if (event.getSlot() >= 41 && event.getSlot() <= 44 && lastItem != null) {
-					player.openInventory(Crafts.getInventory(Crafts.getItemIndex(lastItem)));
+				} else if (event.getSlot() >= 41 && event.getSlot() <= 44 && firstItemIndex + 36 < Crafts.values().length) {
+					player.openInventory(Crafts.getInventory( firstItemIndex + 36));
 				} else if (event.getCurrentItem() != null) {
 					Crafts.openCraft(player, event.getCurrentItem(), firstItemIndex);
 				}
@@ -108,7 +107,7 @@ public class InventoryClickListener implements Listener {
 				&& !(event.getClickedInventory() instanceof PlayerInventory)
 		) {
 			ItemStack arrow = event.getClickedInventory().getItem(14);
-			if (arrow != null && arrow.getItemMeta() != null && event.getSlot() == 40) {
+			if (arrow != null && arrow.getItemMeta() != null && event.getSlot() == 31) {
 				player.openInventory(Crafts.getInventory(arrow.getItemMeta().getCustomModelData()));
 			}
 			event.setCancelled(!event.getClick().isCreativeAction());

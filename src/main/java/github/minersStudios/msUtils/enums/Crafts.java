@@ -165,7 +165,7 @@ public enum Crafts {
     VERTICAL_SPRUCE_PLANKS(VerticalPlanks.craftVerticalSprucePlanks()),
     VERTICAL_WARPED_PLANKS(VerticalPlanks.craftVerticalWarpedPlanks());
 
-    public static final String CRAFTS_NAME = ChatColor.DARK_GRAY + "Крафты", CRAFT_NAME = ChatColor.DARK_GRAY + "Крафт предмета";
+    public static final String CRAFTS_NAME = ChatColor.WHITE + "\uB002\uA027", CRAFT_NAME = ChatColor.WHITE + "\uB002\uA028";
     private final ShapedRecipe shapedRecipe;
 
     Crafts(ShapedRecipe shapedRecipe) {
@@ -184,7 +184,7 @@ public enum Crafts {
     public static void openCraft(@Nonnull Player player, @Nonnull ItemStack itemStack, int pageIndex) {
         for (Crafts craft : Crafts.values()) {
             if (itemStack.isSimilar(craft.shapedRecipe.getResult())) {
-                Inventory inventory = Bukkit.createInventory(null, 5 * 9, CRAFT_NAME);
+                Inventory inventory = Bukkit.createInventory(null, 4 * 9, CRAFT_NAME);
                 int i = 0;
                 for (String shape : craft.shapedRecipe.getShape()) {
                     for (Character character : shape.toCharArray()) {
@@ -209,15 +209,7 @@ public enum Crafts {
                 }
                 inventory.setItem(14, getArrow(pageIndex));
                 inventory.setItem(15, itemStack);
-                inventory.setItem(36, getPreviousPageButton()[0]);
-                inventory.setItem(37, getPreviousPageButton()[1]);
-                inventory.setItem(38, getPreviousPageButton()[1]);
-                inventory.setItem(39, getPreviousPageButton()[1]);
-                inventory.setItem(40, getQuitButton());
-                inventory.setItem(41, getNextPageButton()[0]);
-                inventory.setItem(42, getNextPageButton()[1]);
-                inventory.setItem(43, getNextPageButton()[1]);
-                inventory.setItem(44, getNextPageButton()[1]);
+                inventory.setItem(31, getQuitButton());
                 player.openInventory(inventory);
             }
         }
@@ -230,31 +222,32 @@ public enum Crafts {
     public static Inventory getInventory(int index) {
         Inventory inventory = Bukkit.createInventory(null, 5 * 9, CRAFTS_NAME);
         Crafts[] crafts = Crafts.values();
+        inventory.setItem(36, getPreviousPageButton()[index == 0 ? 1 : 0]);
+        inventory.setItem(37, getPreviousPageButton()[1]);
+        inventory.setItem(38, getPreviousPageButton()[1]);
+        inventory.setItem(39, getPreviousPageButton()[1]);
+        inventory.setItem(40, getQuitButton());
+        inventory.setItem(41, getNextPageButton()[index + 37 > Crafts.values().length ? 1 : 0]);
+        inventory.setItem(42, getNextPageButton()[1]);
+        inventory.setItem(43, getNextPageButton()[1]);
+        inventory.setItem(44, getNextPageButton()[1]);
         for (int i = 0; i <= 35 && index < Crafts.values().length;) {
             inventory.setItem(i, crafts[index].shapedRecipe.getResult());
             i++;
             index++;
         }
-        inventory.setItem(36, getPreviousPageButton()[0]);
-        inventory.setItem(37, getPreviousPageButton()[1]);
-        inventory.setItem(38, getPreviousPageButton()[1]);
-        inventory.setItem(39, getPreviousPageButton()[1]);
-        inventory.setItem(40, getQuitButton());
-        inventory.setItem(41, getNextPageButton()[0]);
-        inventory.setItem(42, getNextPageButton()[1]);
-        inventory.setItem(43, getNextPageButton()[1]);
-        inventory.setItem(44, getNextPageButton()[1]);
         return inventory;
     }
 
     @Nonnull
     private static ItemStack[] getPreviousPageButton() {
-        ItemStack previousPage = new ItemStack(Material.WHITE_STAINED_GLASS_PANE), previousPageNoCMD = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+        ItemStack previousPage = new ItemStack(Material.PAPER), previousPageNoCMD = new ItemStack(Material.PAPER);
         ItemMeta previousPageMeta = previousPage.getItemMeta(), previousPageMetaNoCMD = previousPageNoCMD.getItemMeta();
         assert previousPageMeta != null && previousPageMetaNoCMD != null;
         previousPageMetaNoCMD.setDisplayName(ChatColor.WHITE + "Предыдущая страница");
         previousPageMeta.setDisplayName(ChatColor.WHITE + "Предыдущая страница");
         previousPageMeta.setCustomModelData(5001);
+        previousPageMetaNoCMD.setCustomModelData(0);
         previousPageNoCMD.setItemMeta(previousPageMetaNoCMD);
         previousPage.setItemMeta(previousPageMeta);
         return new ItemStack[]{previousPage, previousPageNoCMD};
@@ -262,12 +255,13 @@ public enum Crafts {
 
     @Nonnull
     private static ItemStack[] getNextPageButton() {
-        ItemStack nextPage = new ItemStack(Material.WHITE_STAINED_GLASS_PANE), nextPageNoCMD = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+        ItemStack nextPage = new ItemStack(Material.PAPER), nextPageNoCMD = new ItemStack(Material.PAPER);
         ItemMeta nextPageMeta = nextPage.getItemMeta(), nextPageMetaNoCMD = nextPageNoCMD.getItemMeta();
         assert nextPageMeta != null && nextPageMetaNoCMD != null;
         nextPageMetaNoCMD.setDisplayName(ChatColor.WHITE + "Следующая страница");
         nextPageMeta.setDisplayName(ChatColor.WHITE + "Следующая страница");
         nextPageMeta.setCustomModelData(5002);
+        nextPageMetaNoCMD.setCustomModelData(0);
         nextPageNoCMD.setItemMeta(nextPageMetaNoCMD);
         nextPage.setItemMeta(nextPageMeta);
         return new ItemStack[]{nextPage, nextPageNoCMD};
@@ -275,18 +269,18 @@ public enum Crafts {
 
     @Nonnull
     private static ItemStack getQuitButton() {
-        ItemStack quit = new ItemStack(Material.BARRIER);
+        ItemStack quit = new ItemStack(Material.PAPER);
         ItemMeta quitMeta = quit.getItemMeta();
         assert quitMeta != null;
         quitMeta.setDisplayName(ChatColor.WHITE + "Вернуться");
-        quitMeta.setCustomModelData(5000);
+        quitMeta.setCustomModelData(0);
         quit.setItemMeta(quitMeta);
         return quit;
     }
 
     @Nonnull
     private static ItemStack getArrow(int pageIndex) {
-        ItemStack arrow = new ItemStack(Material.MAGENTA_GLAZED_TERRACOTTA);
+        ItemStack arrow = new ItemStack(Material.PAPER);
         ItemMeta arrowMeta = arrow.getItemMeta();
         assert arrowMeta != null;
         arrowMeta.setDisplayName(ChatColor.GRAY + "->");
