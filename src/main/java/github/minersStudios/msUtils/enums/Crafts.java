@@ -1,22 +1,16 @@
 package github.minersStudios.msUtils.enums;
 
-import github.minersStudios.msBlock.crafts.planks.VerticalPlanks;
+import github.minersStudios.msBlock.crafts.planks.*;
 import github.minersStudios.msDecor.crafts.home.*;
-import github.minersStudios.msDecor.crafts.home.cameras.OldCamera;
+import github.minersStudios.msDecor.crafts.home.cameras.*;
 import github.minersStudios.msDecor.crafts.home.chairs.*;
-import github.minersStudios.msDecor.crafts.home.clocks.SmallClock;
-import github.minersStudios.msDecor.crafts.home.globus.SmallGlobus;
-import github.minersStudios.msDecor.crafts.home.lamps.BigLamp;
-import github.minersStudios.msDecor.crafts.home.lamps.SmallLamp;
-import github.minersStudios.msDecor.crafts.home.plushes.BMOPlush;
-import github.minersStudios.msDecor.crafts.home.plushes.BrownBearPlush;
-import github.minersStudios.msDecor.crafts.home.plushes.RacoonPlush;
-import github.minersStudios.msDecor.crafts.home.tables.BigTable;
-import github.minersStudios.msDecor.crafts.home.tables.SmallTable;
-import github.minersStudios.msDecor.crafts.street.Brazier;
-import github.minersStudios.msDecor.crafts.street.FireHydrant;
-import github.minersStudios.msDecor.crafts.street.Wheelbarrow;
-import github.minersStudios.msDecor.crafts.street.trashcans.IronTrashcan;
+import github.minersStudios.msDecor.crafts.home.clocks.*;
+import github.minersStudios.msDecor.crafts.home.globus.*;
+import github.minersStudios.msDecor.crafts.home.lamps.*;
+import github.minersStudios.msDecor.crafts.home.plushes.*;
+import github.minersStudios.msDecor.crafts.home.tables.*;
+import github.minersStudios.msDecor.crafts.street.*;
+import github.minersStudios.msDecor.crafts.street.trashcans.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -129,7 +123,7 @@ public enum Crafts {
 
     FIRE_HYDRANT(FireHydrant.craftFireHydrant()),
 
-    CAMERA(OldCamera.craftOldCamera()),
+    OLD_CAMERA(OldCamera.craftOldCamera()),
 
     BIG_LAMP(BigLamp.craftBigLamp()),
 
@@ -163,7 +157,28 @@ public enum Crafts {
     VERTICAL_JUNGLE_PLANKS(VerticalPlanks.craftVerticalJunglePlanks()),
     VERTICAL_OAK_PLANKS(VerticalPlanks.craftVerticalOakPlanks()),
     VERTICAL_SPRUCE_PLANKS(VerticalPlanks.craftVerticalSprucePlanks()),
-    VERTICAL_WARPED_PLANKS(VerticalPlanks.craftVerticalWarpedPlanks());
+    VERTICAL_WARPED_PLANKS(VerticalPlanks.craftVerticalWarpedPlanks()),
+    VERTICAL_MANGROVE_PLANKS(VerticalPlanks.craftVerticalMangrovePlanks()),
+
+    FRAMED_ACACIA_PLANKS(FramedPlanks.craftFramedAcaciaPlanks()),
+    FRAMED_BIRCH_PLANKS(FramedPlanks.craftFramedBirchPlanks()),
+    FRAMED_CRIMSON_PLANKS(FramedPlanks.craftFramedCrimsonPlanks()),
+    FRAMED_DARK_OAK_PLANKS(FramedPlanks.craftFramedDarkOakPlanks()),
+    FRAMED_JUNGLE_PLANKS(FramedPlanks.craftFramedJunglePlanks()),
+    FRAMED_OAK_PLANKS(FramedPlanks.craftFramedOakPlanks()),
+    FRAMED_SPRUCE_PLANKS(FramedPlanks.craftFramedSprucePlanks()),
+    FRAMED_WARPED_PLANKS(FramedPlanks.craftFramedWarpedPlanks()),
+    FRAMED_MANGROVE_PLANKS(FramedPlanks.craftFramedMangrovePlanks()),
+
+    CARVED_ACACIA_PLANKS(CarvedPlanks.craftCarvedAcaciaPlanks()),
+    CARVED_BIRCH_PLANKS(CarvedPlanks.craftCarvedBirchPlanks()),
+    CARVED_CRIMSON_PLANKS(CarvedPlanks.craftCarvedCrimsonPlanks()),
+    CARVED_DARK_OAK_PLANKS(CarvedPlanks.craftCarvedDarkOakPlanks()),
+    CARVED_JUNGLE_PLANKS(CarvedPlanks.craftCarvedJunglePlanks()),
+    CARVED_OAK_PLANKS(CarvedPlanks.craftCarvedOakPlanks()),
+    CARVED_SPRUCE_PLANKS(CarvedPlanks.craftCarvedSprucePlanks()),
+    CARVED_WARPED_PLANKS(CarvedPlanks.craftCarvedWarpedPlanks()),
+    CARVED_MANGROVE_PLANKS(CarvedPlanks.craftCarvedMangrovePlanks());
 
     public static final String CRAFTS_NAME = ChatColor.WHITE + "\uB002\uA027", CRAFT_NAME = ChatColor.WHITE + "\uB002\uA028";
     private final ShapedRecipe shapedRecipe;
