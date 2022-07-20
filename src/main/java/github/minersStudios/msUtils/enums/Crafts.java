@@ -180,7 +180,9 @@ public enum Crafts {
     CARVED_WARPED_PLANKS(CarvedPlanks.craftCarvedWarpedPlanks()),
     CARVED_MANGROVE_PLANKS(CarvedPlanks.craftCarvedMangrovePlanks());
 
-    public static final String CRAFTS_NAME = ChatColor.WHITE + "\uB002\uA027", CRAFT_NAME = ChatColor.WHITE + "\uB002\uA028";
+    public static final String
+            CRAFTS_NAME = ChatColor.WHITE + "\uB002\uA027",
+            CRAFT_NAME = ChatColor.WHITE + "\uB002\uA028";
     private final ShapedRecipe shapedRecipe;
 
     Crafts(ShapedRecipe shapedRecipe) {
@@ -202,6 +204,9 @@ public enum Crafts {
                 Inventory inventory = Bukkit.createInventory(null, 4 * 9, CRAFT_NAME);
                 int i = 0;
                 for (String shape : craft.shapedRecipe.getShape()) {
+                    shape = shape.length() == 1 ? shape + "  "
+                            : shape.length() == 2 ? shape + " "
+                            : shape;
                     for (Character character : shape.toCharArray()) {
                         ItemStack ingredient = craft.shapedRecipe.getIngredientMap().get(character);
                         if (ingredient == null) {
@@ -256,8 +261,10 @@ public enum Crafts {
 
     @Nonnull
     private static ItemStack[] getPreviousPageButton() {
-        ItemStack previousPage = new ItemStack(Material.PAPER), previousPageNoCMD = new ItemStack(Material.PAPER);
-        ItemMeta previousPageMeta = previousPage.getItemMeta(), previousPageMetaNoCMD = previousPageNoCMD.getItemMeta();
+        ItemStack previousPage = new ItemStack(Material.PAPER),
+                previousPageNoCMD = new ItemStack(Material.PAPER);
+        ItemMeta previousPageMeta = previousPage.getItemMeta(),
+                previousPageMetaNoCMD = previousPageNoCMD.getItemMeta();
         assert previousPageMeta != null && previousPageMetaNoCMD != null;
         previousPageMetaNoCMD.setDisplayName(ChatColor.WHITE + "Предыдущая страница");
         previousPageMeta.setDisplayName(ChatColor.WHITE + "Предыдущая страница");
@@ -270,8 +277,10 @@ public enum Crafts {
 
     @Nonnull
     private static ItemStack[] getNextPageButton() {
-        ItemStack nextPage = new ItemStack(Material.PAPER), nextPageNoCMD = new ItemStack(Material.PAPER);
-        ItemMeta nextPageMeta = nextPage.getItemMeta(), nextPageMetaNoCMD = nextPageNoCMD.getItemMeta();
+        ItemStack nextPage = new ItemStack(Material.PAPER),
+                nextPageNoCMD = new ItemStack(Material.PAPER);
+        ItemMeta nextPageMeta = nextPage.getItemMeta(),
+                nextPageMetaNoCMD = nextPageNoCMD.getItemMeta();
         assert nextPageMeta != null && nextPageMetaNoCMD != null;
         nextPageMetaNoCMD.setDisplayName(ChatColor.WHITE + "Следующая страница");
         nextPageMeta.setDisplayName(ChatColor.WHITE + "Следующая страница");

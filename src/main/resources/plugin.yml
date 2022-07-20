@@ -69,6 +69,7 @@ commands:
     description: Выводит в чат информацию про игрока
   crafts:
     usage: ' ꀑ §cИспользуй: /<command>'
+    aliases: [ crafts, recipes ]
     description: Открывает меню с крафтами кастомных предметов/декора/блоков
   whitelist:
     usage: ' ꀑ §cИспользуй: /<command> [add/remove/reload] [ID/Nickname]'
