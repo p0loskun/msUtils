@@ -35,7 +35,7 @@ public class InfoCommand implements CommandExecutor {
 		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 	}
 
-	private static boolean sendInfo(@Nonnull PlayerInfo playerInfo, @Nonnull CommandSender sender){
+	private static boolean sendInfo(@Nonnull PlayerInfo playerInfo, @Nonnull CommandSender sender) {
 		Location lastLeaveLocation = playerInfo.getLastLeaveLocation(),
 				lastDeathLocation = playerInfo.getLastDeathLocation();
 		return ChatUtils.sendInfo(sender, "UUID : "

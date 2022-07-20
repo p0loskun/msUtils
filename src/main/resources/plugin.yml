@@ -80,6 +80,11 @@ commands:
     aliases: [ teleporttolastdeathlocation, teleporttolastdeathloc, tptolastdeathlocation, tptolastdeathloc, tptolastdeath ]
     permission: msUtils.teleporttolastdeathlocation
     description: Телепортирует игрока на его последнее место смерти
+  worldteleport:
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [world name] [x] [y] [z]'
+    aliases: [ worldteleport, worldtp, wtp, teleportworld, tpworld, tpw ]
+    permission: msUtils.worldteleport
+    description: Телепортирует игрока на координаты и
 
 permissions:
   msUtils.info:
@@ -95,4 +100,6 @@ permissions:
   msUtils.whitelist:
     default: op
   msUtils.teleporttolastdeathlocation:
+    default: op
+  msUtils.worldteleport:
     default: op

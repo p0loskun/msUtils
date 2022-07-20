@@ -9,6 +9,7 @@ import github.minersStudios.msUtils.commands.mute.*;
 import github.minersStudios.msUtils.commands.other.*;
 import github.minersStudios.msUtils.commands.roleplay.*;
 import github.minersStudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
+import github.minersStudios.msUtils.commands.teleport.WorldTeleportCommand;
 import github.minersStudios.msUtils.listeners.RegEvents;
 import github.minersStudios.msUtils.tabComplete.*;
 import github.minersStudios.msUtils.utils.ChatUtils;
@@ -98,6 +99,8 @@ public final class Main extends JavaPlugin {
 
 		Objects.requireNonNull(this.getCommand("teleporttolastdeathlocation")).setExecutor(new TeleportToLastDeathLocationCommand());
 		Objects.requireNonNull(this.getCommand("teleporttolastdeathlocation")).setTabCompleter(new AllLocalPlayers());
+		Objects.requireNonNull(this.getCommand("worldteleport")).setExecutor(new WorldTeleportCommand());
+		Objects.requireNonNull(this.getCommand("worldteleport")).setTabCompleter(new WorldTeleport());
 
 		Objects.requireNonNull(this.getCommand("getmaploc")).setExecutor(new GetMapLocationCommand());
 		Objects.requireNonNull(this.getCommand("crafts")).setExecutor(new CraftsCommand());
