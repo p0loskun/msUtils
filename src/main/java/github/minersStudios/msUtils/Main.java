@@ -8,12 +8,12 @@ import github.minersStudios.msUtils.commands.ban.*;
 import github.minersStudios.msUtils.commands.mute.*;
 import github.minersStudios.msUtils.commands.other.*;
 import github.minersStudios.msUtils.commands.roleplay.*;
+import github.minersStudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
 import github.minersStudios.msUtils.listeners.RegEvents;
 import github.minersStudios.msUtils.tabComplete.*;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import lombok.Getter;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import org.bukkit.*;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,8 +34,6 @@ public final class Main extends JavaPlugin {
 	public static Team scoreboardHideTagsTeam;
 	public static ProtocolManager protocolManager;
 
-	@Getter private final Map<UUID, ArmorStand> seats = new HashMap<>();
-
 	@Override
 	public void onEnable() {
 		plugin = this;
@@ -43,9 +41,7 @@ public final class Main extends JavaPlugin {
 		worldDark = this.getServer().getWorld("world_dark");
 		protocolManager = ProtocolLibrary.getProtocolManager();
 		scoreboardHideTags = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-		scoreboardHideTags.registerNewTeam("HideTags");
-		scoreboardHideTagsTeam = scoreboardHideTags.getTeam("HideTags");
-		assert scoreboardHideTagsTeam != null;
+		scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("HideTags");
 		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
@@ -78,9 +74,8 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		Bukkit.savePlayers();
-		for (UUID uuid : this.seats.keySet()) {
-			new SitPlayer(Bukkit.getPlayer(uuid)).setSitting(null);
-		}
+		for (Player player : PlayerUtils.getSeats().keySet())
+			new SitPlayer(player).setSitting(null);
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			new PlayerInfo(player.getUniqueId()).setLastLeaveLocation(player);
 			player.kickPlayer("Ну шо грифер, запустил свою лаг машину?");
@@ -101,6 +96,9 @@ public final class Main extends JavaPlugin {
 		Objects.requireNonNull(this.getCommand("kick")).setExecutor(new KickCommand());
 		Objects.requireNonNull(this.getCommand("kick")).setTabCompleter(new AllLocalPlayers());
 
+		Objects.requireNonNull(this.getCommand("teleporttolastdeathlocation")).setExecutor(new TeleportToLastDeathLocationCommand());
+		Objects.requireNonNull(this.getCommand("teleporttolastdeathlocation")).setTabCompleter(new AllLocalPlayers());
+
 		Objects.requireNonNull(this.getCommand("getmaploc")).setExecutor(new GetMapLocationCommand());
 		Objects.requireNonNull(this.getCommand("crafts")).setExecutor(new CraftsCommand());
 		Objects.requireNonNull(this.getCommand("resourcepack")).setExecutor(new ResourcePackCommand());
@@ -111,11 +109,8 @@ public final class Main extends JavaPlugin {
 		Objects.requireNonNull(this.getCommand("whitelist")).setTabCompleter(new WhiteList());
 		Objects.requireNonNull(this.getCommand("privatemessage")).setExecutor(new PrivateMessageCommand());
 		Objects.requireNonNull(this.getCommand("privatemessage")).setTabCompleter(new AllLocalPlayers());
-		Objects.requireNonNull(this.getCommand("pm")).setExecutor(new PrivateMessageCommand());
-		Objects.requireNonNull(this.getCommand("pm")).setTabCompleter(new AllLocalPlayers());
 
 		Objects.requireNonNull(this.getCommand("sit")).setExecutor(new SitCommand());
-		Objects.requireNonNull(this.getCommand("s")).setExecutor(new SitCommand());
 		Objects.requireNonNull(this.getCommand("spit")).setExecutor(new SpitCommand());
 		Objects.requireNonNull(this.getCommand("fart")).setExecutor(new FartCommand());
 		Objects.requireNonNull(this.getCommand("me")).setExecutor(new MeCommand());
@@ -123,7 +118,7 @@ public final class Main extends JavaPlugin {
 	}
 
 	private void generateWorld() {
-		if (Main.worldDark != null) return;
+		if (worldDark != null) return;
 		this.getServer().createWorld(
 				new WorldCreator("world_dark")
 						.generator("msUtils:empty")
@@ -150,9 +145,8 @@ public final class Main extends JavaPlugin {
 		}
 	}
 
-	@Nullable
 	@Override
 	public ChunkGenerator getDefaultWorldGenerator(@Nonnull String worldName, @Nullable String id) {
-		return "empty".equals(id) ? new ChunkGenerator() {} : null;
+		return  new ChunkGenerator() {};
 	}
 }

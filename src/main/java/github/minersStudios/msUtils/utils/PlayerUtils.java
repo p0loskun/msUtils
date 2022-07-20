@@ -3,8 +3,11 @@ package github.minersStudios.msUtils.utils;
 import com.google.common.base.Charsets;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
+import lombok.Getter;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -16,10 +19,13 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 public class PlayerUtils {
+	@Getter private static final Map<Player, ArmorStand> seats = new HashMap<>();
 
 	/**
 	 * Gets UUID from player nickname

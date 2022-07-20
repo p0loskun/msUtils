@@ -1,7 +1,7 @@
 package github.minersStudios.msUtils.classes;
 
-import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -21,7 +21,7 @@ public record SitPlayer(Player player) {
 				armorStand.setCollidable(false);
 				armorStand.addPassenger(this.player);
 				armorStand.addScoreboardTag("customDecor");
-				Main.plugin.getSeats().put(this.player.getUniqueId(), armorStand);
+				PlayerUtils.getSeats().put(this.player, armorStand);
 				ChatUtils.sendRPEventMessage(player, 25,
 						"* "
 						+ playerInfo.getGrayIDGoldName() + " "
@@ -30,8 +30,8 @@ public record SitPlayer(Player player) {
 				);
 			});
 		} else if (sitLocation == null && this.isSitting()) {
-			ArmorStand armorStand = Main.plugin.getSeats().get(this.player.getUniqueId());
-			Main.plugin.getSeats().remove(this.player.getUniqueId());
+			ArmorStand armorStand = PlayerUtils.getSeats().get(this.player);
+			PlayerUtils.getSeats().remove(this.player);
 			this.player.eject();
 			this.player.teleport(armorStand.getLocation().add(0.0d, 1.7d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 			armorStand.remove();
@@ -46,6 +46,6 @@ public record SitPlayer(Player player) {
 	}
 
 	public boolean isSitting() {
-		return Main.plugin.getSeats().containsKey(this.player.getUniqueId());
+		return PlayerUtils.getSeats().containsKey(this.player);
 	}
 }

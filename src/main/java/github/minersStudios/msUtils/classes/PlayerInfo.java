@@ -316,7 +316,7 @@ public class PlayerInfo {
 			);
 		} else {
 			ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был размучен");
-			ChatUtils.sendFine(player, "Вы были размучены");
+			ChatUtils.sendWarning(player, "Вы были размучены");
 		}
 		return true;
 	}

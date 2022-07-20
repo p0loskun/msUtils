@@ -75,6 +75,11 @@ commands:
     usage: ' ꀑ §cИспользуй: /<command> [add/remove/reload] [ID/Nickname]'
     permission: msUtils.whitelist
     description: Удаляет/добавляет игрока в вайтлист
+  teleporttolastdeathlocation:
+    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname]'
+    aliases: [ teleporttolastdeathlocation, teleporttolastdeathloc, tptolastdeathlocation, tptolastdeathloc, tptolastdeath ]
+    permission: msUtils.teleporttolastdeathlocation
+    description: Телепортирует игрока на его последнее место смерти
 
 permissions:
   msUtils.info:
@@ -88,4 +93,6 @@ permissions:
   msUtils.mapLocation:
     default: op
   msUtils.whitelist:
+    default: op
+  msUtils.teleporttolastdeathlocation:
     default: op

@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import github.minersStudios.msUtils.Main;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -42,7 +43,7 @@ public class RotateSeatTask extends BukkitRunnable {
 	}
 
 	public void run() {
-		for (ArmorStand armorstand : Main.plugin.getSeats().values())
+		for (ArmorStand armorstand : PlayerUtils.getSeats().values())
 			for (Object passenger : armorstand.getPassengers())
 				if (passenger instanceof Player player)
 					this.alignArmorStand.align(armorstand, player.getLocation().getYaw());

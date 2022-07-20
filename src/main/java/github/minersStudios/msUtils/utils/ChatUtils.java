@@ -23,6 +23,23 @@ public class ChatUtils {
 			discordLocalChannelID = Main.plugin.getConfig().getString("discord-local-channel-id");
 
 	/**
+	 * Sends info message to target
+	 *
+	 * @param target target
+	 * @param message warning message
+	 */
+	public static boolean sendInfo(@Nullable Object target, @Nonnull String message) {
+		if (target instanceof Player player) {
+			player.sendMessage(" " + message);
+		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
+			sender.sendMessage(" " + message);
+		} else {
+			Bukkit.getLogger().info(message);
+		}
+		return true;
+	}
+
+	/**
 	 * Sends fine message to target
 	 *
 	 * @param target target
@@ -169,6 +186,15 @@ public class ChatUtils {
 			ChatUtils.sendActionMessage(killed, DiscordUtil.getTextChannelById(ChatUtils.discordLocalChannelID), deathMessage, 16757024);
 		});
 		Bukkit.getLogger().info(deathMessage);
+
+		Location deathLocation = killed.getLocation();
+		ChatUtils.sendInfo(null,
+				"Мир и координаты смерти игрока : \"" + killedInfo.getDefaultName() + " (" + killed.getName() + ")\" : "
+				+ deathLocation.getBlock().getWorld().getName() + " "
+				+ deathLocation.getBlockX() + " "
+				+ deathLocation.getBlockY() + " "
+				+ deathLocation.getBlockZ()
+		);
 	}
 
 	/**

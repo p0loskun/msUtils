@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import javax.annotation.Nonnull;
 
 public class BanCommand implements CommandExecutor {
+
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
 		if (args.length < 2 || !args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"))
