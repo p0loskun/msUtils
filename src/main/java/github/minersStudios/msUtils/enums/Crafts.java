@@ -202,12 +202,10 @@ public enum Crafts {
         for (Crafts craft : Crafts.values()) {
             if (itemStack.isSimilar(craft.shapedRecipe.getResult())) {
                 Inventory inventory = Bukkit.createInventory(null, 4 * 9, CRAFT_NAME);
+                String[] shapes = craft.shapedRecipe.getShape();
                 int i = 0;
-                for (String shape : craft.shapedRecipe.getShape()) {
-                    shape = shape.length() == 1 ? shape + "  "
-                            : shape.length() == 2 ? shape + " "
-                            : shape;
-                    for (Character character : shape.toCharArray()) {
+                for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
+                    for (Character character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
                         ItemStack ingredient = craft.shapedRecipe.getIngredientMap().get(character);
                         if (ingredient == null) {
                             i++;
