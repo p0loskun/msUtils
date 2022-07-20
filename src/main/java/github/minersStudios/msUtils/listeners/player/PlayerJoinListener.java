@@ -21,7 +21,7 @@ public class PlayerJoinListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(@Nonnull PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), player.getName());
 
 		event.setJoinMessage(null);
 		Main.scoreboardHideTagsTeam.addEntry(player.getName());
