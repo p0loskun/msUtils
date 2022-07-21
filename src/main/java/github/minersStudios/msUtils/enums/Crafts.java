@@ -43,8 +43,6 @@ public enum Crafts {
     WARPED_CHAIR(Chair.craftWarpedChair()),
     MANGROVE_CHAIR(Chair.craftMangroveChair()),
 
-    COOL_ARMCHAIR(CoolArmchair.craftCoolArmchair()),
-
     ACACIA_SMALL_ARMCHAIR(SmallArmchair.craftSmallAcaciaArmchair()),
     BIRCH_SMALL_ARMCHAIR(SmallArmchair.craftSmallBirchArmchair()),
     CRIMSON_SMALL_ARMCHAIR(SmallArmchair.craftSmallCrimsonArmchair()),
@@ -64,10 +62,6 @@ public enum Crafts {
     SPRUCE_ARMCHAIR(Armchair.craftSpruceArmchair()),
     WARPED_ARMCHAIR(Armchair.craftWarpedArmchair()),
     MANGROVE_ARMCHAIR(Armchair.craftMangroveArmchair()),
-
-    BAR_STOOL(BarStool.craftBarStool()),
-
-    COOL_CHAIR(CoolChair.craftCoolChair()),
 
     ACACIA_ROCKING_CHAIR(RockingChair.craftAcaciaRockingChair()),
     ACACIA_ROCKING_CHAIR_PAINTABLE(RockingChair.craftAcaciaPaintableRockingChair()),
@@ -117,6 +111,12 @@ public enum Crafts {
     SPRUCE_NIGHTSTAND(Nightstand.craftSpruceNightstand()),
     WARPED_NIGHTSTAND(Nightstand.craftWarpedNightstand()),
     MANGROVE_NIGHTSTAND(Nightstand.craftMangroveNightstand()),
+
+    BAR_STOOL(BarStool.craftBarStool()),
+
+    COOL_CHAIR(CoolChair.craftCoolChair()),
+
+    COOL_ARMCHAIR(CoolArmchair.craftCoolArmchair()),
 
     WHEELBARROW(Wheelbarrow.craftWheelbarrow()),
 
