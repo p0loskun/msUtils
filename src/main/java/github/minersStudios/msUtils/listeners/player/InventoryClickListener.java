@@ -39,6 +39,7 @@ public class InventoryClickListener implements Listener {
 
 		if (
 				(clickedInventory instanceof PlayerInventory
+				&& event.getClick().isShiftClick()
 				&& (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME)
 				|| inventoryTitle.equalsIgnoreCase(Pronouns.NAME)
 				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME)
@@ -76,7 +77,7 @@ public class InventoryClickListener implements Listener {
 				playerInfo.setDiskType(playerInfo.getDiskType());
 				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
 			}
-			player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+			player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 			event.setCancelled(true);
 			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
@@ -98,7 +99,7 @@ public class InventoryClickListener implements Listener {
 			} else if (playerInfo.getResourcePackType() != null) {
 				playerInfo.teleportToLastLeaveLocation();
 			}
-			player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+			player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 			event.setCancelled(true);
 			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
@@ -117,7 +118,7 @@ public class InventoryClickListener implements Listener {
 					Crafts.openCraft(player, currentItem, firstItemIndex);
 				}
 			}
-			player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+			player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 			event.setCancelled(!event.getClick().isCreativeAction());
 			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
@@ -125,7 +126,7 @@ public class InventoryClickListener implements Listener {
 		if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME) && !(clickedInventory instanceof PlayerInventory)) {
 			ItemStack arrow = clickedInventory.getItem(14);
 			if (arrow != null && arrow.getItemMeta() != null && slot == 31) {
-				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 				player.openInventory(Crafts.getInventory(arrow.getItemMeta().getCustomModelData()));
 			}
 			event.setCancelled(!event.getClick().isCreativeAction());

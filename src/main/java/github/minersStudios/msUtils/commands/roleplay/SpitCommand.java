@@ -35,9 +35,9 @@ public class SpitCommand implements CommandExecutor {
 		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f);
 		return ChatUtils.sendRPEventMessage(player, 25,
 				"* "
-						+ playerInfo.getGrayIDGoldName() + " "
-						+ ChatColor.GOLD + playerInfo.getPronouns().getSpitMessage()
-						+ "*"
+				+ playerInfo.getGrayIDGoldName() + " "
+				+ ChatColor.GOLD + playerInfo.getPronouns().getSpitMessage()
+				+ "*"
 		);
 	}
 }
