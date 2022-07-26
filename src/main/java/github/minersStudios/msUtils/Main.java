@@ -21,8 +21,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 
@@ -105,7 +103,6 @@ public final class Main extends JavaPlugin {
 		Objects.requireNonNull(this.getCommand("getmaploc")).setExecutor(new GetMapLocationCommand());
 		Objects.requireNonNull(this.getCommand("crafts")).setExecutor(new CraftsCommand());
 		Objects.requireNonNull(this.getCommand("resourcepack")).setExecutor(new ResourcePackCommand());
-		Objects.requireNonNull(this.getCommand("rp")).setExecutor(new ResourcePackCommand());
 		Objects.requireNonNull(this.getCommand("info")).setExecutor(new InfoCommand());
 		Objects.requireNonNull(this.getCommand("info")).setTabCompleter(new AllPlayers());
 		Objects.requireNonNull(this.getCommand("whitelist")).setExecutor(new WhitelistCommand());
@@ -122,15 +119,12 @@ public final class Main extends JavaPlugin {
 
 	private void generateWorld() {
 		if (worldDark != null) return;
-		this.getServer().createWorld(
-				new WorldCreator("world_dark")
-						.generator("msUtils:empty")
-						.generateStructures(false)
-						.type(WorldType.NORMAL)
-						.environment(World.Environment.NORMAL)
-		);
-		worldDark = this.getServer().getWorld("world_dark");
-		if (worldDark != null) {
+		if ((worldDark = new WorldCreator("world_dark")
+				.generator(new ChunkGenerator() {})
+				.generateStructures(false)
+				.type(WorldType.NORMAL)
+				.environment(World.Environment.NORMAL).createWorld()) != null
+		) {
 			worldDark.setTime(18000);
 			worldDark.setDifficulty(Difficulty.PEACEFUL);
 			worldDark.setGameRule(GameRule.FALL_DAMAGE, false);
@@ -146,10 +140,5 @@ public final class Main extends JavaPlugin {
 			plugin.getServer().savePlayers();
 			plugin.getServer().shutdown();
 		}
-	}
-
-	@Override
-	public ChunkGenerator getDefaultWorldGenerator(@Nonnull String worldName, @Nullable String id) {
-		return  new ChunkGenerator() {};
 	}
 }
