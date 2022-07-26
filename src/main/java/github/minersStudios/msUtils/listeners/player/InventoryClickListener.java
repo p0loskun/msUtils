@@ -20,7 +20,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +37,7 @@ public class InventoryClickListener implements Listener {
 		if (clickedInventory == null) return;
 
 		if (
-				(clickedInventory instanceof PlayerInventory
+				(clickedInventory.getType() == InventoryType.PLAYER
 				&& event.getClick().isShiftClick()
 				&& (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME)
 				|| inventoryTitle.equalsIgnoreCase(Pronouns.NAME)
@@ -50,7 +49,7 @@ public class InventoryClickListener implements Listener {
 			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
-		if (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME) && !(clickedInventory instanceof PlayerInventory)) {
+		if (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME) && clickedInventory.getType() != InventoryType.PLAYER) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 			if (slot == 0 || slot == 1) {
 				if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE) {
@@ -82,7 +81,7 @@ public class InventoryClickListener implements Listener {
 			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
-		if (inventoryTitle.equalsIgnoreCase(Pronouns.NAME) && !(clickedInventory instanceof PlayerInventory)) {
+		if (inventoryTitle.equalsIgnoreCase(Pronouns.NAME) && clickedInventory.getType() != InventoryType.PLAYER) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 			if (slot == 0 || slot == 1 || slot == 2) {
 				playerInfo.setPronouns(Pronouns.HE);
@@ -104,7 +103,7 @@ public class InventoryClickListener implements Listener {
 			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
-		if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_NAME) && !(clickedInventory instanceof PlayerInventory)) {
+		if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_NAME) && clickedInventory.getType() != InventoryType.PLAYER) {
 			ItemStack firstItem = clickedInventory.getItem(0);
 			if (firstItem != null && !event.getClick().isCreativeAction()) {
 				int firstItemIndex = Crafts.getItemIndex(firstItem);
@@ -123,7 +122,7 @@ public class InventoryClickListener implements Listener {
 			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
 		}
 
-		if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME) && !(clickedInventory instanceof PlayerInventory)) {
+		if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME) && clickedInventory.getType() != InventoryType.PLAYER) {
 			ItemStack arrow = clickedInventory.getItem(14);
 			if (arrow != null && arrow.getItemMeta() != null && slot == 31) {
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);

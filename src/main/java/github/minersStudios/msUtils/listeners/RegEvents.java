@@ -31,6 +31,7 @@ public class RegEvents {
 		pluginManager.registerEvents(new PlayerQuitListener(), plugin);
 		pluginManager.registerEvents(new InventoryClickListener(), plugin);
 		pluginManager.registerEvents(new InventoryCloseListener(), plugin);
+		pluginManager.registerEvents(new PlayerSpawnLocationListener(), plugin);
 		pluginManager.registerEvents(new PlayerResourcePackStatusListener(), plugin);
 		pluginManager.registerEvents(new PlayerDeathListener(), plugin);
 		pluginManager.registerEvents(new PlayerJoinListener(), plugin);

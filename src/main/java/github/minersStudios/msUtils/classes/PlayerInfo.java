@@ -11,8 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -446,9 +444,7 @@ public class PlayerInfo {
 		if (player == null) return;
 		if (player.isDead())
 			player.spigot().respawn();
-		player.setGameMode(GameMode.SPECTATOR);
 		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
-		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, -1, true, false));
 	}
 
 	/**
@@ -459,7 +455,6 @@ public class PlayerInfo {
 		if (player == null) return;
 		player.setGameMode(this.getGameMode());
 		player.teleport(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
 	}
 

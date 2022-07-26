@@ -8,6 +8,7 @@ import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +28,9 @@ public class PlayerJoinListener implements Listener {
 		Main.scoreboardHideTagsTeam.addEntry(player.getName());
 		player.setScoreboard(Main.scoreboardHideTags);
 		player.setDisplayName(playerInfo.getDefaultName());
-		playerInfo.teleportToDarkWorld();
+		player.setGameMode(GameMode.SPECTATOR);
+		if (player.isDead())
+			playerInfo.teleportToDarkWorld();
 
 		if (playerInfo.getIP() != null && player.getAddress() != null && !playerInfo.getIP().contains(player.getAddress().getHostName())) {
 			ChatUtils.sendWarning(null,
