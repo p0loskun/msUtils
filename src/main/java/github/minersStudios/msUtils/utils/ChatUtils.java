@@ -243,6 +243,7 @@ public class ChatUtils {
 	}
 
 	private static void sendActionMessage(@Nonnull Player player, @Nonnull TextChannel textChannel, @Nonnull String actionMessage, int colorRaw) {
+		if (DiscordUtil.getJda() == null) return;
 		DiscordUtil.queueMessage(textChannel,
 				DiscordSRV.translateMessage(
 						new MessageFormat(
@@ -263,8 +264,8 @@ public class ChatUtils {
 								false,
 								DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl(),
 								DiscordSRV.getPlugin().getMainGuild() != null
-								? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()
-								: DiscordUtil.getJda().getSelfUser().getName()),
+										? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()
+										: DiscordUtil.getJda().getSelfUser().getName()),
 						(content, needsEscape) -> PlaceholderUtil.replacePlaceholdersToDiscord(content, player)
 				), true);
 	}
