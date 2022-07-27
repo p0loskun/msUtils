@@ -55,7 +55,6 @@ public final class Main extends JavaPlugin {
 		}
 
 		RegListeners.init("github.minersStudios.msUtils.listeners");
-		RegListeners.init("github.minersStudios.msBlock.listeners");
 		new RotateSeatTask();
 		this.generateWorld();
 		this.registerCommands();
