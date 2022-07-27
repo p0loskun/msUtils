@@ -10,10 +10,10 @@ import github.minersStudios.msUtils.commands.other.*;
 import github.minersStudios.msUtils.commands.roleplay.*;
 import github.minersStudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
 import github.minersStudios.msUtils.commands.teleport.WorldTeleportCommand;
+import github.minersStudios.msUtils.listeners.RegEvents;
 import github.minersStudios.msUtils.tabCompleters.*;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import github.minersStudios.msUtils.utils.PlayerUtils;
-import github.minersStudios.msUtils.utils.RegListeners;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
@@ -54,7 +54,7 @@ public final class Main extends JavaPlugin {
 			exception.printStackTrace();
 		}
 
-		RegListeners.init("github.minersStudios.msUtils.listeners");
+		RegEvents.init();
 		new RotateSeatTask();
 		this.generateWorld();
 		this.registerCommands();

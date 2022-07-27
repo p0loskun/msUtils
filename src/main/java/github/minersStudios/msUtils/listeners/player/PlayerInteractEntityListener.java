@@ -1,7 +1,6 @@
 package github.minersStudios.msUtils.listeners.player;
 
 import github.minersStudios.msUtils.classes.PlayerInfo;
-import github.minersStudios.msUtils.utils.EventListener;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
@@ -11,7 +10,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import javax.annotation.Nonnull;
 
-@EventListener
 public class PlayerInteractEntityListener implements Listener {
 
 	@EventHandler

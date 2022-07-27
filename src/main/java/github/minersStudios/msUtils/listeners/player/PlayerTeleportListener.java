@@ -2,14 +2,12 @@ package github.minersStudios.msUtils.listeners.player;
 
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.SitPlayer;
-import github.minersStudios.msUtils.utils.EventListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import javax.annotation.Nonnull;
 
-@EventListener
 public class PlayerTeleportListener implements Listener {
 
 	@EventHandler

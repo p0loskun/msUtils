@@ -6,7 +6,6 @@ import github.minersStudios.msUtils.classes.RegistrationProcess;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.minersStudios.msUtils.utils.EventListener;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,7 +17,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nonnull;
 
-@EventListener
 public class PlayerJoinListener implements Listener {
 
 	@EventHandler
