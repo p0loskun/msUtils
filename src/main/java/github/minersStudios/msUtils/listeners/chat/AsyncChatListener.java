@@ -4,6 +4,7 @@ import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.ChatBuffer;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.EventListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
+@EventListener
 public class AsyncChatListener implements Listener {
 
 	@EventHandler

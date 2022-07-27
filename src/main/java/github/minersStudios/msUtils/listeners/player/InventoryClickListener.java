@@ -7,6 +7,7 @@ import github.minersStudios.msUtils.enums.Crafts;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.EventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 
+@EventListener
 public class InventoryClickListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)

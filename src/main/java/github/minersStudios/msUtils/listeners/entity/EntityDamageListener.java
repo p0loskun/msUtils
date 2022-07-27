@@ -1,6 +1,7 @@
 package github.minersStudios.msUtils.listeners.entity;
 
 import github.minersStudios.msUtils.Main;
+import github.minersStudios.msUtils.utils.EventListener;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,6 +9,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import javax.annotation.Nonnull;
 
+@EventListener
 public class EntityDamageListener implements Listener {
 
 	@EventHandler

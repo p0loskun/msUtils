@@ -3,6 +3,7 @@ package github.minersStudios.msUtils.listeners.player;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.EventListener;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +12,7 @@ import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 import javax.annotation.Nonnull;
 
+@EventListener
 public class PlayerResourcePackStatusListener implements Listener {
 
 	@EventHandler

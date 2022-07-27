@@ -1,4 +1,4 @@
-package github.minersStudios.msUtils.tabComplete;
+package github.minersStudios.msUtils.tabCompleters;
 
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;

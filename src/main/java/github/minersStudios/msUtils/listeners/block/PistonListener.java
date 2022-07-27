@@ -1,5 +1,6 @@
 package github.minersStudios.msUtils.listeners.block;
 
+import github.minersStudios.msUtils.utils.EventListener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 
 import javax.annotation.Nonnull;
 
+@EventListener
 public class PistonListener implements Listener {
 
     @EventHandler
