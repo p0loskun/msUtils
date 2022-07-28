@@ -264,7 +264,7 @@ public class ChatUtils {
 				.color(Colors.joinMessageColorPrimary);
 		String stringJoinMessage = plainTextSerializeComponent(joinMessage);
 
-		Bukkit.getScheduler().runTask(Main.plugin, () -> {
+		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> {
 			for (Player onlinePlayer : Bukkit.getOnlinePlayers())
 				if (onlinePlayer.getWorld() != Main.worldDark)
 					onlinePlayer.sendMessage(joinMessage);
