@@ -89,13 +89,7 @@ public class PlayerUtils {
 			Bukkit.getScheduler().callSyncMethod(Main.plugin, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist remove " + nickname));
 		}
 		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null)
-			offlinePlayer.getPlayer().kickPlayer(
-					ChatColor.RED + "\n§lВы были кикнуты"
-					+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-					+ ChatColor.GRAY + "\nПричина :\n"
-					+ ChatColor.GRAY + "\n\"Вас удалили из белого списка\""
-					+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
-			);
+			PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", "Вас удалили из белого списка");
 		return true;
 	}
 
@@ -125,12 +119,12 @@ public class PlayerUtils {
 	 *
 	 * @return True if player successfully kicked
 	 */
-	public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String reason) {
+	public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String title, @Nonnull String reason) {
 		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null)
 			return false;
-		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation(offlinePlayer.getPlayer());
-		offlinePlayer.getPlayer().kickPlayer(
-				ChatColor.RED + "\n§lВы были кикнуты"
+		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation();
+		 offlinePlayer.getPlayer().kickPlayer(
+				ChatColor.RED + "\n§l" + title
 				+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
 				+ ChatColor.GRAY + "\nПричина :\n\""
 				+ reason
@@ -146,9 +140,8 @@ public class PlayerUtils {
 			BufferedReader stream = new BufferedReader(new InputStreamReader(new URL("http://ip-api.com/json/" + ip.getHostName()).openStream()));
 			StringBuilder entirePage = new StringBuilder();
 			String inputLine;
-			while((inputLine = stream.readLine()) != null) {
+			while((inputLine = stream.readLine()) != null)
 				entirePage.append(inputLine);
-			}
 			stream.close();
 			return !entirePage.toString().contains("\"timezone\":\"") ? ZoneId.systemDefault().toString() : entirePage.toString().split("\"timezone\":\"")[1].split("\",")[0];
 		} catch (IOException exception) {

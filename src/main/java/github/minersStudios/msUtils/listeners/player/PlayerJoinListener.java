@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,7 +20,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerJoinListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerJoin(@Nonnull PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), player.getName());
@@ -32,7 +33,12 @@ public class PlayerJoinListener implements Listener {
 		if (player.isDead())
 			playerInfo.teleportToDarkWorld();
 
-		if (playerInfo.getIP() != null && player.getAddress() != null && !playerInfo.getIP().contains(player.getAddress().getHostName())) {
+		if (
+				playerInfo.hasPlayerDataFile()
+				&& playerInfo.getIP() != null
+				&& player.getAddress() != null
+				&& !playerInfo.getIP().contains(player.getAddress().getHostName())
+		) {
 			ChatUtils.sendWarning(null,
 					"Игроку : \"" + playerInfo.getGrayIDGoldName() + " "
 					+ "\" был добавлен новый айпи адресс : " + player.getAddress().getHostName()
@@ -47,9 +53,8 @@ public class PlayerJoinListener implements Listener {
 
 		new BukkitRunnable() {
 			public void run() {
-				if (!player.isOnline()) {
+				if (!player.isOnline())
 					this.cancel();
-				}
 				if (Main.authmeApi.isAuthenticated(player)) {
 					if (!playerInfo.hasPlayerDataFile() || (playerInfo.hasPlayerDataFile() && playerInfo.hasNoName())) {
 						this.cancel();

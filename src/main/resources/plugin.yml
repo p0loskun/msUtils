@@ -1,7 +1,7 @@
 name: msUtils
 version: ${project.version}
 description: A Minecraft plugin with custom features for WhoMine
-authors: [MinersStudios, p0loskun]
+authors: [ MinersStudios, p0loskun ]
 website: minersstudios.github.io
 
 main: github.minersStudios.msUtils.Main

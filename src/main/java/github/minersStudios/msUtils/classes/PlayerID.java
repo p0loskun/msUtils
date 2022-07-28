@@ -1,7 +1,7 @@
 package github.minersStudios.msUtils.classes;
 
 import github.minersStudios.msUtils.Main;
-import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -12,11 +12,10 @@ import java.io.IOException;
 import java.util.*;
 
 public class PlayerID {
-	private final File idFile;
-	@Getter private final YamlConfiguration yamlConfiguration;
+	private static final File idFile = new File(Main.plugin.getDataFolder(), "ids.yml");
+	private final YamlConfiguration yamlConfiguration;
 
 	public PlayerID() {
-		this.idFile = new File(Main.plugin.getDataFolder(), "ids.yml");
 		this.yamlConfiguration = YamlConfiguration.loadConfiguration(idFile);
 	}
 
@@ -27,7 +26,7 @@ public class PlayerID {
 		int ID = this.createNewID(new ArrayList<>(this.yamlConfiguration.getValues(true).values()), -1);
 		this.yamlConfiguration.set(uuid.toString(), ID);
 		try {
-			this.yamlConfiguration.save(this.idFile);
+			this.yamlConfiguration.save(idFile);
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
@@ -36,10 +35,14 @@ public class PlayerID {
 
 	/**
 	 * @param uuid player's uuid
+	 * @param addPlayer if true and player ID = null, creates new id
+	 * @param zeroIfNull if true and player ID = null, returns -1
 	 * @return player's ID int
 	 */
-	public int getPlayerID(@Nonnull UUID uuid) {
-		return this.yamlConfiguration.getValues(true).containsKey(uuid.toString()) ? this.yamlConfiguration.getInt(uuid.toString()) : this.addPlayer(uuid);
+	public int getPlayerID(@Nonnull UUID uuid, boolean addPlayer, boolean zeroIfNull) {
+		return this.yamlConfiguration.getValues(true).containsKey(uuid.toString()) ? this.yamlConfiguration.getInt(uuid.toString())
+				: addPlayer ? this.addPlayer(uuid)
+				: zeroIfNull ? 0 : -1;
 	}
 
 	/**
@@ -48,14 +51,14 @@ public class PlayerID {
 	 */
 	@Nullable
 	public OfflinePlayer getPlayerByID(int ID) {
-		Map<String, Object> map = this.yamlConfiguration.getValues(true);
-		return map.containsValue(ID) ? Main.plugin.getServer().getOfflinePlayer(UUID.fromString(Objects.requireNonNull(getKeyByValue(map, ID)))) : null;
+		String uuid = getUUIDByID(ID);
+		return uuid == null ? null : Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 	}
 
 	@Nullable
-	private static <String, Object> String getKeyByValue(@Nonnull Map<String, Object> map, @Nonnull Object value) {
-		for (Map.Entry<String, Object> entry : map.entrySet())
-			if (Objects.equals(value, entry.getValue()))
+	private String getUUIDByID(int ID) {
+		for (Map.Entry<String, Object> entry : this.yamlConfiguration.getValues(true).entrySet())
+			if (Objects.equals(ID, entry.getValue()))
 				return entry.getKey();
 		return null;
 	}

@@ -171,7 +171,7 @@ public class ChatUtils {
 	 */
 	public static void sendDeathMessage(@Nonnull Player killed, @Nullable Player killer) {
 		PlayerInfo killedInfo = new PlayerInfo(killed.getUniqueId()), killerInfo = killer != null ? new PlayerInfo(killer.getUniqueId()) : null;
-		killedInfo.setLastDeathLocation(killed);
+		killedInfo.setLastDeathLocation();
 		String deathMessage =
 				killerInfo != null
 				? " " + killerInfo.getGoldenName() + ChatColor.of("#ffee93") + " " + killerInfo.getPronouns().getKillMessage() + " " + killedInfo.getGoldenName()
@@ -208,9 +208,11 @@ public class ChatUtils {
 				" " + playerInfo.getGoldenName() + " "
 				+ ChatColor.of("#ffee93") + playerInfo.getPronouns().getJoinMessage();
 
-		for (Player onlinePlayer : Bukkit.getOnlinePlayers())
-			if (onlinePlayer.getWorld() != Main.worldDark)
-				onlinePlayer.sendMessage(joinMessage);
+		Bukkit.getScheduler().runTask(Main.plugin, () -> {
+			for (Player onlinePlayer : Bukkit.getOnlinePlayers())
+				if (onlinePlayer.getWorld() != Main.worldDark)
+					onlinePlayer.sendMessage(joinMessage);
+		});
 
 		Bukkit.getScheduler().runTaskAsynchronously(Main.plugin, () -> {
 			ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(ChatUtils.discordGlobalChannelID), joinMessage, 65280);

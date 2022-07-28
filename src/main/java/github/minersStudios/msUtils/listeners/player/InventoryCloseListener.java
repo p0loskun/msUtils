@@ -7,6 +7,7 @@ import github.minersStudios.msUtils.enums.ResourcePackType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
@@ -14,7 +15,7 @@ import javax.annotation.Nonnull;
 
 public class InventoryCloseListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClose(@Nonnull InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());

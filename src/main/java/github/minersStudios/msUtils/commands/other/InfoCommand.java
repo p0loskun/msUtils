@@ -40,7 +40,7 @@ public class InfoCommand implements CommandExecutor {
 				lastDeathLocation = playerInfo.getLastDeathLocation();
 		return ChatUtils.sendInfo(sender, "UUID : "
 				+ playerInfo.getUuid() + "\nID : "
-				+ playerInfo.getID() + "\nNickname : "
+				+ playerInfo.getID(false, false) + "\nNickname : "
 				+ playerInfo.getNickname() + "\nFirstname : "
 				+ playerInfo.getFirstname() + "\nLastname : "
 				+ playerInfo.getLastname() + "\nPatronymic : "

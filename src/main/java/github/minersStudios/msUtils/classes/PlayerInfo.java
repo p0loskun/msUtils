@@ -26,6 +26,7 @@ import java.util.UUID;
 public class PlayerInfo {
 	private final File dataFile;
 	@Getter private final YamlConfiguration yamlConfiguration;
+	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd HH:mm z");
 	@Getter @Nonnull private final UUID uuid;
 	private Player onlinePlayer;
 	private String nickname, firstname, lastname, patronymic;
@@ -115,7 +116,17 @@ public class PlayerInfo {
 	 * @return player ID
 	 */
 	public int getID() {
-		return this.hasPlayerDataFile() ? new PlayerID().getPlayerID(this.uuid) : 0;
+		return this.getID(false, true);
+	}
+
+	/**
+	 * Gets player ID by UUID
+	 *
+	 * @return player ID
+	 */
+	public int getID(boolean addPlayer, boolean zeroIfNull) {
+		int ID = new PlayerID().getPlayerID(this.uuid, addPlayer, zeroIfNull);
+		return this.hasPlayerDataFile() ? ID : zeroIfNull ? 0 : -1;
 	}
 
 	/**
@@ -241,6 +252,8 @@ public class PlayerInfo {
 	public void setResourcePackType(@Nonnull ResourcePackType resourcePackType) {
 		if (!this.hasPlayerDataFile()) return;
 		this.yamlConfiguration.set("resource-pack", resourcePackType.name());
+		if (resourcePackType == ResourcePackType.NONE)
+			this.setDiskType(null);
 		savePlayerDataFile();
 	}
 
@@ -302,21 +315,19 @@ public class PlayerInfo {
 					sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
 							? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
 							: ZoneId.systemDefault()
-					).format(DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mm z"))
+					).format(timeFormatter)
 			);
-			ChatUtils.sendWarning(
+			return ChatUtils.sendWarning(
 					player,
 					"Вы были замучены : "
 					+ "\n    - Причина : \""
 					+ reason
 					+ "\"\n    - До : "
-					+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mm z"))
+					+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(timeFormatter)
 			);
-		} else {
-			ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был размучен");
-			ChatUtils.sendWarning(player, "Вы были размучены");
 		}
-		return true;
+		ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был размучен");
+		return ChatUtils.sendWarning(player, "Вы были размучены");
 	}
 
 	/**
@@ -360,18 +371,13 @@ public class PlayerInfo {
 			Player player = this.getOnlinePlayer();
 			Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, new Date(time), sender.getName());
 			if (player != null && player.getAddress() != null) {
-				this.setLastLeaveLocation(player);
-				player.kickPlayer(
-						ChatColor.RED + "\n§lВы были забанены"
-						+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-						+ ChatColor.GRAY + "\nПричина :\n\""
-						+ reason
+				PlayerUtils.kickPlayer(player, "Вы были забанены",
+						reason
 						+ "\"\n До : \n"
-						+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mm z"))
-						+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+						+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(timeFormatter)
 				);
 			}
-			ChatUtils.sendFine(sender,
+			return ChatUtils.sendFine(sender,
 					"Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был забанен : "
 					+ "\n    - Причина : \""
 					+ reason
@@ -380,13 +386,11 @@ public class PlayerInfo {
 							sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
 							? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
 							: ZoneId.systemDefault()
-					).format(DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mm z"))
+					).format(timeFormatter)
 			);
-		} else {
-			Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
-			ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был разбанен");
 		}
-		return true;
+		Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
+		return ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был разбанен");
 	}
 
 	/**
@@ -444,7 +448,7 @@ public class PlayerInfo {
 		if (player == null) return;
 		if (player.isDead())
 			player.spigot().respawn();
-		player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
+		Bukkit.getScheduler().runTask(Main.plugin, () -> player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN));
 	}
 
 	/**
@@ -454,7 +458,7 @@ public class PlayerInfo {
 		Player player = this.getOnlinePlayer();
 		if (player == null) return;
 		player.setGameMode(this.getGameMode());
-		player.teleport(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+		Bukkit.getScheduler().runTask(Main.plugin, () -> player.teleport(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN));
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
 	}
 
@@ -478,28 +482,20 @@ public class PlayerInfo {
 
 	/**
 	 * Sets last leave location of player
-	 *
-	 * @param player online player
 	 */
-	public void setLastLeaveLocation(@Nonnull Player player) {
-		if (!this.hasPlayerDataFile() || player.getWorld() == Main.worldDark) return;
-		Location leaveLocation = player.getLocation(), respawnLocation = player.getBedSpawnLocation() != null ? player.getBedSpawnLocation() : Main.overworld.getSpawnLocation();
+	public void setLastLeaveLocation() {
+		Player player = this.getOnlinePlayer();
+		if (player == null || !this.hasPlayerDataFile() || player.getWorld() == Main.worldDark) return;
+		Location leaveLocation = player.getLocation();
+		if (player.isDead())
+			leaveLocation = player.getBedSpawnLocation() != null ? player.getBedSpawnLocation() : Main.overworld.getSpawnLocation();
 		this.yamlConfiguration.set("gamemode", player.getGameMode().toString());
-		if (player.isDead()) {
-			this.yamlConfiguration.set("locations.last-leave-location.world", respawnLocation.getBlock().getWorld().getName());
-			this.yamlConfiguration.set("locations.last-leave-location.x", respawnLocation.getX());
-			this.yamlConfiguration.set("locations.last-leave-location.y", respawnLocation.getY());
-			this.yamlConfiguration.set("locations.last-leave-location.z", respawnLocation.getZ());
-			this.yamlConfiguration.set("locations.last-leave-location.yaw", respawnLocation.getYaw());
-			this.yamlConfiguration.set("locations.last-leave-location.pitch", respawnLocation.getPitch());
-		} else {
-			this.yamlConfiguration.set("locations.last-leave-location.world", leaveLocation.getBlock().getWorld().getName());
-			this.yamlConfiguration.set("locations.last-leave-location.x", leaveLocation.getX());
-			this.yamlConfiguration.set("locations.last-leave-location.y", leaveLocation.getY());
-			this.yamlConfiguration.set("locations.last-leave-location.z", leaveLocation.getZ());
-			this.yamlConfiguration.set("locations.last-leave-location.yaw", leaveLocation.getYaw());
-			this.yamlConfiguration.set("locations.last-leave-location.pitch", leaveLocation.getPitch());
-		}
+		this.yamlConfiguration.set("locations.last-leave-location.world", leaveLocation.getBlock().getWorld().getName());
+		this.yamlConfiguration.set("locations.last-leave-location.x", leaveLocation.getX());
+		this.yamlConfiguration.set("locations.last-leave-location.y", leaveLocation.getY());
+		this.yamlConfiguration.set("locations.last-leave-location.z", leaveLocation.getZ());
+		this.yamlConfiguration.set("locations.last-leave-location.yaw", leaveLocation.getYaw());
+		this.yamlConfiguration.set("locations.last-leave-location.pitch", leaveLocation.getPitch());
 		this.savePlayerDataFile();
 	}
 
@@ -522,11 +518,10 @@ public class PlayerInfo {
 
 	/**
 	 * Sets last death location of player
-	 *
-	 * @param player player
 	 */
-	public void setLastDeathLocation(@Nonnull Player player) {
-		if (!this.hasPlayerDataFile() && player.getWorld() == Main.worldDark) return;
+	public void setLastDeathLocation() {
+		Player player = this.getOnlinePlayer();
+		if (player == null || !this.hasPlayerDataFile() && player.getWorld() == Main.worldDark) return;
 		Location location = player.getLocation();
 		this.yamlConfiguration.set("locations.last-death-location.world", location.getBlock().getWorld().getName());
 		this.yamlConfiguration.set("locations.last-death-location.x", location.getX());

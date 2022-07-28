@@ -24,8 +24,9 @@ public class WorldTeleport implements TabCompleter {
             case 1 -> {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-                    if (playerInfo.hasPlayerDataFile())
-                        completions.add(String.valueOf(playerInfo.getID()));
+                    int ID = playerInfo.getID(false, false);
+                    if (ID != -1)
+                        completions.add(String.valueOf(ID));
                     completions.add(player.getName());
                 }
             }

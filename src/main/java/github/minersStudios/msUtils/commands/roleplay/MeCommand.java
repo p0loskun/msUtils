@@ -26,9 +26,9 @@ public class MeCommand implements CommandExecutor {
 			return ChatUtils.sendWarning(player, "Вы замучены");
 		return ChatUtils.sendRPEventMessage(player, 25,
 				"* "
-						+ playerInfo.getGrayIDGoldName() + " "
-						+ ChatColor.GOLD + ChatUtils.extractMessage(args, 0)
-						+ "*"
+				+ playerInfo.getGrayIDGoldName() + " "
+				+ ChatColor.GOLD + ChatUtils.extractMessage(args, 0)
+				+ "*"
 		);
 	}
 }

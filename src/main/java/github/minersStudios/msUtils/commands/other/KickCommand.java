@@ -23,7 +23,7 @@ public class KickCommand implements CommandExecutor {
 			if (offlinePlayer == null)
 				return ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			if (PlayerUtils.kickPlayer(offlinePlayer, reason))
+			if (PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", reason))
 				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был кикнут : " + "\n    - Причина : \"" + reason);
 			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" не в сети!");
 		}
@@ -32,7 +32,7 @@ public class KickCommand implements CommandExecutor {
 			if (offlinePlayer == null)
 				return ChatUtils.sendError(sender, "Что-то пошло не так...");
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			if (PlayerUtils.kickPlayer(offlinePlayer, reason))
+			if (PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", reason))
 				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был кикнут : " + "\n    - Причина : \"" + reason);
 			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" не в сети!");
 		}

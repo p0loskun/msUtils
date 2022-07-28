@@ -59,8 +59,7 @@ public final class SignMenu {
 		player.sendSignChange(this.location, this.text.toArray(new String[4]));
 
 		PacketContainer openSign = Main.protocolManager.createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
-		BlockPosition position = new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ());
-		openSign.getBlockPositionModifier().write(0, position);
+		openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));
 		try {
 			Main.protocolManager.sendServerPacket(player, openSign);
 		} catch (Exception exception) {

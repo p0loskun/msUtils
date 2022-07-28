@@ -21,11 +21,13 @@ public class WhiteList implements TabCompleter {
 		if (args.length == 1) {
 			completions.add("add");
 			completions.add("remove");
+			completions.add("reload");
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 			for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
 				PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-				if (playerInfo.hasPlayerDataFile())
-					completions.add(String.valueOf(playerInfo.getID()));
+				int ID = playerInfo.getID(false, false);
+				if (ID != -1)
+					completions.add(String.valueOf(ID));
 				completions.add(offlinePlayer.getName());
 			}
 		}

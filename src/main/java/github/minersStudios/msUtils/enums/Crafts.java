@@ -23,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import javax.annotation.Nonnull;
 
 public enum Crafts {
+    //<editor-fold desc="Crafts">
     ACACIA_SMALL_CHAIR(SmallChair.craftSmallAcaciaChair()),
     BIRCH_SMALL_CHAIR(SmallChair.craftSmallBirchChair()),
     CRIMSON_SMALL_CHAIR(SmallChair.craftSmallCrimsonChair()),
@@ -187,7 +188,9 @@ public enum Crafts {
     CARVED_OAK_PLANKS(CarvedPlanks.craftCarvedOakPlanks()),
     CARVED_SPRUCE_PLANKS(CarvedPlanks.craftCarvedSprucePlanks()),
     CARVED_WARPED_PLANKS(CarvedPlanks.craftCarvedWarpedPlanks()),
-    CARVED_MANGROVE_PLANKS(CarvedPlanks.craftCarvedMangrovePlanks());
+    CARVED_MANGROVE_PLANKS(CarvedPlanks.craftCarvedMangrovePlanks()),
+    //</editor-fold>
+    ;
 
     public static final String
             CRAFTS_NAME = ChatColor.WHITE + "\uB002\uA027",
@@ -199,11 +202,9 @@ public enum Crafts {
     }
 
     public static int getItemIndex(@Nonnull ItemStack itemStack) {
-        for (Crafts craft : Crafts.values()) {
-            if (itemStack.isSimilar(craft.shapedRecipe.getResult())) {
+        for (Crafts craft : Crafts.values())
+            if (itemStack.isSimilar(craft.shapedRecipe.getResult()))
                 return craft.ordinal();
-            }
-        }
         return -1;
     }
 

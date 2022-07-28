@@ -7,8 +7,8 @@ import github.minersStudios.msUtils.enums.Crafts;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 public class InventoryClickListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onInventoryClick(@Nonnull InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		Inventory clickedInventory = event.getClickedInventory();
@@ -52,15 +52,8 @@ public class InventoryClickListener implements Listener {
 		if (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME) && clickedInventory.getType() != InventoryType.PLAYER) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 			if (slot == 0 || slot == 1) {
-				if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE) {
-					player.kickPlayer(
-							ChatColor.RED + "\n§lВы были кикнуты"
-							+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-							+ ChatColor.GRAY + "\nПричина :\n\""
-							+ "Этот параметр требует перезахода на сервер" + "\""
-							+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
-					);
-				}
+				if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE)
+					Bukkit.getScheduler().runTask(Main.plugin, () -> PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Этот параметр требует перезахода на сервер"));
 				playerInfo.setResourcePackType(ResourcePackType.NONE);
 				player.closeInventory();
 				if (player.getWorld() == Main.worldDark)
@@ -68,12 +61,12 @@ public class InventoryClickListener implements Listener {
 			} else if (slot == 2 || slot == 3 || slot == 5 || slot == 6) {
 				player.closeInventory();
 				playerInfo.setResourcePackType(ResourcePackType.FULL);
-				playerInfo.setDiskType(playerInfo.getDiskType());
+				playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
 				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
 			} else if (slot == 7 || slot == 8) {
 				player.closeInventory();
 				playerInfo.setResourcePackType(ResourcePackType.LITE);
-				playerInfo.setDiskType(playerInfo.getDiskType());
+				playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
 				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
 			}
 			player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);

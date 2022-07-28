@@ -33,7 +33,7 @@ public record SitPlayer(Player player) {
 			ArmorStand armorStand = PlayerUtils.getSeats().get(this.player);
 			PlayerUtils.getSeats().remove(this.player);
 			this.player.eject();
-			this.player.teleport(armorStand.getLocation().add(0.0d, 1.7d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
+			this.player.teleport(armorStand.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 			armorStand.remove();
 			ChatUtils.sendRPEventMessage(player, 25,
 					"* "

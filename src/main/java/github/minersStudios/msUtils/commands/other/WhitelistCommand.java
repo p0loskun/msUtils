@@ -30,7 +30,7 @@ public class WhitelistCommand implements CommandExecutor {
 				if (offlinePlayer == null)
 					return ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-				if (PlayerUtils.removePlayerFromWhitelist(offlinePlayer, null))
+				if (PlayerUtils.removePlayerFromWhitelist(offlinePlayer, offlinePlayer.getName()))
 					return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + playerInfo.getNickname() + ")\" был удалён из белого списка");
 				return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + playerInfo.getNickname() + ")\" не состоит в белом списке");
 			}

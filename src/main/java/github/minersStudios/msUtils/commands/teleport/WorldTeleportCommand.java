@@ -1,5 +1,6 @@
 package github.minersStudios.msUtils.commands.teleport;
 
+import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerID;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
@@ -11,11 +12,13 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import javax.annotation.Nonnull;
 
 public class WorldTeleportCommand implements CommandExecutor {
     private static final String coordinatesRegex = "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$";
+    private static double x, y, z;
 
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
@@ -46,9 +49,9 @@ public class WorldTeleportCommand implements CommandExecutor {
         if (world == null)
             return ChatUtils.sendWarning(sender, "Такого мира не существует!");
         Location spawnLoc = world.getSpawnLocation();
-        double x = spawnLoc.getX(),
-                y = spawnLoc.getY(),
-                z = spawnLoc.getZ();
+        x = spawnLoc.getX();
+        y = spawnLoc.getY();
+        z = spawnLoc.getZ();
         if (args.length > 2) {
             if (args.length != 5 || !args[2].matches(coordinatesRegex) || !args[3].matches(coordinatesRegex) || !args[4].matches(coordinatesRegex))
                 return false;
@@ -58,7 +61,7 @@ public class WorldTeleportCommand implements CommandExecutor {
             if (x > 29999984 || z > 29999984)
                 return ChatUtils.sendWarning(sender, "Указаны слишком большие координаты!");
         }
-        offlinePlayer.getPlayer().teleport(new Location(world, x, y, z));
+        Bukkit.getScheduler().runTask(Main.plugin, () -> offlinePlayer.getPlayer().teleport(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN));
         return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getDefaultName() + " (" + offlinePlayer.getName() + ")\" был телепортирован :"
                 + "\n    - Мир : " + world.getName()
                 + "\n    - X : " + x

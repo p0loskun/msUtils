@@ -3,8 +3,8 @@ package github.minersStudios.msUtils.classes;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -73,10 +73,10 @@ public class RegistrationProcess {
 
 			this.sendDialogueMessage(
 					"Ну вот и отлично, "
-							+ ChatColor.GRAY + "[" + new PlayerID().getPlayerID(this.playerInfo.getUuid()) + "] "
-							+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
-							+ this.playerInfo.getLastname() + " "
-							+ this.playerInfo.getPatronymic(), 25L);
+					+ ChatColor.GRAY + "[" + playerInfo.getID(true, false) + "] "
+					+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
+					+ this.playerInfo.getLastname() + " "
+					+ this.playerInfo.getPatronymic(), 25L);
 			this.sendDialogueMessage("Слушай", 100L);
 			this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
 
@@ -117,7 +117,7 @@ public class RegistrationProcess {
 
 	private void sendDialogueMessage(@Nonnull String message, long delay) {
 		Bukkit.getScheduler().runTaskLater(Main.plugin, () -> {
-			this.player.sendMessage(net.md_5.bungee.api.ChatColor.of("#aba494") + " [0] Незнакомец : " + net.md_5.bungee.api.ChatColor.of("#f2f0e3") + message);
+			this.player.sendMessage(ChatColor.of("#aba494") + " [0] Незнакомец : " + ChatColor.of("#f2f0e3") + message);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);
 	}

@@ -5,6 +5,7 @@ import github.minersStudios.msUtils.classes.SitPlayer;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -12,7 +13,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerQuitListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerQuit(@Nonnull PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
@@ -20,7 +21,7 @@ public class PlayerQuitListener implements Listener {
 		if (sitPlayer.isSitting())
 			sitPlayer.setSitting(null);
 		event.setQuitMessage(null);
-		playerInfo.setLastLeaveLocation(player);
+		playerInfo.setLastLeaveLocation();
 		ChatUtils.sendLeaveMessage(playerInfo, player);
 	}
 }

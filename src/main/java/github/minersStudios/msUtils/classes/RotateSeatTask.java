@@ -18,7 +18,9 @@ public class RotateSeatTask extends BukkitRunnable {
 		try {
 			this.alignArmorStand = new RotateSeatTask.AlignArmorStand() {
 				final Method method;
-				{ this.method = Entity.class.getMethod("setRotation", Float.TYPE, Float.TYPE); }
+				{
+					this.method = Entity.class.getMethod("setRotation", Float.TYPE, Float.TYPE);
+				}
 
 				public void align(ArmorStand armorStand, float yaw) {
 					try {

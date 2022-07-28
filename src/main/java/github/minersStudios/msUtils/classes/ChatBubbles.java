@@ -1,5 +1,6 @@
 package github.minersStudios.msUtils.classes;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.AreaEffectCloud;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nonnull;
 
 public class ChatBubbles {
+
 	public int receiveMessage(@Nonnull Player player, @Nonnull String chat) {
 		String[] chatLines = chat.split("\n");
 		int duration = (chat.length() + (17 * chatLines.length)) * 1200 / 800;
@@ -23,7 +25,7 @@ public class ChatBubbles {
 		return spawnPoint.getBlock().getWorld().spawn(spawnPoint, AreaEffectCloud.class, (areaEffectCloud) -> {
 			areaEffectCloud.setParticle(Particle.TOWN_AURA);
 			areaEffectCloud.setRadius(0);
-			areaEffectCloud.setCustomName(" \u00A7f" + (firstLine ? "\uA015 " : "") + text + " ");
+			areaEffectCloud.setCustomName(ChatColor.WHITE + (firstLine ? "\uA015 " : "") + text + " ");
 			areaEffectCloud.setCustomNameVisible(true);
 			areaEffectCloud.setWaitTime(0);
 			areaEffectCloud.setDuration(duration);

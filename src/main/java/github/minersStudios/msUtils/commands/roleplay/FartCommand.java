@@ -27,9 +27,9 @@ public class FartCommand implements CommandExecutor {
 		player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
 		return ChatUtils.sendRPEventMessage(player, 25,
 				"* "
-						+ playerInfo.getGrayIDGoldName() + " "
-						+ ChatColor.GOLD + playerInfo.getPronouns().getFartMessage()
-						+ "*"
+				+ playerInfo.getGrayIDGoldName() + " "
+				+ ChatColor.GOLD + playerInfo.getPronouns().getFartMessage()
+				+ "*"
 		);
 	}
 }

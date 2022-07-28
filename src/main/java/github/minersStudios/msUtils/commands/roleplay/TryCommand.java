@@ -25,10 +25,10 @@ public class TryCommand implements CommandExecutor {
 			return ChatUtils.sendWarning(player, "Вы замучены");
 		return ChatUtils.sendRPEventMessage(player, 25,
 				ChatColor.GOLD + "* "
-						+ playerInfo.getGrayIDGoldName()
-						+ ChatColor.GOLD + ChatUtils.extractMessage(args, 0) + " "
-						+ new String[]{org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)]
-						+ ChatColor.GOLD + "*"
+				+ playerInfo.getGrayIDGoldName()
+				+ ChatColor.GOLD + ChatUtils.extractMessage(args, 0) + " "
+				+ new String[]{org.bukkit.ChatColor.GREEN + "Успешно", org.bukkit.ChatColor.RED + "Неуспешно"}[new Random().nextInt(2)]
+				+ ChatColor.GOLD + "*"
 		);
 	}
 }

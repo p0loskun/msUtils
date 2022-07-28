@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
@@ -12,7 +13,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerInteractEntityListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteractEntity(@Nonnull PlayerInteractEntityEvent event) {
 		if (event.getRightClicked() instanceof Player player) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
