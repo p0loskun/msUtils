@@ -7,6 +7,7 @@ public class Symbols {
 			greenExclamationMark = Component.text(" ꀒ "),
 			yellowExclamationMark = Component.text(" ꀓ "),
 			redExclamationMark = Component.text(" ꀑ "),
-			speech = Component.text(" ꀕ ")
+			speech = Component.text(" ꀕ "),
+			discord = Component.text(" ꀔ ")
 	;
 }
