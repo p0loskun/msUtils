@@ -37,7 +37,7 @@ public class DiscordSRVListener {
 		for (Player player : Bukkit.getOnlinePlayers())
 			if (player.getWorld() != Main.worldDark)
 				player.sendMessage(messageComponent);
-		Bukkit.getLogger().info(ChatUtils.plainTextSerializeComponent(messageComponent));
+		Bukkit.getLogger().info(ChatUtils.plainTextSerializeComponent(messageComponent).substring(2));
 	}
 
 	@Nonnull
