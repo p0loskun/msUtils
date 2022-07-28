@@ -3,7 +3,10 @@ package github.minersStudios.msUtils.enums;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -62,83 +65,80 @@ public enum ResourcePackType {
 		ItemStack pickRP = new ItemStack(Material.KNOWLEDGE_BOOK);
 		ItemMeta pickRPMeta = pickRP.getItemMeta();
 		assert pickRPMeta != null;
-		pickRPMeta.setDisplayName(ChatColor.WHITE + "Ресурспаки");
+		pickRPMeta.displayName(Component.text("Ресурспаки").color(NamedTextColor.WHITE));
 		pickRPMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
 		pickRPMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
 
-		ArrayList<String> lore = new ArrayList<>();
-		lore.add(ChatColor.GRAY + "Выберите один из");
-		lore.add(ChatColor.GRAY + "2 видов ресурспаков");
-		lore.add(ChatColor.GRAY + "или выберите 3 вариант");
-		lore.add(ChatColor.GRAY + "и играйте без него");
-		lore.add(ChatColor.GRAY + "(Не рекомендуется)");
+		ArrayList<Component> lore = new ArrayList<>();
+		lore.add(Component.text("Выберите один из").color(NamedTextColor.GRAY));
+		lore.add(Component.text("2 видов ресурспаков").color(NamedTextColor.GRAY));
+		lore.add(Component.text("или выберите 3 вариант").color(NamedTextColor.GRAY));
+		lore.add(Component.text("и играйте без него").color(NamedTextColor.GRAY));
+		lore.add(Component.text("(Не рекомендуется)").color(NamedTextColor.GRAY));
 
-		pickRPMeta.setLore(lore);
+		pickRPMeta.lore(lore);
 		pickRP.setItemMeta(pickRPMeta);
 
 		ItemStack noneRP = new ItemStack(Material.COAL_BLOCK);
 		ItemMeta noneRPMeta = noneRP.getItemMeta();
 		assert noneRPMeta != null;
-		noneRPMeta.setDisplayName(ChatColor.WHITE + "Без текстурпака");
+		noneRPMeta.displayName(Component.text("Без текстурпака").color(NamedTextColor.WHITE));
 
-		ArrayList<String> lore0 = new ArrayList<>();
-		lore0.add(ChatColor.GRAY + "Имеет в себе :");
-		lore0.add(ChatColor.GRAY + " - ничего");
+		ArrayList<Component> lore0 = new ArrayList<>();
+		lore0.add(Component.text("Имеет в себе :").color(NamedTextColor.GRAY));
+		lore0.add(Component.text(" - ничего").color(NamedTextColor.GRAY));
 
-		noneRPMeta.setLore(lore0);
+		noneRPMeta.lore(lore0);
 		noneRP.setItemMeta(noneRPMeta);
 
 		ItemStack liteRP = new ItemStack(Material.IRON_BLOCK);
 		ItemMeta liteRPMeta = liteRP.getItemMeta();
 		assert liteRPMeta != null;
-		liteRPMeta.setDisplayName(ChatColor.WHITE + "Облегчённая версия");
+		liteRPMeta.displayName(Component.text("Облегчённая версия").color(NamedTextColor.WHITE));
 
-		ArrayList<String> lore2 = new ArrayList<>();
-		lore2.add(ChatColor.GRAY + "Имеет в себе :");
-		lore2.add(ChatColor.GRAY + " - текстуры и модельки");
-		lore2.add(ChatColor.GRAY + "   мебели");
-		lore2.add(ChatColor.GRAY + " - текстуры значков");
-		lore2.add(ChatColor.GRAY + " - текстуры меню");
-		lore2.add(ChatColor.GRAY + " - переименования некоторых");
-		lore2.add(ChatColor.GRAY + "   предметов");
-		lore2.add(ChatColor.GRAY + " - изменённая модель головы");
+		ArrayList<Component> lore2 = new ArrayList<>();
+		lore2.add(Component.text("Имеет в себе :").color(NamedTextColor.GRAY));
+		lore2.add(Component.text(" - текстуры и модельки").color(NamedTextColor.GRAY));
+		lore2.add(Component.text("   мебели").color(NamedTextColor.GRAY));
+		lore2.add(Component.text(" - текстуры значков").color(NamedTextColor.GRAY));
+		lore2.add(Component.text(" - текстуры меню").color(NamedTextColor.GRAY));
+		lore2.add(Component.text(" - переименования некоторых").color(NamedTextColor.GRAY));
+		lore2.add(Component.text("   предметов").color(NamedTextColor.GRAY));
+		lore2.add(Component.text(" - изменённая модель головы").color(NamedTextColor.GRAY));
 
-		liteRPMeta.setLore(lore2);
+		liteRPMeta.lore(lore2);
 		liteRP.setItemMeta(liteRPMeta);
 
 		ItemStack fullRP = new ItemStack(Material.NETHERITE_BLOCK);
 		ItemMeta fullRPMeta = fullRP.getItemMeta();
 		assert fullRPMeta != null;
-		fullRPMeta.setDisplayName(ChatColor.WHITE + "Полная версия");
+		fullRPMeta.displayName(Component.text("Полная версия").color(NamedTextColor.WHITE));
 
-		ArrayList<String> lore4 = new ArrayList<>();
-		lore4.add(ChatColor.GRAY + "Имеет в себе :");
-		lore4.add(ChatColor.GRAY + " - текстуры и модельки");
-		lore4.add(ChatColor.GRAY + "   мебели");
-		lore4.add(ChatColor.GRAY + " - текстуры значков");
-		lore4.add(ChatColor.GRAY + " - текстуры меню");
-		lore4.add(ChatColor.GRAY + " - переименования некоторых");
-		lore4.add(ChatColor.GRAY + "   предметов");
-		lore4.add(ChatColor.GRAY + " - изменённая модель головы");
-		lore4.add(ChatColor.GRAY + " - OF текстуры и модельки :");
-		lore4.add(ChatColor.GRAY + "   Небо");
-		lore4.add(ChatColor.GRAY + "   Некоторые мобы");
-		lore4.add(ChatColor.GRAY + "   Шапки/Еда/Прочее");
-		lore4.add(ChatColor.GRAY + " - пушистые листья");
-		lore4.add(ChatColor.GRAY + "   (Bushy Leaves)");
-		lore4.add(ChatColor.GRAY + " - анимированные текстуры");
-		lore4.add(ChatColor.GRAY + "   блоков/предметов");
-		lore4.add(ChatColor.GRAY + " - изменённые текстуры/модели");
-		lore4.add(ChatColor.GRAY + "   блоков/предметов/интерфейса");
-		lore4.add(ChatColor.GRAY + " - 3D модель фонаря");
-		lore4.add(ChatColor.GRAY + " - изменённый градиент");
-		lore4.add(ChatColor.GRAY + " ");
-		lore4.add(ChatColor.GRAY + "(" + ChatColor.DARK_RED + "ВНИМАНИЕ!!!" + ChatColor.GRAY + " требует OptiFine/его заменители)");
+		ArrayList<Component> lore4 = new ArrayList<>();
+		lore4.add(Component.text("Имеет в себе :").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - текстуры и модельки").color(NamedTextColor.GRAY));
+		lore4.add(Component.text("   мебели").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - текстуры значков").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - текстуры меню").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - переименования некоторых").color(NamedTextColor.GRAY));
+		lore4.add(Component.text("   предметов").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - изменённая модель головы").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - OF текстуры и модельки :").color(NamedTextColor.GRAY));
+		lore4.add(Component.text("   Небо").color(NamedTextColor.GRAY));
+		lore4.add(Component.text("   Некоторые мобы").color(NamedTextColor.GRAY));
+		lore4.add(Component.text("   Шапки/Еда/Прочее").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - анимированные текстуры").color(NamedTextColor.GRAY));
+		lore4.add(Component.text("   блоков/предметов").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - изменённые текстуры/модели").color(NamedTextColor.GRAY));
+		lore4.add(Component.text("   блоков/предметов/интерфейса").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" - 3D модель фонаря").color(NamedTextColor.GRAY));
+		lore4.add(Component.text(" ").color(NamedTextColor.GRAY));
+		lore4.add(Component.text("(" + ChatColor.DARK_RED + "ВНИМАНИЕ!!!" + ChatColor.GRAY + " требует OptiFine/его заменители)").color(NamedTextColor.GRAY));
 
-		fullRPMeta.setLore(lore4);
+		fullRPMeta.lore(lore4);
 		fullRP.setItemMeta(fullRPMeta);
 
-		Inventory inventory = Bukkit.createInventory(null, 9, NAME);
+		Inventory inventory = Bukkit.createInventory(null, 9, Component.text(NAME));
 		inventory.setItem(0, noneRP);
 		inventory.setItem(1, noneRP);
 		inventory.setItem(2, fullRP);
@@ -161,11 +161,11 @@ public enum ResourcePackType {
 		Player player = playerInfo.getOnlinePlayer();
 		if (playerInfo.getResourcePackType() != null) {
 			if (playerInfo.getResourcePackType() == ResourcePackType.FULL) {
-				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
+				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL(), PlayerUtils.encrypt(ResourcePackType.FULL.getDropBoxURL()));
 			} else if (playerInfo.getResourcePackType() == ResourcePackType.LITE) {
-				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
+				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL(), PlayerUtils.encrypt(ResourcePackType.LITE.getDropBoxURL()));
 			} else {
-				ChatUtils.sendWarning(player, "Вы зашли на сервер без ресурспака");
+				ChatUtils.sendWarning(player, Component.text("Вы зашли на сервер без ресурспака"));
 			}
 		} else {
 			player.openInventory(ResourcePackType.getInventory());

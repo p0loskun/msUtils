@@ -14,6 +14,7 @@ import github.minersStudios.msUtils.listeners.RegEvents;
 import github.minersStudios.msUtils.tabCompleters.*;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import github.minersStudios.msUtils.utils.PlayerUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
@@ -123,7 +124,7 @@ public final class Main extends JavaPlugin {
 				.type(WorldType.NORMAL)
 				.environment(World.Environment.NORMAL).createWorld();
 		if (worldDark == null) {
-			ChatUtils.sendError(null, "Main#generateWorld() world_dark = null");
+			ChatUtils.sendError(null, Component.text("Main#generateWorld() world_dark = null"));
 			plugin.getServer().savePlayers();
 			plugin.getServer().shutdown();
 		}

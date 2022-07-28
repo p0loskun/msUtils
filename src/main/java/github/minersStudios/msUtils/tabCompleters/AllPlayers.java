@@ -21,36 +21,34 @@ public class AllPlayers implements TabCompleter {
 		if (args.length == 1) {
 			if (!command.getName().equals("unban")) {
 				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-					if (offlinePlayer != null) {
-						PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-						int ID = playerInfo.getID(false, false);
-						switch (command.getName()) {
-							case "mute" -> {
-								if (playerInfo.isMuted()) break;
-								if (ID != -1)
-									completions.add(String.valueOf(ID));
-								if (playerInfo.hasPlayerDataFile())
-									completions.add(offlinePlayer.getName());
-							}
-							case "unmute" -> {
-								if (!playerInfo.isMuted()) break;
-								if (ID != -1)
-									completions.add(String.valueOf(ID));
-								if (playerInfo.hasPlayerDataFile())
-									completions.add(offlinePlayer.getName());
-							}
-							case "ban" -> {
-								if (playerInfo.isBanned()) break;
-								if (ID != -1)
-									completions.add(String.valueOf(ID));
+					PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+					int ID = playerInfo.getID(false, false);
+					switch (command.getName()) {
+						case "mute" -> {
+							if (playerInfo.isMuted()) break;
+							if (ID != -1)
+								completions.add(String.valueOf(ID));
+							if (playerInfo.hasPlayerDataFile())
 								completions.add(offlinePlayer.getName());
-							}
-							default -> {
-								if (ID != -1)
-									completions.add(String.valueOf(ID));
-								if (playerInfo.hasPlayerDataFile())
-									completions.add(offlinePlayer.getName());
-							}
+						}
+						case "unmute" -> {
+							if (!playerInfo.isMuted()) break;
+							if (ID != -1)
+								completions.add(String.valueOf(ID));
+							if (playerInfo.hasPlayerDataFile())
+								completions.add(offlinePlayer.getName());
+						}
+						case "ban" -> {
+							if (playerInfo.isBanned()) break;
+							if (ID != -1)
+								completions.add(String.valueOf(ID));
+							completions.add(offlinePlayer.getName());
+						}
+						default -> {
+							if (ID != -1)
+								completions.add(String.valueOf(ID));
+							if (playerInfo.hasPlayerDataFile())
+								completions.add(offlinePlayer.getName());
 						}
 					}
 				}

@@ -1,8 +1,8 @@
 package github.minersStudios.msUtils.listeners.player;
 
 import github.minersStudios.msUtils.classes.PlayerInfo;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import github.minersStudios.msUtils.utils.Colors;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,7 +17,14 @@ public class PlayerInteractEntityListener implements Listener {
 	public void onPlayerInteractEntity(@Nonnull PlayerInteractEntityEvent event) {
 		if (event.getRightClicked() instanceof Player player) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-			event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(playerInfo.getGoldenName() + " " + playerInfo.getPatronymic()));
+			event.getPlayer().sendActionBar(
+					Component.text()
+					.append(playerInfo.getGoldenName())
+					.append(Component.text(" "))
+					.append(Component.text(playerInfo.getPatronymic()))
+					.color(Colors.joinMessageColorPrimary)
+					.build()
+			);
 		}
 	}
 }

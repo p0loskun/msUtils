@@ -2,7 +2,7 @@ package github.minersStudios.msUtils.classes;
 
 import github.minersStudios.msUtils.utils.ChatUtils;
 import github.minersStudios.msUtils.utils.PlayerUtils;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -22,12 +22,7 @@ public record SitPlayer(Player player) {
 				armorStand.addPassenger(this.player);
 				armorStand.addScoreboardTag("customDecor");
 				PlayerUtils.getSeats().put(this.player, armorStand);
-				ChatUtils.sendRPEventMessage(player, 25,
-						"* "
-						+ playerInfo.getGrayIDGoldName() + " "
-						+ ChatColor.GOLD + playerInfo.getPronouns().getSitMessage()
-						+ "*"
-				);
+				ChatUtils.sendRPEventMessage(player, 25, Component.text(playerInfo.getPronouns().getSitMessage()));
 			});
 		} else if (sitLocation == null && this.isSitting()) {
 			ArmorStand armorStand = PlayerUtils.getSeats().get(this.player);
@@ -35,12 +30,7 @@ public record SitPlayer(Player player) {
 			this.player.eject();
 			this.player.teleport(armorStand.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 			armorStand.remove();
-			ChatUtils.sendRPEventMessage(player, 25,
-					"* "
-					+ playerInfo.getGrayIDGoldName() + " "
-					+ ChatColor.GOLD + playerInfo.getPronouns().getUnSitMessage()
-					+ "*"
-			);
+			ChatUtils.sendRPEventMessage(player, 25, Component.text(playerInfo.getPronouns().getUnSitMessage()));
 		}
 		return true;
 	}

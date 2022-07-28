@@ -35,5 +35,6 @@ public class RegEvents {
         pluginManager.registerEvents(new PlayerResourcePackStatusListener(), plugin);
         pluginManager.registerEvents(new PlayerDeathListener(), plugin);
         pluginManager.registerEvents(new PlayerJoinListener(), plugin);
+        pluginManager.registerEvents(new AsyncPlayerPreLoginListener(), plugin);
     }
 }

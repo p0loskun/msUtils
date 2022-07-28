@@ -6,8 +6,6 @@ import github.minersStudios.msUtils.classes.RegistrationProcess;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import org.bukkit.BanList;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,36 +18,18 @@ import javax.annotation.Nonnull;
 
 public class PlayerJoinListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerJoin(@Nonnull PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), player.getName());
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), ChatUtils.plainTextSerializeComponent(player.name()));
 
-		event.setJoinMessage(null);
+		event.joinMessage(null);
 		Main.scoreboardHideTagsTeam.addEntry(player.getName());
 		player.setScoreboard(Main.scoreboardHideTags);
-		player.setDisplayName(playerInfo.getDefaultName());
+		player.displayName(playerInfo.getDefaultName());
 		player.setGameMode(GameMode.SPECTATOR);
 		if (player.isDead())
 			playerInfo.teleportToDarkWorld();
-
-		if (
-				playerInfo.hasPlayerDataFile()
-				&& playerInfo.getIP() != null
-				&& player.getAddress() != null
-				&& !playerInfo.getIP().contains(player.getAddress().getHostName())
-		) {
-			ChatUtils.sendWarning(null,
-					"Игроку : \"" + playerInfo.getGrayIDGoldName() + " "
-					+ "\" был добавлен новый айпи адресс : " + player.getAddress().getHostName()
-			);
-			playerInfo.setIP(player.getAddress().getHostName());
-		}
-
-		if (
-				(playerInfo.isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
-				|| (playerInfo.isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(player.getName()))
-		) playerInfo.setBanned(false, null);
 
 		new BukkitRunnable() {
 			public void run() {

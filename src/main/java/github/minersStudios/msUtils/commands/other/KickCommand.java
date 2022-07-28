@@ -4,6 +4,7 @@ import github.minersStudios.msUtils.classes.PlayerID;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import github.minersStudios.msUtils.utils.PlayerUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,21 +22,43 @@ public class KickCommand implements CommandExecutor {
 		if (args[0].matches("[0-99]+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null)
-				return ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", reason))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + "\" был кикнут : " + "\n    - Причина : \"" + reason);
-			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + "\" не в сети!");
+				return ChatUtils.sendFine(sender,
+						Component.text("Игрок : \"")
+						.append(playerInfo.getGrayIDGreenName())
+						.append(Component.text("\" был кикнут :\n    - Причина : \""))
+						.append(Component.text(reason))
+				);
+			return ChatUtils.sendWarning(sender,
+					Component.text("Игрок : \"")
+					.append(playerInfo.getGrayIDGoldName())
+					.append(Component.text("\" не в сети!"))
+			);
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null)
-				return ChatUtils.sendError(sender, "Что-то пошло не так...");
+				return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", reason))
-				return ChatUtils.sendFine(sender, "Игрок : \"" + playerInfo.getGrayIDGreenName() + " (" + args[0] + ")\" был кикнут : " + "\n    - Причина : \"" + reason);
-			return ChatUtils.sendWarning(sender, "Игрок : \"" + playerInfo.getGrayIDGoldName() + " (" + args[0] + ")\" не в сети!");
+				return ChatUtils.sendFine(sender,
+						Component.text("Игрок : \"")
+						.append(playerInfo.getGrayIDGreenName())
+						.append(Component.text(" ("))
+						.append(Component.text(args[0]))
+						.append(Component.text(")\" был кикнут :\n    - Причина : \""))
+						.append(Component.text(reason))
+				);
+			return ChatUtils.sendWarning(sender,
+					Component.text("Игрок : \"")
+					.append(playerInfo.getGrayIDGoldName())
+					.append(Component.text(" ("))
+					.append(Component.text(args[0]))
+					.append(Component.text(")\" не в сети!"))
+			);
 		}
-		return ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
 	}
 }

@@ -7,7 +7,7 @@ import github.scarsz.discordsrv.dependencies.google.common.base.Function;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -21,7 +21,7 @@ public class DiscordSRVListener {
 				referencedMessage = message.getReferencedMessage();
 		String reply = referencedMessage != null ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), referencedMessage) : "",
 				attachment = !message.getAttachments().isEmpty() ? message.getAttachments().size() > 1 ? "(вложения) " : "(вложение) " : "",
-				stringMessage = " " + ChatColor.of("#707ddf") + message.getAuthor().getName() + reply + " : " + ChatColor.of("#a5a5ff") + attachment + ChatColor.of("#cacaff") + message.getContentDisplay();
+				stringMessage = " " + TextColor.color(112, 125, 223) + message.getAuthor().getName() + reply + " : " + TextColor.color(165, 165, 255) + attachment + TextColor.color(202, 202, 255) + message.getContentDisplay();
 		for (Player player : Bukkit.getOnlinePlayers())
 			if (player.getWorld() != Main.worldDark)
 				player.sendMessage(" \uA014" + stringMessage);
@@ -34,6 +34,6 @@ public class DiscordSRVListener {
 		String attachment = !repliedMessage.getAttachments().isEmpty() ? repliedMessage.getAttachments().size() > 1 ? "(вложения) " : "(вложение) " : "",
 				message = escape.apply(MessageUtil.strip(repliedMessage.getContentDisplay()));
 		return message.isEmpty() && attachment.isEmpty() ? ""
-				: ChatColor.of("#98a2f9") + " (отвечая на \"" + attachment + message + "\")" + ChatColor.of("#707ddf");
+				: TextColor.color(152, 162, 249) + " (отвечая на \"" + attachment + message + "\")" + TextColor.color(112, 125, 223);
 	}
 }

@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import github.minersStudios.msUtils.Main;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,8 +56,10 @@ public final class SignMenu {
 		this.location = player.getLocation();
 		this.location.setY(200);
 
+		Component[] components = new Component[] {Component.text(this.text.get(0)), Component.text(this.text.get(1)), Component.text(this.text.get(2)), Component.text(this.text.get(3))};
+
 		player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
-		player.sendSignChange(this.location, this.text.toArray(new String[4]));
+		player.sendSignChange(this.location, List.of(components));
 
 		PacketContainer openSign = Main.protocolManager.createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
 		openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));

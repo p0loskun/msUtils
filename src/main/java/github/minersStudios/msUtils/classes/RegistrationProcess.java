@@ -3,8 +3,11 @@ package github.minersStudios.msUtils.classes;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
-import net.md_5.bungee.api.ChatColor;
+import github.minersStudios.msUtils.utils.Colors;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -100,7 +103,7 @@ public class RegistrationProcess {
 	}
 
 	private void setOther() {
-		this.player.setDisplayName(this.playerInfo.getDefaultName());
+		this.player.displayName(this.playerInfo.getDefaultName());
 		if (this.playerInfo.getResourcePackType() == null) {
 			Bukkit.getScheduler().runTask(Main.plugin, () -> this.player.openInventory(ResourcePackType.getInventory()));
 		} else if (this.playerInfo.getResourcePackType() == ResourcePackType.NONE) {
@@ -111,13 +114,19 @@ public class RegistrationProcess {
 	}
 
 	private boolean sendWarningMessage() {
-		this.player.sendMessage(ChatColor.GOLD + " Используйте только кириллицу, без пробелов!");
+		this.player.sendMessage(Component.text(" Используйте только кириллицу, без пробелов!", NamedTextColor.GOLD));
 		return false;
 	}
 
 	private void sendDialogueMessage(@Nonnull String message, long delay) {
 		Bukkit.getScheduler().runTaskLater(Main.plugin, () -> {
-			this.player.sendMessage(ChatColor.of("#aba494") + " [0] Незнакомец : " + ChatColor.of("#f2f0e3") + message);
+			this.player.sendMessage(
+					Component.text(" ")
+					.append(Component.text(" [0] Незнакомец : ")
+					.color(Colors.chatColorPrimary))
+					.append(Component.text(message))
+					.color(Colors.chatColorSecondary)
+			);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);
 	}

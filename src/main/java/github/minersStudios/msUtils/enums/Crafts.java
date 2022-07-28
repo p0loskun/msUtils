@@ -11,6 +11,8 @@ import github.minersStudios.msDecor.crafts.home.plushes.*;
 import github.minersStudios.msDecor.crafts.home.tables.*;
 import github.minersStudios.msDecor.crafts.street.*;
 import github.minersStudios.msDecor.crafts.street.trashcans.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -211,7 +213,7 @@ public enum Crafts {
     public static void openCraft(@Nonnull Player player, @Nonnull ItemStack itemStack, int pageIndex) {
         for (Crafts craft : Crafts.values()) {
             if (itemStack.isSimilar(craft.shapedRecipe.getResult())) {
-                Inventory inventory = Bukkit.createInventory(null, 4 * 9, CRAFT_NAME);
+                Inventory inventory = Bukkit.createInventory(null, 4 * 9, Component.text(CRAFT_NAME));
                 String[] shapes = craft.shapedRecipe.getShape();
                 int i = 0;
                 for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
@@ -248,7 +250,7 @@ public enum Crafts {
      */
     @Nonnull
     public static Inventory getInventory(int index) {
-        Inventory inventory = Bukkit.createInventory(null, 5 * 9, CRAFTS_NAME);
+        Inventory inventory = Bukkit.createInventory(null, 5 * 9, Component.text(CRAFTS_NAME));
         Crafts[] crafts = Crafts.values();
         inventory.setItem(36, getPreviousPageButton()[index == 0 ? 1 : 0]);
         inventory.setItem(37, getPreviousPageButton()[1]);
@@ -274,8 +276,8 @@ public enum Crafts {
         ItemMeta previousPageMeta = previousPage.getItemMeta(),
                 previousPageMetaNoCMD = previousPageNoCMD.getItemMeta();
         assert previousPageMeta != null && previousPageMetaNoCMD != null;
-        previousPageMetaNoCMD.setDisplayName(ChatColor.WHITE + "Предыдущая страница");
-        previousPageMeta.setDisplayName(ChatColor.WHITE + "Предыдущая страница");
+        previousPageMetaNoCMD.displayName(Component.text("Предыдущая страница").color(NamedTextColor.WHITE));
+        previousPageMeta.displayName(Component.text("Предыдущая страница").color(NamedTextColor.WHITE));
         previousPageMeta.setCustomModelData(5001);
         previousPageMetaNoCMD.setCustomModelData(0);
         previousPageNoCMD.setItemMeta(previousPageMetaNoCMD);
@@ -290,8 +292,8 @@ public enum Crafts {
         ItemMeta nextPageMeta = nextPage.getItemMeta(),
                 nextPageMetaNoCMD = nextPageNoCMD.getItemMeta();
         assert nextPageMeta != null && nextPageMetaNoCMD != null;
-        nextPageMetaNoCMD.setDisplayName(ChatColor.WHITE + "Следующая страница");
-        nextPageMeta.setDisplayName(ChatColor.WHITE + "Следующая страница");
+        nextPageMetaNoCMD.displayName(Component.text("Следующая страница").color(NamedTextColor.WHITE));
+        nextPageMeta.displayName(Component.text("Следующая страница").color(NamedTextColor.WHITE));
         nextPageMeta.setCustomModelData(5002);
         nextPageMetaNoCMD.setCustomModelData(0);
         nextPageNoCMD.setItemMeta(nextPageMetaNoCMD);
@@ -304,7 +306,7 @@ public enum Crafts {
         ItemStack quit = new ItemStack(Material.PAPER);
         ItemMeta quitMeta = quit.getItemMeta();
         assert quitMeta != null;
-        quitMeta.setDisplayName(ChatColor.WHITE + "Вернуться");
+        quitMeta.displayName(Component.text("Вернуться").color(NamedTextColor.WHITE));
         quitMeta.setCustomModelData(0);
         quit.setItemMeta(quitMeta);
         return quit;
@@ -315,7 +317,7 @@ public enum Crafts {
         ItemStack arrow = new ItemStack(Material.PAPER);
         ItemMeta arrowMeta = arrow.getItemMeta();
         assert arrowMeta != null;
-        arrowMeta.setDisplayName(ChatColor.GRAY + "->");
+        arrowMeta.displayName(Component.text(" -> ").color(NamedTextColor.GRAY));
         arrowMeta.setCustomModelData(pageIndex);
         arrow.setItemMeta(arrowMeta);
         return arrow;

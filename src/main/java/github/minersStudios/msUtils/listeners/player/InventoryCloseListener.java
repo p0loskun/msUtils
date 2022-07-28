@@ -4,6 +4,7 @@ import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
+import github.minersStudios.msUtils.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,14 +19,15 @@ public class InventoryCloseListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClose(@Nonnull InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-		if (
-				event.getView().getTitle().equalsIgnoreCase(ResourcePackType.NAME)
-				&& playerInfo.getResourcePackType() == null
-		) Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(ResourcePackType.getInventory()));
-		if (
-				event.getView().getTitle().equalsIgnoreCase(Pronouns.NAME)
-				&& playerInfo.getYamlConfiguration().getString("pronouns") == null
-		) Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(Pronouns.getInventory()));
+		String title = ChatUtils.plainTextSerializeComponent(event.getView().title());
+		if (title.equalsIgnoreCase(ResourcePackType.NAME)) {
+			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+			if (playerInfo.getResourcePackType() == null)
+				Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(ResourcePackType.getInventory()));
+		} else if (title.equalsIgnoreCase(Pronouns.NAME)) {
+			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+			if (playerInfo.getYamlConfiguration().getString("pronouns") == null)
+				Bukkit.getScheduler().runTask(Main.plugin, () -> player.openInventory(Pronouns.getInventory()));
+		}
 	}
 }

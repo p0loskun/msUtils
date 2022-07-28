@@ -5,7 +5,7 @@ import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import github.minersStudios.msUtils.utils.PlayerUtils;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,6 +13,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 import javax.annotation.Nonnull;
+
+import static github.minersStudios.msUtils.utils.PlayerUtils.encrypt;
 
 public class PlayerResourcePackStatusListener implements Listener {
 
@@ -22,17 +24,17 @@ public class PlayerResourcePackStatusListener implements Listener {
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.getResourcePackType() == null) return;
 		switch (event.getStatus()) {
-			case ACCEPTED -> ChatUtils.sendFine(null, player.getName() + " принял ресурспак");
+			case ACCEPTED -> ChatUtils.sendFine(null, Component.text(player.getName()).append(Component.text(" принял ресурспак")));
 			case SUCCESSFULLY_LOADED -> {
-				ChatUtils.sendFine(null, player.getName() + " успешно загрузил ресурспак");
+				ChatUtils.sendFine(null, Component.text(player.getName()).append(Component.text(" успешно загрузил ресурспак")));
 				if (player.getWorld() == Main.worldDark)
 					playerInfo.teleportToLastLeaveLocation();
 			}
 			case FAILED_DOWNLOAD -> {
-				ChatUtils.sendWarning(null, player.getName() + " не установился ресурспак, диск : " + playerInfo.getDiskType());
+				ChatUtils.sendWarning(null, Component.text(player.getName()).append(Component.text(" не установился ресурспак, диск : ")).append(Component.text(playerInfo.getDiskType().name())));
 				if (playerInfo.getDiskType() == ResourcePackType.DiskType.DROPBOX) {
 					playerInfo.setDiskType(ResourcePackType.DiskType.YANDEX_DISK);
-					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL());
+					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL(), encrypt(playerInfo.getResourcePackType().getYandexDiskURL()));
 				} else {
 					playerInfo.setDiskType(null);
 					playerInfo.setResourcePackType(ResourcePackType.NONE);
@@ -40,7 +42,7 @@ public class PlayerResourcePackStatusListener implements Listener {
 				}
 			}
 			case DECLINED -> {
-				ChatUtils.sendWarning(null, player.getName() + " не принял ресурспак");
+				ChatUtils.sendWarning(null, Component.text(player.getName()).append(Component.text(" не принял ресурспак")));
 				PlayerUtils.kickPlayer(player, "Кажеться, что-то пошло не так", "В настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\"");
 			}
 		}

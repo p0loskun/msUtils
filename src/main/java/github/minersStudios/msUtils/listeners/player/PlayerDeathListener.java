@@ -14,7 +14,7 @@ public class PlayerDeathListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(@Nonnull PlayerDeathEvent event) {
-		event.setDeathMessage(null);
+		event.deathMessage(null);
 		Player killed = event.getEntity();
 
 		SitPlayer sitPlayer = new SitPlayer(killed);

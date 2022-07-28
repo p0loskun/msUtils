@@ -4,6 +4,9 @@ import com.google.common.base.Charsets;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
@@ -15,9 +18,12 @@ import org.json.simple.parser.ParseException;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,13 +129,15 @@ public class PlayerUtils {
 		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null)
 			return false;
 		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation();
-		 offlinePlayer.getPlayer().kickPlayer(
-				ChatColor.RED + "\n§l" + title
-				+ ChatColor.DARK_GRAY + "\n\n<---====+====--->"
-				+ ChatColor.GRAY + "\nПричина :\n\""
-				+ reason
-				+ "\""
-				+ ChatColor.DARK_GRAY + "\n<---====+====--->\n"
+		offlinePlayer.getPlayer().kick(
+				Component.text("")
+				.append(Component.text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
+				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+				.append(Component.text("\nПричина :\n\"")
+				.append(Component.text(reason)
+				.append(Component.text("\"")))
+				.color(NamedTextColor.GRAY))
+				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
 		);
 		return true;
 	}
@@ -147,6 +155,18 @@ public class PlayerUtils {
 		} catch (IOException exception) {
 			exception.printStackTrace();
 			return ZoneId.systemDefault().toString();
+		}
+	}
+
+	@Nonnull
+	public static String encrypt(@Nonnull String input) {
+		try {
+			StringBuilder hashText = new StringBuilder(new BigInteger(1, MessageDigest.getInstance("SHA-1").digest(input.getBytes())).toString(16));
+			while (hashText.length() < 32)
+				hashText.insert(0, "0");
+			return hashText.toString();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

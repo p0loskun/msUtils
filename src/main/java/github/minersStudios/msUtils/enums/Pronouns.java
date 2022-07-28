@@ -1,6 +1,8 @@
 package github.minersStudios.msUtils.enums;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -94,31 +96,31 @@ public enum Pronouns {
 		ItemStack he = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
 		ItemMeta heMeta = he.getItemMeta();
 		assert heMeta != null;
-		heMeta.setDisplayName(ChatColor.WHITE + "Он");
-		ArrayList<String> loreHe = new ArrayList<>();
-		loreHe.add(ChatColor.GRAY + "К вам будут обращаться как к нему");
-		heMeta.setLore(loreHe);
+		heMeta.displayName(Component.text("Он").color(NamedTextColor.WHITE));
+		ArrayList<Component> loreHe = new ArrayList<>();
+		loreHe.add(Component.text("К вам будут обращаться как к нему").color(NamedTextColor.GRAY));
+		heMeta.lore(loreHe);
 		he.setItemMeta(heMeta);
 
 		ItemStack she = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 		ItemMeta sheMeta = she.getItemMeta();
 		assert sheMeta != null;
-		sheMeta.setDisplayName(ChatColor.WHITE + "Она");
-		ArrayList<String> loreShe = new ArrayList<>();
-		loreShe.add(ChatColor.GRAY + "К вам будут обращаться как к ней");
-		sheMeta.setLore(loreShe);
+		sheMeta.displayName(Component.text("Она").color(NamedTextColor.WHITE));
+		ArrayList<Component> loreShe = new ArrayList<>();
+		loreShe.add(Component.text("К вам будут обращаться как к ней").color(NamedTextColor.GRAY));
+		sheMeta.lore(loreShe);
 		she.setItemMeta(sheMeta);
 
 		ItemStack they = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
 		ItemMeta theyMeta = they.getItemMeta();
 		assert theyMeta != null;
-		theyMeta.setDisplayName(ChatColor.WHITE + "Они");
-		ArrayList<String> loreThey = new ArrayList<>();
-		loreThey.add(ChatColor.GRAY + "К вам будут обращаться как к ним");
-		theyMeta.setLore(loreThey);
+		theyMeta.displayName(Component.text("Они").color(NamedTextColor.WHITE));
+		ArrayList<Component> loreThey = new ArrayList<>();
+		loreThey.add(Component.text("К вам будут обращаться как к ним").color(NamedTextColor.GRAY));
+		theyMeta.lore(loreThey);
 		they.setItemMeta(theyMeta);
 
-		Inventory inventory = Bukkit.createInventory(null, 9, NAME);
+		Inventory inventory = Bukkit.createInventory(null, 9, Component.text(NAME));
 		inventory.setItem(0, he);
 		inventory.setItem(1, he);
 		inventory.setItem(2, he);

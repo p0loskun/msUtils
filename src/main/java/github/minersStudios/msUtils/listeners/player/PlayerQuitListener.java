@@ -20,8 +20,8 @@ public class PlayerQuitListener implements Listener {
 		SitPlayer sitPlayer = new SitPlayer(player);
 		if (sitPlayer.isSitting())
 			sitPlayer.setSitting(null);
-		event.setQuitMessage(null);
+		event.quitMessage(null);
 		playerInfo.setLastLeaveLocation();
-		ChatUtils.sendLeaveMessage(playerInfo, player);
+		ChatUtils.sendQuitMessage(playerInfo, player);
 	}
 }

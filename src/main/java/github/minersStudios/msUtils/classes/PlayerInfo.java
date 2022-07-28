@@ -4,8 +4,11 @@ import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.Colors;
 import github.minersStudios.msUtils.utils.PlayerUtils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,23 +48,53 @@ public class PlayerInfo {
 	}
 
 	@Nonnull
-	public String getDefaultName() {
-		return "[" + this.getID() + "] " + this.getFirstname() + " " + this.getLastname();
+	public Component getDefaultName() {
+		return Component.text("[")
+				.append(Component.text(this.getID()))
+				.append(Component.text("] "))
+				.append(Component.text(this.getFirstname()))
+				.append(Component.text(" "))
+				.append(Component.text(this.getLastname())
+		);
 	}
 
 	@Nonnull
-	public String getGoldenName() {
-		return net.md_5.bungee.api.ChatColor.of("#fcf5c7") + "[" + this.getID() + "] " + net.md_5.bungee.api.ChatColor.of("#ffee93") + this.getFirstname() + " " + this.getLastname();
+	public Component getGoldenName() {
+		return Component.text("[")
+				.append(Component.text(this.getID())
+				.append(Component.text("] ")))
+				.color(Colors.joinMessageColorSecondary)
+				.append(Component.text(this.getFirstname())
+				.append(Component.text(" ")
+				.append(Component.text(this.getLastname())))
+				.color(Colors.joinMessageColorPrimary)
+		);
 	}
 
 	@Nonnull
-	public String getGrayIDGoldName() {
-		return ChatColor.GRAY + "[" + this.getID() + "] " + ChatColor.GOLD + this.getFirstname() + " " + this.getLastname();
+	public Component getGrayIDGoldName() {
+		return Component.text("[")
+				.append(Component.text(this.getID())
+				.append(Component.text("] ")))
+				.color(NamedTextColor.GRAY)
+				.append(Component.text(this.getFirstname())
+				.append(Component.text(" ")
+				.append(Component.text(this.getLastname())))
+				.color(NamedTextColor.GOLD)
+		);
 	}
 
 	@Nonnull
-	public String getGrayIDGreenName() {
-		return ChatColor.GRAY + "[" + this.getID() + "] " + ChatColor.GREEN + this.getFirstname() + " " + this.getLastname();
+	public Component getGrayIDGreenName() {
+		return Component.text("[")
+				.append(Component.text(this.getID())
+				.append(Component.text("] ")))
+				.color(NamedTextColor.GRAY)
+				.append(Component.text(this.getFirstname())
+				.append(Component.text(" ")
+				.append(Component.text(this.getLastname())))
+				.color(NamedTextColor.GREEN)
+		);
 	}
 
 	/**
@@ -70,7 +103,6 @@ public class PlayerInfo {
 	 * @param ip player ip
 	 */
 	public void setIP(String ip) {
-		if (this.getOnlinePlayer() == null) return;
 		List<String> ips = this.yamlConfiguration.getStringList("ip");
 		ips.add(ip);
 		this.yamlConfiguration.set("ip", ips);
@@ -286,7 +318,7 @@ public class PlayerInfo {
 	}
 
 	public boolean setMuted(boolean value, CommandSender commandSender) {
-		return this.setMuted(value, 0, null, commandSender);
+		return this.setMuted(value, 0, "", commandSender);
 	}
 
 	/**
@@ -296,38 +328,48 @@ public class PlayerInfo {
 	 * @param time mutes for time
 	 * @param reason mute reason
 	 */
-	public boolean setMuted(boolean value, long time, @Nullable String reason, CommandSender sender) {
+	public boolean setMuted(boolean value, long time, @Nonnull String reason, CommandSender sender) {
 		if (this.getNickname() == null || !this.hasPlayerDataFile())
-			return ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
+			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
 		this.yamlConfiguration.set("bans.muted", value);
 		this.yamlConfiguration.set("time.muted-to", time);
 		this.yamlConfiguration.set("bans.mute-reason", reason);
 		savePlayerDataFile();
 		Player player = this.getOnlinePlayer();
 		if (value && player != null && player.getAddress() != null) {
-			ChatUtils.sendFine(
-					sender,
-					"Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был замучен : "
-					+ "\n    - Причина : \""
-					+ reason
-					+ "\"\n    - До : "
-					+ Instant.ofEpochMilli(time).atZone(
-					sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
-							? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
-							: ZoneId.systemDefault()
-					).format(timeFormatter)
+			ChatUtils.sendFine(sender,
+					Component.text("Игрок : \"")
+					.append(this.getGrayIDGreenName())
+					.append(Component.text(" ("))
+					.append(Component.text(this.getNickname()))
+					.append(Component.text(")\" был замучен :\n    - Причина : \""))
+					.append(Component.text(reason))
+					.append(Component.text("\"\n    - До : "))
+					.append(Component.text(
+							Instant.ofEpochMilli(time).atZone(
+									sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
+									? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
+									: ZoneId.systemDefault()
+							).format(timeFormatter))
+					)
 			);
 			return ChatUtils.sendWarning(
 					player,
-					"Вы были замучены : "
-					+ "\n    - Причина : \""
-					+ reason
-					+ "\"\n    - До : "
-					+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(timeFormatter)
+					Component.text("Вы были замучены : ")
+					.append(Component.text("\n    - Причина : \""))
+					.append(Component.text(reason))
+					.append(Component.text("\"\n    - До : "))
+					.append(Component.text(Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(timeFormatter)))
 			);
 		}
-		ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был размучен");
-		return ChatUtils.sendWarning(player, "Вы были размучены");
+		ChatUtils.sendFine(sender,
+				Component.text("Игрок : \"")
+				.append(this.getGrayIDGreenName())
+				.append(Component.text(" ("))
+				.append(Component.text(this.getNickname()))
+				.append(Component.text(")\" был размучен"))
+		);
+		return ChatUtils.sendWarning(player, Component.text("Вы были размучены"));
 	}
 
 	/**
@@ -348,7 +390,7 @@ public class PlayerInfo {
 	}
 
 	public boolean setBanned(boolean value, CommandSender commandSender) {
-		return this.setBanned(value, 0, null, commandSender);
+		return this.setBanned(value, 0, "", commandSender);
 	}
 
 	/**
@@ -358,9 +400,9 @@ public class PlayerInfo {
 	 * @param time bans for time
 	 * @param reason ban reason
 	 */
-	public boolean setBanned(boolean value, long time, @Nullable String reason, @Nullable CommandSender sender) {
+	public boolean setBanned(boolean value, long time, @Nonnull String reason, @Nullable CommandSender sender) {
 		if (this.getNickname() == null)
-			return ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере, используйте пожалуйста никнем");
+			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере, используйте пожалуйста никнем"));
 		if (this.hasPlayerDataFile()) {
 			this.yamlConfiguration.set("bans.banned", value);
 			this.yamlConfiguration.set("time.banned-to", time);
@@ -378,19 +420,30 @@ public class PlayerInfo {
 				);
 			}
 			return ChatUtils.sendFine(sender,
-					"Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был забанен : "
-					+ "\n    - Причина : \""
-					+ reason
-					+ "\"\n    - До : "
-					+ Instant.ofEpochMilli(time).atZone(
-							sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
-							? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
-							: ZoneId.systemDefault()
-					).format(timeFormatter)
+					Component.text("Игрок : \"")
+					.append(this.getGrayIDGreenName())
+					.append(Component.text(" ("))
+					.append(Component.text(this.getNickname()))
+					.append(Component.text(")\" был забанен :\n    - Причина : \""))
+					.append(Component.text(reason))
+					.append(Component.text("\"\n    - До : "))
+					.append(Component.text(
+							Instant.ofEpochMilli(time).atZone(
+									sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
+											? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
+											: ZoneId.systemDefault()
+							).format(timeFormatter))
+					)
 			);
 		}
 		Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
-		return ChatUtils.sendFine(sender, "Игрок : \"" + this.getGrayIDGreenName() + " (" + this.getNickname() + ")\" был разбанен");
+		return ChatUtils.sendFine(sender,
+				Component.text("Игрок : \"")
+				.append(this.getGrayIDGreenName())
+				.append(Component.text(" ("))
+				.append(Component.text(this.getNickname()))
+				.append(Component.text(")\" был разбанен"))
+		);
 	}
 
 	/**
@@ -448,7 +501,7 @@ public class PlayerInfo {
 		if (player == null) return;
 		if (player.isDead())
 			player.spigot().respawn();
-		Bukkit.getScheduler().runTask(Main.plugin, () -> player.teleport(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN));
+		player.teleportAsync(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 	}
 
 	/**
@@ -458,7 +511,7 @@ public class PlayerInfo {
 		Player player = this.getOnlinePlayer();
 		if (player == null) return;
 		player.setGameMode(this.getGameMode());
-		Bukkit.getScheduler().runTask(Main.plugin, () -> player.teleport(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN));
+		player.teleportAsync(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
 	}
 
@@ -543,7 +596,7 @@ public class PlayerInfo {
 			this.yamlConfiguration.set("time.first-join", System.currentTimeMillis());
 		}
 		this.savePlayerDataFile();
-		ChatUtils.sendFine(null, "Создан файл с данными игрока : \"" + this.getNickname() + "\" с названием : \"" + this.uuid + ".yml\"");
+		ChatUtils.sendFine(null, Component.text("Создан файл с данными игрока : \"" + this.getNickname() + "\" с названием : \"" + this.uuid + ".yml\""));
 	}
 
 	/**
