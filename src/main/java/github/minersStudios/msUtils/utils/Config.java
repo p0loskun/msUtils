@@ -3,6 +3,7 @@ package github.minersStudios.msUtils.utils;
 import github.minersStudios.msUtils.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -49,6 +50,6 @@ public class Config {
 				redExclamationMark = Component.text(" ꀑ "),
 				speech = Component.text(" ꀕ "),
 				discord = Component.text(" ꀔ "),
-				paintableBadge = Component.text(" ꀢ ");
+				paintableBadge = Component.text(ChatColor.WHITE + "ꀢ ");
 	}
 }
