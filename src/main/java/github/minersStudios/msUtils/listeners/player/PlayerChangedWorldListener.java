@@ -14,7 +14,7 @@ public class PlayerChangedWorldListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerChangedWorld(@Nonnull PlayerChangedWorldEvent event) {
 		Player player = event.getPlayer();
-		Main.scoreboardHideTagsTeam.addEntry(player.getName());
-		player.setScoreboard(Main.scoreboardHideTags);
+		Main.getScoreboardHideTagsTeam().addEntry(player.getName());
+		player.setScoreboard(Main.getScoreboardHideTags());
 	}
 }

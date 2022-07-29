@@ -14,8 +14,6 @@ import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 import javax.annotation.Nonnull;
 
-import static github.minersStudios.msUtils.utils.PlayerUtils.encrypt;
-
 public class PlayerResourcePackStatusListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -27,14 +25,14 @@ public class PlayerResourcePackStatusListener implements Listener {
 			case ACCEPTED -> ChatUtils.sendFine(null, Component.text(player.getName()).append(Component.text(" принял ресурспак")));
 			case SUCCESSFULLY_LOADED -> {
 				ChatUtils.sendFine(null, Component.text(player.getName()).append(Component.text(" успешно загрузил ресурспак")));
-				if (player.getWorld() == Main.worldDark)
+				if (player.getWorld() == Main.getWorldDark())
 					playerInfo.teleportToLastLeaveLocation();
 			}
 			case FAILED_DOWNLOAD -> {
 				ChatUtils.sendWarning(null, Component.text(player.getName()).append(Component.text(" не установился ресурспак, диск : ")).append(Component.text(playerInfo.getDiskType().name())));
 				if (playerInfo.getDiskType() == ResourcePackType.DiskType.DROPBOX) {
 					playerInfo.setDiskType(ResourcePackType.DiskType.YANDEX_DISK);
-					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL(), encrypt(playerInfo.getResourcePackType().getYandexDiskURL()));
+					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL());
 				} else {
 					playerInfo.setDiskType(null);
 					playerInfo.setResourcePackType(ResourcePackType.NONE);

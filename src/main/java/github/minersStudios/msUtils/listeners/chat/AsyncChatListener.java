@@ -19,7 +19,7 @@ public class AsyncChatListener implements Listener {
 	public void onAsyncPlayerChat(@Nonnull AsyncChatEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
-		if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player)) return;
+		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player)) return;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
 		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0)
@@ -30,17 +30,17 @@ public class AsyncChatListener implements Listener {
 			return;
 		}
 
-		String message = ChatUtils.plainTextSerializeComponent(event.originalMessage());
+		String message = ChatUtils.legacyComponentSerialize(event.originalMessage());
 		if (message.startsWith("!")) {
 			message = message.substring(1);
 			if (message.length() != 0)
-				ChatUtils.sendMessageToChat(playerInfo, null, -1, Component.text(message));
+				ChatUtils.sendMessageToChat(playerInfo, null, ChatUtils.Chat.GLOBAL, Component.text(message));
 		} else if (message.startsWith("*")) {
 			message = message.substring(1);
 			if (message.length() != 0)
-				ChatUtils.sendRPEventMessage(player, 25, Component.text(message));
+				ChatUtils.sendRPEventMessage(player, Component.text(message));
 		} else {
-			ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), 25, Component.text(message));
+			ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatUtils.Chat.LOCAL, Component.text(message));
 			ChatBuffer.receiveMessage(player, message);
 		}
 	}

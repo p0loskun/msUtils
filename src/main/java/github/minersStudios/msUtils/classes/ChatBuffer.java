@@ -49,11 +49,11 @@ public class ChatBuffer {
 	}
 
 	private static void scheduleMessageUpdate(@Nonnull Player player, @Nonnull String UUID, int timer) {
-		Bukkit.getScheduler().runTaskLater(Main.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
 			if (chatQueue.get(UUID).size() < 1 || !player.isOnline()) {
 				chatQueue.remove(UUID);
 			} else {
-				scheduleMessageUpdate(player, UUID, Main.bubbles.receiveMessage(player, Objects.requireNonNull(chatQueue.get(UUID).poll())) + 5);
+				scheduleMessageUpdate(player, UUID, Main.getBubbles().receiveMessage(player, Objects.requireNonNull(chatQueue.get(UUID).poll())) + 5);
 			}
 		}, timer);
 	}

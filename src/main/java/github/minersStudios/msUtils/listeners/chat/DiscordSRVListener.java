@@ -2,7 +2,7 @@ package github.minersStudios.msUtils.listeners.chat;
 
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.minersStudios.msUtils.utils.Symbols;
+import github.minersStudios.msUtils.utils.Config;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.dependencies.google.common.base.Function;
@@ -26,7 +26,7 @@ public class DiscordSRVListener {
 		String reply = referencedMessage != null ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), referencedMessage) : "",
 				attachment = !message.getAttachments().isEmpty() ? message.getAttachments().size() > 1 ? "(вложения) " : "(вложение) " : "";
 		Component messageComponent =
-				Symbols.discord
+				Config.Symbols.discord
 				.color(NamedTextColor.WHITE)
 				.append(Component.text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
 				.append(Component.text(reply, TextColor.color(152, 162, 249)))
@@ -35,9 +35,9 @@ public class DiscordSRVListener {
 				.append(Component.text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
 
 		for (Player player : Bukkit.getOnlinePlayers())
-			if (player.getWorld() != Main.worldDark)
+			if (player.getWorld() != Main.getWorldDark())
 				player.sendMessage(messageComponent);
-		Bukkit.getLogger().info(ChatUtils.plainTextSerializeComponent(messageComponent).substring(2));
+		Bukkit.getLogger().info(ChatUtils.legacyComponentSerialize(messageComponent).substring(2));
 	}
 
 	@Nonnull

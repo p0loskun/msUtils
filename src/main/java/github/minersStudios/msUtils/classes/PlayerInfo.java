@@ -4,7 +4,7 @@ import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.minersStudios.msUtils.utils.Colors;
+import github.minersStudios.msUtils.utils.Config;
 import github.minersStudios.msUtils.utils.PlayerUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -35,13 +35,13 @@ public class PlayerInfo {
 	private String nickname, firstname, lastname, patronymic;
 
 	public PlayerInfo(@Nonnull UUID uuid) {
-		this.dataFile = new File(Main.plugin.getDataFolder(), "players/" + uuid + ".yml");
+		this.dataFile = new File(Main.getInstance().getDataFolder(), "players/" + uuid + ".yml");
 		this.yamlConfiguration = YamlConfiguration.loadConfiguration(this.dataFile);
 		this.uuid = uuid;
 	}
 
 	public PlayerInfo(@Nonnull UUID uuid, @Nonnull String nickname) {
-		this.dataFile = new File(Main.plugin.getDataFolder(), "players/" + uuid + ".yml");
+		this.dataFile = new File(Main.getInstance().getDataFolder(), "players/" + uuid + ".yml");
 		this.yamlConfiguration = YamlConfiguration.loadConfiguration(this.dataFile);
 		this.uuid = uuid;
 		this.nickname = nickname;
@@ -63,11 +63,11 @@ public class PlayerInfo {
 		return Component.text("[")
 				.append(Component.text(this.getID())
 				.append(Component.text("] ")))
-				.color(Colors.joinMessageColorSecondary)
+				.color(Config.Colors.joinMessageColorSecondary)
 				.append(Component.text(this.getFirstname())
 				.append(Component.text(" ")
 				.append(Component.text(this.getLastname())))
-				.color(Colors.joinMessageColorPrimary)
+				.color(Config.Colors.joinMessageColorPrimary)
 		);
 	}
 
@@ -501,7 +501,7 @@ public class PlayerInfo {
 		if (player == null) return;
 		if (player.isDead())
 			player.spigot().respawn();
-		player.teleportAsync(new Location(Main.worldDark,  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
+		player.teleportAsync(new Location(Main.getWorldDark(),  0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 	}
 
 	/**
@@ -522,7 +522,7 @@ public class PlayerInfo {
 	 */
 	@Nonnull
 	public Location getLastLeaveLocation() {
-		Location spawnLocation = Main.overworld.getSpawnLocation();
+		Location spawnLocation = Main.getOverworld().getSpawnLocation();
 		return new Location(
 				Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-leave-location.world", spawnLocation.getBlock().getWorld().getName())),
 				this.yamlConfiguration.getDouble("locations.last-leave-location.x", spawnLocation.getX()),
@@ -538,10 +538,10 @@ public class PlayerInfo {
 	 */
 	public void setLastLeaveLocation() {
 		Player player = this.getOnlinePlayer();
-		if (player == null || !this.hasPlayerDataFile() || player.getWorld() == Main.worldDark) return;
+		if (player == null || !this.hasPlayerDataFile() || player.getWorld() == Main.getWorldDark()) return;
 		Location leaveLocation = player.getLocation();
 		if (player.isDead())
-			leaveLocation = player.getBedSpawnLocation() != null ? player.getBedSpawnLocation() : Main.overworld.getSpawnLocation();
+			leaveLocation = player.getBedSpawnLocation() != null ? player.getBedSpawnLocation() : Main.getOverworld().getSpawnLocation();
 		this.yamlConfiguration.set("gamemode", player.getGameMode().toString());
 		this.yamlConfiguration.set("locations.last-leave-location.world", leaveLocation.getBlock().getWorld().getName());
 		this.yamlConfiguration.set("locations.last-leave-location.x", leaveLocation.getX());
@@ -560,7 +560,7 @@ public class PlayerInfo {
 	@Nonnull
 	public Location getLastDeathLocation() {
 		return new Location(
-				Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-death-location.world", Main.overworld.getName())),
+				Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-death-location.world", Main.getOverworld().getName())),
 				this.yamlConfiguration.getDouble("locations.last-death-location.x"),
 				this.yamlConfiguration.getDouble("locations.last-death-location.y"),
 				this.yamlConfiguration.getDouble("locations.last-death-location.z"),
@@ -574,7 +574,7 @@ public class PlayerInfo {
 	 */
 	public void setLastDeathLocation() {
 		Player player = this.getOnlinePlayer();
-		if (player == null || !this.hasPlayerDataFile() && player.getWorld() == Main.worldDark) return;
+		if (player == null || !this.hasPlayerDataFile() && player.getWorld() == Main.getWorldDark()) return;
 		Location location = player.getLocation();
 		this.yamlConfiguration.set("locations.last-death-location.world", location.getBlock().getWorld().getName());
 		this.yamlConfiguration.set("locations.last-death-location.x", location.getX());

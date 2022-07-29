@@ -14,7 +14,7 @@ public class PlayerDropItemListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDropItem(@Nonnull PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
-		if (player.getWorld() != Main.worldDark) return;
+		if (player.getWorld() != Main.getWorldDark()) return;
 		event.setCancelled(true);
 		player.updateInventory();
 	}

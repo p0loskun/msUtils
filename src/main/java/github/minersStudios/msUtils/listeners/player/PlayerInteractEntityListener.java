@@ -1,7 +1,7 @@
 package github.minersStudios.msUtils.listeners.player;
 
 import github.minersStudios.msUtils.classes.PlayerInfo;
-import github.minersStudios.msUtils.utils.Colors;
+import github.minersStudios.msUtils.utils.Config;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +22,7 @@ public class PlayerInteractEntityListener implements Listener {
 					.append(playerInfo.getGoldenName())
 					.append(Component.text(" "))
 					.append(Component.text(playerInfo.getPatronymic()))
-					.color(Colors.joinMessageColorPrimary)
+					.color(Config.Colors.joinMessageColorPrimary)
 					.build()
 			);
 		}

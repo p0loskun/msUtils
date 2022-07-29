@@ -12,7 +12,6 @@ import github.minersStudios.msDecor.crafts.home.tables.*;
 import github.minersStudios.msDecor.crafts.street.*;
 import github.minersStudios.msDecor.crafts.street.trashcans.*;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -276,8 +275,8 @@ public enum Crafts {
         ItemMeta previousPageMeta = previousPage.getItemMeta(),
                 previousPageMetaNoCMD = previousPageNoCMD.getItemMeta();
         assert previousPageMeta != null && previousPageMetaNoCMD != null;
-        previousPageMetaNoCMD.displayName(Component.text("Предыдущая страница").color(NamedTextColor.WHITE));
-        previousPageMeta.displayName(Component.text("Предыдущая страница").color(NamedTextColor.WHITE));
+        previousPageMetaNoCMD.displayName(Component.text(ChatColor.WHITE + "Предыдущая страница"));
+        previousPageMeta.displayName(Component.text(ChatColor.WHITE + "Предыдущая страница"));
         previousPageMeta.setCustomModelData(5001);
         previousPageMetaNoCMD.setCustomModelData(0);
         previousPageNoCMD.setItemMeta(previousPageMetaNoCMD);
@@ -292,8 +291,8 @@ public enum Crafts {
         ItemMeta nextPageMeta = nextPage.getItemMeta(),
                 nextPageMetaNoCMD = nextPageNoCMD.getItemMeta();
         assert nextPageMeta != null && nextPageMetaNoCMD != null;
-        nextPageMetaNoCMD.displayName(Component.text("Следующая страница").color(NamedTextColor.WHITE));
-        nextPageMeta.displayName(Component.text("Следующая страница").color(NamedTextColor.WHITE));
+        nextPageMetaNoCMD.displayName(Component.text(ChatColor.WHITE + "Следующая страница"));
+        nextPageMeta.displayName(Component.text(ChatColor.WHITE + "Следующая страница"));
         nextPageMeta.setCustomModelData(5002);
         nextPageMetaNoCMD.setCustomModelData(0);
         nextPageNoCMD.setItemMeta(nextPageMetaNoCMD);
@@ -306,7 +305,7 @@ public enum Crafts {
         ItemStack quit = new ItemStack(Material.PAPER);
         ItemMeta quitMeta = quit.getItemMeta();
         assert quitMeta != null;
-        quitMeta.displayName(Component.text("Вернуться").color(NamedTextColor.WHITE));
+        quitMeta.displayName(Component.text(ChatColor.WHITE + "Вернуться"));
         quitMeta.setCustomModelData(0);
         quit.setItemMeta(quitMeta);
         return quit;
@@ -317,7 +316,7 @@ public enum Crafts {
         ItemStack arrow = new ItemStack(Material.PAPER);
         ItemMeta arrowMeta = arrow.getItemMeta();
         assert arrowMeta != null;
-        arrowMeta.displayName(Component.text(" -> ").color(NamedTextColor.GRAY));
+        arrowMeta.displayName(Component.text(ChatColor.GRAY + " -> "));
         arrowMeta.setCustomModelData(pageIndex);
         arrow.setItemMeta(arrowMeta);
         return arrow;

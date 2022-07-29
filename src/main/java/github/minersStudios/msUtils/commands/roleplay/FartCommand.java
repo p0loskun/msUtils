@@ -18,7 +18,7 @@ public class FartCommand implements CommandExecutor {
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
 		if (!(sender instanceof Player player))
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
-		if (player.getWorld() == Main.worldDark || !Main.authmeApi.isAuthenticated(player))
+		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player))
 			return true;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted())
@@ -26,6 +26,6 @@ public class FartCommand implements CommandExecutor {
 		Location location = player.getLocation();
 		player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
 		player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
-		return ChatUtils.sendRPEventMessage(player, 25, Component.text(playerInfo.getPronouns().getFartMessage()));
+		return ChatUtils.sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getFartMessage()));
 	}
 }

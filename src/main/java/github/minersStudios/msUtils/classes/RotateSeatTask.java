@@ -41,7 +41,7 @@ public class RotateSeatTask extends BukkitRunnable {
 				}
 			};
 		}
-		this.runTaskTimerAsynchronously(Main.plugin, 0L, 1L);
+		this.runTaskTimerAsynchronously(Main.getInstance(), 0L, 1L);
 	}
 
 	public void run() {

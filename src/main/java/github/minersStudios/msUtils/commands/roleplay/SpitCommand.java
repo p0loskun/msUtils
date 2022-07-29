@@ -23,7 +23,7 @@ public class SpitCommand implements CommandExecutor {
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 		World world = player.getWorld();
 		Location location = player.getLocation();
-		if (world == Main.worldDark || !Main.authmeApi.isAuthenticated(player))
+		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player))
 			return true;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted())
@@ -33,6 +33,6 @@ public class SpitCommand implements CommandExecutor {
 				EntityType.LLAMA_SPIT
 		).setVelocity(player.getEyeLocation().getDirection().multiply(1));
 		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f);
-		return ChatUtils.sendRPEventMessage(player, 25, Component.text(playerInfo.getPronouns().getSpitMessage()));
+		return ChatUtils.sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getSpitMessage()));
 	}
 }

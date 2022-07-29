@@ -21,11 +21,11 @@ public class PlayerJoinListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerJoin(@Nonnull PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), ChatUtils.plainTextSerializeComponent(player.name()));
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), ChatUtils.legacyComponentSerialize(player.name()));
 
 		event.joinMessage(null);
-		Main.scoreboardHideTagsTeam.addEntry(player.getName());
-		player.setScoreboard(Main.scoreboardHideTags);
+		Main.getScoreboardHideTagsTeam().addEntry(player.getName());
+		player.setScoreboard(Main.getScoreboardHideTags());
 		player.displayName(playerInfo.getDefaultName());
 		player.setGameMode(GameMode.SPECTATOR);
 		if (player.isDead())
@@ -35,7 +35,7 @@ public class PlayerJoinListener implements Listener {
 			public void run() {
 				if (!player.isOnline())
 					this.cancel();
-				if (Main.authmeApi.isAuthenticated(player)) {
+				if (Main.getAuthmeApi().isAuthenticated(player)) {
 					if (!playerInfo.hasPlayerDataFile() || (playerInfo.hasPlayerDataFile() && playerInfo.hasNoName())) {
 						this.cancel();
 						new RegistrationProcess().registerPlayer(playerInfo);
@@ -53,6 +53,6 @@ public class PlayerJoinListener implements Listener {
 					}
 				}
 			}
-		}.runTaskTimer(Main.plugin, 1L, 1L);
+		}.runTaskTimer(Main.getInstance(), 1L, 1L);
 	}
 }

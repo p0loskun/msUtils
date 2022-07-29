@@ -3,7 +3,6 @@ package github.minersStudios.msUtils.enums;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.classes.PlayerInfo;
 import github.minersStudios.msUtils.utils.ChatUtils;
-import github.minersStudios.msUtils.utils.PlayerUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,12 +22,12 @@ import java.util.ArrayList;
 
 public enum ResourcePackType {
 	FULL(
-			Main.plugin.getConfig().getString("fullDropBoxURL", "https://dropbox.com/"),
-			Main.plugin.getConfig().getString("fullYandexDiskURL", "https://disk.yandex.ru/")
+			Main.getCachedConfig().full_dropbox_url,
+			Main.getCachedConfig().full_yandex_disk_url
 	),
 	LITE(
-			Main.plugin.getConfig().getString("liteDropBoxURL", "https://dropbox.com/"),
-			Main.plugin.getConfig().getString("liteYandexDiskURL", "https://disk.yandex.ru/")
+			Main.getCachedConfig().lite_dropbox_url,
+			Main.getCachedConfig().lite_yandex_disk_url
 	),
 	NONE(
 			null,
@@ -65,7 +64,7 @@ public enum ResourcePackType {
 		ItemStack pickRP = new ItemStack(Material.KNOWLEDGE_BOOK);
 		ItemMeta pickRPMeta = pickRP.getItemMeta();
 		assert pickRPMeta != null;
-		pickRPMeta.displayName(Component.text("Ресурспаки").color(NamedTextColor.WHITE));
+		pickRPMeta.displayName(Component.text(ChatColor.WHITE + "Ресурспаки"));
 		pickRPMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
 		pickRPMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
 
@@ -82,7 +81,7 @@ public enum ResourcePackType {
 		ItemStack noneRP = new ItemStack(Material.COAL_BLOCK);
 		ItemMeta noneRPMeta = noneRP.getItemMeta();
 		assert noneRPMeta != null;
-		noneRPMeta.displayName(Component.text("Без текстурпака").color(NamedTextColor.WHITE));
+		noneRPMeta.displayName(Component.text(ChatColor.WHITE + "Без текстурпака"));
 
 		ArrayList<Component> lore0 = new ArrayList<>();
 		lore0.add(Component.text("Имеет в себе :").color(NamedTextColor.GRAY));
@@ -94,7 +93,7 @@ public enum ResourcePackType {
 		ItemStack liteRP = new ItemStack(Material.IRON_BLOCK);
 		ItemMeta liteRPMeta = liteRP.getItemMeta();
 		assert liteRPMeta != null;
-		liteRPMeta.displayName(Component.text("Облегчённая версия").color(NamedTextColor.WHITE));
+		liteRPMeta.displayName(Component.text(ChatColor.WHITE + "Облегчённая версия"));
 
 		ArrayList<Component> lore2 = new ArrayList<>();
 		lore2.add(Component.text("Имеет в себе :").color(NamedTextColor.GRAY));
@@ -112,7 +111,7 @@ public enum ResourcePackType {
 		ItemStack fullRP = new ItemStack(Material.NETHERITE_BLOCK);
 		ItemMeta fullRPMeta = fullRP.getItemMeta();
 		assert fullRPMeta != null;
-		fullRPMeta.displayName(Component.text("Полная версия").color(NamedTextColor.WHITE));
+		fullRPMeta.displayName(Component.text(ChatColor.WHITE + "Полная версия"));
 
 		ArrayList<Component> lore4 = new ArrayList<>();
 		lore4.add(Component.text("Имеет в себе :").color(NamedTextColor.GRAY));
@@ -161,9 +160,9 @@ public enum ResourcePackType {
 		Player player = playerInfo.getOnlinePlayer();
 		if (playerInfo.getResourcePackType() != null) {
 			if (playerInfo.getResourcePackType() == ResourcePackType.FULL) {
-				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL(), PlayerUtils.encrypt(ResourcePackType.FULL.getDropBoxURL()));
+				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
 			} else if (playerInfo.getResourcePackType() == ResourcePackType.LITE) {
-				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL(), PlayerUtils.encrypt(ResourcePackType.LITE.getDropBoxURL()));
+				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
 			} else {
 				ChatUtils.sendWarning(player, Component.text("Вы зашли на сервер без ресурспака"));
 			}

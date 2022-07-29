@@ -32,7 +32,7 @@ public class WorldTeleport implements TabCompleter {
             }
             case 2 -> {
                 for (World world : Bukkit.getWorlds())
-                    if (world != Main.worldDark)
+                    if (world != Main.getWorldDark())
                         completions.add(world.getName());
             }
         }

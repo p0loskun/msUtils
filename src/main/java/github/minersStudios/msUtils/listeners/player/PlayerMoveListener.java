@@ -12,6 +12,6 @@ public class PlayerMoveListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerMove(@Nonnull PlayerMoveEvent event) {
-		event.setCancelled(event.getPlayer().getWorld() == Main.worldDark);
+		event.setCancelled(event.getPlayer().getWorld() == Main.getWorldDark());
 	}
 }

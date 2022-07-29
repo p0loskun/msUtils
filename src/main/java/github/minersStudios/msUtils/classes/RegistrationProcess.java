@@ -3,7 +3,7 @@ package github.minersStudios.msUtils.classes;
 import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.enums.Pronouns;
 import github.minersStudios.msUtils.enums.ResourcePackType;
-import github.minersStudios.msUtils.utils.Colors;
+import github.minersStudios.msUtils.utils.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -37,7 +37,7 @@ public class RegistrationProcess {
 		this.sendDialogueMessage("Напомни-ка своё имя", 400L);
 		this.sendDialogueMessage("Только говори честно, иначе буду тебя ошибочно называть до конца дней своих", 450L);
 
-		Bukkit.getScheduler().runTaskLater(Main.plugin, this::setFirstname, 550L);
+		Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setFirstname, 550L);
 	}
 
 	private void setFirstname() {
@@ -51,7 +51,7 @@ public class RegistrationProcess {
 			this.sendDialogueMessage("Но тебя вижу впервые", 225L);
 			this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
 
-			Bukkit.getScheduler().runTaskLater(Main.plugin, this::setLastname, 375L);
+			Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setLastname, 375L);
 			return true;
 		});
 		menu.open(this.player);
@@ -62,7 +62,7 @@ public class RegistrationProcess {
 			if (!strings[0].matches(regex))
 				return this.sendWarningMessage();
 			this.playerInfo.setLastName(strNormalize(strings[0]));
-			Bukkit.getScheduler().runTaskLater(Main.plugin, this::setPatronymic, 10L);
+			Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setPatronymic, 10L);
 			return true;
 		});
 		menu.open(this.player);
@@ -83,7 +83,7 @@ public class RegistrationProcess {
 			this.sendDialogueMessage("Слушай", 100L);
 			this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
 
-			Bukkit.getScheduler().runTaskLater(Main.plugin, () -> this.player.openInventory(Pronouns.getInventory()), 225L);
+			Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> this.player.openInventory(Pronouns.getInventory()), 225L);
 			return true;
 		});
 		menu.open(this.player);
@@ -99,15 +99,15 @@ public class RegistrationProcess {
 		this.sendDialogueMessage("Мне уже пора", 125L);
 		this.sendDialogueMessage("Хорошей " + this.playerInfo.getPronouns().getPronouns() + " дороги, " + this.playerInfo.getPronouns().getTraveler(), 175L);
 
-		Bukkit.getScheduler().runTaskLater(Main.plugin, this::setOther, 225L);
+		Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setOther, 225L);
 	}
 
 	private void setOther() {
 		this.player.displayName(this.playerInfo.getDefaultName());
 		if (this.playerInfo.getResourcePackType() == null) {
-			Bukkit.getScheduler().runTask(Main.plugin, () -> this.player.openInventory(ResourcePackType.getInventory()));
+			Bukkit.getScheduler().runTask(Main.getInstance(), () -> this.player.openInventory(ResourcePackType.getInventory()));
 		} else if (this.playerInfo.getResourcePackType() == ResourcePackType.NONE) {
-			Bukkit.getScheduler().runTask(Main.plugin, this.playerInfo::teleportToLastLeaveLocation);
+			Bukkit.getScheduler().runTask(Main.getInstance(), this.playerInfo::teleportToLastLeaveLocation);
 		} else {
 			ResourcePackType.setResourcePack(this.playerInfo);
 		}
@@ -119,13 +119,13 @@ public class RegistrationProcess {
 	}
 
 	private void sendDialogueMessage(@Nonnull String message, long delay) {
-		Bukkit.getScheduler().runTaskLater(Main.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
 			this.player.sendMessage(
 					Component.text(" ")
 					.append(Component.text(" [0] Незнакомец : ")
-					.color(Colors.chatColorPrimary))
+					.color(Config.Colors.chatColorPrimary))
 					.append(Component.text(message))
-					.color(Colors.chatColorSecondary)
+					.color(Config.Colors.chatColorSecondary)
 			);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);

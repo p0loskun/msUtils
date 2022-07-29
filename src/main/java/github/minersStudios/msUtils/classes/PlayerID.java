@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class PlayerID {
-	private static final File idFile = new File(Main.plugin.getDataFolder(), "ids.yml");
+	private static final File idFile = new File(Main.getInstance().getDataFolder(), "ids.yml");
 	private final YamlConfiguration yamlConfiguration;
 
 	public PlayerID() {

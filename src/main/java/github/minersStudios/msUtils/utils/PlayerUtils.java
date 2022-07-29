@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -18,12 +19,9 @@ import org.json.simple.parser.ParseException;
 
 import javax.annotation.Nonnull;
 import java.io.*;
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
@@ -92,7 +90,7 @@ public class PlayerUtils {
 		if (nickname == null) {
 			offlinePlayer.setWhitelisted(false);
 		} else {
-			Bukkit.getScheduler().callSyncMethod(Main.plugin, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist remove " + nickname));
+			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist remove " + nickname));
 		}
 		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null)
 			PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", "Вас удалили из белого списка");
@@ -110,7 +108,7 @@ public class PlayerUtils {
 		if (Bukkit.getWhitelistedPlayers().contains(offlinePlayer))
 			return false;
 		try {
-			Bukkit.getScheduler().callSyncMethod(Main.plugin, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist add " + nickname));
+			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist add " + nickname));
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -142,6 +140,28 @@ public class PlayerUtils {
 		return true;
 	}
 
+	public static boolean setSitting(@Nonnull Player player, @Nullable Location sitLocation) {
+		if (!getSeats().containsKey(player) && sitLocation != null) {
+			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {
+				armorStand.setGravity(false);
+				armorStand.setVisible(false);
+				armorStand.setCollidable(false);
+				armorStand.addPassenger(player);
+				armorStand.addScoreboardTag("customDecor");
+				getSeats().put(player, armorStand);
+				ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()));
+			});
+		} else if (sitLocation == null && getSeats().containsKey(player)) {
+			ArmorStand armorStand = getSeats().get(player);
+			getSeats().remove(player);
+			player.eject();
+			player.teleport(armorStand.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+			armorStand.remove();
+			ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getUnSitMessage()));
+		}
+		return true;
+	}
+
 	@Nonnull
 	public static String getTimezone(@Nonnull InetSocketAddress ip) {
 		try {
@@ -155,18 +175,6 @@ public class PlayerUtils {
 		} catch (IOException exception) {
 			exception.printStackTrace();
 			return ZoneId.systemDefault().toString();
-		}
-	}
-
-	@Nonnull
-	public static String encrypt(@Nonnull String input) {
-		try {
-			StringBuilder hashText = new StringBuilder(new BigInteger(1, MessageDigest.getInstance("SHA-1").digest(input.getBytes())).toString(16));
-			while (hashText.length() < 32)
-				hashText.insert(0, "0");
-			return hashText.toString();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
 		}
 	}
 }

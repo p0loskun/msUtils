@@ -32,7 +32,7 @@ public class PrivateMessageCommand implements CommandExecutor {
 				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 			if (offlinePlayer.getPlayer() == null)
 				return ChatUtils.sendWarning(player, Component.text("Данный игрок не в сети"));
-			if (offlinePlayer.getPlayer().getWorld() == Main.worldDark)
+			if (offlinePlayer.getPlayer().getWorld() == Main.getWorldDark())
 				return ChatUtils.sendWarning(player, Component.text("Данный игрок сейчас в червоточине!"));
 			return ChatUtils.sendPrivateMessage(privateMessageSender, new PlayerInfo(offlinePlayer.getUniqueId()), Component.text(message));
 		}
@@ -42,7 +42,7 @@ public class PrivateMessageCommand implements CommandExecutor {
 				return ChatUtils.sendError(player, Component.text("Что-то пошло не так..."));
 			if (offlinePlayer.getPlayer() == null)
 				return ChatUtils.sendWarning(player, Component.text("Данный игрок не в сети"));
-			if (offlinePlayer.getPlayer().getWorld() == Main.worldDark)
+			if (offlinePlayer.getPlayer().getWorld() == Main.getWorldDark())
 				return ChatUtils.sendWarning(player, Component.text("Данный игрок сейчас в червоточине!"));
 			return ChatUtils.sendPrivateMessage(privateMessageSender, new PlayerInfo(offlinePlayer.getUniqueId()), Component.text(message));
 		}

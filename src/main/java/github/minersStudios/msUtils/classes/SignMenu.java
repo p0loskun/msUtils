@@ -27,7 +27,7 @@ public final class SignMenu {
 	public SignMenu(List<String> text) {
 		this.text = text;
 
-		Main.protocolManager.addPacketListener(new PacketAdapter(Main.plugin, PacketType.Play.Client.UPDATE_SIGN) {
+		Main.getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.UPDATE_SIGN) {
 			@Override
 			public void onPacketReceiving(PacketEvent event) {
 				Player player = event.getPlayer();
@@ -61,10 +61,10 @@ public final class SignMenu {
 		player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
 		player.sendSignChange(this.location, List.of(components));
 
-		PacketContainer openSign = Main.protocolManager.createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
+		PacketContainer openSign = Main.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
 		openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));
 		try {
-			Main.protocolManager.sendServerPacket(player, openSign);
+			Main.getProtocolManager().sendServerPacket(player, openSign);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

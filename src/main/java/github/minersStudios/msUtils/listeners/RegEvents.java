@@ -1,18 +1,18 @@
 package github.minersStudios.msUtils.listeners;
 
+import github.minersStudios.msUtils.Main;
 import github.minersStudios.msUtils.listeners.block.PistonListener;
 import github.minersStudios.msUtils.listeners.chat.*;
 import github.minersStudios.msUtils.listeners.entity.*;
 import github.minersStudios.msUtils.listeners.player.*;
 import github.scarsz.discordsrv.DiscordSRV;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
-
-import static github.minersStudios.msUtils.Main.plugin;
 
 public class RegEvents {
 
-    public static void init() {
-        PluginManager pluginManager = plugin.getServer().getPluginManager();
+    public static void init(Main plugin) {
+        PluginManager pluginManager = Bukkit.getPluginManager();
 
         pluginManager.registerEvents(new PistonListener(), plugin);
 

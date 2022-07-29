@@ -30,7 +30,7 @@ public class InventoryClickListener implements Listener {
 	public void onInventoryClick(@Nonnull InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		Inventory clickedInventory = event.getClickedInventory();
-		String inventoryTitle = ChatUtils.plainTextSerializeComponent(event.getView().title());
+		String inventoryTitle = ChatUtils.legacyComponentSerialize(event.getView().title());
 		int slot = event.getSlot();
 		ItemStack cursorItem = event.getCursor(),
 				currentItem = event.getCurrentItem();
@@ -44,16 +44,16 @@ public class InventoryClickListener implements Listener {
 				|| inventoryTitle.equalsIgnoreCase(Pronouns.NAME)
 				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME)
 				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_NAME)))
-				|| player.getWorld() == Main.worldDark
+				|| player.getWorld() == Main.getWorldDark()
 		) {
 			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
+			Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 		}
 
 		if (slot == 39 && event.getSlotType() == InventoryType.SlotType.ARMOR) {
 			if (cursorItem != null && currentItem != null && currentItem.getType() == Material.AIR && cursorItem.getType() != Material.AIR) {
 				player.setItemOnCursor(null);
-				Bukkit.getScheduler().runTask(Main.plugin, () -> player.getInventory().setHelmet(cursorItem));
+				Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.getInventory().setHelmet(cursorItem));
 			}
 		}
 
@@ -71,7 +71,7 @@ public class InventoryClickListener implements Listener {
 						.append(Component.text(currentItem.toString()))
 				);
 				event.setCancelled(true);
-				Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
+				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 		}
 
@@ -80,25 +80,25 @@ public class InventoryClickListener implements Listener {
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 				if (slot == 0 || slot == 1) {
 					if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE)
-						Bukkit.getScheduler().runTask(Main.plugin, () -> PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Этот параметр требует перезахода на сервер"));
+						Bukkit.getScheduler().runTask(Main.getInstance(), () -> PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Этот параметр требует перезахода на сервер"));
 					playerInfo.setResourcePackType(ResourcePackType.NONE);
 					player.closeInventory();
-					if (player.getWorld() == Main.worldDark)
+					if (player.getWorld() == Main.getWorldDark())
 						playerInfo.teleportToLastLeaveLocation();
 				} else if (slot == 2 || slot == 3 || slot == 5 || slot == 6) {
 					player.closeInventory();
 					playerInfo.setResourcePackType(ResourcePackType.FULL);
 					playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
-					player.setResourcePack(ResourcePackType.FULL.getDropBoxURL(), PlayerUtils.encrypt(ResourcePackType.FULL.getDropBoxURL()));
+					player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
 				} else if (slot == 7 || slot == 8) {
 					player.closeInventory();
 					playerInfo.setResourcePackType(ResourcePackType.LITE);
 					playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
-					player.setResourcePack(ResourcePackType.LITE.getDropBoxURL(), PlayerUtils.encrypt(ResourcePackType.LITE.getDropBoxURL()));
+					player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
 				}
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 				event.setCancelled(true);
-				Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
+				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
 			if (inventoryTitle.equalsIgnoreCase(Pronouns.NAME)) {
@@ -120,7 +120,7 @@ public class InventoryClickListener implements Listener {
 				}
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 				event.setCancelled(true);
-				Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
+				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
 			if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_NAME)) {
@@ -139,7 +139,7 @@ public class InventoryClickListener implements Listener {
 				}
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 				event.setCancelled(!event.getClick().isCreativeAction());
-				Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
+				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
 			if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME)) {
@@ -149,7 +149,7 @@ public class InventoryClickListener implements Listener {
 					player.openInventory(Crafts.getInventory(arrow.getItemMeta().getCustomModelData()));
 				}
 				event.setCancelled(!event.getClick().isCreativeAction());
-				Bukkit.getScheduler().runTask(Main.plugin, player::updateInventory);
+				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 		}
 	}

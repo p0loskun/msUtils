@@ -1,7 +1,7 @@
 package github.minersStudios.msUtils.listeners.player;
 
-import github.minersStudios.msUtils.classes.SitPlayer;
 import github.minersStudios.msUtils.utils.ChatUtils;
+import github.minersStudios.msUtils.utils.PlayerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,11 +16,7 @@ public class PlayerDeathListener implements Listener {
 	public void onPlayerDeath(@Nonnull PlayerDeathEvent event) {
 		event.deathMessage(null);
 		Player killed = event.getEntity();
-
-		SitPlayer sitPlayer = new SitPlayer(killed);
-		if (sitPlayer.isSitting())
-			sitPlayer.setSitting(null);
-
-		ChatUtils.sendDeathMessage(killed, event.getEntity().getKiller());
+		PlayerUtils.setSitting(killed, null);
+		ChatUtils.sendDeathMessage(killed, killed.getKiller());
 	}
 }

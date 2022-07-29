@@ -96,7 +96,7 @@ public enum Pronouns {
 		ItemStack he = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
 		ItemMeta heMeta = he.getItemMeta();
 		assert heMeta != null;
-		heMeta.displayName(Component.text("Он").color(NamedTextColor.WHITE));
+		heMeta.displayName(Component.text(ChatColor.WHITE + "Он"));
 		ArrayList<Component> loreHe = new ArrayList<>();
 		loreHe.add(Component.text("К вам будут обращаться как к нему").color(NamedTextColor.GRAY));
 		heMeta.lore(loreHe);
@@ -105,7 +105,7 @@ public enum Pronouns {
 		ItemStack she = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 		ItemMeta sheMeta = she.getItemMeta();
 		assert sheMeta != null;
-		sheMeta.displayName(Component.text("Она").color(NamedTextColor.WHITE));
+		sheMeta.displayName(Component.text(ChatColor.WHITE + "Она"));
 		ArrayList<Component> loreShe = new ArrayList<>();
 		loreShe.add(Component.text("К вам будут обращаться как к ней").color(NamedTextColor.GRAY));
 		sheMeta.lore(loreShe);
@@ -114,7 +114,7 @@ public enum Pronouns {
 		ItemStack they = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
 		ItemMeta theyMeta = they.getItemMeta();
 		assert theyMeta != null;
-		theyMeta.displayName(Component.text("Они").color(NamedTextColor.WHITE));
+		theyMeta.displayName(Component.text(ChatColor.WHITE + "Они"));
 		ArrayList<Component> loreThey = new ArrayList<>();
 		loreThey.add(Component.text("К вам будут обращаться как к ним").color(NamedTextColor.GRAY));
 		theyMeta.lore(loreThey);

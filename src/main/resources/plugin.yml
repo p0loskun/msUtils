@@ -17,10 +17,10 @@ softdepend:
 commands:
   me:
     usage: ' ꀑ §cИспользуй: /<command> [сообщение]'
-    description: Проигрывает событие в чате в радиусе 25 блоков
+    description: Проигрывает событие в чате в заданом радиусе
   try:
     usage: ' ꀑ §cИспользуй: /<command> [сообщение]'
-    description: Рандомно определяет исход события и проигрывает его в радиусе 25 блоков
+    description: Рандомно определяет исход события и проигрывает его в заданом радиусе
   spit:
     usage: ' ꀑ §cИспользуй: /<command>'
     description: Покажи свою дерзость и плюнь кому то в ебло
@@ -84,7 +84,7 @@ commands:
     usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [world name] [x] [y] [z]'
     aliases: [ worldteleport, worldtp, wtp, teleportworld, tpworld, tpw ]
     permission: msUtils.worldteleport
-    description: Телепортирует игрока на координаты и
+    description: Телепортирует игрока на координаты в указаном мире
 
 permissions:
   msUtils.info:
