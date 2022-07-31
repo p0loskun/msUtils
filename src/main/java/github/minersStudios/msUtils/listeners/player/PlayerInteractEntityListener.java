@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerInteractEntityListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerInteractEntity(@Nonnull PlayerInteractEntityEvent event) {
 		if (event.getRightClicked() instanceof Player player) {
 			PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());

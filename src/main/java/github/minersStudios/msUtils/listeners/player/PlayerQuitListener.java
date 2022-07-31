@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerQuitListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerQuit(@Nonnull PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());

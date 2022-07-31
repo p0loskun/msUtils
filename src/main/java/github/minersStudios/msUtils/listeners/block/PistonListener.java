@@ -12,14 +12,14 @@ import javax.annotation.Nonnull;
 
 public class PistonListener implements Listener {
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler
     public void onBlockPistonExtend(@Nonnull BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
             event.setCancelled(block.getType() == Material.NOTE_BLOCK || block.getType() == Material.STRUCTURE_VOID);
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler
     public void onBlockPistonRetract(@Nonnull BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
             event.setCancelled(block.getType() == Material.NOTE_BLOCK || block.getType() == Material.STRUCTURE_VOID);

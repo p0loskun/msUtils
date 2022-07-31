@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public class EntityDamageListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onEntityDamage(@Nonnull EntityDamageEvent event) {
 		event.setCancelled(event.getEntity().getWorld() == Main.getWorldDark() && event.getEntity().getType() == EntityType.PLAYER);
 	}

@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerSpawnLocationListener implements Listener {
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler
     public void onPlayerSpawnLocation(@Nonnull PlayerSpawnLocationEvent event) {
         if (!event.getPlayer().isDead())
             event.setSpawnLocation(new Location(Main.getWorldDark(),  0.0d, 0.0d, 0.0d));

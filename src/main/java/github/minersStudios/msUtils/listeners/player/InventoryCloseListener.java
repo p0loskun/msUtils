@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 
 public class InventoryCloseListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onInventoryClose(@Nonnull InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
 		String title = ChatUtils.legacyComponentSerialize(event.getView().title());

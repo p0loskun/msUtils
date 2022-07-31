@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerDropItemListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerDropItem(@Nonnull PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
 		if (player.getWorld() != Main.getWorldDark()) return;

@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerDeathListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerDeath(@Nonnull PlayerDeathEvent event) {
 		event.deathMessage(null);
 		Player killed = event.getEntity();

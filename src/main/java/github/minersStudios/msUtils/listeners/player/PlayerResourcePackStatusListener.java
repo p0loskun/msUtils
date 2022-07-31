@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerResourcePackStatusListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerResourcepackStatus(@Nonnull PlayerResourcePackStatusEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());

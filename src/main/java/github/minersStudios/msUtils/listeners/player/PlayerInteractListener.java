@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerInteractListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
 		event.setCancelled(event.getPlayer().getWorld() == Main.getWorldDark());
 	}

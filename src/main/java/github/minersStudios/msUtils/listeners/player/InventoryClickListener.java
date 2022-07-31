@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 
 public class InventoryClickListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onInventoryClick(@Nonnull InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		Inventory clickedInventory = event.getClickedInventory();

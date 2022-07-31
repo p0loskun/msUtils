@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerTeleportListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerTeleport(@Nonnull PlayerTeleportEvent event) {
 		PlayerUtils.setSitting(event.getPlayer(), null);
 		event.setCancelled(event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE && event.getPlayer().getWorld() == Main.getWorldDark());
