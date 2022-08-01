@@ -25,9 +25,10 @@ public class WhiteList implements TabCompleter {
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 			for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
 				PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-				int ID = playerInfo.getID(false, false);
-				if (ID != -1)
-					completions.add(String.valueOf(ID));
+				int id = playerInfo.getID(false, false);
+				if (id != -1) {
+					completions.add(String.valueOf(id));
+				}
 				completions.add(offlinePlayer.getName());
 			}
 		}

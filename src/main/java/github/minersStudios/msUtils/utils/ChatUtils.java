@@ -24,7 +24,7 @@ public class ChatUtils {
 	/**
 	 * Sends info message to target
 	 *
-	 * @param target target
+	 * @param target  target
 	 * @param message warning message
 	 */
 	public static boolean sendInfo(@Nullable Object target, @Nonnull Component message) {
@@ -41,7 +41,7 @@ public class ChatUtils {
 	/**
 	 * Sends fine message to target
 	 *
-	 * @param target target
+	 * @param target  target
 	 * @param message warning message
 	 */
 	public static boolean sendFine(@Nullable Object target, @Nonnull Component message) {
@@ -58,7 +58,7 @@ public class ChatUtils {
 	/**
 	 * Sends warning message to target
 	 *
-	 * @param target target
+	 * @param target  target
 	 * @param message warning message
 	 */
 	public static boolean sendWarning(@Nullable Object target, @Nonnull Component message) {
@@ -75,7 +75,7 @@ public class ChatUtils {
 	/**
 	 * Sends error message to target
 	 *
-	 * @param target target
+	 * @param target  target
 	 * @param message warning message
 	 */
 	public static boolean sendError(@Nullable Object target, @Nonnull Component message) {
@@ -93,19 +93,19 @@ public class ChatUtils {
 	 * Sends message to chat
 	 *
 	 * @param playerInfo player info
-	 * @param location sender location
-	 * @param chat chat
-	 * @param message message
+	 * @param location   sender location
+	 * @param chat       chat
+	 * @param message    message
 	 */
 	public static void sendMessageToChat(@Nonnull PlayerInfo playerInfo, @Nullable Location location, Chat chat, @Nonnull Component message) {
 		if (chat == Chat.LOCAL && location != null) {
 			Component localMessage =
 					Component.text(" ")
-					.append(playerInfo.getDefaultName()
-					.append(Component.text(" : "))
-					.color(Config.Colors.chatColorPrimary))
-					.append(message)
-					.color(Config.Colors.chatColorSecondary);
+							.append(playerInfo.getDefaultName()
+							.append(Component.text(" : "))
+							.color(Config.Colors.chatColorPrimary))
+							.append(message)
+							.color(Config.Colors.chatColorSecondary);
 			String stringLocalMessage = legacyComponentSerialize(localMessage);
 			location.getBlock().getWorld().getPlayers().stream().filter(
 					(player) -> location.distanceSquared(player.getLocation()) <= Math.pow(Main.getCachedConfig().local_chat_radius, 2.0d)
@@ -118,17 +118,17 @@ public class ChatUtils {
 		}
 		Component globalMessage =
 				Component.text(" ")
-				.append(Component.text("[WM] ")
-				.append(playerInfo.getDefaultName()
-				.append(Component.text(" : ")))
-				.color(Config.Colors.chatColorPrimary))
-				.append(message)
-				.color(Config.Colors.chatColorSecondary
-		);
+						.append(Component.text("[WM] ")
+						.append(playerInfo.getDefaultName()
+						.append(Component.text(" : ")))
+						.color(Config.Colors.chatColorPrimary))
+						.append(message)
+						.color(Config.Colors.chatColorSecondary);
 		String stringGlobalMessage = legacyComponentSerialize(globalMessage);
 		Bukkit.getOnlinePlayers().forEach((player) -> {
-			if (player.getWorld() != Main.getWorldDark())
+			if (player.getWorld() != Main.getWorldDark()) {
 				player.sendMessage(globalMessage);
+			}
 		});
 		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_global_channel_id), stringGlobalMessage.replaceFirst("\\[WM]", ""));
 		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_local_channel_id), stringGlobalMessage);
@@ -138,35 +138,36 @@ public class ChatUtils {
 	/**
 	 * Sends private message
 	 *
-	 * @param sender private message sender
+	 * @param sender   private message sender
 	 * @param receiver private message receiver
-	 * @param message private message
-	 *
+	 * @param message  private message
 	 * @return True if sender or receiver == null
 	 */
 	public static boolean sendPrivateMessage(@Nonnull PlayerInfo sender, @Nonnull PlayerInfo receiver, @Nonnull Component message) {
 		if (sender.getOnlinePlayer() != null && receiver.getOnlinePlayer() != null) {
-			sender.getOnlinePlayer().sendMessage(
-					Config.Symbols.speech
-					.append(Component.text()
-					.append(Component.text("Вы -> ")
-					.append(receiver.getDefaultName()
-					.append(Component.text(" : "))))
-					.color(Config.Colors.chatColorPrimary))
-					.append(message.color(Config.Colors.chatColorSecondary)));
-			receiver.getOnlinePlayer().sendMessage(
-					Config.Symbols.speech
-					.append(sender.getDefaultName().append(Component.text(" -> Вам : "))
-					.color(Config.Colors.chatColorPrimary))
-					.append(message.color(Config.Colors.chatColorSecondary)));
 			String privateMessage = ChatUtils.legacyComponentSerialize(
 					Component.text(" ")
-					.append(sender.getDefaultName()
-					.append(Component.text(" -> ")
-					.append(receiver.getDefaultName()
-					.append(Component.text(" : ")))))
-					.color(Config.Colors.chatColorPrimary)
-					.append(message.color(Config.Colors.chatColorSecondary))
+							.append(sender.getDefaultName()
+							.append(Component.text(" -> ")
+							.append(receiver.getDefaultName()
+							.append(Component.text(" : ")))))
+							.color(Config.Colors.chatColorPrimary)
+							.append(message.color(Config.Colors.chatColorSecondary))
+			);
+			sender.getOnlinePlayer().sendMessage(
+					Config.Symbols.speech
+							.append(Component.text()
+							.append(Component.text("Вы -> ")
+							.append(receiver.getDefaultName()
+							.append(Component.text(" : "))))
+							.color(Config.Colors.chatColorPrimary))
+							.append(message.color(Config.Colors.chatColorSecondary))
+			);
+			receiver.getOnlinePlayer().sendMessage(
+					Config.Symbols.speech
+							.append(sender.getDefaultName().append(Component.text(" -> Вам : "))
+							.color(Config.Colors.chatColorPrimary))
+							.append(message.color(Config.Colors.chatColorSecondary))
 			);
 			DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_local_channel_id), privateMessage);
 			Bukkit.getLogger().info(privateMessage);
@@ -177,21 +178,23 @@ public class ChatUtils {
 	/**
 	 * Sends rp event message to chat
 	 *
-	 * @param player player
+	 * @param player  player
 	 * @param message message
 	 */
 	public static boolean sendRPEventMessage(@Nonnull Player player, @Nonnull Component message) {
 		Component fullMessage =
 				Component.text("* ")
-				.color(NamedTextColor.GOLD)
-				.append(new PlayerInfo(player.getUniqueId()).getGrayIDGoldName())
-				.append(Component.text(" ")
-				.append(message
-				.append(Component.text("*"))
-				.color(NamedTextColor.GOLD)));
+						.color(NamedTextColor.GOLD)
+						.append(new PlayerInfo(player.getUniqueId()).getGrayIDGoldName())
+						.append(Component.text(" ")
+						.append(message
+						.append(Component.text("*"))
+						.color(NamedTextColor.GOLD)));
 		player.getWorld().getPlayers().stream().filter(
-				(p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(Main.getCachedConfig().local_chat_radius, 2.0D))
-				.forEach((p) -> p.sendMessage(Config.Symbols.yellowExclamationMark.append(fullMessage)));
+				(p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(Main.getCachedConfig().local_chat_radius, 2.0D)
+		).forEach(
+				(p) -> p.sendMessage(Config.Symbols.yellowExclamationMark.append(fullMessage))
+		);
 		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_local_channel_id), legacyComponentSerialize(fullMessage));
 		Bukkit.getLogger().info(legacyComponentSerialize(fullMessage));
 		return true;
@@ -208,23 +211,25 @@ public class ChatUtils {
 		killedInfo.setLastDeathLocation();
 		Component deathMessage =
 				killerInfo != null
-				? Component.text(" ")
-				.append(killerInfo.getGoldenName()
-				.append(Component.text(" ")))
-				.append(Component.text(killerInfo.getPronouns().getKillMessage())
-				.color(Config.Colors.joinMessageColorPrimary)
-				.append(Component.text(" ")))
-				.append(killedInfo.getGoldenName())
-				: Component.text(" ")
-				.append(killedInfo.getGoldenName()
-				.append(Component.text(" ")))
-				.append(Component.text(killedInfo.getPronouns().getDeathMessage()))
-				.color(Config.Colors.joinMessageColorPrimary);
+						? Component.text(" ")
+						.append(killerInfo.getGoldenName()
+						.append(Component.text(" ")))
+						.append(Component.text(killerInfo.getPronouns().getKillMessage())
+						.color(Config.Colors.joinMessageColorPrimary)
+						.append(Component.text(" ")))
+						.append(killedInfo.getGoldenName())
+						: Component.text(" ")
+						.append(killedInfo.getGoldenName()
+						.append(Component.text(" ")))
+						.append(Component.text(killedInfo.getPronouns().getDeathMessage()))
+						.color(Config.Colors.joinMessageColorPrimary);
 		String stringDeathMessage = legacyComponentSerialize(deathMessage);
 
-		for (Player onlinePlayer : Bukkit.getOnlinePlayers())
-			if (onlinePlayer.getWorld() != Main.getWorldDark())
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+			if (onlinePlayer.getWorld() != Main.getWorldDark()) {
 				onlinePlayer.sendMessage(deathMessage);
+			}
+		}
 
 		Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
 			ChatUtils.sendActionMessage(killed, DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_global_channel_id), stringDeathMessage, 16757024);
@@ -235,38 +240,41 @@ public class ChatUtils {
 		Location deathLocation = killed.getLocation();
 		ChatUtils.sendInfo(null,
 				Component.text("Мир и координаты смерти игрока : \"")
-				.append(killedInfo.getDefaultName())
-				.append(Component.text(" ("))
-				.append(Component.text(killed.getName()))
-				.append(Component.text(")\" : "))
-				.append(Component.text(deathLocation.getBlock().getWorld().getName()))
-				.append(Component.text(" "))
-				.append(Component.text(deathLocation.getBlockX()))
-				.append(Component.text(" "))
-				.append(Component.text(deathLocation.getBlockY()))
-				.append(Component.text(" "))
-				.append(Component.text(deathLocation.getBlockZ())));
+						.append(killedInfo.getDefaultName())
+						.append(Component.text(" ("))
+						.append(Component.text(killed.getName()))
+						.append(Component.text(")\" : "))
+						.append(Component.text(deathLocation.getBlock().getWorld().getName()))
+						.append(Component.text(" "))
+						.append(Component.text(deathLocation.getBlockX()))
+						.append(Component.text(" "))
+						.append(Component.text(deathLocation.getBlockY()))
+						.append(Component.text(" "))
+						.append(Component.text(deathLocation.getBlockZ()))
+		);
 	}
 
 	/**
 	 * Sends join message
 	 *
 	 * @param playerInfo playerInfo
-	 * @param player player
+	 * @param player     player
 	 */
 	public static void sendJoinMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player) {
 		Component joinMessage =
 				Component.text(" ")
-				.append(playerInfo.getGoldenName()
-				.append(Component.text(" ")))
-				.append(Component.text(playerInfo.getPronouns().getJoinMessage()))
-				.color(Config.Colors.joinMessageColorPrimary);
+						.append(playerInfo.getGoldenName()
+						.append(Component.text(" ")))
+						.append(Component.text(playerInfo.getPronouns().getJoinMessage()))
+						.color(Config.Colors.joinMessageColorPrimary);
 		String stringJoinMessage = legacyComponentSerialize(joinMessage);
 
 		Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-			for (Player onlinePlayer : Bukkit.getOnlinePlayers())
-				if (onlinePlayer.getWorld() != Main.getWorldDark())
+			for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+				if (onlinePlayer.getWorld() != Main.getWorldDark()) {
 					onlinePlayer.sendMessage(joinMessage);
+				}
+			}
 		});
 
 		Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
@@ -280,22 +288,23 @@ public class ChatUtils {
 	 * Sends leave message
 	 *
 	 * @param playerInfo playerInfo
-	 * @param player player
+	 * @param player     player
 	 */
 	public static void sendQuitMessage(@Nonnull PlayerInfo playerInfo, @Nonnull Player player) {
 		if (playerInfo.hasNoName() || player.getWorld() == Main.getWorldDark()) return;
 		Component quitMessage =
 				Component.text(" ")
-				.append(playerInfo.getGoldenName()
-				.append(Component.text(" ")))
-				.append(Component.text(playerInfo.getPronouns().getQuitMessage()))
-				.color(Config.Colors.joinMessageColorPrimary
-		);
+						.append(playerInfo.getGoldenName()
+						.append(Component.text(" ")))
+						.append(Component.text(playerInfo.getPronouns().getQuitMessage()))
+						.color(Config.Colors.joinMessageColorPrimary);
 		String stringQuitMessage = legacyComponentSerialize(quitMessage);
 
-		for (Player onlinePlayer : Bukkit.getOnlinePlayers())
-			if (onlinePlayer.getWorld() != Main.getWorldDark())
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+			if (onlinePlayer.getWorld() != Main.getWorldDark()) {
 				onlinePlayer.sendMessage(quitMessage);
+			}
+		}
 
 		Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
 			ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_global_channel_id), stringQuitMessage, 16711680);

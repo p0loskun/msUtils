@@ -28,9 +28,9 @@ public class Config {
 		this.discord_local_channel_id = yamlConfiguration.getString("chat.local.discord-channel-id");
 
 		this.full_dropbox_url = yamlConfiguration.getString("resource-pack.full-dropbox-url", "https://dropbox.com/");
-		this.full_yandex_disk_url =	yamlConfiguration.getString("resource-pack.full-yandex-disk-url", "https://disk.yandex.ru/");
+		this.full_yandex_disk_url = yamlConfiguration.getString("resource-pack.full-yandex-disk-url", "https://disk.yandex.ru/");
 		this.lite_dropbox_url = yamlConfiguration.getString("resource-pack.lite-dropbox-url", "https://dropbox.com/");
-		this.lite_yandex_disk_url =	yamlConfiguration.getString("resource-pack.lite-yandex-disk-url", "https://disk.yandex.ru/");
+		this.lite_yandex_disk_url = yamlConfiguration.getString("resource-pack.lite-yandex-disk-url", "https://disk.yandex.ru/");
 	}
 
 	@SuppressWarnings("unused")

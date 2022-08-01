@@ -50,8 +50,7 @@ public class PlayerUtils {
 		if (isOnlineMode) {
 			try {
 				String UUIDJson = IOUtils.toString(new URL("https://api.mojang.com/users/profiles/minecraft/" + nickname), Charset.defaultCharset());
-				if (UUIDJson.isEmpty())
-					return null;
+				if (UUIDJson.isEmpty()) return null;
 				return UUID.fromString(((JSONObject) JSONValue.parseWithException(UUIDJson)).get("id").toString().replaceFirst(
 						"(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
 						"$1-$2-$3-$4-$5"
@@ -81,19 +80,19 @@ public class PlayerUtils {
 	 * Removes player from whitelist
 	 *
 	 * @param offlinePlayer offline player
-	 * @param nickname player nickname
+	 * @param nickname      player nickname
 	 * @return True if player successfully removed from whitelist
 	 */
 	public static boolean removePlayerFromWhitelist(@Nonnull OfflinePlayer offlinePlayer, @Nullable String nickname) {
-		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer))
-			return false;
+		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) return false;
 		if (nickname == null) {
 			offlinePlayer.setWhitelisted(false);
 		} else {
-			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist remove " + nickname));
+			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:whitelist remove " + nickname));
 		}
-		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null)
+		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
 			PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", "Вас удалили из белого списка");
+		}
 		return true;
 	}
 
@@ -101,14 +100,15 @@ public class PlayerUtils {
 	 * Adds player to whitelist
 	 *
 	 * @param offlinePlayer offline player
-	 * @param nickname player nickname
+	 * @param nickname      player nickname
 	 * @return True if player successfully added to whitelist
 	 */
 	public static boolean addPlayerToWhitelist(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String nickname) {
-		if (Bukkit.getWhitelistedPlayers().contains(offlinePlayer))
-			return false;
+		if (Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) return false;
 		try {
-			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),"minecraft:whitelist add " + nickname));
+			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () ->
+					Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:whitelist add " + nickname)
+			);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -119,23 +119,21 @@ public class PlayerUtils {
 	 * Kicks the player
 	 *
 	 * @param offlinePlayer offline player
-	 * @param reason kick reason
-	 *
+	 * @param reason        kick reason
 	 * @return True if player successfully kicked
 	 */
 	public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String title, @Nonnull String reason) {
-		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null)
-			return false;
+		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null) return false;
 		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation();
 		offlinePlayer.getPlayer().kick(
 				Component.text("")
-				.append(Component.text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
-				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-				.append(Component.text("\nПричина :\n\"")
-				.append(Component.text(reason)
-				.append(Component.text("\"")))
-				.color(NamedTextColor.GRAY))
-				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+						.append(Component.text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
+						.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+						.append(Component.text("\nПричина :\n\"")
+						.append(Component.text(reason)
+						.append(Component.text("\"")))
+						.color(NamedTextColor.GRAY))
+						.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
 		);
 		return true;
 	}
@@ -168,10 +166,13 @@ public class PlayerUtils {
 			BufferedReader stream = new BufferedReader(new InputStreamReader(new URL("http://ip-api.com/json/" + ip.getHostName()).openStream()));
 			StringBuilder entirePage = new StringBuilder();
 			String inputLine;
-			while((inputLine = stream.readLine()) != null)
+			while ((inputLine = stream.readLine()) != null) {
 				entirePage.append(inputLine);
+			}
 			stream.close();
-			return !entirePage.toString().contains("\"timezone\":\"") ? ZoneId.systemDefault().toString() : entirePage.toString().split("\"timezone\":\"")[1].split("\",")[0];
+			return !entirePage.toString().contains("\"timezone\":\"")
+					? ZoneId.systemDefault().toString()
+					: entirePage.toString().split("\"timezone\":\"")[1].split("\",")[0];
 		} catch (IOException exception) {
 			exception.printStackTrace();
 			return ZoneId.systemDefault().toString();

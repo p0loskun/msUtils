@@ -17,8 +17,9 @@ public class ChatBubbles {
 		String[] chatLines = chat.split("\n");
 		int duration = (chat.length() + (17 * chatLines.length)) * 1200 / 800;
 		Entity vehicle = player;
-		for (int i = chatLines.length - 1 ; i >= 0 ; i--)
+		for (int i = chatLines.length - 1 ; i >= 0 ; i--) {
 			vehicle = spawnNameTag(vehicle, chatLines[i], player.getLocation().clone().add(0.0d, 1.0d, 0.0d), duration, i == 0);
+		}
 		return duration;
 	}
 

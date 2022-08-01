@@ -21,9 +21,10 @@ public class AllLocalPlayers implements TabCompleter {
 		if (args.length == 1) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-				int ID = playerInfo.getID(false, false);
-				if (ID != -1)
-					completions.add(String.valueOf(ID));
+				int id = playerInfo.getID(false, false);
+				if (id != -1) {
+					completions.add(String.valueOf(id));
+				}
 				completions.add(player.getName());
 			}
 		}

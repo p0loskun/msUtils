@@ -14,8 +14,9 @@ public class CraftsCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-        if (!(sender instanceof Player player))
+        if (!(sender instanceof Player player)) {
             return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+        }
         player.openInventory(Crafts.getInventory(0));
         return true;
     }

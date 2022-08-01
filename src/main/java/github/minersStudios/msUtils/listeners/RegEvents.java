@@ -9,9 +9,11 @@ import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
+import javax.annotation.Nonnull;
+
 public class RegEvents {
 
-    public static void init(Main plugin) {
+    public static void init(@Nonnull Main plugin) {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
         pluginManager.registerEvents(new PistonListener(), plugin);

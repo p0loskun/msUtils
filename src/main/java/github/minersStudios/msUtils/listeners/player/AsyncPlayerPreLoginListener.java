@@ -27,16 +27,19 @@ public class AsyncPlayerPreLoginListener implements Listener {
 		) {
 			ChatUtils.sendWarning(null,
 					Component.text("Игроку : \"")
-					.append(playerInfo.getGrayIDGoldName())
-					.append(Component.text("\" был добавлен новый айпи адресс : "))
-					.append(Component.text(hostName))
+							.append(playerInfo.getGrayIDGoldName())
+							.append(Component.text("\" был добавлен новый айпи адресс : "))
+							.append(Component.text(hostName))
 			);
 			playerInfo.setIP(hostName);
 		}
 
 		if (
 				(playerInfo.isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
-				|| (playerInfo.isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(nickname))
-		) playerInfo.setBanned(false, null);
+				|| (playerInfo.isBanned()
+				&& !Bukkit.getBanList(BanList.Type.NAME).isBanned(nickname))
+		) {
+			playerInfo.setBanned(false, null);
+		}
 	}
 }

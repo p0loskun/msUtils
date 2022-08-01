@@ -22,8 +22,9 @@ public class AsyncChatListener implements Listener {
 		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player)) return;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
-		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0)
+		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0) {
 			playerInfo.setMuted(false, null);
+		}
 
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, Component.text("Вы замучены"));
@@ -33,12 +34,14 @@ public class AsyncChatListener implements Listener {
 		String message = ChatUtils.legacyComponentSerialize(event.originalMessage());
 		if (message.startsWith("!")) {
 			message = message.substring(1);
-			if (message.length() != 0)
+			if (message.length() != 0) {
 				ChatUtils.sendMessageToChat(playerInfo, null, ChatUtils.Chat.GLOBAL, Component.text(message));
+			}
 		} else if (message.startsWith("*")) {
 			message = message.substring(1);
-			if (message.length() != 0)
+			if (message.length() != 0) {
 				ChatUtils.sendRPEventMessage(player, Component.text(message));
+			}
 		} else {
 			ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatUtils.Chat.LOCAL, Component.text(message));
 			ChatBuffer.receiveMessage(player, message);

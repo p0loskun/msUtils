@@ -25,15 +25,18 @@ public class WorldTeleport implements TabCompleter {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
                     int ID = playerInfo.getID(false, false);
-                    if (ID != -1)
+                    if (ID != -1) {
                         completions.add(String.valueOf(ID));
+                    }
                     completions.add(player.getName());
                 }
             }
             case 2 -> {
-                for (World world : Bukkit.getWorlds())
-                    if (world != Main.getWorldDark())
+                for (World world : Bukkit.getWorlds()) {
+                    if (world != Main.getWorldDark()) {
                         completions.add(world.getName());
+                    }
+                }
             }
         }
         return completions;

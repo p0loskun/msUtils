@@ -15,12 +15,13 @@ public class SitCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-		if (!(sender instanceof Player player))
+		if (!(sender instanceof Player player)) {
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
-		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player))
-			return true;
-		if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid())
+		}
+		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player)) return true;
+		if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
 			return ChatUtils.sendWarning(player, Component.text("Сидеть в воздухе нельзя!"));
+		}
 		return PlayerUtils.setSitting(player, PlayerUtils.getSeats().containsKey(player) ? null : player.getLocation());
 	}
 }

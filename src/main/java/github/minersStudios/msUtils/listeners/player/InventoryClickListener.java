@@ -59,16 +59,18 @@ public class InventoryClickListener implements Listener {
 
 		if (currentItem != null && currentItem.getType() != Material.AIR) {
 			boolean remove = currentItem.getType() == Material.BEDROCK;
-			if (!remove)
-				for (Enchantment enchantment : currentItem.getEnchantments().keySet())
+			if (!remove) {
+				for (Enchantment enchantment : currentItem.getEnchantments().keySet()) {
 					remove = currentItem.getEnchantmentLevel(enchantment) > enchantment.getMaxLevel();
+				}
+			}
 			if (remove) {
 				clickedInventory.setItem(slot, new ItemStack(Material.AIR));
 				ChatUtils.sendWarning(null,
 						Component.text(" У игрока : ")
-						.append(Component.text(player.getName()))
-						.append(Component.text(" был убран предмет : \n"))
-						.append(Component.text(currentItem.toString()))
+								.append(Component.text(player.getName()))
+								.append(Component.text(" был убран предмет : \n"))
+								.append(Component.text(currentItem.toString()))
 				);
 				event.setCancelled(true);
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);

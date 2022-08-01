@@ -4,14 +4,8 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.minersStudios.msUtils.classes.*;
-import github.minersStudios.msUtils.commands.ban.*;
-import github.minersStudios.msUtils.commands.mute.*;
-import github.minersStudios.msUtils.commands.other.*;
-import github.minersStudios.msUtils.commands.roleplay.*;
-import github.minersStudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
-import github.minersStudios.msUtils.commands.teleport.WorldTeleportCommand;
+import github.minersStudios.msUtils.commands.RegCommands;
 import github.minersStudios.msUtils.listeners.RegEvents;
-import github.minersStudios.msUtils.tabCompleters.*;
 import github.minersStudios.msUtils.utils.ChatUtils;
 import github.minersStudios.msUtils.utils.Config;
 import github.minersStudios.msUtils.utils.PlayerUtils;
@@ -48,56 +42,22 @@ public final class Main extends JavaPlugin {
 		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 		RegEvents.init(this);
-		generateWorld();
-		registerCommands();
-		reloadConfigs();
-		setOverworld();
+		RegCommands.init(this);
+		this.generateWorld();
+		this.reloadConfigs();
+		this.setOverworld();
 		new RotateSeatTask();
 	}
 
 	@Override
 	public void onDisable() {
 		Bukkit.savePlayers();
-		for (Player player : PlayerUtils.getSeats().keySet())
+		for (Player player : PlayerUtils.getSeats().keySet()) {
 			PlayerUtils.setSitting(player, null);
-		for (Player player : Bukkit.getOnlinePlayers())
+		}
+		for (Player player : Bukkit.getOnlinePlayers()) {
 			PlayerUtils.kickPlayer(player, "Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
-	}
-
-	private void registerCommands() {
-		Objects.requireNonNull(this.getCommand("ban")).setExecutor(new BanCommand());
-		Objects.requireNonNull(this.getCommand("ban")).setTabCompleter(new AllPlayers());
-		Objects.requireNonNull(this.getCommand("unban")).setExecutor(new UnBanCommand());
-		Objects.requireNonNull(this.getCommand("unban")).setTabCompleter(new AllPlayers());
-
-		Objects.requireNonNull(this.getCommand("mute")).setExecutor(new MuteCommand());
-		Objects.requireNonNull(this.getCommand("mute")).setTabCompleter(new AllPlayers());
-		Objects.requireNonNull(this.getCommand("unmute")).setExecutor(new UnMuteCommand());
-		Objects.requireNonNull(this.getCommand("unmute")).setTabCompleter(new AllPlayers());
-
-		Objects.requireNonNull(this.getCommand("kick")).setExecutor(new KickCommand());
-		Objects.requireNonNull(this.getCommand("kick")).setTabCompleter(new AllLocalPlayers());
-
-		Objects.requireNonNull(this.getCommand("teleporttolastdeathlocation")).setExecutor(new TeleportToLastDeathLocationCommand());
-		Objects.requireNonNull(this.getCommand("teleporttolastdeathlocation")).setTabCompleter(new AllLocalPlayers());
-		Objects.requireNonNull(this.getCommand("worldteleport")).setExecutor(new WorldTeleportCommand());
-		Objects.requireNonNull(this.getCommand("worldteleport")).setTabCompleter(new WorldTeleport());
-
-		Objects.requireNonNull(this.getCommand("getmaploc")).setExecutor(new GetMapLocationCommand());
-		Objects.requireNonNull(this.getCommand("crafts")).setExecutor(new CraftsCommand());
-		Objects.requireNonNull(this.getCommand("resourcepack")).setExecutor(new ResourcePackCommand());
-		Objects.requireNonNull(this.getCommand("info")).setExecutor(new InfoCommand());
-		Objects.requireNonNull(this.getCommand("info")).setTabCompleter(new AllPlayers());
-		Objects.requireNonNull(this.getCommand("whitelist")).setExecutor(new WhitelistCommand());
-		Objects.requireNonNull(this.getCommand("whitelist")).setTabCompleter(new WhiteList());
-		Objects.requireNonNull(this.getCommand("privatemessage")).setExecutor(new PrivateMessageCommand());
-		Objects.requireNonNull(this.getCommand("privatemessage")).setTabCompleter(new AllLocalPlayers());
-
-		Objects.requireNonNull(this.getCommand("sit")).setExecutor(new SitCommand());
-		Objects.requireNonNull(this.getCommand("spit")).setExecutor(new SpitCommand());
-		Objects.requireNonNull(this.getCommand("fart")).setExecutor(new FartCommand());
-		Objects.requireNonNull(this.getCommand("me")).setExecutor(new MeCommand());
-		Objects.requireNonNull(this.getCommand("try")).setExecutor(new TryCommand());
+		}
 	}
 
 	private void generateWorld() {
@@ -137,7 +97,7 @@ public final class Main extends JavaPlugin {
 	}
 
 	public void reloadConfigs() {
-		saveDefaultConfig();
+		this.saveDefaultConfig();
 		this.reloadConfig();
 		cachedConfig = new Config();
 	}

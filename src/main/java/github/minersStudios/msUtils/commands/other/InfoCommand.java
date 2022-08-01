@@ -17,55 +17,55 @@ public class InfoCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-		if (args.length < 1)
-			return false;
+		if (args.length < 1) return false;
 		if (args[0].matches("[0-99]+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-			if (offlinePlayer == null)
+			if (offlinePlayer == null) {
 				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			return sendInfo(playerInfo, sender);
+			}
+			return sendInfo(new PlayerInfo(offlinePlayer.getUniqueId()), sender);
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
-			if (offlinePlayer == null)
+			if (offlinePlayer == null) {
 				return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			return sendInfo(playerInfo, sender);
+			}
+			return sendInfo(new PlayerInfo(offlinePlayer.getUniqueId()), sender);
 		}
 		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
 	}
 
 	private static boolean sendInfo(@Nonnull PlayerInfo playerInfo, @Nonnull CommandSender sender) {
-		Location lastLeaveLocation = playerInfo.getLastLeaveLocation(),
+		Location
+				lastLeaveLocation = playerInfo.getLastLeaveLocation(),
 				lastDeathLocation = playerInfo.getLastDeathLocation();
 		return ChatUtils.sendInfo(sender,
 				Component.text("UUID : " + playerInfo.getUuid()
-				+ "\nID : " + playerInfo.getID(false, false)
-				+ "\nNickname : " + playerInfo.getNickname()
-				+ "\nFirstname : " + playerInfo.getFirstname()
-				+ "\nLastname : " + playerInfo.getLastname()
-				+ "\nPatronymic : " + playerInfo.getPatronymic()
-				+ "\nRPtype : " + playerInfo.getResourcePackType()
-				+ "\nMuted : " + playerInfo.isMuted()
-				+ "\nBanned : " + playerInfo.isBanned()
-				+ "\nFirst join : " + playerInfo.getFirstJoin()
-				+ "\nMute reason : " + playerInfo.getMuteReason()
-				+ "\nMuted to : " + playerInfo.getMutedTo()
-				+ "\nBan reason : " + playerInfo.getBanReason()
-				+ "\nBanned to : " + playerInfo.getBannedTo()
-				+ "\nLast death world : " + lastDeathLocation.getBlock().getWorld().getName()
-				+ "\nLast death X : " + lastDeathLocation.getX()
-				+ "\nLast death Y : " + lastDeathLocation.getY()
-				+ "\nLast death Z : " + lastDeathLocation.getZ()
-				+ "\nLast death Yaw : " + lastDeathLocation.getYaw()
-				+ "\nLast death Pitch : " + lastDeathLocation.getPitch()
-				+ "\nLast leave world : " + lastLeaveLocation.getBlock().getWorld().getName()
-				+ "\nLast leave X : " + lastLeaveLocation.getX()
-				+ "\nLast leave Y : " + lastLeaveLocation.getY()
-				+ "\nLast leave Z : " + lastLeaveLocation.getZ()
-				+ "\nLast leave Yaw : " + lastLeaveLocation.getYaw()
-				+ "\nLast leave Pitch : " + lastLeaveLocation.getPitch())
+						+ "\n ID : " + playerInfo.getID(false, false)
+						+ "\n Nickname : " + playerInfo.getNickname()
+						+ "\n Firstname : " + playerInfo.getFirstname()
+						+ "\n Lastname : " + playerInfo.getLastname()
+						+ "\n Patronymic : " + playerInfo.getPatronymic()
+						+ "\n RPtype : " + playerInfo.getResourcePackType()
+						+ "\n Muted : " + playerInfo.isMuted()
+						+ "\n Banned : " + playerInfo.isBanned()
+						+ "\n First join : " + playerInfo.getFirstJoin()
+						+ "\n Mute reason : " + playerInfo.getMuteReason()
+						+ "\n Muted to : " + playerInfo.getMutedTo()
+						+ "\n Ban reason : " + playerInfo.getBanReason()
+						+ "\n Banned to : " + playerInfo.getBannedTo()
+						+ "\n Last death world : " + lastDeathLocation.getBlock().getWorld().getName()
+						+ "\n Last death X : " + lastDeathLocation.getX()
+						+ "\n Last death Y : " + lastDeathLocation.getY()
+						+ "\n Last death Z : " + lastDeathLocation.getZ()
+						+ "\n Last death Yaw : " + lastDeathLocation.getYaw()
+						+ "\n Last death Pitch : " + lastDeathLocation.getPitch()
+						+ "\n Last leave world : " + lastLeaveLocation.getBlock().getWorld().getName()
+						+ "\n Last leave X : " + lastLeaveLocation.getX()
+						+ "\n Last leave Y : " + lastLeaveLocation.getY()
+						+ "\n Last leave Z : " + lastLeaveLocation.getZ()
+						+ "\n Last leave Yaw : " + lastLeaveLocation.getYaw()
+						+ "\n Last leave Pitch : " + lastLeaveLocation.getPitch())
 		);
 	}
 }

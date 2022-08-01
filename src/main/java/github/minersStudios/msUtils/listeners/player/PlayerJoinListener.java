@@ -28,13 +28,14 @@ public class PlayerJoinListener implements Listener {
 		player.setScoreboard(Main.getScoreboardHideTags());
 		player.displayName(playerInfo.getDefaultName());
 		player.setGameMode(GameMode.SPECTATOR);
-		if (player.isDead())
+
+		if (player.isDead()) {
 			playerInfo.teleportToDarkWorld();
+		}
 
 		new BukkitRunnable() {
 			public void run() {
-				if (!player.isOnline())
-					this.cancel();
+				if (!player.isOnline()) this.cancel();
 				if (Main.getAuthmeApi().isAuthenticated(player)) {
 					if (!playerInfo.hasPlayerDataFile() || (playerInfo.hasPlayerDataFile() && playerInfo.hasNoName())) {
 						this.cancel();

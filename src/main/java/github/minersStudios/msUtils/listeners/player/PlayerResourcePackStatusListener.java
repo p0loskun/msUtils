@@ -8,7 +8,6 @@ import github.minersStudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
@@ -25,8 +24,9 @@ public class PlayerResourcePackStatusListener implements Listener {
 			case ACCEPTED -> ChatUtils.sendFine(null, Component.text(player.getName()).append(Component.text(" принял ресурспак")));
 			case SUCCESSFULLY_LOADED -> {
 				ChatUtils.sendFine(null, Component.text(player.getName()).append(Component.text(" успешно загрузил ресурспак")));
-				if (player.getWorld() == Main.getWorldDark())
+				if (player.getWorld() == Main.getWorldDark()) {
 					playerInfo.teleportToLastLeaveLocation();
+				}
 			}
 			case FAILED_DOWNLOAD -> {
 				ChatUtils.sendWarning(null, Component.text(player.getName()).append(Component.text(" не установился ресурспак, диск : ")).append(Component.text(playerInfo.getDiskType().name())));

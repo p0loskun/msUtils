@@ -19,15 +19,16 @@ public class SpitCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-		if (!(sender instanceof Player player))
+		if (!(sender instanceof Player player)) {
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+		}
 		World world = player.getWorld();
 		Location location = player.getLocation();
-		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player))
-			return true;
+		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player)) return true;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-		if (playerInfo.isMuted())
+		if (playerInfo.isMuted()) {
 			return ChatUtils.sendWarning(player, Component.text("Вы замучены"));
+		}
 		world.spawnEntity(
 				location.toVector().add(location.getDirection().multiply(0.8d)).toLocation(world).add(0.0d, 1.0d, 0.0d),
 				EntityType.LLAMA_SPIT

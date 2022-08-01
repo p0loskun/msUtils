@@ -203,9 +203,11 @@ public enum Crafts {
     }
 
     public static int getItemIndex(@Nonnull ItemStack itemStack) {
-        for (Crafts craft : Crafts.values())
-            if (itemStack.isSimilar(craft.shapedRecipe.getResult()))
+        for (Crafts craft : Crafts.values()) {
+            if (itemStack.isSimilar(craft.shapedRecipe.getResult())) {
                 return craft.ordinal();
+            }
+        }
         return -1;
     }
 
@@ -260,7 +262,7 @@ public enum Crafts {
         inventory.setItem(42, getNextPageButton()[1]);
         inventory.setItem(43, getNextPageButton()[1]);
         inventory.setItem(44, getNextPageButton()[1]);
-        for (int i = 0; i <= 35 && index < Crafts.values().length;) {
+        for (int i = 0; i <= 35 && index < Crafts.values().length; ) {
             inventory.setItem(i, crafts[index].shapedRecipe.getResult());
             i++;
             index++;

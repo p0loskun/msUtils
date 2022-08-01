@@ -23,27 +23,41 @@ public class DiscordSRVListener {
 	public void discordMessageProcessed(@Nonnull DiscordGuildMessagePreProcessEvent event) {
 		Message message = event.getMessage(),
 				referencedMessage = message.getReferencedMessage();
-		String reply = referencedMessage != null ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), referencedMessage) : "",
-				attachment = !message.getAttachments().isEmpty() ? message.getAttachments().size() > 1 ? "(вложения) " : "(вложение) " : "";
+		String reply = referencedMessage != null
+				? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), referencedMessage)
+				: "",
+				attachment = !message.getAttachments().isEmpty()
+						? message.getAttachments().size() > 1
+						? "(вложения) "
+						: "(вложение) "
+						: "";
 		Component messageComponent =
 				Config.Symbols.discord
-				.color(NamedTextColor.WHITE)
-				.append(Component.text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
-				.append(Component.text(reply, TextColor.color(152, 162, 249)))
-				.append(Component.text(" : ", TextColor.color(112, 125, 223)))
-				.append(Component.text(attachment, TextColor.color(165, 165, 255)))
-				.append(Component.text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
+						.color(NamedTextColor.WHITE)
+						.append(Component.text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
+						.append(Component.text(reply, TextColor.color(152, 162, 249)))
+						.append(Component.text(" : ", TextColor.color(112, 125, 223)))
+						.append(Component.text(attachment, TextColor.color(165, 165, 255)))
+						.append(Component.text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
 
-		for (Player player : Bukkit.getOnlinePlayers())
-			if (player.getWorld() != Main.getWorldDark())
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (player.getWorld() != Main.getWorldDark()) {
 				player.sendMessage(messageComponent);
+			}
+		}
 		Bukkit.getLogger().info(ChatUtils.legacyComponentSerialize(messageComponent).substring(2));
 	}
 
 	@Nonnull
 	private static String replaceReplyPlaceholders(@Nonnull String format, @Nonnull Message repliedMessage) {
-		Function<String, String> escape = MessageUtil.isLegacy(format) ? str -> str : str -> str.replaceAll("([<>])", "\\\\$1");
-		String attachment = !repliedMessage.getAttachments().isEmpty() ? repliedMessage.getAttachments().size() > 1 ? "(вложения) " : "(вложение) " : "",
+		Function<String, String> escape = MessageUtil.isLegacy(format)
+				? str -> str
+				: str -> str.replaceAll("([<>])", "\\\\$1");
+		String attachment = !repliedMessage.getAttachments().isEmpty()
+				? repliedMessage.getAttachments().size() > 1
+				? "(вложения) "
+				: "(вложение) "
+				: "",
 				message = escape.apply(MessageUtil.strip(repliedMessage.getContentDisplay()));
 		return message.isEmpty() && attachment.isEmpty() ? ""
 				: " (отвечая на \"" + attachment + message + "\")";

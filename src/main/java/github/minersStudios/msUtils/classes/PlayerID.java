@@ -34,8 +34,8 @@ public class PlayerID {
 	}
 
 	/**
-	 * @param uuid player's uuid
-	 * @param addPlayer if true and player ID = null, creates new id
+	 * @param uuid       player's uuid
+	 * @param addPlayer  if true and player ID = null, creates new id
 	 * @param zeroIfNull if true and player ID = null, returns -1
 	 * @return player's ID int
 	 */
@@ -57,15 +57,18 @@ public class PlayerID {
 
 	@Nullable
 	private String getUUIDByID(int ID) {
-		for (Map.Entry<String, Object> entry : this.yamlConfiguration.getValues(true).entrySet())
-			if (Objects.equals(ID, entry.getValue()))
+		for (Map.Entry<String, Object> entry : this.yamlConfiguration.getValues(true).entrySet()) {
+			if (Objects.equals(ID, entry.getValue())) {
 				return entry.getKey();
+			}
+		}
 		return null;
 	}
 
 	private int createNewID(@Nonnull List<Object> IDs, int ID) {
-		if (ID == -1)
+		if (ID == -1) {
 			ID = IDs.size();
+		}
 		return IDs.contains(ID) ? createNewID(IDs, ID + 1) : ID;
 	}
 }

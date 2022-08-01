@@ -51,7 +51,8 @@ public enum Pronouns {
 			"убили"
 	);
 
-	@Getter private final String
+	@Getter
+	private final String
 			joinMessage,
 			quitMessage,
 			spitMessage,

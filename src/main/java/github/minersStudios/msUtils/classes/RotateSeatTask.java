@@ -18,6 +18,7 @@ public class RotateSeatTask extends BukkitRunnable {
 		try {
 			this.alignArmorStand = new RotateSeatTask.AlignArmorStand() {
 				final Method method;
+
 				{
 					this.method = Entity.class.getMethod("setRotation", Float.TYPE, Float.TYPE);
 				}
@@ -45,10 +46,13 @@ public class RotateSeatTask extends BukkitRunnable {
 	}
 
 	public void run() {
-		for (ArmorStand armorstand : PlayerUtils.getSeats().values())
-			for (Object passenger : armorstand.getPassengers())
-				if (passenger instanceof Player player)
+		for (ArmorStand armorstand : PlayerUtils.getSeats().values()) {
+			for (Object passenger : armorstand.getPassengers()) {
+				if (passenger instanceof Player player) {
 					this.alignArmorStand.align(armorstand, player.getLocation().getYaw());
+				}
+			}
+		}
 	}
 
 	private interface AlignArmorStand {
