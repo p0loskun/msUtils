@@ -4,19 +4,35 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>github.minersStudios</groupId>
+	<groupId>com.github.MinersStudios</groupId>
 	<artifactId>msUtils</artifactId>
 	<version>0.1.0</version>
 	<packaging>jar</packaging>
 
 	<name>msUtils</name>
+	<description>A Minecraft plugin with custom features for WhoMine</description>
+	<url>https://github.com/MinersStudios/msUtils</url>
+
 	<organization>
 		<name>The game development team creates quality content. Currently, creating plugins for WhoMine</name>
 		<url>https://github.com/MinersStudios</url>
 	</organization>
 
-	<description>A Minecraft plugin with custom features for WhoMine</description>
+	<developers>
+		<developer>
+			<name>Poloskun_</name>
+			<url>https://github.com/p0loskun</url>
+		</developer>
+		<developer>
+			<name>PackmanDude</name>
+			<url>https://github.com/PackmanDude</url>
+		</developer>
+	</developers>
+
 	<properties>
+		<authors>Poloskun_, PackmanDude</authors>
+		<mainClass>com.github.MinersStudios.msUtils.Main</mainClass>
+		<apiVersion>1.19</apiVersion>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -26,7 +42,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.9.0</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>

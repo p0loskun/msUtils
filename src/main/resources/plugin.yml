@@ -1,12 +1,11 @@
-name: msUtils
-version: ${project.version}
-description: A Minecraft plugin with custom features for WhoMine
-authors: [ MinersStudios, p0loskun ]
-website: minersstudios.github.io
+name: ${name}
+version: ${version}
+description: ${description}
+authors: [${authors}]
+website: ${url}
 
-main: github.minersStudios.msUtils.Main
-api-version: 1.19
-database: false
+main: ${mainClass}
+api-version: ${apiVersion}
 softdepend:
   - AuthMe
   - ProtocolLib
