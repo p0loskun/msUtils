@@ -179,17 +179,37 @@ public class ChatUtils {
 	 * Sends rp event message to chat
 	 *
 	 * @param player  player
-	 * @param message message
+	 * @param speech speech
+	 * @param action action
 	 */
-	public static boolean sendRPEventMessage(@Nonnull Player player, @Nonnull Component message) {
-		Component fullMessage =
-				Component.text("* ")
-						.color(NamedTextColor.GOLD)
-						.append(new PlayerInfo(player.getUniqueId()).getGrayIDGoldName())
-						.append(Component.text(" ")
-						.append(message
-						.append(Component.text(" *"))
-						.color(NamedTextColor.GOLD)));
+	public static boolean sendRPEventMessage(@Nonnull Player player, @Nullable Component speech, @Nonnull Component action) {
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		Component fullMessage;
+		if (speech == null) {
+			fullMessage =
+					Component.text("* ")
+							.color(Config.Colors.rpMessageMessageColorPrimary)
+							.append(playerInfo.getGrayIDGoldName())
+							.append(Component.text(" ")
+							.append(action
+							.append(Component.text(" *"))
+							.color(Config.Colors.rpMessageMessageColorPrimary)));
+		} else {
+			fullMessage =
+					Component.text("* ")
+							.color(Config.Colors.rpMessageMessageColorPrimary)
+							.append(speech
+							.color(Config.Colors.rpMessageMessageColorSecondary))
+							.append(Component.text(" - ")
+							.append(Component.text(playerInfo.getPronouns().getSaidMessage())))
+							.color(Config.Colors.rpMessageMessageColorPrimary)
+							.append(Component.text(" "))
+							.append(playerInfo.getGrayIDGoldName())
+							.append(Component.text(", ")
+							.append(action
+							.append(Component.text(" *")))
+							.color(Config.Colors.rpMessageMessageColorPrimary));
+		}
 		player.getWorld().getPlayers().stream().filter(
 				(p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(Main.getCachedConfig().local_chat_radius, 2.0D)
 		).forEach(
@@ -198,6 +218,10 @@ public class ChatUtils {
 		DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_local_channel_id), legacyComponentSerialize(fullMessage));
 		Bukkit.getLogger().info(legacyComponentSerialize(fullMessage));
 		return true;
+	}
+
+	public static boolean sendRPEventMessage(@Nonnull Player player, @Nonnull Component action) {
+		return sendRPEventMessage(player, null, action);
 	}
 
 	/**

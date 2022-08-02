@@ -46,11 +46,7 @@ public class AsyncChatListener implements Listener {
 					ChatUtils.sendError(player, Component.text("Используй: * [речь] * [действие]"));
 					return;
 				}
-				ChatUtils.sendRPEventMessage(player,
-						Component.text(action)
-						.append(Component.text(", сказав "))
-						.append(Component.text(speech))
-				);
+				ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action));
 			} else if (message.length() != 0) {
 				ChatUtils.sendRPEventMessage(player, Component.text(message));
 			}

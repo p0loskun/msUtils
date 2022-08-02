@@ -28,10 +28,6 @@ public class TodoCommand implements CommandExecutor {
 		String action = message.substring(message.indexOf('*') + 1).trim(),
 				speech = message.substring(0 , message.indexOf('*')).trim();
 		if (action.equalsIgnoreCase("") || speech.equalsIgnoreCase("")) return false;
-		return ChatUtils.sendRPEventMessage(player,
-				Component.text(action)
-				.append(Component.text(", сказав "))
-				.append(Component.text(speech))
-		);
+		return ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action));
 	}
 }
