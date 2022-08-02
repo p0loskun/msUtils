@@ -53,5 +53,6 @@ public class RegCommands {
 		Objects.requireNonNull(plugin.getCommand("fart")).setExecutor(new FartCommand());
 		Objects.requireNonNull(plugin.getCommand("me")).setExecutor(new MeCommand());
 		Objects.requireNonNull(plugin.getCommand("try")).setExecutor(new TryCommand());
+		Objects.requireNonNull(plugin.getCommand("todo")).setExecutor(new TodoCommand());
 	}
 }

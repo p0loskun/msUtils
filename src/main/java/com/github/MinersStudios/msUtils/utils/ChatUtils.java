@@ -188,7 +188,7 @@ public class ChatUtils {
 						.append(new PlayerInfo(player.getUniqueId()).getGrayIDGoldName())
 						.append(Component.text(" ")
 						.append(message
-						.append(Component.text("*"))
+						.append(Component.text(" *"))
 						.color(NamedTextColor.GOLD)));
 		player.getWorld().getPlayers().stream().filter(
 				(p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(Main.getCachedConfig().local_chat_radius, 2.0D)

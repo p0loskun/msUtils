@@ -33,13 +33,25 @@ public class AsyncChatListener implements Listener {
 
 		String message = ChatUtils.legacyComponentSerialize(event.originalMessage());
 		if (message.startsWith("!")) {
-			message = message.substring(1);
+			message = message.substring(1).trim();
 			if (message.length() != 0) {
 				ChatUtils.sendMessageToChat(playerInfo, null, ChatUtils.Chat.GLOBAL, Component.text(message));
 			}
 		} else if (message.startsWith("*")) {
-			message = message.substring(1);
-			if (message.length() != 0) {
+			message = message.substring(1).trim();
+			if (message.contains("*")) {
+				String action = message.substring(message.indexOf('*') + 1).trim(),
+						speech = message.substring(0 , message.indexOf('*')).trim();
+				if (action.equalsIgnoreCase("") || speech.equalsIgnoreCase("")) {
+					ChatUtils.sendError(player, Component.text("Используй: * [речь] * [действие]"));
+					return;
+				}
+				ChatUtils.sendRPEventMessage(player,
+						Component.text(action)
+						.append(Component.text(", сказав "))
+						.append(Component.text(speech))
+				);
+			} else if (message.length() != 0) {
 				ChatUtils.sendRPEventMessage(player, Component.text(message));
 			}
 		} else {
