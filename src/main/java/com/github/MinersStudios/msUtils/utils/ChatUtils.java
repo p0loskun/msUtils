@@ -67,7 +67,7 @@ public class ChatUtils {
 		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
 			sender.sendMessage(message.color(NamedTextColor.GOLD));
 		} else {
-			Bukkit.getLogger().warning(legacyComponentSerialize(message));
+			Bukkit.getLogger().warning(legacyComponentSerialize(message.color(NamedTextColor.GOLD)));
 		}
 		return true;
 	}
@@ -84,7 +84,7 @@ public class ChatUtils {
 		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
 			sender.sendMessage(message.color(NamedTextColor.RED));
 		} else {
-			Bukkit.getLogger().severe(legacyComponentSerialize(message));
+			Bukkit.getLogger().severe(legacyComponentSerialize(message.color(NamedTextColor.RED)));
 		}
 		return true;
 	}
