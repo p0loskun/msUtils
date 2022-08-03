@@ -187,13 +187,11 @@ public class ChatUtils {
 		Component fullMessage;
 		if (speech == null) {
 			fullMessage =
-					Component.text("* ")
-							.color(Config.Colors.rpMessageMessageColorPrimary)
+					Component.text("* ", Config.Colors.rpMessageMessageColorPrimary)
 							.append(playerInfo.getGrayIDGoldName())
 							.append(Component.text(" ")
-							.append(action
-							.append(Component.text(" *"))
-							.color(Config.Colors.rpMessageMessageColorPrimary)));
+							.append(action.color(Config.Colors.rpMessageMessageColorSecondary)))
+							.append(Component.text(" *", Config.Colors.rpMessageMessageColorPrimary));
 		} else {
 			fullMessage =
 					Component.text("* ")
@@ -205,10 +203,10 @@ public class ChatUtils {
 							.color(Config.Colors.rpMessageMessageColorPrimary)
 							.append(Component.text(" "))
 							.append(playerInfo.getGrayIDGoldName())
-							.append(Component.text(", ")
+							.append(Component.text(", ", Config.Colors.rpMessageMessageColorPrimary))
 							.append(action
-							.append(Component.text(" *")))
-							.color(Config.Colors.rpMessageMessageColorPrimary));
+							.color(Config.Colors.rpMessageMessageColorSecondary))
+							.append(Component.text(" *", Config.Colors.rpMessageMessageColorPrimary));
 		}
 		player.getWorld().getPlayers().stream().filter(
 				(p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(Main.getCachedConfig().local_chat_radius, 2.0D)

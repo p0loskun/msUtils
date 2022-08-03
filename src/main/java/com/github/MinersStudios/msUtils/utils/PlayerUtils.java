@@ -138,7 +138,7 @@ public class PlayerUtils {
 		return true;
 	}
 
-	public static boolean setSitting(@Nonnull Player player, @Nullable Location sitLocation) {
+	public static boolean setSitting(@Nonnull Player player, @Nullable Location sitLocation, @Nullable String[] args) {
 		if (!getSeats().containsKey(player) && sitLocation != null) {
 			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {
 				armorStand.setGravity(false);
@@ -147,8 +147,10 @@ public class PlayerUtils {
 				armorStand.addPassenger(player);
 				armorStand.addScoreboardTag("customDecor");
 				getSeats().put(player, armorStand);
-				ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()));
 			});
+			return args != null
+					? ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("приседая"))
+					: ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()));
 		} else if (sitLocation == null && getSeats().containsKey(player)) {
 			ArmorStand armorStand = getSeats().get(player);
 			getSeats().remove(player);

@@ -24,7 +24,7 @@ public class PrivateMessageCommand implements CommandExecutor {
 		if (args.length < 2) return false;
 		PlayerInfo privateMessageSender = new PlayerInfo(player.getUniqueId());
 		if (privateMessageSender.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замучены"));
+			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
 		String message = ChatUtils.extractMessage(args, 1);
 		if (args[0].matches("[0-99]+")) {

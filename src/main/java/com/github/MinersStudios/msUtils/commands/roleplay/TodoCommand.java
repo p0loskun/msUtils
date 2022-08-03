@@ -23,7 +23,7 @@ public class TodoCommand implements CommandExecutor {
 		if (args.length < 3 || !message.contains("*")) return false;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замучены"));
+			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
 		String action = message.substring(message.indexOf('*') + 1).trim(),
 				speech = message.substring(0 , message.indexOf('*')).trim();

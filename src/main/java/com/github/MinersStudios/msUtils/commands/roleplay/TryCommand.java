@@ -23,7 +23,7 @@ public class TryCommand implements CommandExecutor {
 		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player)) return true;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замучены"));
+			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
 		return ChatUtils.sendRPEventMessage(player,
 				Component.text(ChatUtils.extractMessage(args, 0))

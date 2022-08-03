@@ -22,7 +22,7 @@ public class MeCommand implements CommandExecutor {
 		if (args.length < 1) return false;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замучены"));
+			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
 		return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)));
 	}

@@ -41,7 +41,7 @@ public class Config {
 				joinMessageColorPrimary = TextColor.color(255, 238, 147),
 				joinMessageColorSecondary = TextColor.color(252, 245, 199),
 				rpMessageMessageColorPrimary = TextColor.color(255, 170, 0),
-				rpMessageMessageColorSecondary = TextColor.color(255, 202, 70);
+				rpMessageMessageColorSecondary = TextColor.color(255, 195, 105);
 	}
 
 	@SuppressWarnings("unused")

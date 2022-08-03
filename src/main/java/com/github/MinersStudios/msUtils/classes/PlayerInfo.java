@@ -78,7 +78,7 @@ public class PlayerInfo {
 						.append(Component.text(this.getFirstname())
 						.append(Component.text(" ")
 						.append(Component.text(this.getLastname())))
-						.color(NamedTextColor.GOLD));
+						.color(Config.Colors.rpMessageMessageColorPrimary));
 	}
 
 	@Nonnull
@@ -347,7 +347,7 @@ public class PlayerInfo {
 					.append(this.getGrayIDGreenName())
 					.append(Component.text(" ("))
 					.append(Component.text(this.getNickname()))
-					.append(Component.text(")\" был замучен :\n    - Причина : \""))
+					.append(Component.text(")\" был замьючен :\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))
 					.append(Component.text(
@@ -360,7 +360,7 @@ public class PlayerInfo {
 			);
 			return ChatUtils.sendWarning(
 					player,
-					Component.text("Вы были замучены : ")
+					Component.text("Вы были замьючены : ")
 					.append(Component.text("\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))

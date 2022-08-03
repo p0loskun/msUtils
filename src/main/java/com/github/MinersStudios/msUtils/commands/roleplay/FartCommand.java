@@ -22,11 +22,14 @@ public class FartCommand implements CommandExecutor {
 		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player)) return true;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замучены"));
+			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
 		Location location = player.getLocation();
 		player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
 		player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
+		if (args.length > 0) {
+			return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("пукнув"));
+		}
 		return ChatUtils.sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getFartMessage()));
 	}
 }

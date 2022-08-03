@@ -54,7 +54,7 @@ public final class Main extends JavaPlugin {
 	public void onDisable() {
 		Bukkit.savePlayers();
 		for (Player player : PlayerUtils.getSeats().keySet()) {
-			PlayerUtils.setSitting(player, null);
+			PlayerUtils.setSitting(player, null, null);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			PlayerUtils.kickPlayer(player, "Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");

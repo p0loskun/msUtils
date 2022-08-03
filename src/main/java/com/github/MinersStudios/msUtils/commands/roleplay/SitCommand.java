@@ -22,6 +22,6 @@ public class SitCommand implements CommandExecutor {
 		if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
 			return ChatUtils.sendWarning(player, Component.text("Сидеть в воздухе нельзя!"));
 		}
-		return PlayerUtils.setSitting(player, PlayerUtils.getSeats().containsKey(player) ? null : player.getLocation());
+		return PlayerUtils.setSitting(player, PlayerUtils.getSeats().containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
 	}
 }

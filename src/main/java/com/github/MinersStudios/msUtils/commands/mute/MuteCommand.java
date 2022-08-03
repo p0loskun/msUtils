@@ -31,7 +31,7 @@ public class MuteCommand implements CommandExecutor {
 				return ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
 								.append(playerInfo.getGrayIDGoldName())
-								.append(Component.text("\" уже замучен"))
+								.append(Component.text("\" уже замьючен"))
 				);
 			}
 			return playerInfo.setMuted(true, time, reason, sender);
@@ -48,7 +48,7 @@ public class MuteCommand implements CommandExecutor {
 								.append(playerInfo.getGrayIDGoldName())
 								.append(Component.text(" ("))
 								.append(Component.text(args[0]))
-								.append(Component.text(")\" уже замучен"))
+								.append(Component.text(")\" уже замьючен"))
 				);
 			}
 			return playerInfo.setMuted(true, time, reason, sender);

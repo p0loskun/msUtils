@@ -27,7 +27,7 @@ public class AsyncChatListener implements Listener {
 		}
 
 		if (playerInfo.isMuted()) {
-			ChatUtils.sendWarning(player, Component.text("Вы замучены"));
+			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 			return;
 		}
 
