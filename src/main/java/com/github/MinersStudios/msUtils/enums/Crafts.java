@@ -200,8 +200,8 @@ public enum Crafts {
     ;
 
     public static final String
-            CRAFTS_NAME = ChatColor.WHITE + "\uB002\uA027",
-            CRAFT_NAME = ChatColor.WHITE + "\uB002\uA028";
+            CRAFTS_NAME = ChatColor.WHITE + "뀂ꀧ",
+            CRAFT_NAME = ChatColor.WHITE + "뀂ꀨ";
     private final ShapedRecipe shapedRecipe;
 
     Crafts(ShapedRecipe shapedRecipe) {
@@ -286,7 +286,7 @@ public enum Crafts {
         previousPageMetaNoCMD.displayName(Component.text(ChatColor.WHITE + "Предыдущая страница"));
         previousPageMeta.displayName(Component.text(ChatColor.WHITE + "Предыдущая страница"));
         previousPageMeta.setCustomModelData(5001);
-        previousPageMetaNoCMD.setCustomModelData(0);
+        previousPageMetaNoCMD.setCustomModelData(1);
         previousPageNoCMD.setItemMeta(previousPageMetaNoCMD);
         previousPage.setItemMeta(previousPageMeta);
         return new ItemStack[]{previousPage, previousPageNoCMD};
@@ -302,7 +302,7 @@ public enum Crafts {
         nextPageMetaNoCMD.displayName(Component.text(ChatColor.WHITE + "Следующая страница"));
         nextPageMeta.displayName(Component.text(ChatColor.WHITE + "Следующая страница"));
         nextPageMeta.setCustomModelData(5002);
-        nextPageMetaNoCMD.setCustomModelData(0);
+        nextPageMetaNoCMD.setCustomModelData(1);
         nextPageNoCMD.setItemMeta(nextPageMetaNoCMD);
         nextPage.setItemMeta(nextPageMeta);
         return new ItemStack[]{nextPage, nextPageNoCMD};
@@ -314,7 +314,7 @@ public enum Crafts {
         ItemMeta quitMeta = quit.getItemMeta();
         assert quitMeta != null;
         quitMeta.displayName(Component.text(ChatColor.WHITE + "Вернуться"));
-        quitMeta.setCustomModelData(0);
+        quitMeta.setCustomModelData(1);
         quit.setItemMeta(quitMeta);
         return quit;
     }
@@ -325,7 +325,7 @@ public enum Crafts {
         ItemMeta arrowMeta = arrow.getItemMeta();
         assert arrowMeta != null;
         arrowMeta.displayName(Component.text(ChatColor.GRAY + " -> "));
-        arrowMeta.setCustomModelData(pageIndex);
+        arrowMeta.setCustomModelData(pageIndex + 1);
         arrow.setItemMeta(arrowMeta);
         return arrow;
     }

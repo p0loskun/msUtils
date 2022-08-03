@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -39,7 +40,7 @@ public class InventoryClickListener implements Listener {
 
 		if (
 				(clickedInventory.getType() == InventoryType.PLAYER
-				&& event.getClick().isShiftClick()
+				&& (event.getClick().isShiftClick() || event.getClick() == ClickType.DOUBLE_CLICK)
 				&& (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME)
 				|| inventoryTitle.equalsIgnoreCase(Pronouns.NAME)
 				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME)
@@ -148,7 +149,7 @@ public class InventoryClickListener implements Listener {
 				ItemStack arrow = clickedInventory.getItem(14);
 				if (arrow != null && arrow.getItemMeta() != null && slot == 31) {
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
-					player.openInventory(Crafts.getInventory(arrow.getItemMeta().getCustomModelData()));
+					player.openInventory(Crafts.getInventory(arrow.getItemMeta().getCustomModelData() - 1));
 				}
 				event.setCancelled(!event.getClick().isCreativeAction());
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
