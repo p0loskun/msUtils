@@ -3,7 +3,9 @@ package com.github.MinersStudios.msUtils.listeners;
 import com.github.MinersStudios.msUtils.listeners.block.PistonListener;
 import com.github.MinersStudios.msUtils.listeners.chat.AsyncChatListener;
 import com.github.MinersStudios.msUtils.listeners.chat.DiscordSRVListener;
+import com.github.MinersStudios.msUtils.listeners.entity.EntityDamageByEntityListener;
 import com.github.MinersStudios.msUtils.listeners.entity.EntityDamageListener;
+import com.github.MinersStudios.msUtils.listeners.entity.HangingBreakByEntityListener;
 import com.github.MinersStudios.msUtils.listeners.player.*;
 import com.github.MinersStudios.msUtils.Main;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -23,6 +25,8 @@ public class RegEvents {
         pluginManager.registerEvents(new AsyncChatListener(), plugin);
 
         pluginManager.registerEvents(new EntityDamageListener(), plugin);
+        pluginManager.registerEvents(new EntityDamageByEntityListener(), plugin);
+        pluginManager.registerEvents(new HangingBreakByEntityListener(), plugin);
 
         pluginManager.registerEvents(new PlayerInteractEntityListener(), plugin);
         pluginManager.registerEvents(new PlayerArmorStandManipulateListener(), plugin);
