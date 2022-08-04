@@ -6,13 +6,10 @@ import com.github.MinersStudios.msUtils.commands.mute.MuteCommand;
 import com.github.MinersStudios.msUtils.commands.mute.UnMuteCommand;
 import com.github.MinersStudios.msUtils.commands.other.*;
 import com.github.MinersStudios.msUtils.commands.roleplay.*;
-import com.github.MinersStudios.msUtils.tabCompleters.AllLocalPlayers;
+import com.github.MinersStudios.msUtils.tabCompleters.*;
 import com.github.MinersStudios.msUtils.Main;
 import com.github.MinersStudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
 import com.github.MinersStudios.msUtils.commands.teleport.WorldTeleportCommand;
-import com.github.MinersStudios.msUtils.tabCompleters.AllPlayers;
-import com.github.MinersStudios.msUtils.tabCompleters.WhiteList;
-import com.github.MinersStudios.msUtils.tabCompleters.WorldTeleport;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -39,8 +36,11 @@ public class RegCommands {
 		Objects.requireNonNull(plugin.getCommand("worldteleport")).setTabCompleter(new WorldTeleport());
 
 		Objects.requireNonNull(plugin.getCommand("getmaploc")).setExecutor(new GetMapLocationCommand());
+		Objects.requireNonNull(plugin.getCommand("getmaploc")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("crafts")).setExecutor(new CraftsCommand());
+		Objects.requireNonNull(plugin.getCommand("crafts")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("resourcepack")).setExecutor(new ResourcePackCommand());
+		Objects.requireNonNull(plugin.getCommand("resourcepack")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("info")).setExecutor(new InfoCommand());
 		Objects.requireNonNull(plugin.getCommand("info")).setTabCompleter(new AllPlayers());
 		Objects.requireNonNull(plugin.getCommand("whitelist")).setExecutor(new WhitelistCommand());
@@ -49,10 +49,18 @@ public class RegCommands {
 		Objects.requireNonNull(plugin.getCommand("privatemessage")).setTabCompleter(new AllLocalPlayers());
 
 		Objects.requireNonNull(plugin.getCommand("sit")).setExecutor(new SitCommand());
+		Objects.requireNonNull(plugin.getCommand("sit")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("spit")).setExecutor(new SpitCommand());
+		Objects.requireNonNull(plugin.getCommand("spit")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("fart")).setExecutor(new FartCommand());
+		Objects.requireNonNull(plugin.getCommand("fart")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("me")).setExecutor(new MeCommand());
+		Objects.requireNonNull(plugin.getCommand("me")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("try")).setExecutor(new TryCommand());
+		Objects.requireNonNull(plugin.getCommand("try")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("todo")).setExecutor(new TodoCommand());
+		Objects.requireNonNull(plugin.getCommand("todo")).setTabCompleter(new Empty());
+		Objects.requireNonNull(plugin.getCommand("it")).setExecutor(new ItCommand());
+		Objects.requireNonNull(plugin.getCommand("it")).setTabCompleter(new Empty());
 	}
 }

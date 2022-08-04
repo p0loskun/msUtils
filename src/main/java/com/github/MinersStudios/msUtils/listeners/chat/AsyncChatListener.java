@@ -39,16 +39,21 @@ public class AsyncChatListener implements Listener {
 			}
 		} else if (message.startsWith("*")) {
 			message = message.substring(1).trim();
-			if (message.contains("*")) {
+			if (message.startsWith("*")) {
+				message = message.substring(1).trim();
+				if (message.length() != 0) {
+					ChatUtils.sendRPEventMessage(player, Component.text(message), true);
+				}
+			} else if (message.contains("*")) {
 				String action = message.substring(message.indexOf('*') + 1).trim(),
 						speech = message.substring(0 , message.indexOf('*')).trim();
-				if (action.equalsIgnoreCase("") || speech.equalsIgnoreCase("")) {
+				if (action.length() == 0 || speech.length() == 0) {
 					ChatUtils.sendError(player, Component.text("Используй: * [речь] * [действие]"));
 					return;
 				}
-				ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action));
+				ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action), false);
 			} else if (message.length() != 0) {
-				ChatUtils.sendRPEventMessage(player, Component.text(message));
+				ChatUtils.sendRPEventMessage(player, Component.text(message), false);
 			}
 		} else {
 			ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatUtils.Chat.LOCAL, Component.text(message));

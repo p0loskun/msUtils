@@ -182,10 +182,15 @@ public class ChatUtils {
 	 * @param speech speech
 	 * @param action action
 	 */
-	public static boolean sendRPEventMessage(@Nonnull Player player, @Nullable Component speech, @Nonnull Component action) {
+	public static boolean sendRPEventMessage(@Nonnull Player player, @Nullable Component speech, @Nonnull Component action, boolean withoutName) {
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		Component fullMessage;
-		if (speech == null) {
+		if (withoutName) {
+			fullMessage =
+					Component.text("* ", Config.Colors.rpMessageMessageColorPrimary)
+							.append(action.color(Config.Colors.rpMessageMessageColorSecondary))
+							.append(Component.text(" *", Config.Colors.rpMessageMessageColorPrimary));
+		} else if (speech == null) {
 			fullMessage =
 					Component.text("* ", Config.Colors.rpMessageMessageColorPrimary)
 							.append(playerInfo.getGrayIDGoldName())
@@ -218,8 +223,8 @@ public class ChatUtils {
 		return true;
 	}
 
-	public static boolean sendRPEventMessage(@Nonnull Player player, @Nonnull Component action) {
-		return sendRPEventMessage(player, null, action);
+	public static boolean sendRPEventMessage(@Nonnull Player player, @Nonnull Component action, boolean withoutName) {
+		return sendRPEventMessage(player, null, action, withoutName);
 	}
 
 	/**

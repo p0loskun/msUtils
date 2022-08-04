@@ -31,7 +31,8 @@ public class TryCommand implements CommandExecutor {
 						.append(new Component[]{
 								Component.text("Успешно", NamedTextColor.GREEN),
 								Component.text("Неуспешно", NamedTextColor.RED)
-						}[new Random().nextInt(2)])
+						}[new Random().nextInt(2)]),
+				false
 		);
 	}
 }

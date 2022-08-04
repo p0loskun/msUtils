@@ -24,6 +24,6 @@ public class MeCommand implements CommandExecutor {
 		if (playerInfo.isMuted()) {
 			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
-		return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)));
+		return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), false);
 	}
 }
