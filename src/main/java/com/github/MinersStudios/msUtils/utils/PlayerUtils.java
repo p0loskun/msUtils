@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Nullable;
@@ -139,6 +140,7 @@ public class PlayerUtils {
 	}
 
 	public static boolean setSitting(@Nonnull Player player, @Nullable Location sitLocation, @Nullable String[] args) {
+		if (player.getVehicle() != null && player.getVehicle().getType() != EntityType.ARMOR_STAND) return true;
 		if (!getSeats().containsKey(player) && sitLocation != null) {
 			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {
 				armorStand.setGravity(false);
@@ -155,7 +157,10 @@ public class PlayerUtils {
 			ArmorStand armorStand = getSeats().get(player);
 			getSeats().remove(player);
 			player.eject();
-			player.teleport(armorStand.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+			Location getUpLocation = armorStand.getLocation().add(0.0d, 2.0d, 0.0d);
+			getUpLocation.setYaw(player.getLocation().getYaw());
+			getUpLocation.setPitch(player.getLocation().getPitch());
+			player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 			armorStand.remove();
 			ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getUnSitMessage()), false);
 		}
