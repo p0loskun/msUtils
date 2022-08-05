@@ -24,6 +24,6 @@ public class ItCommand implements CommandExecutor {
 		if (playerInfo.isMuted()) {
 			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
-		return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), true);
+		return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), ChatUtils.RolePlayActionType.IT);
 	}
 }

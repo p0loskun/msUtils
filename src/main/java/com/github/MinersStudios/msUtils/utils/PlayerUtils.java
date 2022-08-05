@@ -151,8 +151,8 @@ public class PlayerUtils {
 				getSeats().put(player, armorStand);
 			});
 			return args != null
-					? ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("приседая"), false)
-					: ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), false);
+					? ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO)
+					: ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
 		} else if (sitLocation == null && getSeats().containsKey(player)) {
 			ArmorStand armorStand = getSeats().get(player);
 			getSeats().remove(player);
@@ -162,7 +162,7 @@ public class PlayerUtils {
 			getUpLocation.setPitch(player.getLocation().getPitch());
 			player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 			armorStand.remove();
-			ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getUnSitMessage()), false);
+			ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getUnSitMessage()), ChatUtils.RolePlayActionType.ME);
 		}
 		return true;
 	}

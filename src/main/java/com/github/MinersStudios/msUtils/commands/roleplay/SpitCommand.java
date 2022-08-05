@@ -35,8 +35,8 @@ public class SpitCommand implements CommandExecutor {
 		).setVelocity(player.getEyeLocation().getDirection().multiply(1));
 		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f);
 		if (args.length > 0) {
-			return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("плюнув"), false);
+			return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("плюнув"), ChatUtils.RolePlayActionType.TODO);
 		}
-		return ChatUtils.sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getSpitMessage()), false);
+		return ChatUtils.sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getSpitMessage()), ChatUtils.RolePlayActionType.ME);
 	}
 }

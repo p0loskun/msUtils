@@ -170,9 +170,9 @@ public class ChatUtils {
 							.append(message.color(Config.Colors.chatColorSecondary))
 			);
 			DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_local_channel_id), privateMessage);
-			Bukkit.getLogger().info(privateMessage);
+			return sendInfo(null, Component.text(privateMessage));
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -181,23 +181,23 @@ public class ChatUtils {
 	 * @param player  player
 	 * @param speech speech
 	 * @param action action
+	 * @param rolePlayActionType rp action type
 	 */
-	public static boolean sendRPEventMessage(@Nonnull Player player, @Nullable Component speech, @Nonnull Component action, boolean withoutName) {
+	public static boolean sendRPEventMessage(@Nonnull Player player, @Nullable Component speech, @Nonnull Component action, @Nonnull RolePlayActionType rolePlayActionType) {
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		Component fullMessage;
-		if (withoutName) {
+		if (rolePlayActionType == RolePlayActionType.DO) {
+			fullMessage =
+					Component.text("* ", Config.Colors.rpMessageMessageColorPrimary)
+							.append(action.color(Config.Colors.rpMessageMessageColorSecondary))
+							.append(Component.text(" * | ", Config.Colors.rpMessageMessageColorPrimary))
+							.append(playerInfo.getGrayIDGoldName());
+		} else if (rolePlayActionType == RolePlayActionType.IT) {
 			fullMessage =
 					Component.text("* ", Config.Colors.rpMessageMessageColorPrimary)
 							.append(action.color(Config.Colors.rpMessageMessageColorSecondary))
 							.append(Component.text(" *", Config.Colors.rpMessageMessageColorPrimary));
-		} else if (speech == null) {
-			fullMessage =
-					Component.text("* ", Config.Colors.rpMessageMessageColorPrimary)
-							.append(playerInfo.getGrayIDGoldName())
-							.append(Component.text(" ")
-							.append(action.color(Config.Colors.rpMessageMessageColorSecondary)))
-							.append(Component.text(" *", Config.Colors.rpMessageMessageColorPrimary));
-		} else {
+		} else if (rolePlayActionType == RolePlayActionType.TODO && speech != null) {
 			fullMessage =
 					Component.text("* ")
 							.color(Config.Colors.rpMessageMessageColorPrimary)
@@ -212,6 +212,13 @@ public class ChatUtils {
 							.append(action
 							.color(Config.Colors.rpMessageMessageColorSecondary))
 							.append(Component.text(" *", Config.Colors.rpMessageMessageColorPrimary));
+		} else {
+			fullMessage =
+					Component.text("* ", Config.Colors.rpMessageMessageColorPrimary)
+							.append(playerInfo.getGrayIDGoldName())
+							.append(Component.text(" ")
+							.append(action.color(Config.Colors.rpMessageMessageColorSecondary)))
+							.append(Component.text(" *", Config.Colors.rpMessageMessageColorPrimary));
 		}
 		player.getWorld().getPlayers().stream().filter(
 				(p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(Main.getCachedConfig().local_chat_radius, 2.0D)
@@ -223,8 +230,8 @@ public class ChatUtils {
 		return true;
 	}
 
-	public static boolean sendRPEventMessage(@Nonnull Player player, @Nonnull Component action, boolean withoutName) {
-		return sendRPEventMessage(player, null, action, withoutName);
+	public static boolean sendRPEventMessage(@Nonnull Player player, @Nonnull Component action, @Nonnull RolePlayActionType rolePlayActionType) {
+		return sendRPEventMessage(player, null, action, rolePlayActionType);
 	}
 
 	/**
@@ -379,4 +386,6 @@ public class ChatUtils {
 	}
 
 	public enum Chat {GLOBAL, LOCAL}
+
+	public enum RolePlayActionType {DO, IT, ME, TODO}
 }

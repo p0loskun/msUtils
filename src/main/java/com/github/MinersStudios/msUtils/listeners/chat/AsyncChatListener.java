@@ -41,8 +41,13 @@ public class AsyncChatListener implements Listener {
 			message = message.substring(1).trim();
 			if (message.startsWith("*")) {
 				message = message.substring(1).trim();
-				if (message.length() != 0) {
-					ChatUtils.sendRPEventMessage(player, Component.text(message), true);
+				if (message.startsWith("*")) {
+					message = message.substring(1).trim();
+					if (message.length() != 0) {
+						ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.IT);
+					}
+				} else if (message.length() != 0) {
+					ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.DO);
 				}
 			} else if (message.contains("*")) {
 				String action = message.substring(message.indexOf('*') + 1).trim(),
@@ -51,9 +56,9 @@ public class AsyncChatListener implements Listener {
 					ChatUtils.sendError(player, Component.text("Используй: * [речь] * [действие]"));
 					return;
 				}
-				ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action), false);
+				ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action), ChatUtils.RolePlayActionType.TODO);
 			} else if (message.length() != 0) {
-				ChatUtils.sendRPEventMessage(player, Component.text(message), false);
+				ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.ME);
 			}
 		} else {
 			ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatUtils.Chat.LOCAL, Component.text(message));

@@ -62,5 +62,7 @@ public class RegCommands {
 		Objects.requireNonNull(plugin.getCommand("todo")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("it")).setExecutor(new ItCommand());
 		Objects.requireNonNull(plugin.getCommand("it")).setTabCompleter(new Empty());
+		Objects.requireNonNull(plugin.getCommand("do")).setExecutor(new DoCommand());
+		Objects.requireNonNull(plugin.getCommand("do")).setTabCompleter(new Empty());
 	}
 }
