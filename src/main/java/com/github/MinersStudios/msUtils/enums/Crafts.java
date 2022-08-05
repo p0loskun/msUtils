@@ -1,5 +1,7 @@
 package com.github.MinersStudios.msUtils.enums;
 
+import com.github.MinersStudios.msBlock.crafts.dumbass.HacpalBlock;
+import com.github.MinersStudios.msBlock.crafts.dumbass.SvinsterBlock;
 import com.github.MinersStudios.msDecor.crafts.home.*;
 import com.github.MinersStudios.msDecor.crafts.home.cameras.OldCamera;
 import com.github.MinersStudios.msDecor.crafts.home.chairs.*;
@@ -196,6 +198,9 @@ public enum Crafts {
     CARVED_SPRUCE_PLANKS(CarvedPlanks.craftCarvedSprucePlanks()),
     CARVED_WARPED_PLANKS(CarvedPlanks.craftCarvedWarpedPlanks()),
     CARVED_MANGROVE_PLANKS(CarvedPlanks.craftCarvedMangrovePlanks()),
+
+    HACPAL_BLOCK(HacpalBlock.craftHacpalBlock()),
+    SVINSTER_BLOCK(SvinsterBlock.craftSvinsterBlock()),
     //</editor-fold>
     ;
 

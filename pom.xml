@@ -125,7 +125,7 @@
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msBlock</artifactId>
-			<version>release-dfb6696ad0-1</version>
+			<version>release-9eb1973d7b-1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
