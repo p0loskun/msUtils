@@ -1,7 +1,6 @@
-package com.github.MinersStudios.msUtils.enums;
+package com.github.minersstudios.msUtils.enums;
 
-import com.github.MinersStudios.msBlock.crafts.dumbass.HacpalBlock;
-import com.github.MinersStudios.msBlock.crafts.dumbass.SvinsterBlock;
+import com.github.MinersStudios.msBlock.crafts.dumbass.*;
 import com.github.MinersStudios.msDecor.crafts.home.*;
 import com.github.MinersStudios.msDecor.crafts.home.cameras.OldCamera;
 import com.github.MinersStudios.msDecor.crafts.home.chairs.*;
@@ -14,9 +13,7 @@ import com.github.MinersStudios.msDecor.crafts.home.plushes.BrownBearPlush;
 import com.github.MinersStudios.msDecor.crafts.home.plushes.RacoonPlush;
 import com.github.MinersStudios.msDecor.crafts.home.tables.BigTable;
 import com.github.MinersStudios.msDecor.crafts.home.tables.SmallTable;
-import com.github.MinersStudios.msDecor.crafts.street.Brazier;
-import com.github.MinersStudios.msDecor.crafts.street.FireHydrant;
-import com.github.MinersStudios.msDecor.crafts.street.Wheelbarrow;
+import com.github.MinersStudios.msDecor.crafts.street.*;
 import com.github.MinersStudios.msDecor.crafts.street.trashcans.IronTrashcan;
 import com.github.MinersStudios.msBlock.crafts.planks.*;
 import net.kyori.adventure.text.Component;

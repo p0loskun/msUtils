@@ -1,11 +1,11 @@
-package com.github.MinersStudios.msUtils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.MinersStudios.msUtils.enums.ResourcePackType;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
-import com.github.MinersStudios.msUtils.classes.RegistrationProcess;
-import com.github.MinersStudios.msUtils.enums.Pronouns;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.classes.RegistrationProcess;
+import com.github.minersstudios.msUtils.enums.Pronouns;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +36,7 @@ public class PlayerJoinListener implements Listener {
 		new BukkitRunnable() {
 			public void run() {
 				if (!player.isOnline()) this.cancel();
-				if (Main.getAuthmeApi().isAuthenticated(player)) {
+				if (Main.getAuthMeApi().isAuthenticated(player)) {
 					if (!playerInfo.hasPlayerDataFile() || (playerInfo.hasPlayerDataFile() && playerInfo.hasNoName())) {
 						this.cancel();
 						new RegistrationProcess().registerPlayer(playerInfo);

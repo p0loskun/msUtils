@@ -1,6 +1,6 @@
-package com.github.MinersStudios.msUtils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import com.github.MinersStudios.msUtils.Main;
+import com.github.minersstudios.msUtils.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;

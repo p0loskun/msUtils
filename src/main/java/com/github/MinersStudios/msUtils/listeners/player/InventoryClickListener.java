@@ -1,13 +1,13 @@
-package com.github.MinersStudios.msUtils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.MinersStudios.msUtils.enums.Pronouns;
-import com.github.MinersStudios.msUtils.enums.ResourcePackType;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
-import com.github.MinersStudios.msUtils.classes.RegistrationProcess;
-import com.github.MinersStudios.msUtils.enums.Crafts;
-import com.github.MinersStudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.enums.Pronouns;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.classes.RegistrationProcess;
+import com.github.minersstudios.msUtils.enums.Crafts;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -92,12 +92,12 @@ public class InventoryClickListener implements Listener {
 					player.closeInventory();
 					playerInfo.setResourcePackType(ResourcePackType.FULL);
 					playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
-					player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
+					player.setResourcePack(ResourcePackType.FULL.getDropBoxURL(), ResourcePackType.FULL.getHash());
 				} else if (slot == 7 || slot == 8) {
 					player.closeInventory();
 					playerInfo.setResourcePackType(ResourcePackType.LITE);
 					playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
-					player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
+					player.setResourcePack(ResourcePackType.LITE.getDropBoxURL(), ResourcePackType.LITE.getHash());
 				}
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 				event.setCancelled(true);

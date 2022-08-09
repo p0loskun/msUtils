@@ -1,8 +1,8 @@
-package com.github.MinersStudios.msUtils.commands.roleplay;
+package com.github.minersstudios.msUtils.commands.roleplay;
 
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import com.github.MinersStudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +18,7 @@ public class SitCommand implements CommandExecutor {
 		if (!(sender instanceof Player player)) {
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 		}
-		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player)) return true;
+		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthMeApi().isAuthenticated(player)) return true;
 		if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
 			return ChatUtils.sendWarning(player, Component.text("Сидеть в воздухе нельзя!"));
 		}

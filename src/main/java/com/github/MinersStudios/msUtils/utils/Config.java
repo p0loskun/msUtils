@@ -1,6 +1,6 @@
-package com.github.MinersStudios.msUtils.utils;
+package com.github.minersstudios.msUtils.utils;
 
-import com.github.MinersStudios.msUtils.Main;
+import com.github.minersstudios.msUtils.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
@@ -15,22 +15,23 @@ public class Config {
 			full_dropbox_url,
 			full_yandex_disk_url,
 			lite_dropbox_url,
-			lite_yandex_disk_url;
+			lite_yandex_disk_url,
+			full_hash,
+			lite_hash;
 	public final double local_chat_radius;
 
 	public Config() {
 		File dataFile = new File(Main.getInstance().getDataFolder(), "config.yml");
 		YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(dataFile);
-
 		this.local_chat_radius = yamlConfiguration.getDouble("chat.local.radius");
-
 		this.discord_global_channel_id = yamlConfiguration.getString("chat.global.discord-channel-id");
 		this.discord_local_channel_id = yamlConfiguration.getString("chat.local.discord-channel-id");
-
-		this.full_dropbox_url = yamlConfiguration.getString("resource-pack.full-dropbox-url", "https://dropbox.com/");
-		this.full_yandex_disk_url = yamlConfiguration.getString("resource-pack.full-yandex-disk-url", "https://disk.yandex.ru/");
-		this.lite_dropbox_url = yamlConfiguration.getString("resource-pack.lite-dropbox-url", "https://dropbox.com/");
-		this.lite_yandex_disk_url = yamlConfiguration.getString("resource-pack.lite-yandex-disk-url", "https://disk.yandex.ru/");
+		this.full_hash = yamlConfiguration.getString("resource-pack.full.hash");
+		this.full_dropbox_url = yamlConfiguration.getString("resource-pack.full.dropbox-url");
+		this.full_yandex_disk_url = yamlConfiguration.getString("resource-pack.full.yandex-disk-url");
+		this.lite_hash = yamlConfiguration.getString("resource-pack.lite.hash");
+		this.lite_dropbox_url = yamlConfiguration.getString("resource-pack.lite.dropbox-url");
+		this.lite_yandex_disk_url = yamlConfiguration.getString("resource-pack.lite.yandex-disk-url");
 	}
 
 	@SuppressWarnings("unused")

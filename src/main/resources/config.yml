@@ -1,11 +1,15 @@
 chat:
   local:
     radius: 25.0
-    discord-channel-id: 928583150857244684
+    discord-channel-id: 000000000000000000
   global:
-    discord-channel-id: 928583054061097030
+    discord-channel-id: 000000000000000000
 resource-pack:
-  full-dropbox-url: https://www.dropbox.com/s/xkorbdcbmj4gnu0/msTextures-v0.1.0.zip?dl=1
-  full-yandex-disk: https://downloader.disk.yandex.ru/disk/54b9413d6ef71d549d181917376ac31fe482b95959bdda65a02aa57b70bcfb79/62da8019/388VCwq_jeSosYu-NQINwUQllSDAZTX0Bg4ERMNWhutYsEqD6RDFvXlX7i4neKztLfJaHar87ShxxEOLBMddjg%3D%3D?uid=0&filename=msTextures-v0.1.0.zip&disposition=attachment&hash=R5aX12hMDgZnmV7v8d9DwXXKU0aT/G5B693CidNgfD3XBz9Dcyoi/Kst/DNNrX9rq/J6bpmRyOJonT3VoXnDag%3D%3D&limit=0&content_type=application%2Fzip&owner_uid=1661203264&fsize=993608&hid=5dcab0bf620fc7e7b8951683001a1651&media_type=compressed&tknv=v2
-  lite-dropbox-url: https://www.dropbox.com/s/xkorbdcbmj4gnu0/msTextures-v0.1.0.zip?dl=1
-  lite-yandex-disk-url: https://downloader.disk.yandex.ru/disk/54b9413d6ef71d549d181917376ac31fe482b95959bdda65a02aa57b70bcfb79/62da8019/388VCwq_jeSosYu-NQINwUQllSDAZTX0Bg4ERMNWhutYsEqD6RDFvXlX7i4neKztLfJaHar87ShxxEOLBMddjg%3D%3D?uid=0&filename=msTextures-v0.1.0.zip&disposition=attachment&hash=R5aX12hMDgZnmV7v8d9DwXXKU0aT/G5B693CidNgfD3XBz9Dcyoi/Kst/DNNrX9rq/J6bpmRyOJonT3VoXnDag%3D%3D&limit=0&content_type=application%2Fzip&owner_uid=1661203264&fsize=993608&hid=5dcab0bf620fc7e7b8951683001a1651&media_type=compressed&tknv=v2
+  full:
+    hash:
+    dropbox-url:
+    yandex-disk:
+  lite:
+    hash:
+    dropbox-url:
+    yandex-disk-url:

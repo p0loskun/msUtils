@@ -1,13 +1,13 @@
-package com.github.MinersStudios.msUtils.listeners;
+package com.github.minersstudios.msUtils.listeners;
 
-import com.github.MinersStudios.msUtils.listeners.block.PistonListener;
-import com.github.MinersStudios.msUtils.listeners.chat.AsyncChatListener;
-import com.github.MinersStudios.msUtils.listeners.chat.DiscordSRVListener;
-import com.github.MinersStudios.msUtils.listeners.entity.EntityDamageByEntityListener;
-import com.github.MinersStudios.msUtils.listeners.entity.EntityDamageListener;
-import com.github.MinersStudios.msUtils.listeners.entity.HangingBreakByEntityListener;
-import com.github.MinersStudios.msUtils.listeners.player.*;
-import com.github.MinersStudios.msUtils.Main;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.listeners.block.PistonListener;
+import com.github.minersstudios.msUtils.listeners.chat.AsyncChatListener;
+import com.github.minersstudios.msUtils.listeners.chat.DiscordSRVListener;
+import com.github.minersstudios.msUtils.listeners.entity.EntityDamageByEntityListener;
+import com.github.minersstudios.msUtils.listeners.entity.EntityDamageListener;
+import com.github.minersstudios.msUtils.listeners.entity.HangingBreakByEntityListener;
+import com.github.minersstudios.msUtils.listeners.player.*;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;

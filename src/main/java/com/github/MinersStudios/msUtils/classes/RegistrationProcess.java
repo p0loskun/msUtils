@@ -1,9 +1,9 @@
-package com.github.MinersStudios.msUtils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.enums.Pronouns;
-import com.github.MinersStudios.msUtils.enums.ResourcePackType;
-import com.github.MinersStudios.msUtils.utils.Config;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.enums.Pronouns;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;

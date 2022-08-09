@@ -1,12 +1,11 @@
-package com.github.MinersStudios.msUtils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
@@ -14,7 +13,7 @@ import javax.annotation.Nonnull;
 
 public class AsyncPlayerPreLoginListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler
 	public void onAsyncPlayerPreLogin(@Nonnull AsyncPlayerPreLoginEvent event) {
 		String hostName = event.getAddress().getHostName(),
 				nickname = event.getName();

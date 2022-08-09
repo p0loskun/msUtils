@@ -1,8 +1,8 @@
-package com.github.MinersStudios.msUtils.listeners.chat;
+package com.github.minersstudios.msUtils.listeners.chat;
 
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.utils.Config;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.utils.Config;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.dependencies.google.common.base.Function;

@@ -1,15 +1,15 @@
-package com.github.MinersStudios.msUtils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import com.github.MinersStudios.msUtils.utils.PlayerUtils;
-import com.github.MinersStudios.msUtils.Main;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.Main;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class RotateSeatTask extends BukkitRunnable {
 	private RotateSeatTask.AlignArmorStand alignArmorStand;

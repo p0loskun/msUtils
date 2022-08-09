@@ -1,4 +1,4 @@
-package com.github.MinersStudios.msUtils.listeners.entity;
+package com.github.minersstudios.msUtils.listeners.entity;
 
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;

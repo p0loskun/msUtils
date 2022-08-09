@@ -1,9 +1,8 @@
-package com.github.MinersStudios.msUtils.utils;
+package com.github.minersstudios.msUtils.utils;
 
 import com.google.common.base.Charsets;
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
-import lombok.Getter;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -30,7 +29,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 public class PlayerUtils {
-	@Getter private static final Map<Player, ArmorStand> seats = new HashMap<>();
+	private static final Map<Player, ArmorStand> seats = new HashMap<>();
 
 	/**
 	 * Gets UUID from player nickname
@@ -141,21 +140,21 @@ public class PlayerUtils {
 
 	public static boolean setSitting(@Nonnull Player player, @Nullable Location sitLocation, @Nullable String[] args) {
 		if (player.getVehicle() != null && player.getVehicle().getType() != EntityType.ARMOR_STAND) return true;
-		if (!getSeats().containsKey(player) && sitLocation != null) {
+		if (!seats.containsKey(player) && sitLocation != null) {
 			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {
 				armorStand.setGravity(false);
 				armorStand.setVisible(false);
 				armorStand.setCollidable(false);
 				armorStand.addPassenger(player);
 				armorStand.addScoreboardTag("customDecor");
-				getSeats().put(player, armorStand);
+				seats.put(player, armorStand);
 			});
 			return args != null
 					? ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO)
 					: ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
-		} else if (sitLocation == null && getSeats().containsKey(player)) {
-			ArmorStand armorStand = getSeats().get(player);
-			getSeats().remove(player);
+		} else if (sitLocation == null && seats.containsKey(player)) {
+			ArmorStand armorStand = seats.get(player);
+			seats.remove(player);
 			player.eject();
 			Location getUpLocation = armorStand.getLocation().add(0.0d, 2.0d, 0.0d);
 			getUpLocation.setYaw(player.getLocation().getYaw());
@@ -184,5 +183,9 @@ public class PlayerUtils {
 			exception.printStackTrace();
 			return ZoneId.systemDefault().toString();
 		}
+	}
+
+	public static Map<Player, ArmorStand> getSeats() {
+		return seats;
 	}
 }

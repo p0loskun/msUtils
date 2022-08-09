@@ -1,6 +1,5 @@
-package com.github.MinersStudios.msUtils.enums;
+package com.github.minersstudios.msUtils.enums;
 
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -54,7 +53,6 @@ public enum Pronouns {
 			"сказали"
 	);
 
-	@Getter
 	private final String
 			joinMessage,
 			quitMessage,
@@ -138,5 +136,50 @@ public enum Pronouns {
 		inventory.setItem(7, they);
 		inventory.setItem(8, they);
 		return inventory;
+	}
+
+
+	public String getJoinMessage() {
+		return this.joinMessage;
+	}
+
+	public String getQuitMessage() {
+		return this.quitMessage;
+	}
+
+	public String getSpitMessage() {
+		return this.spitMessage;
+	}
+
+	public String getFartMessage() {
+		return this.fartMessage;
+	}
+
+	public String getPronouns() {
+		return this.pronouns;
+	}
+
+	public String getTraveler() {
+		return this.traveler;
+	}
+
+	public String getSitMessage() {
+		return this.sitMessage;
+	}
+
+	public String getUnSitMessage() {
+		return this.unSitMessage;
+	}
+
+	public String getDeathMessage() {
+		return this.deathMessage;
+	}
+
+	public String getKillMessage() {
+		return this.killMessage;
+	}
+
+	public String getSaidMessage() {
+		return this.saidMessage;
 	}
 }

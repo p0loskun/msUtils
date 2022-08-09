@@ -1,9 +1,9 @@
-package com.github.MinersStudios.msUtils.listeners.chat;
+package com.github.minersstudios.msUtils.listeners.chat;
 
-import com.github.MinersStudios.msUtils.classes.ChatBuffer;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.classes.ChatBuffer;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ public class AsyncChatListener implements Listener {
 	public void onAsyncPlayerChat(@Nonnull AsyncChatEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
-		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthmeApi().isAuthenticated(player)) return;
+		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthMeApi().isAuthenticated(player)) return;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
 		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0) {

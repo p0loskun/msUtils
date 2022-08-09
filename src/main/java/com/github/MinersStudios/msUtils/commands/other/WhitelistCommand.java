@@ -1,9 +1,9 @@
-package com.github.MinersStudios.msUtils.commands.other;
+package com.github.minersstudios.msUtils.commands.other;
 
-import com.github.MinersStudios.msUtils.classes.PlayerID;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import com.github.MinersStudios.msUtils.utils.PlayerUtils;
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.classes.PlayerID;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

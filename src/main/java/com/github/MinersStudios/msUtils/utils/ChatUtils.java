@@ -1,12 +1,14 @@
-package com.github.MinersStudios.msUtils.utils;
+package com.github.minersstudios.msUtils.utils;
 
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -103,7 +105,9 @@ public class ChatUtils {
 					Component.text(" ")
 							.append(playerInfo.getDefaultName()
 							.append(Component.text(" : "))
-							.color(Config.Colors.chatColorPrimary))
+							.color(Config.Colors.chatColorPrimary)
+							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку")))
+							.clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
 							.append(message)
 							.color(Config.Colors.chatColorSecondary);
 			String stringLocalMessage = legacyComponentSerialize(localMessage);
@@ -121,7 +125,9 @@ public class ChatUtils {
 						.append(Component.text("[WM] ")
 						.append(playerInfo.getDefaultName()
 						.append(Component.text(" : ")))
-						.color(Config.Colors.chatColorPrimary))
+						.color(Config.Colors.chatColorPrimary)
+						.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку")))
+						.clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
 						.append(message)
 						.color(Config.Colors.chatColorSecondary);
 		String stringGlobalMessage = legacyComponentSerialize(globalMessage);
@@ -159,14 +165,18 @@ public class ChatUtils {
 							.append(Component.text()
 							.append(Component.text("Вы -> ")
 							.append(receiver.getDefaultName()
-							.append(Component.text(" : "))))
+							.append(Component.text(" : ")))
+							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку")))
+							.clickEvent(ClickEvent.suggestCommand("/pm " + receiver.getID() + " ")))
 							.color(Config.Colors.chatColorPrimary))
 							.append(message.color(Config.Colors.chatColorSecondary))
 			);
 			receiver.getOnlinePlayer().sendMessage(
 					Config.Symbols.speech
 							.append(sender.getDefaultName().append(Component.text(" -> Вам : "))
-							.color(Config.Colors.chatColorPrimary))
+							.color(Config.Colors.chatColorPrimary)
+							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку")))
+							.clickEvent(ClickEvent.suggestCommand("/pm " + sender.getID() + " ")))
 							.append(message.color(Config.Colors.chatColorSecondary))
 			);
 			DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getCachedConfig().discord_local_channel_id), privateMessage);

@@ -1,6 +1,6 @@
-package com.github.MinersStudios.msUtils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.MinersStudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;

@@ -14,87 +14,105 @@ softdepend:
   - msBlock
 
 commands:
+  msutils:
+    usage: " ꀑ §cИспользуй: /<command> [параметры]"
+    permission: msUtils.msutils
+    description: Прочья хуйня
   me:
-    usage: ' ꀑ §cИспользуй: /<command> [действие]'
+    usage: " ꀑ §cИспользуй: /<command> [действие]"
     description: Описывает, что делает ваш персонаж
   todo:
-    usage: ' ꀑ §cИспользуй: /<command> [речь] * [действие]'
+    usage: " ꀑ §cИспользуй: /<command> [речь] * [действие]"
     description: Описывает действие и речь в чате
   try:
-    usage: ' ꀑ §cИспользуй: /<command> [действие]'
+    usage: " ꀑ §cИспользуй: /<command> [действие]"
     description: Рандомно определяет исход того, что делает ваш персонаж
   do:
-    usage: ' ꀑ §cИспользуй: /<command> [действие]'
+    usage: " ꀑ §cИспользуй: /<command> [действие]"
     description: Описывает состояние вашего персонажа и объектов вокруг вас
   it:
-    usage: ' ꀑ §cИспользуй: /<command> [действие]'
+    usage: " ꀑ §cИспользуй: /<command> [действие]"
     description: Описывает действие, от третьего лица
   spit:
-    usage: ' ꀑ §cИспользуй: /<command> [речь]'
+    usage: " ꀑ §cИспользуй: /<command> [речь]"
     description: Покажи свою дерзость и плюнь кому то в ебло
   fart:
-    usage: ' ꀑ §cИспользуй: /<command> [речь]'
+    usage: " ꀑ §cИспользуй: /<command> [речь]"
     description: Пердани вкусно на публику
   sit:
-    usage: ' ꀑ §cИспользуй: /<command> [речь]'
+    usage: " ꀑ §cИспользуй: /<command> [речь]"
     aliases: [ sit, s ]
     description: Сядь на картаны и порви жопу
   mute:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] [причина]'
+    usage: " ꀑ §cИспользуй: /<command> [ID/Nickname] [время] [причина]"
     permission: msUtils.mute
     description: Покажи кто тут главный и замьють игрока
   privatemessage:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [сообщение]'
+    usage: " ꀑ §cИспользуй: /<command> [ID/Nickname] [сообщение]"
     aliases: [ privatemessage, pm, w, tell, msg ]
     description: Отправь другому игроку приватное сообщение
   unmute:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname]'
+    usage: " ꀑ §cИспользуй: /<command> [ID/Nickname]"
     permission: msUtils.mute
     description: Размьютить игрока
   ban:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [время] [причина]'
+    usage: " ꀑ §cИспользуй: /<command> [ID/Nickname] [время] [причина]"
     permission: msUtils.ban
     description: Покажи кто тут главный и забань игрока
   unban:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname]'
+    usage: " ꀑ §cИспользуй: /<command> [ID/Nickname]"
     permission: msUtils.ban
     description: Разбанить игрока
   kick:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [причина]'
+    usage: " ꀑ §cИспользуй: /<command> [ID/Nickname] [причина]"
     permission: msUtils.kick
     description: Кикнуть игрока
   getmaploc:
-    usage: ' ꀑ §cИспользуй: /<command>'
-    permission: msUtils.mapLocation
+    usage: " ꀑ §cИспользуй: /<command>"
+    permission: msUtils.maplocation
     description: Добывает координаты карты, находящейся в руке
   resourcepack:
-    usage: ' ꀑ §cИспользуй: /<command>'
+    usage: " ꀑ §cИспользуй: /<command>"
     aliases: [ resourcepack, rp ]
     description: Открывает меню с ресурспаками
   info:
-    usage: ' ꀑ §cИспользуй: /<command> [ID]'
+    usage: " ꀑ §cИспользуй: /<command> [ID]"
     permission: msUtils.info
     description: Выводит в чат информацию про игрока
   crafts:
-    usage: ' ꀑ §cИспользуй: /<command>'
+    usage: " ꀑ §cИспользуй: /<command>"
     aliases: [ crafts, recipes ]
     description: Открывает меню с крафтами кастомных предметов/декора/блоков
   whitelist:
-    usage: ' ꀑ §cИспользуй: /<command> [add/remove/reload] [ID/Nickname]'
+    usage: " ꀑ §cИспользуй: /<command> [add/remove/reload] [ID/Nickname]"
     permission: msUtils.whitelist
     description: Удаляет/добавляет игрока в вайтлист, или перезагружает его
   teleporttolastdeathlocation:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname]'
+    usage: " ꀑ §cИспользуй: /<command> [ID/Nickname]"
     aliases: [ teleporttolastdeathlocation, teleporttolastdeathloc, tptolastdeathlocation, tptolastdeathloc, tptolastdeath ]
     permission: msUtils.teleporttolastdeathlocation
     description: Телепортирует игрока на его последнее место смерти
   worldteleport:
-    usage: ' ꀑ §cИспользуй: /<command> [ID/Nickname] [world name] [x] [y] [z]'
+    usage: " ꀑ §cИспользуй: /<command> [ID/Nickname] [world name] [x] [y] [z]"
     aliases: [ worldteleport, worldtp, wtp, teleportworld, tpworld, tpw ]
     permission: msUtils.worldteleport
     description: Телепортирует игрока на координаты в указаном мире, если координаты не указаны, телепортирует на точку спавна данного мира
 
 permissions:
+  msUtils.*:
+    default: op
+    children:
+      msUtils.msutils: true
+      msUtils.info: true
+      msUtils.ban: true
+      msUtils.mute: true
+      msUtils.kick: true
+      msUtils.maplocation: true
+      msUtils.whitelist: true
+      msUtils.teleporttolastdeathlocation: true
+      msUtils.worldteleport: true
+  msUtils.msutils:
+    default: op
   msUtils.info:
     default: op
   msUtils.ban:
@@ -103,7 +121,7 @@ permissions:
     default: op
   msUtils.kick:
     default: op
-  msUtils.mapLocation:
+  msUtils.maplocation:
     default: op
   msUtils.whitelist:
     default: op

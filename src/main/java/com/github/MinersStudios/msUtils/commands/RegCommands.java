@@ -1,15 +1,15 @@
-package com.github.MinersStudios.msUtils.commands;
+package com.github.minersstudios.msUtils.commands;
 
-import com.github.MinersStudios.msUtils.commands.ban.BanCommand;
-import com.github.MinersStudios.msUtils.commands.ban.UnBanCommand;
-import com.github.MinersStudios.msUtils.commands.mute.MuteCommand;
-import com.github.MinersStudios.msUtils.commands.mute.UnMuteCommand;
-import com.github.MinersStudios.msUtils.commands.other.*;
-import com.github.MinersStudios.msUtils.commands.roleplay.*;
-import com.github.MinersStudios.msUtils.tabCompleters.*;
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
-import com.github.MinersStudios.msUtils.commands.teleport.WorldTeleportCommand;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.commands.ban.BanCommand;
+import com.github.minersstudios.msUtils.commands.ban.UnBanCommand;
+import com.github.minersstudios.msUtils.commands.mute.MuteCommand;
+import com.github.minersstudios.msUtils.commands.mute.UnMuteCommand;
+import com.github.minersstudios.msUtils.commands.other.*;
+import com.github.minersstudios.msUtils.commands.roleplay.*;
+import com.github.minersstudios.msUtils.tabCompleters.*;
+import com.github.minersstudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
+import com.github.minersstudios.msUtils.commands.teleport.WorldTeleportCommand;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -35,6 +35,8 @@ public class RegCommands {
 		Objects.requireNonNull(plugin.getCommand("worldteleport")).setExecutor(new WorldTeleportCommand());
 		Objects.requireNonNull(plugin.getCommand("worldteleport")).setTabCompleter(new WorldTeleport());
 
+		Objects.requireNonNull(plugin.getCommand("msutils")).setExecutor(new CommandHandler());
+		Objects.requireNonNull(plugin.getCommand("msutils")).setTabCompleter(new TabCommandHandler());
 		Objects.requireNonNull(plugin.getCommand("getmaploc")).setExecutor(new GetMapLocationCommand());
 		Objects.requireNonNull(plugin.getCommand("getmaploc")).setTabCompleter(new Empty());
 		Objects.requireNonNull(plugin.getCommand("crafts")).setExecutor(new CraftsCommand());

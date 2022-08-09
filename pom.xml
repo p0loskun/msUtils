@@ -4,9 +4,9 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.github.MinersStudios</groupId>
+	<groupId>com.github.minersstudios</groupId>
 	<artifactId>msUtils</artifactId>
-	<version>0.1.0</version>
+	<version>0.5.0</version>
 	<packaging>jar</packaging>
 
 	<name>msUtils</name>
@@ -31,7 +31,7 @@
 
 	<properties>
 		<authors>Poloskun_, PackmanDude</authors>
-		<mainClass>com.github.MinersStudios.msUtils.Main</mainClass>
+		<mainClass>com.github.minersstudios.msUtils.Main</mainClass>
 		<apiVersion>1.19</apiVersion>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -90,12 +90,6 @@
 			<groupId>io.papermc.paper</groupId>
 			<artifactId>paper-api</artifactId>
 			<version>1.19.1-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.24</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

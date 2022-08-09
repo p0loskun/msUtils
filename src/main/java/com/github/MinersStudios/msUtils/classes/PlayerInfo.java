@@ -1,12 +1,11 @@
-package com.github.MinersStudios.msUtils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import com.github.MinersStudios.msUtils.enums.Pronouns;
-import com.github.MinersStudios.msUtils.enums.ResourcePackType;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import com.github.MinersStudios.msUtils.utils.Config;
-import com.github.MinersStudios.msUtils.utils.PlayerUtils;
-import com.github.MinersStudios.msUtils.Main;
-import lombok.Getter;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.enums.Pronouns;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.Config;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
@@ -28,10 +27,10 @@ import java.util.UUID;
 
 public class PlayerInfo {
 	private final File dataFile;
-	@Getter private final YamlConfiguration yamlConfiguration;
+	private final YamlConfiguration yamlConfiguration;
 
 	private Player onlinePlayer;
-	@Getter private final UUID uuid;
+	private final UUID uuid;
 	private String nickname, firstname, lastname, patronymic;
 
 	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd HH:mm z");
@@ -45,6 +44,14 @@ public class PlayerInfo {
 
 	public PlayerInfo(@Nonnull UUID uuid) {
 		this(uuid, null);
+	}
+
+	public YamlConfiguration getYamlConfiguration() {
+		return yamlConfiguration;
+	}
+
+	public UUID getUuid() {
+		return uuid;
 	}
 
 	@Nonnull

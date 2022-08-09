@@ -1,6 +1,6 @@
-package com.github.MinersStudios.msUtils.commands.other;
+package com.github.minersstudios.msUtils.commands.other;
 
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

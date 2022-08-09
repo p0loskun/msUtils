@@ -1,9 +1,8 @@
-package com.github.MinersStudios.msUtils.enums;
+package com.github.minersstudios.msUtils.enums;
 
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import lombok.Getter;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -23,23 +22,27 @@ import java.util.ArrayList;
 public enum ResourcePackType {
 	FULL(
 			Main.getCachedConfig().full_dropbox_url,
-			Main.getCachedConfig().full_yandex_disk_url
+			Main.getCachedConfig().full_yandex_disk_url,
+			Main.getCachedConfig().full_hash
 	),
 	LITE(
 			Main.getCachedConfig().lite_dropbox_url,
-			Main.getCachedConfig().lite_yandex_disk_url
+			Main.getCachedConfig().lite_yandex_disk_url,
+			Main.getCachedConfig().lite_hash
 	),
 	NONE(
+			null,
 			null,
 			null
 	);
 
-	@Getter private final String dropBoxURL, yandexDiskURL;
+	private final String dropBoxURL, yandexDiskURL, hash;
 	public static final String NAME = ChatColor.DARK_GRAY + "Выберите нужный текстурпак";
 
-	ResourcePackType(String dropBoxURL, String yandexDiskURL) {
+	ResourcePackType(String dropBoxURL, String yandexDiskURL, String hash) {
 		this.dropBoxURL = dropBoxURL;
 		this.yandexDiskURL = yandexDiskURL;
+		this.hash = hash;
 	}
 
 	/**
@@ -160,15 +163,27 @@ public enum ResourcePackType {
 		Player player = playerInfo.getOnlinePlayer();
 		if (playerInfo.getResourcePackType() != null) {
 			if (playerInfo.getResourcePackType() == ResourcePackType.FULL) {
-				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL());
+				player.setResourcePack(ResourcePackType.FULL.getDropBoxURL(), ResourcePackType.FULL.getHash());
 			} else if (playerInfo.getResourcePackType() == ResourcePackType.LITE) {
-				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL());
+				player.setResourcePack(ResourcePackType.LITE.getDropBoxURL(), ResourcePackType.LITE.getHash());
 			} else {
 				ChatUtils.sendWarning(player, Component.text("Вы зашли на сервер без ресурспака"));
 			}
 		} else {
 			player.openInventory(ResourcePackType.getInventory());
 		}
+	}
+
+	public String getDropBoxURL() {
+		return dropBoxURL;
+	}
+
+	public String getYandexDiskURL() {
+		return yandexDiskURL;
+	}
+
+	public String getHash() {
+		return hash;
 	}
 
 	public enum DiskType {

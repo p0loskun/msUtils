@@ -1,10 +1,10 @@
-package com.github.MinersStudios.msUtils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.MinersStudios.msUtils.enums.ResourcePackType;
-import com.github.MinersStudios.msUtils.utils.ChatUtils;
-import com.github.MinersStudios.msUtils.Main;
-import com.github.MinersStudios.msUtils.classes.PlayerInfo;
-import com.github.MinersStudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +32,7 @@ public class PlayerResourcePackStatusListener implements Listener {
 				ChatUtils.sendWarning(null, Component.text(player.getName()).append(Component.text(" не установился ресурспак, диск : ")).append(Component.text(playerInfo.getDiskType().name())));
 				if (playerInfo.getDiskType() == ResourcePackType.DiskType.DROPBOX) {
 					playerInfo.setDiskType(ResourcePackType.DiskType.YANDEX_DISK);
-					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL());
+					player.setResourcePack(playerInfo.getResourcePackType().getYandexDiskURL(), playerInfo.getResourcePackType().getHash());
 				} else {
 					playerInfo.setDiskType(null);
 					playerInfo.setResourcePackType(ResourcePackType.NONE);

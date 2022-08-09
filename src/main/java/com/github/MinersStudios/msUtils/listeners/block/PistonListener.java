@@ -1,4 +1,4 @@
-package com.github.MinersStudios.msUtils.listeners.block;
+package com.github.minersstudios.msUtils.listeners.block;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
