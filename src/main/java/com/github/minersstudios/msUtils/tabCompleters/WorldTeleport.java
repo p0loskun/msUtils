@@ -20,22 +20,20 @@ public class WorldTeleport implements TabCompleter {
     @Override
     public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
         List<String> completions = new ArrayList<>();
-        switch (args.length) {
-            case 1 -> {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-                    int ID = playerInfo.getID(false, false);
-                    if (ID != -1) {
-                        completions.add(String.valueOf(ID));
-                    }
-                    completions.add(player.getName());
+        if (args.length == 1) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+                int ID = playerInfo.getID(false, false);
+                if (ID != -1) {
+                    completions.add(String.valueOf(ID));
                 }
+                completions.add(player.getName());
             }
-            case 2 -> {
-                for (World world : Bukkit.getWorlds()) {
-                    if (world != Main.getWorldDark()) {
-                        completions.add(world.getName());
-                    }
+        }
+        if (args.length == 2) {
+            for (World world : Bukkit.getWorlds()) {
+                if (world != Main.getWorldDark()) {
+                    completions.add(world.getName());
                 }
             }
         }

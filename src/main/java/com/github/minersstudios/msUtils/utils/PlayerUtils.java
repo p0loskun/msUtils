@@ -169,16 +169,18 @@ public class PlayerUtils {
 	@Nonnull
 	public static String getTimezone(@Nonnull InetSocketAddress ip) {
 		try {
-			BufferedReader stream = new BufferedReader(new InputStreamReader(new URL("http://ip-api.com/json/" + ip.getHostName()).openStream()));
+			InputStreamReader inputStreamReader = new InputStreamReader(new URL("http://ip-api.com/json/" + ip.getHostName()).openStream());
+			BufferedReader stream = new BufferedReader(inputStreamReader);
 			StringBuilder entirePage = new StringBuilder();
 			String inputLine;
 			while ((inputLine = stream.readLine()) != null) {
 				entirePage.append(inputLine);
 			}
 			stream.close();
-			return !entirePage.toString().contains("\"timezone\":\"")
-					? ZoneId.systemDefault().toString()
-					: entirePage.toString().split("\"timezone\":\"")[1].split("\",")[0];
+			inputStreamReader.close();
+			return entirePage.toString().contains("\"timezone\":\"")
+					? entirePage.toString().split("\"timezone\":\"")[1].split("\",")[0]
+					: ZoneId.systemDefault().toString();
 		} catch (IOException exception) {
 			exception.printStackTrace();
 			return ZoneId.systemDefault().toString();

@@ -34,7 +34,7 @@ public class AsyncChatListener implements Listener {
 		String message = ChatUtils.legacyComponentSerialize(event.originalMessage());
 		if (message.startsWith("!")) {
 			message = message.substring(1).trim();
-			if (message.length() != 0) {
+			if (!message.isEmpty()) {
 				ChatUtils.sendMessageToChat(playerInfo, null, ChatUtils.Chat.GLOBAL, Component.text(message));
 			}
 		} else if (message.startsWith("*")) {
@@ -43,10 +43,10 @@ public class AsyncChatListener implements Listener {
 				message = message.substring(1).trim();
 				if (message.startsWith("*")) {
 					message = message.substring(1).trim();
-					if (message.length() != 0) {
+					if (!message.isEmpty()) {
 						ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.IT);
 					}
-				} else if (message.length() != 0) {
+				} else if (!message.isEmpty()) {
 					ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.DO);
 				}
 			} else if (message.contains("*")) {
@@ -57,7 +57,7 @@ public class AsyncChatListener implements Listener {
 					return;
 				}
 				ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action), ChatUtils.RolePlayActionType.TODO);
-			} else if (message.length() != 0) {
+			} else if (!message.isEmpty()) {
 				ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.ME);
 			}
 		} else {

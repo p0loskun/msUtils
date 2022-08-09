@@ -16,7 +16,7 @@ public class KickCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-		if (args.length < 1) return false;
+		if (args.length == 0) return false;
 		String reason = args.length > 1
 				? ChatUtils.extractMessage(args, 1)
 				: "неизвестно";

@@ -106,7 +106,7 @@ public class ChatUtils {
 							.append(playerInfo.getDefaultName()
 							.append(Component.text(" : "))
 							.color(Config.Colors.chatColorPrimary)
-							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку")))
+							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
 							.clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
 							.append(message)
 							.color(Config.Colors.chatColorSecondary);
@@ -126,7 +126,7 @@ public class ChatUtils {
 						.append(playerInfo.getDefaultName()
 						.append(Component.text(" : ")))
 						.color(Config.Colors.chatColorPrimary)
-						.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку")))
+						.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
 						.clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
 						.append(message)
 						.color(Config.Colors.chatColorSecondary);
@@ -166,7 +166,7 @@ public class ChatUtils {
 							.append(Component.text("Вы -> ")
 							.append(receiver.getDefaultName()
 							.append(Component.text(" : ")))
-							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку")))
+							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
 							.clickEvent(ClickEvent.suggestCommand("/pm " + receiver.getID() + " ")))
 							.color(Config.Colors.chatColorPrimary))
 							.append(message.color(Config.Colors.chatColorSecondary))
@@ -175,7 +175,7 @@ public class ChatUtils {
 					Config.Symbols.speech
 							.append(sender.getDefaultName().append(Component.text(" -> Вам : "))
 							.color(Config.Colors.chatColorPrimary)
-							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку")))
+							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
 							.clickEvent(ClickEvent.suggestCommand("/pm " + sender.getID() + " ")))
 							.append(message.color(Config.Colors.chatColorSecondary))
 			);

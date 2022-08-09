@@ -1,7 +1,7 @@
 name: ${name}
 version: ${version}
 description: ${description}
-authors: [${authors}]
+authors: ${authors}
 website: ${url}
 
 main: ${mainClass}

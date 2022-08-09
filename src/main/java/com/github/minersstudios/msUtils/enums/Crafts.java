@@ -270,10 +270,8 @@ public enum Crafts {
         inventory.setItem(42, getNextPageButton()[1]);
         inventory.setItem(43, getNextPageButton()[1]);
         inventory.setItem(44, getNextPageButton()[1]);
-        for (int i = 0; i <= 35 && index < Crafts.values().length; ) {
+        for (int i = 0; i <= 35 && index < Crafts.values().length; index++, i++) {
             inventory.setItem(i, crafts[index].shapedRecipe.getResult());
-            i++;
-            index++;
         }
         return inventory;
     }

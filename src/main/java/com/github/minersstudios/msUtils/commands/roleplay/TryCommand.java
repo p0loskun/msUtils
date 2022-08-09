@@ -21,6 +21,7 @@ public class TryCommand implements CommandExecutor {
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 		}
 		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthMeApi().isAuthenticated(player)) return true;
+		if (args.length == 0) return false;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
 			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));

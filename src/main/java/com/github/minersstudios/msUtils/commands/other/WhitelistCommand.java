@@ -17,7 +17,7 @@ public class WhitelistCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-		if (args.length < 1) return false;
+		if (args.length == 0) return false;
 		if (args[0].equalsIgnoreCase("reload")) {
 			Bukkit.reloadWhitelist();
 			return ChatUtils.sendFine(sender, Component.text("Вайтлист был перезагружён"));

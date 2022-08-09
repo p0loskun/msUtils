@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class RegistrationProcess {
 	private Player player;
@@ -42,10 +43,11 @@ public class RegistrationProcess {
 
 	private void setFirstname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "имя")).response((player, strings) -> {
-			if (!strings[0].matches(regex)) {
+			String firstname = strings[0].trim();
+			if (!firstname.matches(regex)) {
 				return this.sendWarningMessage();
 			}
-			this.playerInfo.setFirstname(strNormalize(strings[0]));
+			this.playerInfo.setFirstname(strNormalize(firstname));
 
 			this.sendDialogueMessage("Интересно...", 25L);
 			this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем", 100L);
@@ -60,10 +62,11 @@ public class RegistrationProcess {
 
 	private void setLastname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите вашу", "фамилию")).response((player, strings) -> {
-			if (!strings[0].matches(regex)) {
+			String lastname = strings[0].trim();
+			if (!lastname.matches(regex)) {
 				return this.sendWarningMessage();
 			}
-			this.playerInfo.setLastName(strNormalize(strings[0]));
+			this.playerInfo.setLastName(strNormalize(lastname));
 			Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setPatronymic, 10L);
 			return true;
 		});
@@ -72,10 +75,11 @@ public class RegistrationProcess {
 
 	private void setPatronymic() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "отчество")).response((player, strings) -> {
-			if (!strings[0].matches(regex)) {
+			String patronymic = strings[0].trim();
+			if (!patronymic.matches(regex)) {
 				return this.sendWarningMessage();
 			}
-			this.playerInfo.setPatronymic(strNormalize(strings[0]));
+			this.playerInfo.setPatronymic(strNormalize(patronymic));
 
 			this.sendDialogueMessage(
 					"Ну вот и отлично, "
@@ -136,6 +140,6 @@ public class RegistrationProcess {
 
 	@Nonnull
 	private static String strNormalize(@Nonnull String string) {
-		return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+		return string.substring(0, 1).toUpperCase(Locale.ROOT) + string.substring(1).toLowerCase(Locale.ROOT);
 	}
 }

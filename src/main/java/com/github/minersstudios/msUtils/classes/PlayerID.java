@@ -23,7 +23,8 @@ public class PlayerID {
 	 * Adds player ID in "plugins/msUtils/ids.yml"
 	 */
 	private int addPlayer(@Nonnull UUID uuid) {
-		int ID = this.createNewID(new ArrayList<>(this.yamlConfiguration.getValues(true).values()), -1);
+		List<Object> IDs = new ArrayList<>(this.yamlConfiguration.getValues(true).values());
+		int ID = this.createNewID(IDs, IDs.size());
 		this.yamlConfiguration.set(uuid.toString(), ID);
 		try {
 			this.yamlConfiguration.save(idFile);
@@ -66,9 +67,6 @@ public class PlayerID {
 	}
 
 	private int createNewID(@Nonnull List<Object> IDs, int ID) {
-		if (ID == -1) {
-			ID = IDs.size();
-		}
 		return IDs.contains(ID) ? createNewID(IDs, ID + 1) : ID;
 	}
 }

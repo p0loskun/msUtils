@@ -14,7 +14,7 @@ public class CommandHandler implements CommandExecutor {
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
 		if (args.length > 0) {
 			String utilsCommand = args[0].toLowerCase(Locale.ROOT);
-			if (utilsCommand.equals("reload")) {
+			if ("reload".equals(utilsCommand)) {
 				return ReloadCommand.runCommand(sender);
 			}
 		}

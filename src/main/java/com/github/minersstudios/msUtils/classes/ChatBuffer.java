@@ -52,7 +52,7 @@ public class ChatBuffer {
 
 	private static void scheduleMessageUpdate(@Nonnull Player player, @Nonnull String UUID, int timer) {
 		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-			if (chatQueue.get(UUID).size() < 1 || !player.isOnline()) {
+			if (chatQueue.get(UUID).isEmpty() || !player.isOnline()) {
 				chatQueue.remove(UUID);
 			} else {
 				scheduleMessageUpdate(player, UUID, Main.getBubbles().receiveMessage(player, Objects.requireNonNull(chatQueue.get(UUID).poll())) + 5);
