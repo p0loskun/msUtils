@@ -51,11 +51,16 @@ public class InventoryClickListener implements Listener {
 			Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 		}
 
-		if (slot == 39 && event.getSlotType() == InventoryType.SlotType.ARMOR) {
-			if (cursorItem != null && currentItem != null && currentItem.getType() == Material.AIR && cursorItem.getType() != Material.AIR) {
-				player.setItemOnCursor(null);
-				Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.getInventory().setHelmet(cursorItem));
-			}
+		if (
+				slot == 39
+				&& event.getSlotType() == InventoryType.SlotType.ARMOR
+				&& cursorItem != null
+				&& currentItem != null
+				&& currentItem.getType() == Material.AIR
+				&& cursorItem.getType() != Material.AIR
+		) {
+			player.setItemOnCursor(null);
+			Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.getInventory().setHelmet(cursorItem));
 		}
 
 		if (currentItem != null && currentItem.getType() != Material.AIR) {

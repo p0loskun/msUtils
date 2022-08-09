@@ -26,11 +26,10 @@ public class DiscordSRVListener {
 		String reply = referencedMessage != null
 				? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), referencedMessage)
 				: "",
-				attachment = !message.getAttachments().isEmpty()
-						? message.getAttachments().size() > 1
+				attachment = message.getAttachments().isEmpty() ? ""
+						: message.getAttachments().size() > 1
 						? "(вложения) "
-						: "(вложение) "
-						: "";
+						: "(вложение) ";
 		Component messageComponent =
 				Config.Symbols.discord
 						.color(NamedTextColor.WHITE)
@@ -53,11 +52,10 @@ public class DiscordSRVListener {
 		Function<String, String> escape = MessageUtil.isLegacy(format)
 				? str -> str
 				: str -> str.replaceAll("([<>])", "\\\\$1");
-		String attachment = !repliedMessage.getAttachments().isEmpty()
-				? repliedMessage.getAttachments().size() > 1
+		String attachment = repliedMessage.getAttachments().isEmpty() ? ""
+				: repliedMessage.getAttachments().size() > 1
 				? "(вложения) "
-				: "(вложение) "
-				: "",
+				: "(вложение) ",
 				message = escape.apply(MessageUtil.strip(repliedMessage.getContentDisplay()));
 		return message.isEmpty() && attachment.isEmpty() ? ""
 				: " (отвечая на \"" + attachment + message + "\")";

@@ -62,7 +62,7 @@ public class AsyncChatListener implements Listener {
 			}
 		} else {
 			ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatUtils.Chat.LOCAL, Component.text(message));
-			ChatBuffer.receiveMessage(player, message);
+			ChatBuffer.receiveMessage(player, message + " ");
 		}
 	}
 }

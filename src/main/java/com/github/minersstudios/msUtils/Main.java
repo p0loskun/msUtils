@@ -56,7 +56,7 @@ public final class Main extends JavaPlugin {
 	public void onDisable() {
 		Bukkit.savePlayers();
 		for (Player player : PlayerUtils.getSeats().keySet()) {
-			PlayerUtils.setSitting(player, null, null);
+			PlayerUtils.setSitting(player, null, (String) null);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			PlayerUtils.kickPlayer(player, "Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
@@ -94,11 +94,9 @@ public final class Main extends JavaPlugin {
 
 	@Nullable
 	public World setOverworld() {
-		try {
-			BufferedReader bufferedReader = new BufferedReader(new FileReader("server.properties"));
+		try (InputStream input = new FileInputStream("server.properties")) {
 			Properties properties = new Properties();
-			properties.load(bufferedReader);
-			bufferedReader.close();
+			properties.load(input);
 			return Bukkit.getWorld(properties.getProperty("level-name"));
 		} catch (IOException exception) {
 			exception.printStackTrace();

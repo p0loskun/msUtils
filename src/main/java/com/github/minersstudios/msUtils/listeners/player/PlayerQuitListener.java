@@ -17,7 +17,7 @@ public class PlayerQuitListener implements Listener {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
-		PlayerUtils.setSitting(player, null, null);
+		PlayerUtils.setSitting(player, null, (String) null);
 		event.quitMessage(null);
 		playerInfo.setLastLeaveLocation();
 		ChatUtils.sendQuitMessage(playerInfo, player);

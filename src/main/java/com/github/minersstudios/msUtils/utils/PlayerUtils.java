@@ -138,7 +138,7 @@ public class PlayerUtils {
 		return true;
 	}
 
-	public static boolean setSitting(@Nonnull Player player, @Nullable Location sitLocation, @Nullable String[] args) {
+	public static boolean setSitting(@Nonnull Player player, @Nullable Location sitLocation, @Nullable String... args) {
 		if (player.getVehicle() != null && player.getVehicle().getType() != EntityType.ARMOR_STAND) return true;
 		if (!seats.containsKey(player) && sitLocation != null) {
 			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {
@@ -168,16 +168,14 @@ public class PlayerUtils {
 
 	@Nonnull
 	public static String getTimezone(@Nonnull InetSocketAddress ip) {
-		try {
-			InputStreamReader inputStreamReader = new InputStreamReader(new URL("http://ip-api.com/json/" + ip.getHostName()).openStream());
-			BufferedReader stream = new BufferedReader(inputStreamReader);
+		try (InputStream input = new URL("http://ip-api.com/json/" + ip.getHostName()).openStream()) {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 			StringBuilder entirePage = new StringBuilder();
 			String inputLine;
-			while ((inputLine = stream.readLine()) != null) {
+			while ((inputLine = reader.readLine()) != null) {
 				entirePage.append(inputLine);
 			}
-			stream.close();
-			inputStreamReader.close();
+			reader.close();
 			return entirePage.toString().contains("\"timezone\":\"")
 					? entirePage.toString().split("\"timezone\":\"")[1].split("\",")[0]
 					: ZoneId.systemDefault().toString();

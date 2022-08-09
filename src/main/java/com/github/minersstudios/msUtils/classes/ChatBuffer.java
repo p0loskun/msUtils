@@ -15,7 +15,6 @@ public class ChatBuffer {
 			queueMessage(player, message + "\n");
 			return;
 		}
-		message += " ";
 		StringBuilder stringBuilder = new StringBuilder();
 		int delimPos, lineCount = 0;
 
