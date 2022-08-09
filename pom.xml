@@ -112,13 +112,13 @@
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msDecor</artifactId>
-			<version>release-8aceab9f9d-1</version>
+			<version>release-45935b2c0e-1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msBlock</artifactId>
-			<version>release-9eb1973d7b-1</version>
+			<version>release-d226034457-1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

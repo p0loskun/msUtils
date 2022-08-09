@@ -181,8 +181,8 @@ public class PlayerUtils {
 					: ZoneId.systemDefault().toString();
 		} catch (IOException exception) {
 			exception.printStackTrace();
-			return ZoneId.systemDefault().toString();
 		}
+		return ZoneId.systemDefault().toString();
 	}
 
 	public static Map<Player, ArmorStand> getSeats() {
