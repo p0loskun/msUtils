@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msDecor</artifactId>
-			<version>release-45935b2c0e-1</version>
+			<version>release-56bd006c18-1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

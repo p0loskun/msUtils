@@ -54,7 +54,6 @@ public final class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		Bukkit.savePlayers();
 		for (Player player : PlayerUtils.getSeats().keySet()) {
 			PlayerUtils.setSitting(player, null, (String) null);
 		}
@@ -75,7 +74,6 @@ public final class Main extends JavaPlugin {
 				.createWorld();
 		if (world == null) {
 			ChatUtils.sendError(null, Component.text("Main#generateWorld() world_dark = null"));
-			Bukkit.savePlayers();
 			Bukkit.shutdown();
 			return null;
 		}

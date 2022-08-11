@@ -1,6 +1,5 @@
 package com.github.minersstudios.msUtils.enums;
 
-import com.github.minersstudios.msBlock.crafts.dumbass.*;
 import com.github.minersstudios.msDecor.crafts.home.*;
 import com.github.minersstudios.msDecor.crafts.home.cameras.OldCamera;
 import com.github.minersstudios.msDecor.crafts.home.chairs.*;
@@ -15,6 +14,7 @@ import com.github.minersstudios.msDecor.crafts.home.tables.BigTable;
 import com.github.minersstudios.msDecor.crafts.home.tables.SmallTable;
 import com.github.minersstudios.msDecor.crafts.street.*;
 import com.github.minersstudios.msDecor.crafts.street.trashcans.IronTrashcan;
+import com.github.minersstudios.msBlock.crafts.dumbass.*;
 import com.github.minersstudios.msBlock.crafts.planks.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
