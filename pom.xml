@@ -31,7 +31,7 @@
 
 	<properties>
 		<authors>[Poloskun_, PackmanDude]</authors>
-		<mainClass>com.github.minersstudios.msUtils.Main</mainClass>
+		<mainClass>com.github.minersstudios.msutils.Main</mainClass>
 		<apiVersion>1.19</apiVersion>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
