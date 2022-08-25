@@ -1,10 +1,10 @@
-package com.github.minersstudios.msutils.commands.other;
+package com.github.minersstudios.msUtils.commands.other;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.classes.PlayerID;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.classes.PlayerID;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -26,7 +26,7 @@ public class PrivateMessageCommand implements CommandExecutor {
 		if (privateMessageSender.isMuted()) {
 			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
-		String message = ChatUtils.extractMessage(1, args);
+		String message = ChatUtils.extractMessage(args, 1);
 		if (args[0].matches("[0-99]+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null) {

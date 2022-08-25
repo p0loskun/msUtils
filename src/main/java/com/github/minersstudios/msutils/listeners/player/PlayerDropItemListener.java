@@ -1,6 +1,6 @@
-package com.github.minersstudios.msutils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msUtils.Main;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

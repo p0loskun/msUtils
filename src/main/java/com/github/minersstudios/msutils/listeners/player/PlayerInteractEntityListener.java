@@ -1,7 +1,7 @@
-package com.github.minersstudios.msutils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.Config;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -29,7 +29,7 @@ public class PlayerInteractEntityListener implements Listener {
 							.append(playerInfo.getGoldenName())
 							.append(Component.text(" "))
 							.append(Component.text(playerInfo.getPatronymic()))
-							.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
+							.color(Config.Colors.joinMessageColorPrimary)
 							.build()
 			);
 			ItemStack helmet = clickedPlayer.getInventory().getHelmet();

@@ -1,9 +1,9 @@
-package com.github.minersstudios.msutils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.enums.Pronouns;
-import com.github.minersstudios.msutils.enums.ResourcePackType;
-import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.enums.Pronouns;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ public class RegistrationProcess {
 	private Player player;
 	private PlayerInfo playerInfo;
 	private Location playerLocation;
-	private static final String REGEX = "[-А-яҐґІіЇїЁё]+";
+	private static final String regex = "[-А-яҐґІіЇїЁё]+";
 
 	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
@@ -44,7 +44,7 @@ public class RegistrationProcess {
 	private void setFirstname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "имя")).response((player, strings) -> {
 			String firstname = strings[0].trim();
-			if (!firstname.matches(REGEX)) {
+			if (!firstname.matches(regex)) {
 				return this.sendWarningMessage();
 			}
 			this.playerInfo.setFirstname(strNormalize(firstname));
@@ -63,7 +63,7 @@ public class RegistrationProcess {
 	private void setLastname() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите вашу", "фамилию")).response((player, strings) -> {
 			String lastname = strings[0].trim();
-			if (!lastname.matches(REGEX)) {
+			if (!lastname.matches(regex)) {
 				return this.sendWarningMessage();
 			}
 			this.playerInfo.setLastName(strNormalize(lastname));
@@ -76,7 +76,7 @@ public class RegistrationProcess {
 	private void setPatronymic() {
 		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "отчество")).response((player, strings) -> {
 			String patronymic = strings[0].trim();
-			if (!patronymic.matches(REGEX)) {
+			if (!patronymic.matches(regex)) {
 				return this.sendWarningMessage();
 			}
 			this.playerInfo.setPatronymic(strNormalize(patronymic));
@@ -130,9 +130,9 @@ public class RegistrationProcess {
 			this.player.sendMessage(
 					Component.text(" ")
 					.append(Component.text(" [0] Незнакомец : ")
-					.color(ConfigCache.Colors.CHAT_COLOR_PRIMARY))
+					.color(Config.Colors.chatColorPrimary))
 					.append(Component.text(message))
-					.color(ConfigCache.Colors.CHAT_COLOR_SECONDARY)
+					.color(Config.Colors.chatColorSecondary)
 			);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);

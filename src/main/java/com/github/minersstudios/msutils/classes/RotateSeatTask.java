@@ -1,7 +1,7 @@
-package com.github.minersstudios.msutils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import com.github.minersstudios.msutils.utils.PlayerUtils;
-import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.Main;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

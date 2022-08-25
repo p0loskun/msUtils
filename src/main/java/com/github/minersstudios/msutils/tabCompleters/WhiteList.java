@@ -1,6 +1,6 @@
-package com.github.minersstudios.msutils.tabCompleters;
+package com.github.minersstudios.msUtils.tabCompleters;
 
-import com.github.minersstudios.msutils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.enums;
+package com.github.minersstudios.msUtils.enums;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -65,7 +65,7 @@ public enum Pronouns {
 			deathMessage,
 			killMessage,
 			saidMessage;
-	public static final String INVENTORY_NAME = ChatColor.DARK_GRAY + "Выберите форму обращения";
+	public static final String NAME = ChatColor.DARK_GRAY + "Выберите форму обращения";
 
 	Pronouns(
 			String joinMessage,
@@ -125,7 +125,7 @@ public enum Pronouns {
 		theyMeta.lore(loreThey);
 		they.setItemMeta(theyMeta);
 
-		Inventory inventory = Bukkit.createInventory(null, 9, Component.text(INVENTORY_NAME));
+		Inventory inventory = Bukkit.createInventory(null, 9, Component.text(NAME));
 		inventory.setItem(0, he);
 		inventory.setItem(1, he);
 		inventory.setItem(2, he);

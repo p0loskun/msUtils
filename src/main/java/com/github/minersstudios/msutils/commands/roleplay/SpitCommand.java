@@ -1,8 +1,8 @@
-package com.github.minersstudios.msutils.commands.roleplay;
+package com.github.minersstudios.msUtils.commands.roleplay;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -35,7 +35,7 @@ public class SpitCommand implements CommandExecutor {
 		).setVelocity(player.getEyeLocation().getDirection().multiply(1));
 		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f);
 		if (args.length > 0) {
-			return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(0, args)), Component.text("плюнув"), ChatUtils.RolePlayActionType.TODO);
+			return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("плюнув"), ChatUtils.RolePlayActionType.TODO);
 		}
 		return ChatUtils.sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getSpitMessage()), ChatUtils.RolePlayActionType.ME);
 	}

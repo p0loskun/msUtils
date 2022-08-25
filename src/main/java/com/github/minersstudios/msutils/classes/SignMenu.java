@@ -1,11 +1,11 @@
-package com.github.minersstudios.msutils.classes;
+package com.github.minersstudios.msUtils.classes;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
-import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msUtils.Main;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

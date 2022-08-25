@@ -1,6 +1,6 @@
-package com.github.minersstudios.msutils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msUtils.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

@@ -1,10 +1,10 @@
-package com.github.minersstudios.msutils.commands.roleplay;
+package com.github.minersstudios.msUtils.commands.roleplay;
 
 import com.github.minersstudios.msDecor.enums.CustomDecorMaterial;
 import com.github.minersstudios.msDecor.objects.CustomDecor;
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -17,10 +17,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 
 import javax.annotation.Nonnull;
-import java.security.SecureRandom;
+import java.util.Random;
 
 public class FartCommand implements CommandExecutor {
-	private final SecureRandom random = new SecureRandom();
 
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
@@ -33,7 +32,7 @@ public class FartCommand implements CommandExecutor {
 			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
 		Location location = player.getLocation();
-		boolean withPoop = random.nextInt(10) == 0 && location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid();
+		boolean withPoop = new Random().nextInt(10) == 0 && location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid();
 		for (Entity nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
 			if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.PLAYER) {
 				withPoop = false;
@@ -56,7 +55,7 @@ public class FartCommand implements CommandExecutor {
 			);
 		}
 		if (args.length > 0) {
-			return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(0, args)), Component.text(withPoop ? "пукнув с подливой" : "пукнув"), ChatUtils.RolePlayActionType.TODO);
+			return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text(withPoop ? "пукнув с подливой" : "пукнув"), ChatUtils.RolePlayActionType.TODO);
 		}
 		return ChatUtils.sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getFartMessage()).append(Component.text(withPoop ? " с подливой" : "")), ChatUtils.RolePlayActionType.ME);
 	}

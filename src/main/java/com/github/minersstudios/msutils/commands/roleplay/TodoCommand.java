@@ -1,8 +1,8 @@
-package com.github.minersstudios.msutils.commands.roleplay;
+package com.github.minersstudios.msUtils.commands.roleplay;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,7 +19,7 @@ public class TodoCommand implements CommandExecutor {
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 		}
 		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthMeApi().isAuthenticated(player)) return true;
-		String message = ChatUtils.extractMessage(0, args);
+		String message = ChatUtils.extractMessage(args, 0);
 		if (args.length < 3 || !message.contains("*")) return false;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {

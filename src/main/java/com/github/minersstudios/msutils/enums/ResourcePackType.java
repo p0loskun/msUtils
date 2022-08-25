@@ -1,8 +1,8 @@
-package com.github.minersstudios.msutils.enums;
+package com.github.minersstudios.msUtils.enums;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -21,14 +21,14 @@ import java.util.ArrayList;
 
 public enum ResourcePackType {
 	FULL(
-			Main.getConfigCache().full_dropbox_url,
-			Main.getConfigCache().full_yandex_disk_url,
-			Main.getConfigCache().full_hash
+			Main.getCachedConfig().full_dropbox_url,
+			Main.getCachedConfig().full_yandex_disk_url,
+			Main.getCachedConfig().full_hash
 	),
 	LITE(
-			Main.getConfigCache().lite_dropbox_url,
-			Main.getConfigCache().lite_yandex_disk_url,
-			Main.getConfigCache().lite_hash
+			Main.getCachedConfig().lite_dropbox_url,
+			Main.getCachedConfig().lite_yandex_disk_url,
+			Main.getCachedConfig().lite_hash
 	),
 	NONE(
 			null,
@@ -37,7 +37,7 @@ public enum ResourcePackType {
 	);
 
 	private final String dropBoxURL, yandexDiskURL, hash;
-	public static final String INVENTORY_NAME = ChatColor.DARK_GRAY + "Выберите нужный текстурпак";
+	public static final String NAME = ChatColor.DARK_GRAY + "Выберите нужный текстурпак";
 
 	ResourcePackType(String dropBoxURL, String yandexDiskURL, String hash) {
 		this.dropBoxURL = dropBoxURL;
@@ -140,7 +140,7 @@ public enum ResourcePackType {
 		fullRPMeta.lore(lore4);
 		fullRP.setItemMeta(fullRPMeta);
 
-		Inventory inventory = Bukkit.createInventory(null, 9, Component.text(INVENTORY_NAME));
+		Inventory inventory = Bukkit.createInventory(null, 9, Component.text(NAME));
 		inventory.setItem(0, noneRP);
 		inventory.setItem(1, noneRP);
 		inventory.setItem(2, fullRP);
@@ -159,7 +159,7 @@ public enum ResourcePackType {
 	 * @param playerInfo player info
 	 */
 	public static void setResourcePack(@Nonnull PlayerInfo playerInfo) {
-		if (playerInfo.getOnlinePlayer() == null) return;
+		if(playerInfo.getOnlinePlayer() == null) return;
 		Player player = playerInfo.getOnlinePlayer();
 		if (playerInfo.getResourcePackType() != null) {
 			if (playerInfo.getResourcePackType() == ResourcePackType.FULL) {

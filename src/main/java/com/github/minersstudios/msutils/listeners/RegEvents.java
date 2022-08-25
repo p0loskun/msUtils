@@ -1,16 +1,15 @@
-package com.github.minersstudios.msutils.listeners;
+package com.github.minersstudios.msUtils.listeners;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.listeners.block.PistonListener;
-import com.github.minersstudios.msutils.listeners.chat.AsyncChatListener;
-import com.github.minersstudios.msutils.listeners.chat.DiscordSRVListener;
-import com.github.minersstudios.msutils.listeners.entity.EntityDamageByEntityListener;
-import com.github.minersstudios.msutils.listeners.entity.EntityDamageListener;
-import com.github.minersstudios.msutils.listeners.entity.HangingBreakByEntityListener;
-import com.github.minersstudios.msutils.listeners.player.*;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.listeners.block.PistonListener;
+import com.github.minersstudios.msUtils.listeners.chat.AsyncChatListener;
+import com.github.minersstudios.msUtils.listeners.chat.DiscordSRVListener;
+import com.github.minersstudios.msUtils.listeners.entity.EntityDamageByEntityListener;
+import com.github.minersstudios.msUtils.listeners.entity.EntityDamageListener;
+import com.github.minersstudios.msUtils.listeners.entity.HangingBreakByEntityListener;
+import com.github.minersstudios.msUtils.listeners.player.*;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 
 import javax.annotation.Nonnull;
@@ -22,10 +21,8 @@ public class RegEvents {
 
         pluginManager.registerEvents(new PistonListener(), plugin);
 
+        DiscordSRV.api.subscribe(new DiscordSRVListener());
         pluginManager.registerEvents(new AsyncChatListener(), plugin);
-        if (Main.isDiscordSRVEnabled) {
-            DiscordSRV.api.subscribe(new DiscordSRVListener());
-        }
 
         pluginManager.registerEvents(new EntityDamageListener(), plugin);
         pluginManager.registerEvents(new EntityDamageByEntityListener(), plugin);

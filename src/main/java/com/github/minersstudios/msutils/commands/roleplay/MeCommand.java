@@ -1,8 +1,8 @@
-package com.github.minersstudios.msutils.commands.roleplay;
+package com.github.minersstudios.msUtils.commands.roleplay;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,6 +24,6 @@ public class MeCommand implements CommandExecutor {
 		if (playerInfo.isMuted()) {
 			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
-		return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(0, args)), ChatUtils.RolePlayActionType.ME);
+		return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), ChatUtils.RolePlayActionType.ME);
 	}
 }

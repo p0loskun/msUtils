@@ -1,8 +1,8 @@
-package com.github.minersstudios.msutils.listeners.chat;
+package com.github.minersstudios.msUtils.listeners.chat;
 
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.utils.Config;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.dependencies.google.common.base.Function;
@@ -31,7 +31,7 @@ public class DiscordSRVListener {
 						? "(вложения) "
 						: "(вложение) ";
 		Component messageComponent =
-				ConfigCache.Symbols.DISCORD
+				Config.Symbols.discord
 						.color(NamedTextColor.WHITE)
 						.append(Component.text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
 						.append(Component.text(reply, TextColor.color(152, 162, 249)))

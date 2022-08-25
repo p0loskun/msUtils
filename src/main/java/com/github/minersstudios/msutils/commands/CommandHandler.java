@@ -1,6 +1,6 @@
-package com.github.minersstudios.msutils.commands;
+package com.github.minersstudios.msUtils.commands;
 
-import com.github.minersstudios.msutils.commands.other.ReloadCommand;
+import com.github.minersstudios.msUtils.commands.other.ReloadCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

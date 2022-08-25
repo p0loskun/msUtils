@@ -1,9 +1,9 @@
-package com.github.minersstudios.msutils.commands.other;
+package com.github.minersstudios.msUtils.commands.other;
 
-import com.github.minersstudios.msutils.classes.PlayerID;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.classes.PlayerID;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -18,7 +18,7 @@ public class KickCommand implements CommandExecutor {
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
 		if (args.length == 0) return false;
 		String reason = args.length > 1
-				? ChatUtils.extractMessage(1, args)
+				? ChatUtils.extractMessage(args, 1)
 				: "неизвестно";
 		if (args[0].matches("[0-99]+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));

@@ -1,9 +1,9 @@
-package com.github.minersstudios.msutils.commands.mute;
+package com.github.minersstudios.msUtils.commands.mute;
 
-import com.github.minersstudios.msutils.classes.PlayerID;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.classes.PlayerID;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,7 +19,7 @@ public class MuteCommand implements CommandExecutor {
 		if (args.length < 2 || !args[1].matches("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)")) return false;
 		long time = (long) (Float.parseFloat(args[1]) * 86400000 + System.currentTimeMillis());
 		String reason = args.length > 2
-				? ChatUtils.extractMessage(2, args)
+				? ChatUtils.extractMessage(args, 2)
 				: "неизвестно";
 		if (args[0].matches("[0-99]+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));

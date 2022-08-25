@@ -1,13 +1,13 @@
-package com.github.minersstudios.msutils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.minersstudios.msutils.enums.Pronouns;
-import com.github.minersstudios.msutils.enums.ResourcePackType;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.classes.RegistrationProcess;
-import com.github.minersstudios.msutils.enums.Crafts;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.enums.Pronouns;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.classes.RegistrationProcess;
+import com.github.minersstudios.msUtils.enums.Crafts;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -41,10 +41,10 @@ public class InventoryClickListener implements Listener {
 		if (
 				(clickedInventory.getType() == InventoryType.PLAYER
 				&& (event.getClick().isShiftClick() || event.getClick() == ClickType.DOUBLE_CLICK)
-				&& (inventoryTitle.equalsIgnoreCase(ResourcePackType.INVENTORY_NAME)
-				|| inventoryTitle.equalsIgnoreCase(Pronouns.INVENTORY_NAME)
-				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_INVENTORY_NAME)
-				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_INVENTORY_NAME)))
+				&& (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME)
+				|| inventoryTitle.equalsIgnoreCase(Pronouns.NAME)
+				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME)
+				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_NAME)))
 				|| player.getWorld() == Main.getWorldDark()
 		) {
 			event.setCancelled(true);
@@ -84,7 +84,7 @@ public class InventoryClickListener implements Listener {
 		}
 
 		if (clickedInventory.getType() != InventoryType.PLAYER) {
-			if (inventoryTitle.equalsIgnoreCase(ResourcePackType.INVENTORY_NAME)) {
+			if (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME)) {
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 				if (slot == 0 || slot == 1) {
 					if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE)
@@ -109,7 +109,7 @@ public class InventoryClickListener implements Listener {
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
-			if (inventoryTitle.equalsIgnoreCase(Pronouns.INVENTORY_NAME)) {
+			if (inventoryTitle.equalsIgnoreCase(Pronouns.NAME)) {
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 				if (slot == 0 || slot == 1 || slot == 2) {
 					playerInfo.setPronouns(Pronouns.HE);
@@ -131,7 +131,7 @@ public class InventoryClickListener implements Listener {
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
-			if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_INVENTORY_NAME)) {
+			if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_NAME)) {
 				ItemStack firstItem = clickedInventory.getItem(0);
 				if (firstItem != null && !event.getClick().isCreativeAction()) {
 					int firstItemIndex = Crafts.getItemIndex(firstItem);
@@ -150,7 +150,7 @@ public class InventoryClickListener implements Listener {
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
-			if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_INVENTORY_NAME)) {
+			if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME)) {
 				ItemStack arrow = clickedInventory.getItem(14);
 				if (arrow != null && arrow.getItemMeta() != null && slot == 31) {
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);

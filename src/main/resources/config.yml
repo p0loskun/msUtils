@@ -1,19 +1,8 @@
-plugin-hooks:
-  msdecor:
-    enable: true
-  msblock:
-    enable: true
-  discordsrv:
-    enable: true
-  authme:
-    enable: true
 chat:
   local:
     radius: 25.0
-    send-messages-to-discord: true
     discord-channel-id: 000000000000000000
   global:
-    send-messages-to-discord: true
     discord-channel-id: 000000000000000000
 resource-pack:
   full:

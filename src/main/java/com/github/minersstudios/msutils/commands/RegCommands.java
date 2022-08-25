@@ -1,15 +1,15 @@
-package com.github.minersstudios.msutils.commands;
+package com.github.minersstudios.msUtils.commands;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.commands.ban.BanCommand;
-import com.github.minersstudios.msutils.commands.ban.UnBanCommand;
-import com.github.minersstudios.msutils.commands.mute.MuteCommand;
-import com.github.minersstudios.msutils.commands.mute.UnMuteCommand;
-import com.github.minersstudios.msutils.commands.other.*;
-import com.github.minersstudios.msutils.commands.roleplay.*;
-import com.github.minersstudios.msutils.tabCompleters.*;
-import com.github.minersstudios.msutils.commands.teleport.TeleportToLastDeathLocationCommand;
-import com.github.minersstudios.msutils.commands.teleport.WorldTeleportCommand;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.commands.ban.BanCommand;
+import com.github.minersstudios.msUtils.commands.ban.UnBanCommand;
+import com.github.minersstudios.msUtils.commands.mute.MuteCommand;
+import com.github.minersstudios.msUtils.commands.mute.UnMuteCommand;
+import com.github.minersstudios.msUtils.commands.other.*;
+import com.github.minersstudios.msUtils.commands.roleplay.*;
+import com.github.minersstudios.msUtils.tabCompleters.*;
+import com.github.minersstudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
+import com.github.minersstudios.msUtils.commands.teleport.WorldTeleportCommand;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;

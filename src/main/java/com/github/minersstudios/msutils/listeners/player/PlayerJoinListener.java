@@ -1,11 +1,11 @@
-package com.github.minersstudios.msutils.listeners.player;
+package com.github.minersstudios.msUtils.listeners.player;
 
-import com.github.minersstudios.msutils.enums.ResourcePackType;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.classes.RegistrationProcess;
-import com.github.minersstudios.msutils.enums.Pronouns;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.classes.RegistrationProcess;
+import com.github.minersstudios.msUtils.enums.Pronouns;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

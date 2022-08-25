@@ -1,8 +1,8 @@
-package com.github.minersstudios.msutils.commands.roleplay;
+package com.github.minersstudios.msUtils.commands.roleplay;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.enums;
+package com.github.minersstudios.msUtils.enums;
 
 import com.github.minersstudios.msDecor.crafts.home.*;
 import com.github.minersstudios.msDecor.crafts.home.cameras.OldCamera;
@@ -202,8 +202,8 @@ public enum Crafts {
     ;
 
     public static final String
-            CRAFTS_INVENTORY_NAME = ChatColor.WHITE + "뀂ꀧ",
-            CRAFT_INVENTORY_NAME = ChatColor.WHITE + "뀂ꀨ";
+            CRAFTS_NAME = ChatColor.WHITE + "뀂ꀧ",
+            CRAFT_NAME = ChatColor.WHITE + "뀂ꀨ";
     private final ShapedRecipe shapedRecipe;
 
     Crafts(ShapedRecipe shapedRecipe) {
@@ -222,7 +222,7 @@ public enum Crafts {
     public static void openCraft(@Nonnull Player player, @Nonnull ItemStack itemStack, int pageIndex) {
         for (Crafts craft : Crafts.values()) {
             if (itemStack.isSimilar(craft.shapedRecipe.getResult())) {
-                Inventory inventory = Bukkit.createInventory(null, 4 * 9, Component.text(CRAFT_INVENTORY_NAME));
+                Inventory inventory = Bukkit.createInventory(null, 4 * 9, Component.text(CRAFT_NAME));
                 String[] shapes = craft.shapedRecipe.getShape();
                 int i = 0;
                 for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
@@ -259,7 +259,7 @@ public enum Crafts {
      */
     @Nonnull
     public static Inventory getInventory(int index) {
-        Inventory inventory = Bukkit.createInventory(null, 5 * 9, Component.text(CRAFTS_INVENTORY_NAME));
+        Inventory inventory = Bukkit.createInventory(null, 5 * 9, Component.text(CRAFTS_NAME));
         Crafts[] crafts = Crafts.values();
         inventory.setItem(36, getPreviousPageButton()[index == 0 ? 1 : 0]);
         inventory.setItem(37, getPreviousPageButton()[1]);

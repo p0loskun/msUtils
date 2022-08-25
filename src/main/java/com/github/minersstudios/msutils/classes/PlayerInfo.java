@@ -1,11 +1,11 @@
-package com.github.minersstudios.msutils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.enums.Pronouns;
-import com.github.minersstudios.msutils.enums.ResourcePackType;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.utils.ConfigCache;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.enums.Pronouns;
+import com.github.minersstudios.msUtils.enums.ResourcePackType;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.Config;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
@@ -69,11 +69,11 @@ public class PlayerInfo {
 		return Component.text("[")
 						.append(Component.text(this.getID())
 						.append(Component.text("] ")))
-						.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_SECONDARY)
+						.color(Config.Colors.joinMessageColorSecondary)
 						.append(Component.text(this.getFirstname())
 						.append(Component.text(" ")
 						.append(Component.text(this.getLastname())))
-						.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_PRIMARY));
+						.color(Config.Colors.joinMessageColorPrimary));
 	}
 
 	@Nonnull
@@ -85,7 +85,7 @@ public class PlayerInfo {
 						.append(Component.text(this.getFirstname())
 						.append(Component.text(" ")
 						.append(Component.text(this.getLastname())))
-						.color(ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY));
+						.color(Config.Colors.rpMessageMessageColorPrimary));
 	}
 
 	@Nonnull

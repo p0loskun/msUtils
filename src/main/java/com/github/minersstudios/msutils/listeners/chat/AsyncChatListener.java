@@ -1,9 +1,9 @@
-package com.github.minersstudios.msutils.listeners.chat;
+package com.github.minersstudios.msUtils.listeners.chat;
 
-import com.github.minersstudios.msutils.classes.ChatBuffer;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.classes.ChatBuffer;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;

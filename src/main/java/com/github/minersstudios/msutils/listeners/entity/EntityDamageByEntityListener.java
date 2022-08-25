@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.listeners.entity;
+package com.github.minersstudios.msUtils.listeners.entity;
 
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
@@ -10,12 +10,12 @@ import javax.annotation.Nonnull;
 public class EntityDamageByEntityListener implements Listener {
 
 	@EventHandler
-	public void onRemoveItem(@Nonnull EntityDamageByEntityEvent event) {
-		if (
+	public void onRemoveItem(@Nonnull EntityDamageByEntityEvent event){
+		if(
 				event.getEntity() instanceof ItemFrame itemFrame
 				&& itemFrame.getScoreboardTags().contains("invisibleItemFrame")
 				&& !itemFrame.isVisible()
-		) {
+		){
 			itemFrame.setVisible(true);
 		}
 	}

@@ -1,6 +1,6 @@
-package com.github.minersstudios.msutils.classes;
+package com.github.minersstudios.msUtils.classes;
 
-import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msUtils.utils.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -29,7 +29,7 @@ public class ChatBubbles {
 			areaEffectCloud.setParticle(Particle.TOWN_AURA);
 			areaEffectCloud.setRadius(0);
 			areaEffectCloud.customName(
-					(firstLine ? ConfigCache.Symbols.SPEECH : Component.text(""))
+					(firstLine ? Config.Symbols.speech : Component.text(""))
 					.append(Component.text(text))
 					.append(Component.text(" "))
 					.color(NamedTextColor.WHITE)

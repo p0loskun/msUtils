@@ -1,8 +1,8 @@
-package com.github.minersstudios.msutils.utils;
+package com.github.minersstudios.msUtils.utils;
 
 import com.google.common.base.Charsets;
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -150,7 +150,7 @@ public class PlayerUtils {
 				seats.put(player, armorStand);
 			});
 			return args != null
-					? ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(0, args)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO)
+					? ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO)
 					: ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
 		} else if (sitLocation == null && seats.containsKey(player)) {
 			ArmorStand armorStand = seats.get(player);

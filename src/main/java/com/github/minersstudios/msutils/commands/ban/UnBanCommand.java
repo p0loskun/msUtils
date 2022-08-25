@@ -1,9 +1,9 @@
-package com.github.minersstudios.msutils.commands.ban;
+package com.github.minersstudios.msUtils.commands.ban;
 
-import com.github.minersstudios.msutils.classes.PlayerID;
-import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msUtils.classes.PlayerID;
+import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msUtils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
