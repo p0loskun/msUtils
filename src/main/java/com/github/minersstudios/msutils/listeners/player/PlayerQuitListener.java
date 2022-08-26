@@ -20,6 +20,7 @@ public class PlayerQuitListener implements Listener {
 		PlayerUtils.setSitting(player, null, (String) null);
 		event.quitMessage(null);
 		playerInfo.setLastLeaveLocation();
+		playerInfo.setHealth(player.getHealth());
 		ChatUtils.sendQuitMessage(playerInfo, player);
 	}
 }

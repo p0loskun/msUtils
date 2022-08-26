@@ -175,7 +175,6 @@ public class PlayerInfo {
 		return this.nickname == null ? this.nickname = this.getOfflinePlayer().getName() : this.nickname;
 	}
 
-
 	/**
 	 * Gets player firstname from data file
 	 *
@@ -224,7 +223,6 @@ public class PlayerInfo {
 		this.savePlayerDataFile();
 	}
 
-
 	/**
 	 * Gets player patronymic from data file
 	 *
@@ -246,6 +244,27 @@ public class PlayerInfo {
 		if (!this.hasPlayerDataFile()) return;
 		this.patronymic = patronymic;
 		this.yamlConfiguration.set("name.patronymic", patronymic);
+		this.savePlayerDataFile();
+	}
+
+	/**
+	 * Gets player health from data file
+	 *
+	 * @return player health if it's != null, else returns 20
+	 */
+	public double getHealth() {
+		return this.yamlConfiguration == null ? 20.0d
+				: this.yamlConfiguration.getDouble("health", 20.0d);
+	}
+
+	/**
+	 * Sets health of player in data file
+	 *
+	 * @param health player health
+	 */
+	public void setHealth(double health) {
+		if (!this.hasPlayerDataFile()) return;
+		this.yamlConfiguration.set("health", health);
 		this.savePlayerDataFile();
 	}
 
@@ -277,7 +296,7 @@ public class PlayerInfo {
 	 */
 	@Nullable
 	public ResourcePackType getResourcePackType() {
-		return ResourcePackType.getResourcePackByString(this.yamlConfiguration.getString("resource-pack", "NULL"));
+		return ResourcePackType.getResourcePackByString(this.yamlConfiguration.getString("resource-pack.resource-pack-type", "NULL"));
 	}
 
 	/**
@@ -287,7 +306,7 @@ public class PlayerInfo {
 	 */
 	public void setResourcePackType(@Nonnull ResourcePackType resourcePackType) {
 		if (!this.hasPlayerDataFile()) return;
-		this.yamlConfiguration.set("resource-pack", resourcePackType.name());
+		this.yamlConfiguration.set("resource-pack.resource-pack-type", resourcePackType.name());
 		if (resourcePackType == ResourcePackType.NONE) {
 			this.setDiskType(null);
 		}
@@ -301,7 +320,7 @@ public class PlayerInfo {
 	 */
 	@Nonnull
 	public ResourcePackType.DiskType getDiskType() {
-		return ResourcePackType.DiskType.valueOf(this.yamlConfiguration.getString("disk-type", "DROPBOX"));
+		return ResourcePackType.DiskType.valueOf(this.yamlConfiguration.getString("resource-pack.disk-type", "DROPBOX"));
 	}
 
 	/**
@@ -311,7 +330,7 @@ public class PlayerInfo {
 	 */
 	public void setDiskType(@Nullable ResourcePackType.DiskType diskType) {
 		if (!this.hasPlayerDataFile()) return;
-		this.yamlConfiguration.set("disk-type", diskType != null ? diskType.name() : null);
+		this.yamlConfiguration.set("resource-pack.disk-type", diskType != null ? diskType.name() : null);
 		savePlayerDataFile();
 	}
 
@@ -520,6 +539,7 @@ public class PlayerInfo {
 		Player player = this.getOnlinePlayer();
 		if (player == null) return;
 		player.setGameMode(this.getGameMode());
+		player.setHealth(this.getHealth());
 		player.teleportAsync(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
 	}

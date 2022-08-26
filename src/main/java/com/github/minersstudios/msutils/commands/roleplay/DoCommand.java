@@ -3,6 +3,7 @@ package com.github.minersstudios.msutils.commands.roleplay;
 import com.github.minersstudios.msutils.Main;
 import com.github.minersstudios.msutils.utils.ChatUtils;
 import com.github.minersstudios.msutils.classes.PlayerInfo;
+import com.github.minersstudios.msutils.utils.ConfigCache;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,6 +16,7 @@ public class DoCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+		new ConfigCache();
 		if (!(sender instanceof Player player)) {
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 		}

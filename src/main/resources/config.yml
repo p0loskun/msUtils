@@ -1,25 +1,74 @@
 plugin-hooks:
   msdecor:
-    enable: true
+    enabled: true
+    ignore-version-check: false
   msblock:
-    enable: true
+    enabled: true
+    ignore-version-check: false
   discordsrv:
-    enable: true
+    enabled: true
+    ignore-version-check: false
   authme:
-    enable: true
+    enabled: true
+    ignore-version-check: false
+  protocollib:
+    ignore-version-check: false
 chat:
-  local:
+  join:
+    enabled: true
+    permissions: [ default ]
+    colors:
+      primary: "#FFEE93"
+      secondary: "#FCF5C7"
+    discord:
+      enabled: true
+      discord-channel-id: [ 000000000000000000 ]
+  quit:
+    enabled: true
+    permissions: [ default ]
+    colors:
+      primary: "#FFEE93"
+      secondary: "#FCF5C7"
+    discord:
+      enabled: true
+      discord-channel-id: [ 000000000000000000 ]
+  actions:
+    enabled: true
     radius: 25.0
-    send-messages-to-discord: true
-    discord-channel-id: 000000000000000000
+    permissions: [ default ]
+    enable-chat-symbols: true
+    colors:
+      primary: "#FFAA00"
+      secondary: "#FFC369"
+    discord:
+      enabled: true
+      discord-channel-id: [ 000000000000000000 ]
+  local:
+    enabled: true
+    radius: 25.0
+    permissions: [ default ]
+    colors:
+      primary: "#ABA494"
+      secondary: "#F1F0E3"
+    discord:
+      enabled: true
+      discord-channel-id: [ 000000000000000000 ]
   global:
-    send-messages-to-discord: true
-    discord-channel-id: 000000000000000000
-resource-pack:
+    enabled: true
+    permissions: [ default ]
+    symbol: '!'
+    colors:
+      primary: "#ABA494"
+      secondary: "#F1F0E3"
+    discord:
+      enabled: true
+      discord-channel-id: [ 000000000000000000 ]
+resource-packs:
+  enabled: true
   full:
     hash:
     dropbox-url:
-    yandex-disk:
+    yandex-disk-url:
   lite:
     hash:
     dropbox-url:

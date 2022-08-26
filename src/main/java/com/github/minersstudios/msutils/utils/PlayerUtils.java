@@ -124,7 +124,9 @@ public class PlayerUtils {
 	 */
 	public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String title, @Nonnull String reason) {
 		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null) return false;
-		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation();
+		PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+		playerInfo.setLastLeaveLocation();
+		playerInfo.setHealth(offlinePlayer.getPlayer().getHealth());
 		offlinePlayer.getPlayer().kick(
 				Component.text("")
 						.append(Component.text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))

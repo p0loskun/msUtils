@@ -1,13 +1,15 @@
 nickname: Steve
 ip: 0.0.0.0
+gamemode: SURVIVAL/CREATIVE/ADVENTURE/SPECTATOR
+health: 20.0
 name:
   firstname: Иван
   lastname: Иванов
   patronymic: Иваныч
 pronouns: HE/SHE/THEY
-resource-pack: FULL/LITE/NONE
-disk-type: DROPBOX/YANDEX_DISK
-gamemode: SURVIVAL/CREATIVE/ADVENTURE/SPECTATOR
+resource-pack:
+  resource-pack-type: FULL/LITE/NONE
+  disk-type: DROPBOX/YANDEX_DISK
 bans:
   muted: false
   mute-reason: null

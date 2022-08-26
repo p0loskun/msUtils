@@ -39,7 +39,7 @@ public final class Main extends JavaPlugin {
 			isDiscordSRVEnabled,
 			isMsDecorEnabled,
 			isMsBlockEnabled;
-	public static String
+	public static final String
 			PROTOCOLLIB_VERSION = "5.0.0-SNAPSHOT",
 			AUTHME_VERSION = "5.6.0-SNAPSHOT",
 			DISCORDSRV_VERSION = "1.26.0-SNAPSHOT",
@@ -88,7 +88,9 @@ public final class Main extends JavaPlugin {
 
 		try {
 			protocolManager = ProtocolLibrary.getProtocolManager();
-			isProtocolLibEnabled = ProtocolLibrary.getPlugin().getDescription().getVersion().contains(PROTOCOLLIB_VERSION);
+			isProtocolLibEnabled =
+					ProtocolLibrary.getPlugin().getDescription().getVersion().contains(PROTOCOLLIB_VERSION)
+					|| configCache.ignore_protocollib_version_check;
 		} catch (NoClassDefFoundError error) {
 			error.printStackTrace();
 		} finally {
@@ -102,7 +104,9 @@ public final class Main extends JavaPlugin {
 		if (isAuthMeEnabled) {
 			try {
 				authMeApi = AuthMeApi.getInstance();
-				isAuthMeEnabled = AUTHME_VERSION.contains(authMeApi.getPluginVersion());
+				isAuthMeEnabled =
+						AUTHME_VERSION.contains(authMeApi.getPluginVersion())
+						|| configCache.ignore_authme_version_check;
 			} catch (NoClassDefFoundError error) {
 				isAuthMeEnabled = false;
 				error.printStackTrace();
@@ -110,49 +114,53 @@ public final class Main extends JavaPlugin {
 				if (isAuthMeEnabled) {
 					ChatUtils.log(Level.INFO, "AuthMe successfully hooked!");
 				} else {
-					ChatUtils.log(Level.SEVERE, "Install AuthMe (v" + AUTHME_VERSION + ")!");
-					Bukkit.getPluginManager().disablePlugin(main);
+					ChatUtils.log(Level.WARNING, "Install AuthMe (v" + AUTHME_VERSION + ")!");
 				}
 			}
 		}
 		if (isDiscordSRVEnabled) {
 			try {
-				if (!DiscordSRV.updateIsAvailable) {
-					isDiscordSRVEnabled = DiscordSRV.version.contains(DISCORDSRV_VERSION);
-				}
+				isDiscordSRVEnabled =
+						(DiscordSRV.version.contains(DISCORDSRV_VERSION)
+						|| DiscordSRV.updateIsAvailable)
+						|| configCache.ignore_discordsrv_version_check;
 			} catch (NoClassDefFoundError error) {
 				isDiscordSRVEnabled = false;
 			} finally {
 				if (isDiscordSRVEnabled) {
 					ChatUtils.log(Level.INFO, "DiscordSRV successfully hooked!");
 				} else {
-					ChatUtils.log(Level.SEVERE, "Install DiscordSRV (v" + DISCORDSRV_VERSION + ") or disable plugin hook in config!");
+					ChatUtils.log(Level.WARNING, "Install DiscordSRV (v" + DISCORDSRV_VERSION + ") or disable plugin hook in config!");
 				}
 			}
 		}
 		if (isMsDecorEnabled) {
 			try {
-				isMsDecorEnabled = Main.getPlugin(com.github.minersstudios.msDecor.Main.class).getDescription().getVersion().contains(MSDECOR_VERSION);
+				isMsDecorEnabled =
+						Main.getPlugin(com.github.minersstudios.msDecor.Main.class).getDescription().getVersion().contains(MSDECOR_VERSION)
+						|| configCache.ignore_msdecor_version_check;
 			} catch (NoClassDefFoundError error) {
 				isMsDecorEnabled = false;
 			} finally {
 				if (isMsDecorEnabled) {
 					ChatUtils.log(Level.INFO, "msDecor successfully hooked!");
 				} else {
-					ChatUtils.log(Level.SEVERE, "Install msDecor (v" + MSDECOR_VERSION + ") or disable plugin hook in config!");
+					ChatUtils.log(Level.WARNING, "Install msDecor (v" + MSDECOR_VERSION + ") or disable plugin hook in config!");
 				}
 			}
 		}
 		if (isMsBlockEnabled) {
 			try {
-				isMsBlockEnabled = Main.getPlugin(com.github.minersstudios.msBlock.Main.class).getDescription().getVersion().contains(MSBLOCK_VERSION);
+				isMsBlockEnabled =
+						Main.getPlugin(com.github.minersstudios.msBlock.Main.class).getDescription().getVersion().contains(MSBLOCK_VERSION)
+						|| configCache.ignore_msblock_version_check;
 			} catch (NoClassDefFoundError error) {
 				isMsBlockEnabled = false;
 			} finally {
 				if (isMsBlockEnabled) {
 					ChatUtils.log(Level.INFO, "msBlock successfully hooked!");
 				} else {
-					ChatUtils.log(Level.SEVERE, "Install msBlock (v" + MSBLOCK_VERSION + ") or disable plugin hook in config!");
+					ChatUtils.log(Level.WARNING, "Install msBlock (v" + MSBLOCK_VERSION + ") or disable plugin hook in config!");
 				}
 			}
 		}

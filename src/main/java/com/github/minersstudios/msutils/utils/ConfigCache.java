@@ -1,50 +1,108 @@
 package com.github.minersstudios.msutils.utils;
 
 import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.classes.Chat;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class ConfigCache {
+	public final YamlConfiguration yamlConfiguration;
+	public final Map<String, Chat> chats = new HashMap<>();
 	public final String
-			discord_global_channel_id,
-			discord_local_channel_id,
+			full_hash,
 			full_dropbox_url,
 			full_yandex_disk_url,
+			lite_hash,
 			lite_dropbox_url,
-			lite_yandex_disk_url,
-			full_hash,
-			lite_hash;
-	public final double local_chat_radius;
+			lite_yandex_disk_url;
 	public final boolean
-			send_global_messages_to_discord,
-			send_local_messages_to_discord,
 			enable_msdecor_hook,
+			ignore_msdecor_version_check,
 			enable_msblock_hook,
+			ignore_msblock_version_check,
 			enable_discordsrv_hook,
-			enable_authme_hook;
+			ignore_discordsrv_version_check,
+			enable_authme_hook,
+			ignore_authme_version_check,
+			ignore_protocollib_version_check;
+
+	public final double local_chat_radius = 25.0d;
+
+	public final String
+			discord_global_channel_id = "",
+			discord_local_channel_id = "";
+
+	public final boolean
+			send_global_messages_to_discord = true,
+			send_local_messages_to_discord = true;
 
 	public ConfigCache() {
-		File dataFile = new File(Main.getInstance().getDataFolder(), "config.yml");
-		YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(dataFile);
-		this.local_chat_radius = yamlConfiguration.getDouble("chat.local.radius");
-		this.discord_global_channel_id = yamlConfiguration.getString("chat.global.discord-channel-id");
-		this.send_global_messages_to_discord = yamlConfiguration.getBoolean("chat.global.send-messages-to-discord");
-		this.discord_local_channel_id = yamlConfiguration.getString("chat.local.discord-channel-id");
-		this.send_local_messages_to_discord = yamlConfiguration.getBoolean("chat.local.send-messages-to-discord");
-		this.full_hash = yamlConfiguration.getString("resource-pack.full.hash");
-		this.full_dropbox_url = yamlConfiguration.getString("resource-pack.full.dropbox-url");
-		this.full_yandex_disk_url = yamlConfiguration.getString("resource-pack.full.yandex-disk-url");
-		this.lite_hash = yamlConfiguration.getString("resource-pack.lite.hash");
-		this.lite_dropbox_url = yamlConfiguration.getString("resource-pack.lite.dropbox-url");
-		this.lite_yandex_disk_url = yamlConfiguration.getString("resource-pack.lite.yandex-disk-url");
-		this.enable_msdecor_hook = yamlConfiguration.getBoolean("plugin-hooks.msdecor.enable");
-		this.enable_msblock_hook = yamlConfiguration.getBoolean("plugin-hooks.msblock.enable");
-		this.enable_discordsrv_hook = yamlConfiguration.getBoolean("plugin-hooks.discordsrv.enable");
-		this.enable_authme_hook = yamlConfiguration.getBoolean("plugin-hooks.authme.enable");
+		File configFile = new File(Main.getInstance().getDataFolder(), "config.yml");
+		yamlConfiguration = YamlConfiguration.loadConfiguration(configFile);
+
+		loadChats();
+
+		this.full_hash = yamlConfiguration.getString("resource-packs.full.hash");
+		this.full_dropbox_url = yamlConfiguration.getString("resource-packs.full.dropbox-url");
+		this.full_yandex_disk_url = yamlConfiguration.getString("resource-packs.full.yandex-disk-url");
+
+		this.lite_hash = yamlConfiguration.getString("resource-packs.lite.hash");
+		this.lite_dropbox_url = yamlConfiguration.getString("resource-packs.lite.dropbox-url");
+		this.lite_yandex_disk_url = yamlConfiguration.getString("resource-packs.lite.yandex-disk-url");
+
+		this.enable_msdecor_hook = yamlConfiguration.getBoolean("plugin-hooks.msdecor.enabled");
+		this.ignore_msdecor_version_check = yamlConfiguration.getBoolean("plugin-hooks.msdecor.ignore-version-check");
+		this.enable_msblock_hook = yamlConfiguration.getBoolean("plugin-hooks.msblock.enabled");
+		this.ignore_msblock_version_check = yamlConfiguration.getBoolean("plugin-hooks.msblock.ignore-version-check");
+		this.enable_discordsrv_hook = yamlConfiguration.getBoolean("plugin-hooks.discordsrv.enabled");
+		this.ignore_discordsrv_version_check = yamlConfiguration.getBoolean("plugin-hooks.discordsrv.ignore-version-check");
+		this.enable_authme_hook = yamlConfiguration.getBoolean("plugin-hooks.authme.enabled");
+		this.ignore_authme_version_check = yamlConfiguration.getBoolean("plugin-hooks.authme.ignore-version-check");
+		this.ignore_protocollib_version_check = yamlConfiguration.getBoolean("plugin-hooks.protocollib.ignore-version-check");
+	}
+
+	private void loadChats() {
+		ConfigurationSection configurationSection = yamlConfiguration.getConfigurationSection("chat");
+		if (configurationSection == null) {
+			ChatUtils.log(Level.SEVERE, "Chat section in configuration is not found!");
+			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
+			return;
+		}
+		for (String chatName : configurationSection.getKeys(false)) {
+			chats.put(chatName, new Chat(
+					yamlConfiguration.getBoolean("chat." + chatName + ".enabled", false),
+					yamlConfiguration.getDouble("chat." + chatName + ".radius", -1),
+					yamlConfiguration.getStringList("chat." + chatName + ".permissions"),
+					TextColor.fromHexString(yamlConfiguration.getString("chat." + chatName + ".colors.primary", "#FFFFFF")),
+					TextColor.fromHexString(yamlConfiguration.getString("chat." + chatName + ".colors.secondary", "#FFFFFF")),
+					yamlConfiguration.getBoolean("chat." + chatName + ".discord.enabled", false),
+					yamlConfiguration.getStringList("chat." + chatName + ".discord.discord-channel-id"),
+					yamlConfiguration.getString("chat." + chatName + ".symbol"),
+					yamlConfiguration.getBoolean("chat." + chatName + ".enable-chat-symbols")
+			));
+		}
+		if (!chats.containsKey("join")) {
+			ChatUtils.log(Level.SEVERE, "Join chat section in configuration is not found!");
+			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
+			return;
+		}
+		if (!chats.containsKey("quit")) {
+			ChatUtils.log(Level.SEVERE, "Quit chat section in configuration is not found!");
+			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
+			return;
+		}
+		if (!chats.containsKey("actions")) {
+			ChatUtils.log(Level.SEVERE, "Actions chat section in configuration is not found!");
+			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -66,6 +124,6 @@ public class ConfigCache {
 				RED_EXCLAMATION_MARK = Component.text(" ꀑ "),
 				SPEECH = Component.text(" ꀕ "),
 				DISCORD = Component.text(" ꀔ "),
-				PAINTABLE_BADGE = Component.text(ChatColor.WHITE + "ꀢ ");
+				PAINTABLE_BADGE = Component.text(" ꀢ ");
 	}
 }
