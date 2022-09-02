@@ -28,8 +28,8 @@ public class PlayerID {
 		this.yamlConfiguration.set(uuid.toString(), ID);
 		try {
 			this.yamlConfiguration.save(idFile);
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return ID;
 	}

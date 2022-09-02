@@ -3,7 +3,6 @@ package com.github.minersstudios.msutils.classes;
 import com.github.minersstudios.msutils.Main;
 import com.github.minersstudios.msutils.enums.Pronouns;
 import com.github.minersstudios.msutils.enums.ResourcePackType;
-import com.github.minersstudios.msutils.utils.ConfigCache;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -22,7 +21,7 @@ public class RegistrationProcess {
 	private Location playerLocation;
 	private static final String REGEX = "[-А-яҐґІіЇїЁё]+";
 
-	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
+	public void startRegistration(@Nonnull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 		this.player = playerInfo.getOnlinePlayer();
 		if (this.player == null) return;
@@ -127,12 +126,14 @@ public class RegistrationProcess {
 
 	private void sendDialogueMessage(@Nonnull String message, long delay) {
 		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+			Chat chat = Chat.getChatWithoutSymbol();
+			if (chat == null) return;
 			this.player.sendMessage(
 					Component.text(" ")
 					.append(Component.text(" [0] Незнакомец : ")
-					.color(ConfigCache.Colors.CHAT_COLOR_PRIMARY))
+					.color(chat.getPrimaryColor()))
 					.append(Component.text(message))
-					.color(ConfigCache.Colors.CHAT_COLOR_SECONDARY)
+					.color(chat.getSecondaryColor())
 			);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);

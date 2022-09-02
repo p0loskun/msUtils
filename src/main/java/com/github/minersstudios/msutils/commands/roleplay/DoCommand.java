@@ -3,7 +3,7 @@ package com.github.minersstudios.msutils.commands.roleplay;
 import com.github.minersstudios.msutils.Main;
 import com.github.minersstudios.msutils.utils.ChatUtils;
 import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msutils.configs.ConfigCache;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

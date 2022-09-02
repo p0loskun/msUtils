@@ -1,7 +1,8 @@
-package com.github.minersstudios.msutils.utils;
+package com.github.minersstudios.msutils.configs;
 
 import com.github.minersstudios.msutils.Main;
 import com.github.minersstudios.msutils.classes.Chat;
+import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -35,14 +36,6 @@ public class ConfigCache {
 			ignore_protocollib_version_check;
 
 	public final double local_chat_radius = 25.0d;
-
-	public final String
-			discord_global_channel_id = "",
-			discord_local_channel_id = "";
-
-	public final boolean
-			send_global_messages_to_discord = true,
-			send_local_messages_to_discord = true;
 
 	public ConfigCache() {
 		File configFile = new File(Main.getInstance().getDataFolder(), "config.yml");
@@ -78,15 +71,17 @@ public class ConfigCache {
 		}
 		for (String chatName : configurationSection.getKeys(false)) {
 			chats.put(chatName, new Chat(
-					yamlConfiguration.getBoolean("chat." + chatName + ".enabled", false),
+					yamlConfiguration.getBoolean("chat." + chatName + ".enabled"),
 					yamlConfiguration.getDouble("chat." + chatName + ".radius", -1),
 					yamlConfiguration.getStringList("chat." + chatName + ".permissions"),
+					yamlConfiguration.getString("chat." + chatName + ".prefix", ""),
 					TextColor.fromHexString(yamlConfiguration.getString("chat." + chatName + ".colors.primary", "#FFFFFF")),
 					TextColor.fromHexString(yamlConfiguration.getString("chat." + chatName + ".colors.secondary", "#FFFFFF")),
-					yamlConfiguration.getBoolean("chat." + chatName + ".discord.enabled", false),
+					yamlConfiguration.getBoolean("chat." + chatName + ".discord.enabled"),
 					yamlConfiguration.getStringList("chat." + chatName + ".discord.discord-channel-id"),
 					yamlConfiguration.getString("chat." + chatName + ".symbol"),
-					yamlConfiguration.getBoolean("chat." + chatName + ".enable-chat-symbols")
+					yamlConfiguration.getBoolean("chat." + chatName + ".enable-chat-symbols"),
+					yamlConfiguration.getBoolean("chat." + chatName + ".show-messages-above-head")
 			));
 		}
 		if (!chats.containsKey("join")) {
@@ -99,21 +94,19 @@ public class ConfigCache {
 			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
 			return;
 		}
+		if (!chats.containsKey("death")) {
+			ChatUtils.log(Level.SEVERE, "Death chat section in configuration is not found!");
+			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
+			return;
+		}
+		if (!chats.containsKey("private-messages")) {
+			ChatUtils.log(Level.SEVERE, "Private messages chat section in configuration is not found!");
+			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
+		}
 		if (!chats.containsKey("actions")) {
 			ChatUtils.log(Level.SEVERE, "Actions chat section in configuration is not found!");
 			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
 		}
-	}
-
-	@SuppressWarnings("unused")
-	public static class Colors {
-		public static final TextColor
-				CHAT_COLOR_PRIMARY = TextColor.color(171, 164, 148),
-				CHAT_COLOR_SECONDARY = TextColor.color(241, 240, 227),
-				JOIN_MESSAGE_COLOR_PRIMARY = TextColor.color(255, 238, 147),
-				JOIN_MESSAGE_COLOR_SECONDARY = TextColor.color(252, 245, 199),
-				RP_MESSAGE_COLOR_PRIMARY = TextColor.color(255, 170, 0),
-				RP_MESSAGE_COLOR_SECONDARY = TextColor.color(255, 195, 105);
 	}
 
 	@SuppressWarnings("unused")

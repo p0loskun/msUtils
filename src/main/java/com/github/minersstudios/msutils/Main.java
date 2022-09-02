@@ -2,12 +2,11 @@ package com.github.minersstudios.msutils;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.github.minersstudios.msutils.classes.ChatBubbles;
-import com.github.minersstudios.msutils.classes.RotateSeatTask;
+import com.github.minersstudios.msutils.classes.Chat;
 import com.github.minersstudios.msutils.commands.RegCommands;
 import com.github.minersstudios.msutils.listeners.RegEvents;
 import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msutils.configs.ConfigCache;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -25,7 +24,6 @@ import java.util.logging.Level;
 
 public final class Main extends JavaPlugin {
 	private static Main instance;
-	private static final ChatBubbles bubbles = new ChatBubbles();
 	private static ConfigCache configCache;
 	private static AuthMeApi authMeApi;
 	private static ProtocolManager protocolManager;
@@ -49,7 +47,7 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		long time = System.currentTimeMillis();
-		load(this);
+		this.load();
 		if (this.isEnabled()) {
 			ChatUtils.log(Level.INFO, ChatColor.GREEN + "Enabled in " + (System.currentTimeMillis() - time) + "ms");
 		}
@@ -67,10 +65,15 @@ public final class Main extends JavaPlugin {
 		ChatUtils.log(Level.INFO, ChatColor.GREEN + "Disabled in " + (System.currentTimeMillis() - time) + "ms");
 	}
 
-	public static void load(Main main) {
-		instance = main;
+	public void load() {
+		instance = this;
 
 		reloadConfigs();
+		Chat.actionsChat = Main.getConfigCache().chats.get("actions");
+		Chat.joinChat = Main.getConfigCache().chats.get("join");
+		Chat.quitChat = Main.getConfigCache().chats.get("quit");
+		Chat.deathChat = Main.getConfigCache().chats.get("death");
+		Chat.privateMessagesChat = Main.getConfigCache().chats.get("private-messages");
 		isAuthMeEnabled = configCache.enable_authme_hook;
 		isDiscordSRVEnabled = configCache.enable_discordsrv_hook;
 		isMsDecorEnabled = configCache.enable_msdecor_hook;
@@ -84,89 +87,17 @@ public final class Main extends JavaPlugin {
 		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
-		new RotateSeatTask();
+		Bukkit.getScheduler().runTaskTimerAsynchronously(this, () ->
+				PlayerUtils.getSeats().values()
+						.forEach((armorStand) ->
+								armorStand.setRotation(armorStand.getPassengers().get(0).getLocation().getYaw(), 0.0f)),
+				0L, 1L
+		);
 
-		try {
-			protocolManager = ProtocolLibrary.getProtocolManager();
-			isProtocolLibEnabled =
-					ProtocolLibrary.getPlugin().getDescription().getVersion().contains(PROTOCOLLIB_VERSION)
-					|| configCache.ignore_protocollib_version_check;
-		} catch (NoClassDefFoundError error) {
-			error.printStackTrace();
-		} finally {
-			if (isProtocolLibEnabled) {
-				ChatUtils.log(Level.INFO, "ProtocolLib successfully hooked!");
-			} else {
-				ChatUtils.log(Level.SEVERE, "Install ProtocolLib (v" + PROTOCOLLIB_VERSION + ")!");
-				Bukkit.getPluginManager().disablePlugin(main);
-			}
-		}
-		if (isAuthMeEnabled) {
-			try {
-				authMeApi = AuthMeApi.getInstance();
-				isAuthMeEnabled =
-						AUTHME_VERSION.contains(authMeApi.getPluginVersion())
-						|| configCache.ignore_authme_version_check;
-			} catch (NoClassDefFoundError error) {
-				isAuthMeEnabled = false;
-				error.printStackTrace();
-			} finally {
-				if (isAuthMeEnabled) {
-					ChatUtils.log(Level.INFO, "AuthMe successfully hooked!");
-				} else {
-					ChatUtils.log(Level.WARNING, "Install AuthMe (v" + AUTHME_VERSION + ")!");
-				}
-			}
-		}
-		if (isDiscordSRVEnabled) {
-			try {
-				isDiscordSRVEnabled =
-						(DiscordSRV.version.contains(DISCORDSRV_VERSION)
-						|| DiscordSRV.updateIsAvailable)
-						|| configCache.ignore_discordsrv_version_check;
-			} catch (NoClassDefFoundError error) {
-				isDiscordSRVEnabled = false;
-			} finally {
-				if (isDiscordSRVEnabled) {
-					ChatUtils.log(Level.INFO, "DiscordSRV successfully hooked!");
-				} else {
-					ChatUtils.log(Level.WARNING, "Install DiscordSRV (v" + DISCORDSRV_VERSION + ") or disable plugin hook in config!");
-				}
-			}
-		}
-		if (isMsDecorEnabled) {
-			try {
-				isMsDecorEnabled =
-						Main.getPlugin(com.github.minersstudios.msDecor.Main.class).getDescription().getVersion().contains(MSDECOR_VERSION)
-						|| configCache.ignore_msdecor_version_check;
-			} catch (NoClassDefFoundError error) {
-				isMsDecorEnabled = false;
-			} finally {
-				if (isMsDecorEnabled) {
-					ChatUtils.log(Level.INFO, "msDecor successfully hooked!");
-				} else {
-					ChatUtils.log(Level.WARNING, "Install msDecor (v" + MSDECOR_VERSION + ") or disable plugin hook in config!");
-				}
-			}
-		}
-		if (isMsBlockEnabled) {
-			try {
-				isMsBlockEnabled =
-						Main.getPlugin(com.github.minersstudios.msBlock.Main.class).getDescription().getVersion().contains(MSBLOCK_VERSION)
-						|| configCache.ignore_msblock_version_check;
-			} catch (NoClassDefFoundError error) {
-				isMsBlockEnabled = false;
-			} finally {
-				if (isMsBlockEnabled) {
-					ChatUtils.log(Level.INFO, "msBlock successfully hooked!");
-				} else {
-					ChatUtils.log(Level.WARNING, "Install msBlock (v" + MSBLOCK_VERSION + ") or disable plugin hook in config!");
-				}
-			}
-		}
+		this.enablePluginHooks();
 
-		RegEvents.init(main);
-		RegCommands.init(main);
+		RegEvents.init(this);
+		RegCommands.init(this);
 	}
 
 	@Nullable
@@ -203,10 +134,91 @@ public final class Main extends JavaPlugin {
 			Properties properties = new Properties();
 			properties.load(input);
 			return Bukkit.getWorld(properties.getProperty("level-name"));
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private void enablePluginHooks() {
+		try {
+			protocolManager = ProtocolLibrary.getProtocolManager();
+			isProtocolLibEnabled =
+					ProtocolLibrary.getPlugin().getDescription().getVersion().contains(PROTOCOLLIB_VERSION)
+							|| configCache.ignore_protocollib_version_check;
+		} catch (NoClassDefFoundError error) {
+			error.printStackTrace();
+		} finally {
+			if (isProtocolLibEnabled) {
+				ChatUtils.log(Level.INFO, "ProtocolLib successfully hooked!");
+			} else {
+				ChatUtils.log(Level.SEVERE, "Install ProtocolLib (v" + PROTOCOLLIB_VERSION + ")!");
+				Bukkit.getPluginManager().disablePlugin(this);
+			}
+		}
+		if (isAuthMeEnabled) {
+			try {
+				authMeApi = AuthMeApi.getInstance();
+				isAuthMeEnabled =
+						AUTHME_VERSION.contains(authMeApi.getPluginVersion())
+								|| configCache.ignore_authme_version_check;
+			} catch (NoClassDefFoundError error) {
+				isAuthMeEnabled = false;
+				error.printStackTrace();
+			} finally {
+				if (isAuthMeEnabled) {
+					ChatUtils.log(Level.INFO, "AuthMe successfully hooked!");
+				} else {
+					ChatUtils.log(Level.WARNING, "Install AuthMe (v" + AUTHME_VERSION + ")!");
+				}
+			}
+		}
+		if (isDiscordSRVEnabled) {
+			try {
+				isDiscordSRVEnabled =
+						(DiscordSRV.version.contains(DISCORDSRV_VERSION)
+								|| DiscordSRV.updateIsAvailable)
+								|| configCache.ignore_discordsrv_version_check;
+			} catch (NoClassDefFoundError error) {
+				isDiscordSRVEnabled = false;
+			} finally {
+				if (isDiscordSRVEnabled) {
+					ChatUtils.log(Level.INFO, "DiscordSRV successfully hooked!");
+				} else {
+					ChatUtils.log(Level.WARNING, "Install DiscordSRV (v" + DISCORDSRV_VERSION + ") or disable plugin hook in config!");
+				}
+			}
+		}
+		if (isMsDecorEnabled) {
+			try {
+				isMsDecorEnabled =
+						Main.getPlugin(com.github.minersstudios.msDecor.Main.class).getDescription().getVersion().contains(MSDECOR_VERSION)
+								|| configCache.ignore_msdecor_version_check;
+			} catch (NoClassDefFoundError error) {
+				isMsDecorEnabled = false;
+			} finally {
+				if (isMsDecorEnabled) {
+					ChatUtils.log(Level.INFO, "msDecor successfully hooked!");
+				} else {
+					ChatUtils.log(Level.WARNING, "Install msDecor (v" + MSDECOR_VERSION + ") or disable plugin hook in config!");
+				}
+			}
+		}
+		if (isMsBlockEnabled) {
+			try {
+				isMsBlockEnabled =
+						Main.getPlugin(com.github.minersstudios.msBlock.Main.class).getDescription().getVersion().contains(MSBLOCK_VERSION)
+								|| configCache.ignore_msblock_version_check;
+			} catch (NoClassDefFoundError error) {
+				isMsBlockEnabled = false;
+			} finally {
+				if (isMsBlockEnabled) {
+					ChatUtils.log(Level.INFO, "msBlock successfully hooked!");
+				} else {
+					ChatUtils.log(Level.WARNING, "Install msBlock (v" + MSBLOCK_VERSION + ") or disable plugin hook in config!");
+				}
+			}
+		}
 	}
 
 	public static void reloadConfigs() {
@@ -233,10 +245,6 @@ public final class Main extends JavaPlugin {
 
 	public static World getOverworld() {
 		return overworld;
-	}
-
-	public static ChatBubbles getBubbles() {
-		return bubbles;
 	}
 
 	public static Scoreboard getScoreboardHideTags() {

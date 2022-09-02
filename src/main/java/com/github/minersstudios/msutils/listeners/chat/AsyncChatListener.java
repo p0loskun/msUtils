@@ -1,6 +1,6 @@
 package com.github.minersstudios.msutils.listeners.chat;
 
-import com.github.minersstudios.msutils.classes.ChatBuffer;
+import com.github.minersstudios.msutils.classes.Chat;
 import com.github.minersstudios.msutils.utils.ChatUtils;
 import com.github.minersstudios.msutils.Main;
 import com.github.minersstudios.msutils.classes.PlayerInfo;
@@ -22,22 +22,28 @@ public class AsyncChatListener implements Listener {
 		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthMeApi().isAuthenticated(player)) return;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
-		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0) {
-			playerInfo.setMuted(false, null);
-		}
-
 		if (playerInfo.isMuted()) {
-			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
-			return;
+			if (playerInfo.getMutedTo() - System.currentTimeMillis() < 0) {
+				playerInfo.setMuted(false, null);
+			} else {
+				ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+				return;
+			}
 		}
 
 		String message = ChatUtils.legacyComponentSerialize(event.originalMessage());
-		if (message.startsWith("!")) {
-			message = message.substring(1).trim();
+		Chat chat = Chat.getChatBySymbol(message);
+
+		if (chat != null && chat.isEnabled()) {
+			message = message.substring(chat.getSymbol().length()).trim();
 			if (!message.isEmpty()) {
-				ChatUtils.sendMessageToChat(playerInfo, null, ChatUtils.Chat.GLOBAL, Component.text(message));
+				ChatUtils.sendMessageToChat(player, playerInfo, null, chat, Component.text(message));
 			}
-		} else if (message.startsWith("*")) {
+		} else if (
+				message.startsWith("*")
+				&& Chat.actionsChat.isEnableChatSymbols()
+				&& Chat.actionsChat.isEnabled()
+		) {
 			message = message.substring(1).trim();
 			if (message.startsWith("*")) {
 				message = message.substring(1).trim();
@@ -61,8 +67,9 @@ public class AsyncChatListener implements Listener {
 				ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.ME);
 			}
 		} else {
-			ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatUtils.Chat.LOCAL, Component.text(message));
-			ChatBuffer.receiveMessage(player, message + " ");
+			chat = Chat.getChatWithoutSymbol();
+			if (chat == null) return;
+			ChatUtils.sendMessageToChat(player, playerInfo, player.getLocation(), chat, Component.text(message));
 		}
 	}
 }

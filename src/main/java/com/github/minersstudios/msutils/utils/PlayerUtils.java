@@ -23,13 +23,13 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerUtils {
-	private static final Map<Player, ArmorStand> seats = new HashMap<>();
+	private static final Map<Player, ArmorStand> seats = new ConcurrentHashMap<>();
 
 	/**
 	 * Gets UUID from player nickname
@@ -44,8 +44,8 @@ public class PlayerUtils {
 			Properties properties = new Properties();
 			properties.load(input);
 			isOnlineMode = Boolean.parseBoolean(properties.getProperty("online-mode"));
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		if (isOnlineMode) {
 			try {
@@ -55,8 +55,8 @@ public class PlayerUtils {
 						"(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
 						"$1-$2-$3-$4-$5"
 				));
-			} catch (IOException | ParseException exception) {
-				exception.printStackTrace();
+			} catch (IOException | ParseException e) {
+				e.printStackTrace();
 			}
 		} else {
 			return UUID.nameUUIDFromBytes(("OfflinePlayer:" + nickname).getBytes(Charsets.UTF_8));
@@ -72,7 +72,7 @@ public class PlayerUtils {
 	 */
 	@Nullable
 	public static OfflinePlayer getOfflinePlayerByNick(@Nonnull String nickname) {
-		UUID UUID = PlayerUtils.getUUID(nickname);
+		UUID UUID = getUUID(nickname);
 		return UUID != null ? Bukkit.getOfflinePlayer(UUID) : null;
 	}
 
@@ -91,7 +91,7 @@ public class PlayerUtils {
 			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:whitelist remove " + nickname));
 		}
 		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
-			PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", "Вас удалили из белого списка");
+			kickPlayer(offlinePlayer, "Вы были кикнуты", "Вас удалили из белого списка");
 		}
 		return true;
 	}
@@ -109,8 +109,8 @@ public class PlayerUtils {
 			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () ->
 					Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:whitelist add " + nickname)
 			);
-		} catch (Exception exception) {
-			exception.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return true;
 	}
@@ -155,9 +155,7 @@ public class PlayerUtils {
 					? ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(0, args)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO)
 					: ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
 		} else if (sitLocation == null && seats.containsKey(player)) {
-			ArmorStand armorStand = seats.get(player);
-			seats.remove(player);
-			player.eject();
+			ArmorStand armorStand = seats.remove(player);
 			Location getUpLocation = armorStand.getLocation().add(0.0d, 2.0d, 0.0d);
 			getUpLocation.setYaw(player.getLocation().getYaw());
 			getUpLocation.setPitch(player.getLocation().getPitch());
@@ -181,8 +179,8 @@ public class PlayerUtils {
 			return entirePage.toString().contains("\"timezone\":\"")
 					? entirePage.toString().split("\"timezone\":\"")[1].split("\",")[0]
 					: ZoneId.systemDefault().toString();
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return ZoneId.systemDefault().toString();
 	}

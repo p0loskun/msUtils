@@ -10,7 +10,6 @@ import com.github.minersstudios.msutils.listeners.entity.HangingBreakByEntityLis
 import com.github.minersstudios.msutils.listeners.player.*;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 
 import javax.annotation.Nonnull;

@@ -1,7 +1,10 @@
 package com.github.minersstudios.msutils.utils;
 
 import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.classes.Chat;
+import com.github.minersstudios.msutils.classes.ChatBuffer;
 import com.github.minersstudios.msutils.classes.PlayerInfo;
+import com.github.minersstudios.msutils.configs.ConfigCache;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.objects.MessageFormat;
@@ -111,54 +114,53 @@ public class ChatUtils {
 	 * @param chat       chat
 	 * @param message    message
 	 */
-	public static void sendMessageToChat(@Nonnull PlayerInfo playerInfo, @Nullable Location location, Chat chat, @Nonnull Component message) {
-		if (chat == Chat.LOCAL && location != null) {
-			Component localMessage =
-					Component.text(" ")
-							.append(playerInfo.getDefaultName()
-							.append(Component.text(" : "))
-							.color(ConfigCache.Colors.CHAT_COLOR_PRIMARY)
-							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
-							.clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
-							.append(message)
-							.color(ConfigCache.Colors.CHAT_COLOR_SECONDARY);
-			String stringLocalMessage = legacyComponentSerialize(localMessage);
-			location.getBlock().getWorld().getPlayers().stream().filter(
-					(player) -> location.distanceSquared(player.getLocation()) <= Math.pow(Main.getConfigCache().local_chat_radius, 2.0d)
-			).forEach(
-					(player) -> player.sendMessage(localMessage)
-			);
-			Bukkit.getLogger().info(stringLocalMessage);
-			if (Main.isDiscordSRVEnabled && Main.getConfigCache().send_local_messages_to_discord) {
-				DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getConfigCache().discord_local_channel_id), stringLocalMessage);
-			}
-			return;
-		}
-		Component globalMessage =
+	public static void sendMessageToChat(@Nonnull Player sender, @Nonnull PlayerInfo playerInfo, @Nullable Location location, @Nonnull Chat chat, @Nonnull Component message) {
+		Component fullMessage =
 				Component.text(" ")
-						.append(Component.text("[WM] ")
+						.append(Component.text(chat.getPrefix())
 						.append(playerInfo.getDefaultName()
 						.append(Component.text(" : ")))
-						.color(ConfigCache.Colors.CHAT_COLOR_PRIMARY)
+						.color(chat.getPrimaryColor())
 						.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
-						.clickEvent(ClickEvent.suggestCommand("/pm " + playerInfo.getID() + " ")))
+						.clickEvent(ClickEvent.suggestCommand("/msg " + playerInfo.getID() + " ")))
 						.append(message)
-						.color(ConfigCache.Colors.CHAT_COLOR_SECONDARY);
-		String stringGlobalMessage = legacyComponentSerialize(globalMessage);
-		Bukkit.getOnlinePlayers().forEach((player) -> {
-			if (player.getWorld() != Main.getWorldDark()) {
-				player.sendMessage(globalMessage);
-			}
-		});
-		Bukkit.getLogger().info(stringGlobalMessage);
-		if (Main.isDiscordSRVEnabled) {
-			if (Main.getConfigCache().send_global_messages_to_discord) {
-				DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getConfigCache().discord_global_channel_id), stringGlobalMessage.replaceFirst("\\[WM]", ""));
-			}
-			if (Main.getConfigCache().send_local_messages_to_discord) {
-				DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getConfigCache().discord_local_channel_id), stringGlobalMessage);
+						.color(chat.getSecondaryColor());
+		String stringFullMessage = legacyComponentSerialize(fullMessage);
+
+		if (chat.getRadius() == -1.0d) {
+			Bukkit.getOnlinePlayers().forEach((player) -> {
+				if (player.getWorld() != Main.getWorldDark()) {
+					for (String permission : chat.getPermissions()) {
+						if (player.hasPermission(permission)) {
+							player.sendMessage(fullMessage);
+						}
+					}
+				}
+			});
+		} else if (location != null) {
+			location.getBlock().getWorld().getPlayers().stream().filter(
+					(player) -> location.distanceSquared(player.getLocation()) <= Math.pow(chat.getRadius(), 2.0d)
+			).forEach(
+					(player) -> {
+						for (String permission : chat.getPermissions()) {
+							if (player.hasPermission(permission)) {
+								player.sendMessage(fullMessage);
+							}
+						}
+					}
+			);
+		}
+
+		if (chat.isShowMessagesAboveHead()) {
+			ChatBuffer.receiveMessage(sender, legacyComponentSerialize(ConfigCache.Symbols.SPEECH.append(message)) + " ");
+		}
+
+		if (Main.isDiscordSRVEnabled && chat.isDiscordEnabled()) {
+			for (String discordChannelId : chat.getDiscordChannelIds()) {
+				DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(discordChannelId), stringFullMessage);
 			}
 		}
+		Bukkit.getLogger().info(stringFullMessage);
 	}
 
 	/**
@@ -171,14 +173,14 @@ public class ChatUtils {
 	 */
 	public static boolean sendPrivateMessage(@Nonnull PlayerInfo sender, @Nonnull PlayerInfo receiver, @Nonnull Component message) {
 		if (sender.getOnlinePlayer() != null && receiver.getOnlinePlayer() != null) {
-			String privateMessage = ChatUtils.legacyComponentSerialize(
+			String privateMessage = legacyComponentSerialize(
 					Component.text(" ")
 							.append(sender.getDefaultName()
 							.append(Component.text(" -> ")
 							.append(receiver.getDefaultName()
 							.append(Component.text(" : ")))))
-							.color(ConfigCache.Colors.CHAT_COLOR_PRIMARY)
-							.append(message.color(ConfigCache.Colors.CHAT_COLOR_SECONDARY))
+							.color(Chat.privateMessagesChat.getPrimaryColor())
+							.append(message.color(Chat.privateMessagesChat.getSecondaryColor()))
 			);
 			sender.getOnlinePlayer().sendMessage(
 					ConfigCache.Symbols.SPEECH
@@ -187,20 +189,22 @@ public class ChatUtils {
 							.append(receiver.getDefaultName()
 							.append(Component.text(" : ")))
 							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
-							.clickEvent(ClickEvent.suggestCommand("/pm " + receiver.getID() + " ")))
-							.color(ConfigCache.Colors.CHAT_COLOR_PRIMARY))
-							.append(message.color(ConfigCache.Colors.CHAT_COLOR_SECONDARY))
+							.clickEvent(ClickEvent.suggestCommand("/msg " + receiver.getID() + " ")))
+							.color(Chat.privateMessagesChat.getPrimaryColor()))
+							.append(message.color(Chat.privateMessagesChat.getSecondaryColor()))
 			);
 			receiver.getOnlinePlayer().sendMessage(
 					ConfigCache.Symbols.SPEECH
 							.append(sender.getDefaultName().append(Component.text(" -> Вам : "))
-							.color(ConfigCache.Colors.CHAT_COLOR_PRIMARY)
+							.color(Chat.privateMessagesChat.getPrimaryColor())
 							.hoverEvent(HoverEvent.showText(Component.text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
-							.clickEvent(ClickEvent.suggestCommand("/pm " + sender.getID() + " ")))
-							.append(message.color(ConfigCache.Colors.CHAT_COLOR_SECONDARY))
+							.clickEvent(ClickEvent.suggestCommand("/msg " + sender.getID() + " ")))
+							.append(message.color(Chat.privateMessagesChat.getSecondaryColor()))
 			);
-			if (Main.isDiscordSRVEnabled && Main.getConfigCache().send_local_messages_to_discord) {
-				DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getConfigCache().discord_local_channel_id), privateMessage);
+			if (Main.isDiscordSRVEnabled && Chat.privateMessagesChat.isDiscordEnabled()) {
+				for (String discordChannelId : Chat.privateMessagesChat.getDiscordChannelIds()) {
+					DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(discordChannelId), privateMessage);
+				}
 			}
 			return sendInfo(null, Component.text(privateMessage));
 		}
@@ -220,47 +224,50 @@ public class ChatUtils {
 		Component fullMessage;
 		if (rolePlayActionType == RolePlayActionType.DO) {
 			fullMessage =
-					Component.text("* ", ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY)
-							.append(action.color(ConfigCache.Colors.RP_MESSAGE_COLOR_SECONDARY))
-							.append(Component.text(" * | ", ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY))
+					Component.text("* ", Chat.actionsChat.getPrimaryColor())
+							.append(action.color(Chat.actionsChat.getSecondaryColor()))
+							.append(Component.text(" * | ", Chat.actionsChat.getPrimaryColor()))
 							.append(playerInfo.getGrayIDGoldName());
 		} else if (rolePlayActionType == RolePlayActionType.IT) {
 			fullMessage =
-					Component.text("* ", ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY)
-							.append(action.color(ConfigCache.Colors.RP_MESSAGE_COLOR_SECONDARY))
-							.append(Component.text(" *", ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY));
+					Component.text("* ", Chat.actionsChat.getPrimaryColor())
+							.append(action.color(Chat.actionsChat.getSecondaryColor()))
+							.append(Component.text(" *", Chat.actionsChat.getPrimaryColor()));
 		} else if (rolePlayActionType == RolePlayActionType.TODO && speech != null) {
 			fullMessage =
 					Component.text("* ")
-							.color(ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY)
+							.color(Chat.actionsChat.getPrimaryColor())
 							.append(speech
-							.color(ConfigCache.Colors.RP_MESSAGE_COLOR_SECONDARY))
+							.color(Chat.actionsChat.getSecondaryColor()))
 							.append(Component.text(" - ")
 							.append(Component.text(playerInfo.getPronouns().getSaidMessage())))
-							.color(ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY)
+							.color(Chat.actionsChat.getPrimaryColor())
 							.append(Component.text(" "))
 							.append(playerInfo.getGrayIDGoldName())
-							.append(Component.text(", ", ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY))
+							.append(Component.text(", ", Chat.actionsChat.getPrimaryColor()))
 							.append(action
-							.color(ConfigCache.Colors.RP_MESSAGE_COLOR_SECONDARY))
-							.append(Component.text(" *", ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY));
+							.color(Chat.actionsChat.getSecondaryColor()))
+							.append(Component.text(" *", Chat.actionsChat.getPrimaryColor()));
 		} else {
 			fullMessage =
-					Component.text("* ", ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY)
+					Component.text("* ", Chat.actionsChat.getPrimaryColor())
 							.append(playerInfo.getGrayIDGoldName())
 							.append(Component.text(" ")
-							.append(action.color(ConfigCache.Colors.RP_MESSAGE_COLOR_SECONDARY)))
-							.append(Component.text(" *", ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY));
+							.append(action.color(Chat.actionsChat.getSecondaryColor())))
+							.append(Component.text(" *", Chat.actionsChat.getPrimaryColor()));
 		}
+		String stringFullMessage = legacyComponentSerialize(fullMessage);
 		player.getWorld().getPlayers().stream().filter(
 				(p) -> player.getLocation().distanceSquared(p.getLocation()) <= Math.pow(Main.getConfigCache().local_chat_radius, 2.0D)
 		).forEach(
 				(p) -> p.sendMessage(ConfigCache.Symbols.YELLOW_EXCLAMATION_MARK.append(fullMessage))
 		);
-		if (Main.isDiscordSRVEnabled && Main.getConfigCache().send_local_messages_to_discord) {
-			DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(Main.getConfigCache().discord_local_channel_id), legacyComponentSerialize(fullMessage));
+		if (Main.isDiscordSRVEnabled && Chat.actionsChat.isDiscordEnabled()) {
+			for (String discordChannelId : Chat.actionsChat.getDiscordChannelIds()) {
+				DiscordUtil.sendMessage(DiscordUtil.getTextChannelById(discordChannelId), stringFullMessage);
+			}
 		}
-		Bukkit.getLogger().info(legacyComponentSerialize(fullMessage));
+		Bukkit.getLogger().info(stringFullMessage);
 		return true;
 	}
 
@@ -283,14 +290,14 @@ public class ChatUtils {
 						.append(killerInfo.getGoldenName()
 						.append(Component.text(" ")))
 						.append(Component.text(killerInfo.getPronouns().getKillMessage())
-						.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
+						.color(Chat.deathChat.getPrimaryColor())
 						.append(Component.text(" ")))
 						.append(killedInfo.getGoldenName())
 						: Component.text(" ")
 						.append(killedInfo.getGoldenName()
 						.append(Component.text(" ")))
 						.append(Component.text(killedInfo.getPronouns().getDeathMessage()))
-						.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_PRIMARY);
+						.color(Chat.deathChat.getPrimaryColor());
 		String stringDeathMessage = legacyComponentSerialize(deathMessage);
 
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -300,19 +307,15 @@ public class ChatUtils {
 		}
 
 		Bukkit.getLogger().info(stringDeathMessage);
-		if (Main.isDiscordSRVEnabled) {
-			Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-				if (Main.getConfigCache().send_global_messages_to_discord) {
-					ChatUtils.sendActionMessage(killed, DiscordUtil.getTextChannelById(Main.getConfigCache().discord_global_channel_id), stringDeathMessage, 16757024);
-				}
-				if (Main.getConfigCache().send_local_messages_to_discord) {
-					ChatUtils.sendActionMessage(killed, DiscordUtil.getTextChannelById(Main.getConfigCache().discord_local_channel_id), stringDeathMessage, 16757024);
-				}
-			});
+
+		if (Main.isDiscordSRVEnabled && Chat.deathChat.isDiscordEnabled()) {
+			for (String discordChannelId : Chat.deathChat.getDiscordChannelIds()) {
+				sendActionMessage(killed, DiscordUtil.getTextChannelById(discordChannelId), stringDeathMessage, 16757024);
+			}
 		}
 
 		Location deathLocation = killed.getLocation();
-		ChatUtils.sendInfo(null,
+		sendInfo(null,
 				Component.text("Мир и координаты смерти игрока : \"")
 						.append(killedInfo.getDefaultName())
 						.append(Component.text(" ("))
@@ -340,7 +343,7 @@ public class ChatUtils {
 						.append(playerInfo.getGoldenName()
 						.append(Component.text(" ")))
 						.append(Component.text(playerInfo.getPronouns().getJoinMessage()))
-						.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_PRIMARY);
+						.color(Chat.joinChat.getPrimaryColor());
 		String stringJoinMessage = legacyComponentSerialize(joinMessage);
 
 		Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
@@ -350,16 +353,10 @@ public class ChatUtils {
 				}
 			}
 		});
-
-		if (Main.isDiscordSRVEnabled) {
-			Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-				if (Main.getConfigCache().send_global_messages_to_discord) {
-					ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(Main.getConfigCache().discord_global_channel_id), stringJoinMessage, 65280);
-				}
-				if (Main.getConfigCache().send_local_messages_to_discord) {
-					ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(Main.getConfigCache().discord_local_channel_id), stringJoinMessage, 65280);
-				}
-			});
+		if (Main.isDiscordSRVEnabled && Chat.joinChat.isDiscordEnabled()) {
+			for (String discordChannelId : Chat.joinChat.getDiscordChannelIds()) {
+				sendActionMessage(player, DiscordUtil.getTextChannelById(discordChannelId), stringJoinMessage, 65280);
+			}
 		}
 		Bukkit.getLogger().info(stringJoinMessage);
 	}
@@ -377,7 +374,7 @@ public class ChatUtils {
 						.append(playerInfo.getGoldenName()
 						.append(Component.text(" ")))
 						.append(Component.text(playerInfo.getPronouns().getQuitMessage()))
-						.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_PRIMARY);
+						.color(Chat.quitChat.getPrimaryColor());
 		String stringQuitMessage = legacyComponentSerialize(quitMessage);
 
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -385,15 +382,11 @@ public class ChatUtils {
 				onlinePlayer.sendMessage(quitMessage);
 			}
 		}
-		if (Main.isDiscordSRVEnabled) {
-			Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-				if (Main.getConfigCache().send_global_messages_to_discord) {
-					ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(Main.getConfigCache().discord_global_channel_id), stringQuitMessage, 16711680);
-				}
-				if (Main.getConfigCache().send_local_messages_to_discord) {
-					ChatUtils.sendActionMessage(player, DiscordUtil.getTextChannelById(Main.getConfigCache().discord_local_channel_id), stringQuitMessage, 16711680);
-				}
-			});
+
+		if (Main.isDiscordSRVEnabled && Chat.quitChat.isDiscordEnabled()) {
+			for (String discordChannelId : Chat.quitChat.getDiscordChannelIds()) {
+				sendActionMessage(player, DiscordUtil.getTextChannelById(discordChannelId), stringQuitMessage, 16711680);
+			}
 		}
 		Bukkit.getLogger().info(stringQuitMessage);
 	}
@@ -435,8 +428,6 @@ public class ChatUtils {
 	public static String legacyComponentSerialize(@Nonnull Component component) {
 		return LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().serialize(component);
 	}
-
-	public enum Chat {GLOBAL, LOCAL}
 
 	public enum RolePlayActionType {DO, IT, ME, TODO}
 }

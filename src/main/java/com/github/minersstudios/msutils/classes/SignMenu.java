@@ -13,16 +13,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiPredicate;
 
-public final class SignMenu {
+public class SignMenu {
 	private static final Map<Player, SignMenu> inputs = new HashMap<>();
 	private final List<String> text;
 	private BiPredicate<Player, String[]> response;
-	private Location location;
+	private final Location location = new Location(Main.getWorldDark(), 0.0d, 200.0d, 0.0d);
 
 	public SignMenu(List<String> text) {
 		this.text = text;
@@ -32,12 +30,8 @@ public final class SignMenu {
 			public void onPacketReceiving(PacketEvent event) {
 				Player player = event.getPlayer();
 				SignMenu menu = inputs.remove(player);
-
 				if (menu == null) return;
-
 				event.setCancelled(true);
-				menu.location.setY(200);
-
 				if (!menu.response.test(player, event.getPacket().getStringArrays().read(0))) {
 					Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
 				}
@@ -56,20 +50,21 @@ public final class SignMenu {
 	}
 
 	public void open(@Nonnull Player player) {
-		this.location = player.getLocation();
-		this.location.setY(200);
-
-		Component[] components = new Component[]{Component.text(this.text.get(0)), Component.text(this.text.get(1)), Component.text(this.text.get(2)), Component.text(this.text.get(3))};
+		PacketContainer packet = Main.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
+		packet.getBlockPositionModifier().write(0, new BlockPosition(this.location.toVector()));
 
 		player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
-		player.sendSignChange(this.location, List.of(components));
+		player.sendSignChange(this.location, Arrays.asList(
+				Component.text(this.text.get(0)),
+				Component.text(this.text.get(1)),
+				Component.text(this.text.get(2)),
+				Component.text(this.text.get(3)))
+		);
 
-		PacketContainer openSign = Main.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
-		openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));
 		try {
-			Main.getProtocolManager().sendServerPacket(player, openSign);
-		} catch (Exception exception) {
-			exception.printStackTrace();
+			Main.getProtocolManager().sendServerPacket(player, packet);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		inputs.put(player, this);

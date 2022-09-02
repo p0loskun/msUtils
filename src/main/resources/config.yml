@@ -1,3 +1,5 @@
+language: ru-ru
+date-format: "EEE, yyyy-MM-dd HH:mm z"
 plugin-hooks:
   msdecor:
     enabled: true
@@ -17,6 +19,7 @@ chat:
   join:
     enabled: true
     permissions: [ default ]
+    prefix: ""
     colors:
       primary: "#FFEE93"
       secondary: "#FCF5C7"
@@ -26,6 +29,27 @@ chat:
   quit:
     enabled: true
     permissions: [ default ]
+    prefix: ""
+    colors:
+      primary: "#FFEE93"
+      secondary: "#FCF5C7"
+    discord:
+      enabled: true
+      discord-channel-id: [ 000000000000000000 ]
+  death:
+    enabled: true
+    permissions: [ default ]
+    prefix: ""
+    colors:
+      primary: "#FFEE93"
+      secondary: "#FCF5C7"
+    discord:
+      enabled: true
+      discord-channel-id: [ 000000000000000000 ]
+  private-messages:
+    enabled: true
+    permissions: [ default ]
+    prefix: " ꀕ "
     colors:
       primary: "#FFEE93"
       secondary: "#FCF5C7"
@@ -37,6 +61,8 @@ chat:
     radius: 25.0
     permissions: [ default ]
     enable-chat-symbols: true
+    prefix: " ꀓ "
+    show-messages-above-head: false
     colors:
       primary: "#FFAA00"
       secondary: "#FFC369"
@@ -47,6 +73,8 @@ chat:
     enabled: true
     radius: 25.0
     permissions: [ default ]
+    prefix: ""
+    show-messages-above-head: true
     colors:
       primary: "#ABA494"
       secondary: "#F1F0E3"
@@ -56,6 +84,8 @@ chat:
   global:
     enabled: true
     permissions: [ default ]
+    prefix: "[WM] "
+    show-messages-above-head: false
     symbol: '!'
     colors:
       primary: "#ABA494"
@@ -73,3 +103,6 @@ resource-packs:
     hash:
     dropbox-url:
     yandex-disk-url:
+registration-process:
+  music: "music_disc.far"
+  name-regex: "[-А-яҐґІіЇїЁё]+"

@@ -1,12 +1,13 @@
 package com.github.minersstudios.msutils.listeners.player;
 
+import com.github.minersstudios.msutils.classes.Chat;
 import com.github.minersstudios.msutils.classes.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ConfigCache;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,7 +30,7 @@ public class PlayerInteractEntityListener implements Listener {
 							.append(playerInfo.getGoldenName())
 							.append(Component.text(" "))
 							.append(Component.text(playerInfo.getPatronymic()))
-							.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
+							.color(Chat.joinChat.getPrimaryColor())
 							.build()
 			);
 			ItemStack helmet = clickedPlayer.getInventory().getHelmet();
@@ -64,6 +65,13 @@ public class PlayerInteractEntityListener implements Listener {
 				itemFrame.addScoreboardTag("invisibleItemFrame");
 				itemFrame.setVisible(itemInItemFrameMaterial.isAir());
 				event.setCancelled(true);
+			}
+		} else if (event.getRightClicked() instanceof Pig pig) {
+			List<Entity> passengers = playerWhoClicked.getPassengers();
+			if (passengers.isEmpty()) {
+				playerWhoClicked.addPassenger(pig);
+			} else {
+				passengers.get(passengers.size() - 1).addPassenger(pig);
 			}
 		}
 	}

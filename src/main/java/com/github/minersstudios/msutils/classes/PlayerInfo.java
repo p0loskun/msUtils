@@ -4,7 +4,6 @@ import com.github.minersstudios.msutils.Main;
 import com.github.minersstudios.msutils.enums.Pronouns;
 import com.github.minersstudios.msutils.enums.ResourcePackType;
 import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.utils.ConfigCache;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -69,11 +68,11 @@ public class PlayerInfo {
 		return Component.text("[")
 						.append(Component.text(this.getID())
 						.append(Component.text("] ")))
-						.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_SECONDARY)
+						.color(Chat.joinChat.getSecondaryColor())
 						.append(Component.text(this.getFirstname())
 						.append(Component.text(" ")
 						.append(Component.text(this.getLastname())))
-						.color(ConfigCache.Colors.JOIN_MESSAGE_COLOR_PRIMARY));
+						.color(Chat.joinChat.getPrimaryColor()));
 	}
 
 	@Nonnull
@@ -85,7 +84,7 @@ public class PlayerInfo {
 						.append(Component.text(this.getFirstname())
 						.append(Component.text(" ")
 						.append(Component.text(this.getLastname())))
-						.color(ConfigCache.Colors.RP_MESSAGE_COLOR_PRIMARY));
+						.color(Chat.actionsChat.getPrimaryColor()));
 	}
 
 	@Nonnull
@@ -643,8 +642,8 @@ public class PlayerInfo {
 	public void savePlayerDataFile() {
 		try {
 			this.yamlConfiguration.save(this.dataFile);
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

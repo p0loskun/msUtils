@@ -39,7 +39,7 @@ public class PlayerJoinListener implements Listener {
 				if (Main.getAuthMeApi().isAuthenticated(player)) {
 					if (!playerInfo.hasPlayerDataFile() || (playerInfo.hasPlayerDataFile() && playerInfo.hasNoName())) {
 						this.cancel();
-						new RegistrationProcess().registerPlayer(playerInfo);
+						new RegistrationProcess().startRegistration(playerInfo);
 					} else {
 						this.cancel();
 						if (playerInfo.getYamlConfiguration().getString("pronouns") == null) {

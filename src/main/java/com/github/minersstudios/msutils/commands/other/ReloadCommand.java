@@ -13,7 +13,7 @@ public class ReloadCommand {
 	public static boolean runCommand(@Nonnull CommandSender sender) {
 		long time = System.currentTimeMillis();
 		HandlerList.unregisterAll(Main.getInstance());
-		Main.load(Main.getInstance());
+		Main.getInstance().load();
 		if (Main.getInstance().isEnabled()) {
 			return ChatUtils.sendFine(sender, Component.text("Плагин был успешно перезагружён за " + (System.currentTimeMillis() - time) + "ms"));
 		}

@@ -1,7 +1,12 @@
 package com.github.minersstudios.msutils.classes;
 
 import com.github.minersstudios.msutils.Main;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
@@ -22,9 +27,9 @@ public class ChatBuffer {
 			delimPos = message.lastIndexOf(' ', 30);
 			if (delimPos < 0) {
 				delimPos = message.indexOf(' ', 30);
-			}
-			if (delimPos < 0) {
-				delimPos = message.length();
+				if (delimPos < 0) {
+					delimPos = message.length();
+				}
 			}
 
 			stringBuilder.append(message, 0, delimPos);
@@ -49,12 +54,37 @@ public class ChatBuffer {
 		chatQueue.get(UUID).add(message);
 	}
 
+	public static int spawnMessage(@Nonnull Player player, @Nonnull String chat) {
+		String[] chatLines = chat.split("\n");
+		int duration = (chat.length() + (17 * chatLines.length)) * 1200 / 800;
+		Entity vehicle = player;
+		for (int chatLine = chatLines.length - 1 ; chatLine >= 0 ; chatLine--) {
+			int finalChatLine = chatLine;
+			Entity finalVehicle = vehicle;
+			vehicle = player.getWorld().spawn(player.getLocation().clone().add(0.0d, 1.0d, 0.0d), AreaEffectCloud.class, (areaEffectCloud) -> {
+				areaEffectCloud.setParticle(Particle.TOWN_AURA);
+				areaEffectCloud.setRadius(0);
+				areaEffectCloud.customName(
+						Component.text("")
+								.append(Component.text(chatLines[finalChatLine]))
+								.append(Component.text(" "))
+								.color(NamedTextColor.WHITE)
+				);
+				areaEffectCloud.setCustomNameVisible(true);
+				areaEffectCloud.setWaitTime(0);
+				areaEffectCloud.setDuration(duration);
+				finalVehicle.addPassenger(areaEffectCloud);
+			});
+		}
+		return duration;
+	}
+
 	private static void scheduleMessageUpdate(@Nonnull Player player, @Nonnull String UUID, int timer) {
 		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
 			if (chatQueue.get(UUID).isEmpty() || !player.isOnline()) {
 				chatQueue.remove(UUID);
 			} else {
-				scheduleMessageUpdate(player, UUID, Main.getBubbles().receiveMessage(player, Objects.requireNonNull(chatQueue.get(UUID).poll())) + 5);
+				scheduleMessageUpdate(player, UUID, spawnMessage(player, Objects.requireNonNull(chatQueue.get(UUID).poll())) + 5);
 			}
 		}, timer);
 	}

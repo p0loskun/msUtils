@@ -1,6 +1,7 @@
 package com.github.minersstudios.msutils.commands;
 
 import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.classes.Chat;
 import com.github.minersstudios.msutils.commands.ban.BanCommand;
 import com.github.minersstudios.msutils.commands.ban.UnBanCommand;
 import com.github.minersstudios.msutils.commands.mute.MuteCommand;
@@ -47,24 +48,28 @@ public class RegCommands {
 		Objects.requireNonNull(plugin.getCommand("info")).setTabCompleter(new AllPlayers());
 		Objects.requireNonNull(plugin.getCommand("whitelist")).setExecutor(new WhitelistCommand());
 		Objects.requireNonNull(plugin.getCommand("whitelist")).setTabCompleter(new WhiteList());
-		Objects.requireNonNull(plugin.getCommand("privatemessage")).setExecutor(new PrivateMessageCommand());
-		Objects.requireNonNull(plugin.getCommand("privatemessage")).setTabCompleter(new AllLocalPlayers());
+		if (Chat.privateMessagesChat.isEnabled()) {
+			Objects.requireNonNull(plugin.getCommand("privatemessage")).setExecutor(new PrivateMessageCommand());
+			Objects.requireNonNull(plugin.getCommand("privatemessage")).setTabCompleter(new AllLocalPlayers());
+		}
 
-		Objects.requireNonNull(plugin.getCommand("sit")).setExecutor(new SitCommand());
-		Objects.requireNonNull(plugin.getCommand("sit")).setTabCompleter(new Empty());
-		Objects.requireNonNull(plugin.getCommand("spit")).setExecutor(new SpitCommand());
-		Objects.requireNonNull(plugin.getCommand("spit")).setTabCompleter(new Empty());
-		Objects.requireNonNull(plugin.getCommand("fart")).setExecutor(new FartCommand());
-		Objects.requireNonNull(plugin.getCommand("fart")).setTabCompleter(new Empty());
-		Objects.requireNonNull(plugin.getCommand("me")).setExecutor(new MeCommand());
-		Objects.requireNonNull(plugin.getCommand("me")).setTabCompleter(new Empty());
-		Objects.requireNonNull(plugin.getCommand("try")).setExecutor(new TryCommand());
-		Objects.requireNonNull(plugin.getCommand("try")).setTabCompleter(new Empty());
-		Objects.requireNonNull(plugin.getCommand("todo")).setExecutor(new TodoCommand());
-		Objects.requireNonNull(plugin.getCommand("todo")).setTabCompleter(new Empty());
-		Objects.requireNonNull(plugin.getCommand("it")).setExecutor(new ItCommand());
-		Objects.requireNonNull(plugin.getCommand("it")).setTabCompleter(new Empty());
-		Objects.requireNonNull(plugin.getCommand("do")).setExecutor(new DoCommand());
-		Objects.requireNonNull(plugin.getCommand("do")).setTabCompleter(new Empty());
+		if (Chat.actionsChat.isEnabled()) {
+			Objects.requireNonNull(plugin.getCommand("sit")).setExecutor(new SitCommand());
+			Objects.requireNonNull(plugin.getCommand("sit")).setTabCompleter(new Empty());
+			Objects.requireNonNull(plugin.getCommand("spit")).setExecutor(new SpitCommand());
+			Objects.requireNonNull(plugin.getCommand("spit")).setTabCompleter(new Empty());
+			Objects.requireNonNull(plugin.getCommand("fart")).setExecutor(new FartCommand());
+			Objects.requireNonNull(plugin.getCommand("fart")).setTabCompleter(new Empty());
+			Objects.requireNonNull(plugin.getCommand("me")).setExecutor(new MeCommand());
+			Objects.requireNonNull(plugin.getCommand("me")).setTabCompleter(new Empty());
+			Objects.requireNonNull(plugin.getCommand("try")).setExecutor(new TryCommand());
+			Objects.requireNonNull(plugin.getCommand("try")).setTabCompleter(new Empty());
+			Objects.requireNonNull(plugin.getCommand("todo")).setExecutor(new TodoCommand());
+			Objects.requireNonNull(plugin.getCommand("todo")).setTabCompleter(new Empty());
+			Objects.requireNonNull(plugin.getCommand("it")).setExecutor(new ItCommand());
+			Objects.requireNonNull(plugin.getCommand("it")).setTabCompleter(new Empty());
+			Objects.requireNonNull(plugin.getCommand("do")).setExecutor(new DoCommand());
+			Objects.requireNonNull(plugin.getCommand("do")).setTabCompleter(new Empty());
+		}
 	}
 }

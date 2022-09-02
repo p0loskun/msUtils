@@ -2,7 +2,7 @@ package com.github.minersstudios.msutils.listeners.chat;
 
 import com.github.minersstudios.msutils.utils.ChatUtils;
 import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msutils.configs.ConfigCache;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.dependencies.google.common.base.Function;
@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
+import java.util.logging.Level;
 
 public class DiscordSRVListener {
 
