@@ -137,7 +137,7 @@ public final class PlayerUtils {
 		return true;
 	}
 
-	public static boolean setSitting(@NotNull Player player, @Nullable Location sitLocation, String @Nullable ... args) {
+	public static boolean setSitting(@NotNull Player player, @Nullable Location sitLocation, String @Nullable [] args) {
 		if (player.getVehicle() != null && player.getVehicle().getType() != EntityType.ARMOR_STAND) return true;
 		if (!seats.containsKey(player) && sitLocation != null) {
 			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {

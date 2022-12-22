@@ -11,7 +11,7 @@ public class PlayerTeleportListener implements Listener {
 
 	@EventHandler
 	public void onPlayerTeleport(@NotNull PlayerTeleportEvent event) {
-		PlayerUtils.setSitting(event.getPlayer(), null, (String) null);
+		PlayerUtils.setSitting(event.getPlayer(), null, null);
 		event.setCancelled(event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE && event.getPlayer().getWorld() == Main.getWorldDark());
 	}
 }
