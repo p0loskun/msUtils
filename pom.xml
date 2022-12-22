@@ -79,6 +79,11 @@
 			<url>https://repo.dmulloy2.net/repository/public/</url>
 		</repository>
 		<repository>
+			<id>dv8tion</id>
+			<name>m2-dv8tion</name>
+			<url>https://m2.dv8tion.net/releases</url>
+		</repository>
+		<repository>
 			<id>Scarsz-Nexus</id>
 			<url>https://nexus.scarsz.me/content/groups/public/</url>
 		</repository>
