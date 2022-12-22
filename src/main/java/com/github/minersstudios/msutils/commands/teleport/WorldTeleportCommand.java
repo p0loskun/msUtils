@@ -1,9 +1,9 @@
-package com.github.minersstudios.msUtils.commands.teleport;
+package com.github.minersstudios.msutils.commands.teleport;
 
-import com.github.minersstudios.msUtils.classes.PlayerID;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.player.PlayerID;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,33 +13,32 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class WorldTeleportCommand implements CommandExecutor {
     private static final String coordinatesRegex = "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$";
 
     @Override
-    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
         if (args.length < 2) return false;
         if (args[0].matches("[0-99]+")) {
             OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
             if (offlinePlayer == null) {
                 return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
             }
-            return teleportToWorld(args, sender, offlinePlayer);
+            return teleportToWorld(sender, offlinePlayer, args);
         }
         if (args[0].length() > 2) {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
             if (offlinePlayer == null) {
                 return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
             }
-            return teleportToWorld(args, sender, offlinePlayer);
+            return teleportToWorld(sender, offlinePlayer, args);
         }
         return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
     }
 
-    private static boolean teleportToWorld(@Nonnull String[] args, @Nonnull CommandSender sender, @Nonnull OfflinePlayer offlinePlayer) {
+    private static boolean teleportToWorld(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer, String @NotNull ... args) {
         if (!offlinePlayer.hasPlayedBefore()) {
             return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
         }

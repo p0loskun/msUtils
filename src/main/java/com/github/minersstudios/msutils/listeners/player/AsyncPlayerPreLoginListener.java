@@ -1,20 +1,19 @@
-package com.github.minersstudios.msUtils.listeners.player;
+package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class AsyncPlayerPreLoginListener implements Listener {
 
 	@EventHandler
-	public void onAsyncPlayerPreLogin(@Nonnull AsyncPlayerPreLoginEvent event) {
+	public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
 		String hostName = event.getAddress().getHostName(),
 				nickname = event.getName();
 		PlayerInfo playerInfo = new PlayerInfo(event.getUniqueId(), nickname);
@@ -30,7 +29,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
 							.append(Component.text("\" был добавлен новый айпи адресс : "))
 							.append(Component.text(hostName))
 			);
-			playerInfo.setIP(hostName);
+			playerInfo.addIP(hostName);
 		}
 
 		if (

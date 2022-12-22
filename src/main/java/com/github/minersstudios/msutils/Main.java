@@ -1,14 +1,12 @@
-package com.github.minersstudios.msUtils;
+package com.github.minersstudios.msutils;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.github.minersstudios.msUtils.classes.ChatBubbles;
-import com.github.minersstudios.msUtils.classes.RotateSeatTask;
-import com.github.minersstudios.msUtils.commands.RegCommands;
-import com.github.minersstudios.msUtils.listeners.RegEvents;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.utils.Config;
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.commands.RegCommands;
+import com.github.minersstudios.msutils.listeners.RegEvents;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -18,38 +16,29 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
 
 public final class Main extends JavaPlugin {
 	private static Plugin instance;
-	private static Config cachedConfig;
+	private static ConfigCache cachedConfig;
 	private static AuthMeApi authMeApi;
 	private static World worldDark;
 	private static World overworld;
-	private static ChatBubbles bubbles;
 	private static Scoreboard scoreboardHideTags;
 	private static Team scoreboardHideTagsTeam;
 	private static ProtocolManager protocolManager;
 
 	@Override
 	public void onEnable() {
-		instance = this;
-		authMeApi = AuthMeApi.getInstance();
-		worldDark = setWorldDark();
-		overworld = setOverworld();
-		bubbles = new ChatBubbles();
-		protocolManager = ProtocolLibrary.getProtocolManager();
-		scoreboardHideTags = (Objects.requireNonNull(Bukkit.getScoreboardManager())).getNewScoreboard();
-		scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("HideTags");
-		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
-		RegEvents.init(this);
-		RegCommands.init(this);
-		reloadConfigs();
-		new RotateSeatTask();
+		long time = System.currentTimeMillis();
+		this.load();
+		if (this.isEnabled()) {
+			ChatUtils.log(Level.INFO, ChatColor.GREEN + "Enabled in " + (System.currentTimeMillis() - time) + "ms");
+		}
 	}
 
 	@Override
@@ -62,8 +51,28 @@ public final class Main extends JavaPlugin {
 		}
 	}
 
-	@Nullable
-	private static World setWorldDark() {
+	public void load() {
+		instance = this;
+		authMeApi = AuthMeApi.getInstance();
+		worldDark = setWorldDark();
+		overworld = setOverworld();
+		protocolManager = ProtocolLibrary.getProtocolManager();
+		scoreboardHideTags = (Objects.requireNonNull(Bukkit.getScoreboardManager())).getNewScoreboard();
+		scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("HideTags");
+		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
+		RegEvents.init(this);
+		RegCommands.init(this);
+		reloadConfigs();
+
+		Bukkit.getScheduler().runTaskTimerAsynchronously(this, () ->
+				PlayerUtils.getSeats().values().forEach((armorStand) ->
+						armorStand.setRotation(armorStand.getPassengers().get(0).getLocation().getYaw(), 0.0f)
+				), 0L, 1L
+		);
+	}
+
+	private static @Nullable World setWorldDark() {
 		World world = Bukkit.getWorld("world_dark");
 		if (world != null) return world;
 		world = new WorldCreator("world_dark")
@@ -90,8 +99,7 @@ public final class Main extends JavaPlugin {
 		return world;
 	}
 
-	@Nullable
-	public World setOverworld() {
+	public @Nullable World setOverworld() {
 		try (InputStream input = new FileInputStream("server.properties")) {
 			Properties properties = new Properties();
 			properties.load(input);
@@ -105,14 +113,14 @@ public final class Main extends JavaPlugin {
 	public static void reloadConfigs() {
 		getInstance().saveDefaultConfig();
 		getInstance().reloadConfig();
-		cachedConfig = new Config();
+		cachedConfig = new ConfigCache();
 	}
 
 	public static Plugin getInstance() {
 		return instance;
 	}
 
-	public static Config getCachedConfig() {
+	public static ConfigCache getCachedConfig() {
 		return cachedConfig;
 	}
 
@@ -126,10 +134,6 @@ public final class Main extends JavaPlugin {
 
 	public static World getOverworld() {
 		return overworld;
-	}
-
-	public static ChatBubbles getBubbles() {
-		return bubbles;
 	}
 
 	public static Scoreboard getScoreboardHideTags() {

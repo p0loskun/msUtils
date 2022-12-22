@@ -1,4 +1,4 @@
-package com.github.minersstudios.msUtils.enums;
+package com.github.minersstudios.msutils.player;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -8,8 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public enum Pronouns {
@@ -53,7 +53,7 @@ public enum Pronouns {
 			"сказали"
 	);
 
-	private final String
+	private final @NotNull String
 			joinMessage,
 			quitMessage,
 			spitMessage,
@@ -65,20 +65,20 @@ public enum Pronouns {
 			deathMessage,
 			killMessage,
 			saidMessage;
-	public static final String NAME = ChatColor.DARK_GRAY + "Выберите форму обращения";
+	public static final Component NAME = Component.text("Выберите форму обращения").color(NamedTextColor.DARK_GRAY);
 
 	Pronouns(
-			String joinMessage,
-			String quitMessage,
-			String spitMessage,
-			String fartMessage,
-			String pronouns,
-			String traveler,
-			String sitMessage,
-			String unSitMessage,
-			String deathMessage,
-			String killMessage,
-			String saidMessage
+			@NotNull String joinMessage,
+			@NotNull String quitMessage,
+			@NotNull String spitMessage,
+			@NotNull String fartMessage,
+			@NotNull String pronouns,
+			@NotNull String traveler,
+			@NotNull String sitMessage,
+			@NotNull String unSitMessage,
+			@NotNull String deathMessage,
+			@NotNull String killMessage,
+			@NotNull String saidMessage
 	) {
 		this.joinMessage = joinMessage;
 		this.quitMessage = quitMessage;
@@ -96,11 +96,9 @@ public enum Pronouns {
 	/**
 	 * @return Pronouns GUI
 	 */
-	@Nonnull
-	public static Inventory getInventory() {
+	public static @NotNull Inventory getInventory() {
 		ItemStack he = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
 		ItemMeta heMeta = he.getItemMeta();
-		assert heMeta != null;
 		heMeta.displayName(Component.text(ChatColor.WHITE + "Он"));
 		ArrayList<Component> loreHe = new ArrayList<>();
 		loreHe.add(Component.text("К вам будут обращаться как к нему").color(NamedTextColor.GRAY));
@@ -109,7 +107,6 @@ public enum Pronouns {
 
 		ItemStack she = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 		ItemMeta sheMeta = she.getItemMeta();
-		assert sheMeta != null;
 		sheMeta.displayName(Component.text(ChatColor.WHITE + "Она"));
 		ArrayList<Component> loreShe = new ArrayList<>();
 		loreShe.add(Component.text("К вам будут обращаться как к ней").color(NamedTextColor.GRAY));
@@ -118,14 +115,13 @@ public enum Pronouns {
 
 		ItemStack they = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
 		ItemMeta theyMeta = they.getItemMeta();
-		assert theyMeta != null;
 		theyMeta.displayName(Component.text(ChatColor.WHITE + "Они"));
 		ArrayList<Component> loreThey = new ArrayList<>();
 		loreThey.add(Component.text("К вам будут обращаться как к ним").color(NamedTextColor.GRAY));
 		theyMeta.lore(loreThey);
 		they.setItemMeta(theyMeta);
 
-		Inventory inventory = Bukkit.createInventory(null, 9, Component.text(NAME));
+		Inventory inventory = Bukkit.createInventory(null, 9, NAME);
 		inventory.setItem(0, he);
 		inventory.setItem(1, he);
 		inventory.setItem(2, he);
@@ -139,47 +135,47 @@ public enum Pronouns {
 	}
 
 
-	public String getJoinMessage() {
+	public @NotNull String getJoinMessage() {
 		return this.joinMessage;
 	}
 
-	public String getQuitMessage() {
+	public @NotNull String getQuitMessage() {
 		return this.quitMessage;
 	}
 
-	public String getSpitMessage() {
+	public @NotNull String getSpitMessage() {
 		return this.spitMessage;
 	}
 
-	public String getFartMessage() {
+	public @NotNull String getFartMessage() {
 		return this.fartMessage;
 	}
 
-	public String getPronouns() {
+	public @NotNull String getPronouns() {
 		return this.pronouns;
 	}
 
-	public String getTraveler() {
+	public @NotNull String getTraveler() {
 		return this.traveler;
 	}
 
-	public String getSitMessage() {
+	public @NotNull String getSitMessage() {
 		return this.sitMessage;
 	}
 
-	public String getUnSitMessage() {
+	public @NotNull String getUnSitMessage() {
 		return this.unSitMessage;
 	}
 
-	public String getDeathMessage() {
+	public @NotNull String getDeathMessage() {
 		return this.deathMessage;
 	}
 
-	public String getKillMessage() {
+	public @NotNull String getKillMessage() {
 		return this.killMessage;
 	}
 
-	public String getSaidMessage() {
+	public @NotNull String getSaidMessage() {
 		return this.saidMessage;
 	}
 }

@@ -1,8 +1,7 @@
-package com.github.minersstudios.msUtils.enums;
+package com.github.minersstudios.msutils.player;
 
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -14,32 +13,32 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public enum ResourcePackType {
 	FULL(
-			Main.getCachedConfig().full_dropbox_url,
-			Main.getCachedConfig().full_yandex_disk_url,
-			Main.getCachedConfig().full_hash
+			Main.getCachedConfig().fullDropboxUrl,
+			Main.getCachedConfig().fullYandexDiskUrl,
+			Main.getCachedConfig().fullHash
 	),
 	LITE(
-			Main.getCachedConfig().lite_dropbox_url,
-			Main.getCachedConfig().lite_yandex_disk_url,
-			Main.getCachedConfig().lite_hash
+			Main.getCachedConfig().liteDropboxUrl,
+			Main.getCachedConfig().liteYandexDiskUrl,
+			Main.getCachedConfig().liteHash
 	),
-	NONE(
-			null,
-			null,
-			null
-	);
+	NONE("", "", "");
 
 	private final String dropBoxURL, yandexDiskURL, hash;
-	public static final String NAME = ChatColor.DARK_GRAY + "Выберите нужный текстурпак";
+	public static final Component NAME = Component.text("\"Выберите нужный текстурпак").color(NamedTextColor.DARK_GRAY);
 
-	ResourcePackType(String dropBoxURL, String yandexDiskURL, String hash) {
+	ResourcePackType(
+			@NotNull String dropBoxURL,
+			@NotNull String yandexDiskURL,
+			@NotNull String hash
+	) {
 		this.dropBoxURL = dropBoxURL;
 		this.yandexDiskURL = yandexDiskURL;
 		this.hash = hash;
@@ -49,8 +48,7 @@ public enum ResourcePackType {
 	 * @param name ResourcePack type name
 	 * @return ResourcePackType by name
 	 */
-	@Nullable
-	public static ResourcePackType getResourcePackByString(@Nonnull String name) {
+	public static @Nullable ResourcePackType getResourcePackByString(@NotNull String name) {
 		return switch (name) {
 			case "FULL" -> FULL;
 			case "LITE" -> LITE;
@@ -62,11 +60,9 @@ public enum ResourcePackType {
 	/**
 	 * @return Resource pack GUI
 	 */
-	@Nonnull
-	public static Inventory getInventory() {
+	public static @NotNull Inventory getInventory() {
 		ItemStack pickRP = new ItemStack(Material.KNOWLEDGE_BOOK);
 		ItemMeta pickRPMeta = pickRP.getItemMeta();
-		assert pickRPMeta != null;
 		pickRPMeta.displayName(Component.text(ChatColor.WHITE + "Ресурспаки"));
 		pickRPMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
 		pickRPMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
@@ -83,7 +79,6 @@ public enum ResourcePackType {
 
 		ItemStack noneRP = new ItemStack(Material.COAL_BLOCK);
 		ItemMeta noneRPMeta = noneRP.getItemMeta();
-		assert noneRPMeta != null;
 		noneRPMeta.displayName(Component.text(ChatColor.WHITE + "Без текстурпака"));
 
 		ArrayList<Component> lore0 = new ArrayList<>();
@@ -95,7 +90,6 @@ public enum ResourcePackType {
 
 		ItemStack liteRP = new ItemStack(Material.IRON_BLOCK);
 		ItemMeta liteRPMeta = liteRP.getItemMeta();
-		assert liteRPMeta != null;
 		liteRPMeta.displayName(Component.text(ChatColor.WHITE + "Облегчённая версия"));
 
 		ArrayList<Component> lore2 = new ArrayList<>();
@@ -113,7 +107,6 @@ public enum ResourcePackType {
 
 		ItemStack fullRP = new ItemStack(Material.NETHERITE_BLOCK);
 		ItemMeta fullRPMeta = fullRP.getItemMeta();
-		assert fullRPMeta != null;
 		fullRPMeta.displayName(Component.text(ChatColor.WHITE + "Полная версия"));
 
 		ArrayList<Component> lore4 = new ArrayList<>();
@@ -140,7 +133,7 @@ public enum ResourcePackType {
 		fullRPMeta.lore(lore4);
 		fullRP.setItemMeta(fullRPMeta);
 
-		Inventory inventory = Bukkit.createInventory(null, 9, Component.text(NAME));
+		Inventory inventory = Bukkit.createInventory(null, 9, NAME);
 		inventory.setItem(0, noneRP);
 		inventory.setItem(1, noneRP);
 		inventory.setItem(2, fullRP);
@@ -158,7 +151,7 @@ public enum ResourcePackType {
 	 *
 	 * @param playerInfo player info
 	 */
-	public static void setResourcePack(@Nonnull PlayerInfo playerInfo) {
+	public static void setResourcePack(@NotNull PlayerInfo playerInfo) {
 		if(playerInfo.getOnlinePlayer() == null) return;
 		Player player = playerInfo.getOnlinePlayer();
 		if (playerInfo.getResourcePackType() != null) {
@@ -174,15 +167,15 @@ public enum ResourcePackType {
 		}
 	}
 
-	public String getDropBoxURL() {
+	public @NotNull String getDropBoxURL() {
 		return dropBoxURL;
 	}
 
-	public String getYandexDiskURL() {
+	public @NotNull String getYandexDiskURL() {
 		return yandexDiskURL;
 	}
 
-	public String getHash() {
+	public @NotNull String getHash() {
 		return hash;
 	}
 

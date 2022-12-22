@@ -1,8 +1,8 @@
-package com.github.minersstudios.msUtils.utils;
+package com.github.minersstudios.msutils.utils;
 
 import com.google.common.base.Charsets;
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -12,12 +12,12 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
-import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-public class PlayerUtils {
+public final class PlayerUtils {
 	private static final Map<Player, ArmorStand> seats = new HashMap<>();
 
 	/**
@@ -38,7 +38,7 @@ public class PlayerUtils {
 	 * @return player UUID
 	 */
 	@Nullable
-	public static UUID getUUID(@Nonnull String nickname) {
+	public static UUID getUUID(@NotNull String nickname) {
 		boolean isOnlineMode = true;
 		try (InputStream input = new FileInputStream("server.properties")) {
 			Properties properties = new Properties();
@@ -70,8 +70,7 @@ public class PlayerUtils {
 	 * @param nickname player nickname
 	 * @return offline player
 	 */
-	@Nullable
-	public static OfflinePlayer getOfflinePlayerByNick(@Nonnull String nickname) {
+	public static @Nullable OfflinePlayer getOfflinePlayerByNick(@NotNull String nickname) {
 		UUID UUID = PlayerUtils.getUUID(nickname);
 		return UUID != null ? Bukkit.getOfflinePlayer(UUID) : null;
 	}
@@ -83,7 +82,7 @@ public class PlayerUtils {
 	 * @param nickname      player nickname
 	 * @return True if player successfully removed from whitelist
 	 */
-	public static boolean removePlayerFromWhitelist(@Nonnull OfflinePlayer offlinePlayer, @Nullable String nickname) {
+	public static boolean removePlayerFromWhitelist(@NotNull OfflinePlayer offlinePlayer, @Nullable String nickname) {
 		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) return false;
 		if (nickname == null) {
 			offlinePlayer.setWhitelisted(false);
@@ -103,7 +102,7 @@ public class PlayerUtils {
 	 * @param nickname      player nickname
 	 * @return True if player successfully added to whitelist
 	 */
-	public static boolean addPlayerToWhitelist(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String nickname) {
+	public static boolean addPlayerToWhitelist(@NotNull OfflinePlayer offlinePlayer, @NotNull String nickname) {
 		if (Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) return false;
 		try {
 			Bukkit.getScheduler().callSyncMethod(Main.getInstance(), () ->
@@ -122,7 +121,7 @@ public class PlayerUtils {
 	 * @param reason        kick reason
 	 * @return True if player successfully kicked
 	 */
-	public static boolean kickPlayer(@Nonnull OfflinePlayer offlinePlayer, @Nonnull String title, @Nonnull String reason) {
+	public static boolean kickPlayer(@NotNull OfflinePlayer offlinePlayer, @NotNull String title, @NotNull String reason) {
 		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null) return false;
 		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation();
 		offlinePlayer.getPlayer().kick(
@@ -138,7 +137,7 @@ public class PlayerUtils {
 		return true;
 	}
 
-	public static boolean setSitting(@Nonnull Player player, @Nullable Location sitLocation, @Nullable String... args) {
+	public static boolean setSitting(@NotNull Player player, @Nullable Location sitLocation, String @Nullable ... args) {
 		if (player.getVehicle() != null && player.getVehicle().getType() != EntityType.ARMOR_STAND) return true;
 		if (!seats.containsKey(player) && sitLocation != null) {
 			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {
@@ -166,8 +165,7 @@ public class PlayerUtils {
 		return true;
 	}
 
-	@Nonnull
-	public static String getTimezone(@Nonnull InetSocketAddress ip) {
+	public static @NotNull String getTimezone(@NotNull InetSocketAddress ip) {
 		try (InputStream input = new URL("http://ip-api.com/json/" + ip.getHostName()).openStream()) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 			StringBuilder entirePage = new StringBuilder();
@@ -185,7 +183,7 @@ public class PlayerUtils {
 		return ZoneId.systemDefault().toString();
 	}
 
-	public static Map<Player, ArmorStand> getSeats() {
+	public static @NotNull Map<Player, ArmorStand> getSeats() {
 		return seats;
 	}
 }

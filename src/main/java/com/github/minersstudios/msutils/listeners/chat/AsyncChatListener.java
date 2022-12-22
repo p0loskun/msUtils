@@ -1,22 +1,21 @@
-package com.github.minersstudios.msUtils.listeners.chat;
+package com.github.minersstudios.msutils.listeners.chat;
 
-import com.github.minersstudios.msUtils.classes.ChatBuffer;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msutils.chat.ChatBuffer;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.player.PlayerInfo;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class AsyncChatListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onAsyncPlayerChat(@Nonnull AsyncChatEvent event) {
+	public void onAsyncPlayerChat(@NotNull AsyncChatEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
 		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthMeApi().isAuthenticated(player)) return;
@@ -31,7 +30,7 @@ public class AsyncChatListener implements Listener {
 			return;
 		}
 
-		String message = ChatUtils.legacyComponentSerialize(event.originalMessage());
+		String message = ChatUtils.convertComponentToString(event.originalMessage());
 		if (message.startsWith("!")) {
 			message = message.substring(1).trim();
 			if (!message.isEmpty()) {

@@ -1,13 +1,12 @@
-package com.github.minersstudios.msUtils.listeners.player;
+package com.github.minersstudios.msutils.listeners.inventory;
 
-import com.github.minersstudios.msUtils.enums.Pronouns;
-import com.github.minersstudios.msUtils.enums.ResourcePackType;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.classes.RegistrationProcess;
-import com.github.minersstudios.msUtils.enums.Crafts;
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.player.Pronouns;
+import com.github.minersstudios.msutils.player.ResourcePackType;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.RegistrationProcess;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,16 +21,18 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+
+import static com.github.minersstudios.msutils.player.CraftsMenu.*;
 
 public class InventoryClickListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onInventoryClick(@Nonnull InventoryClickEvent event) {
+	public void onInventoryClick(@NotNull InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		Inventory clickedInventory = event.getClickedInventory();
-		String inventoryTitle = ChatUtils.legacyComponentSerialize(event.getView().title());
+		Component inventoryTitle = event.getView().title();
 		int slot = event.getSlot();
 		ItemStack cursorItem = event.getCursor(),
 				currentItem = event.getCurrentItem();
@@ -41,10 +42,10 @@ public class InventoryClickListener implements Listener {
 		if (
 				(clickedInventory.getType() == InventoryType.PLAYER
 				&& (event.getClick().isShiftClick() || event.getClick() == ClickType.DOUBLE_CLICK)
-				&& (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME)
-				|| inventoryTitle.equalsIgnoreCase(Pronouns.NAME)
-				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME)
-				|| inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_NAME)))
+				&& (inventoryTitle.contains(ResourcePackType.NAME)
+				|| inventoryTitle.contains(Pronouns.NAME)
+				|| inventoryTitle.contains(CRAFT_NAME)
+				|| inventoryTitle.contains(CRAFTS_NAME)))
 				|| player.getWorld() == Main.getWorldDark()
 		) {
 			event.setCancelled(true);
@@ -84,7 +85,7 @@ public class InventoryClickListener implements Listener {
 		}
 
 		if (clickedInventory.getType() != InventoryType.PLAYER) {
-			if (inventoryTitle.equalsIgnoreCase(ResourcePackType.NAME)) {
+			if (inventoryTitle.contains(ResourcePackType.NAME)) {
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 				if (slot == 0 || slot == 1) {
 					if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE)
@@ -109,7 +110,7 @@ public class InventoryClickListener implements Listener {
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
-			if (inventoryTitle.equalsIgnoreCase(Pronouns.NAME)) {
+			if (inventoryTitle.contains(Pronouns.NAME)) {
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 				if (slot == 0 || slot == 1 || slot == 2) {
 					playerInfo.setPronouns(Pronouns.HE);
@@ -131,31 +132,51 @@ public class InventoryClickListener implements Listener {
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
-			if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFTS_NAME)) {
+			if (inventoryTitle.contains(CRAFTS_NAME)) {
 				ItemStack firstItem = clickedInventory.getItem(0);
 				if (firstItem != null && !event.getClick().isCreativeAction()) {
-					int firstItemIndex = Crafts.getItemIndex(firstItem);
-					if (slot >= 36 && slot <= 39 && firstItemIndex - 35 >= 0) {
-						player.openInventory(Crafts.getInventory(firstItemIndex - 36));
-					} else if (slot == 40) {
-						player.closeInventory();
-					} else if (slot >= 41 && slot <= 44 && firstItemIndex + 36 < Crafts.values().length) {
-						player.openInventory(Crafts.getInventory(firstItemIndex + 36));
+					Category category = Category.getCategory(firstItem);
+					if (category == null) return;
+					int firstItemIndex = getItemIndex(firstItem, category);
+					if (PREVIOUS_PAGE_BUTTON_SLOTS.contains(slot) && firstItemIndex - 35 >= 0) {
+						openCategory(player, firstItemIndex - 36, category);
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+					} else if (slot == CRAFTS_QUIT_BUTTON) {
+						openCategories(player);
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+					} else if (NEXT_PAGE_BUTTON_SLOTS.contains(slot) && firstItemIndex + 36 < category.getRecipes().size()) {
+						openCategory(player, firstItemIndex + 36, category);
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 					} else if (currentItem != null) {
-						Crafts.openCraft(player, currentItem, firstItemIndex);
+						openCraft(player, currentItem, firstItemIndex, category);
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 					}
 				}
-				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 				event.setCancelled(!event.getClick().isCreativeAction());
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
 
-			if (inventoryTitle.equalsIgnoreCase(Crafts.CRAFT_NAME)) {
-				ItemStack arrow = clickedInventory.getItem(14);
-				if (arrow != null && arrow.getItemMeta() != null && slot == 31) {
+			if (inventoryTitle.contains(CRAFT_NAME)) {
+				Category category = Category.getCategory(clickedInventory.getItem(RESULT_SLOT));
+				if (category == null) return;
+				ItemStack arrow = clickedInventory.getItem(ARROW_SLOT);
+				if (arrow != null && arrow.getItemMeta() != null && slot == CRAFT_QUIT_BUTTON) {
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
-					player.openInventory(Crafts.getInventory(arrow.getItemMeta().getCustomModelData() - 1));
+					openCategory(player, arrow.getItemMeta().getCustomModelData() - 1, category);
 				}
+				event.setCancelled(!event.getClick().isCreativeAction());
+				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+			}
+
+			if (inventoryTitle.contains(CATEGORY_NAME)) {
+				if (BLOCKS_CATEGORY_SLOTS.contains(slot)) {
+					openCategory(player, 0, Category.BLOCKS);
+				} else if (DECORS_CATEGORY_SLOTS.contains(slot)) {
+					openCategory(player, 0, Category.DECORS);
+				} else if (ITEMS_CATEGORY_SLOTS.contains(slot)) {
+					openCategory(player, 0, Category.ITEMS);
+				}
+				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
 				event.setCancelled(!event.getClick().isCreativeAction());
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}

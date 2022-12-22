@@ -1,11 +1,8 @@
-package com.github.minersstudios.msUtils.classes;
+package com.github.minersstudios.msutils.player;
 
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.enums.Pronouns;
-import com.github.minersstudios.msUtils.enums.ResourcePackType;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.utils.Config;
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
@@ -13,9 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
@@ -29,33 +26,32 @@ public class PlayerInfo {
 	private final File dataFile;
 	private final YamlConfiguration yamlConfiguration;
 
-	private Player onlinePlayer;
+	private @Nullable Player onlinePlayer;
 	private final UUID uuid;
-	private String nickname, firstname, lastname, patronymic;
+	private @Nullable String nickname, firstname, lastname, patronymic;
 
 	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd HH:mm z");
 
-	public PlayerInfo(@Nonnull UUID uuid, @Nullable String nickname) {
+	public PlayerInfo(@NotNull UUID uuid, @Nullable String nickname) {
 		this.dataFile = new File(Main.getInstance().getDataFolder(), "players/" + uuid + ".yml");
 		this.yamlConfiguration = YamlConfiguration.loadConfiguration(this.dataFile);
 		this.uuid = uuid;
 		this.nickname = nickname;
 	}
 
-	public PlayerInfo(@Nonnull UUID uuid) {
+	public PlayerInfo(@NotNull UUID uuid) {
 		this(uuid, null);
 	}
 
-	public YamlConfiguration getYamlConfiguration() {
+	public @NotNull YamlConfiguration getYamlConfiguration() {
 		return yamlConfiguration;
 	}
 
-	public UUID getUuid() {
+	public @NotNull UUID getUuid() {
 		return uuid;
 	}
 
-	@Nonnull
-	public Component getDefaultName() {
+	public @NotNull Component getDefaultName() {
 		return Component.text("[")
 						.append(Component.text(this.getID()))
 						.append(Component.text("] "))
@@ -64,20 +60,18 @@ public class PlayerInfo {
 						.append(Component.text(this.getLastname()));
 	}
 
-	@Nonnull
-	public Component getGoldenName() {
+	public @NotNull Component getGoldenName() {
 		return Component.text("[")
 						.append(Component.text(this.getID())
 						.append(Component.text("] ")))
-						.color(Config.Colors.joinMessageColorSecondary)
+						.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_SECONDARY)
 						.append(Component.text(this.getFirstname())
 						.append(Component.text(" ")
 						.append(Component.text(this.getLastname())))
-						.color(Config.Colors.joinMessageColorPrimary));
+						.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY));
 	}
 
-	@Nonnull
-	public Component getGrayIDGoldName() {
+	public @NotNull Component getGrayIDGoldName() {
 		return Component.text("[")
 						.append(Component.text(this.getID())
 						.append(Component.text("] ")))
@@ -85,11 +79,10 @@ public class PlayerInfo {
 						.append(Component.text(this.getFirstname())
 						.append(Component.text(" ")
 						.append(Component.text(this.getLastname())))
-						.color(Config.Colors.rpMessageMessageColorPrimary));
+						.color(ChatUtils.Colors.RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
 	}
 
-	@Nonnull
-	public Component getGrayIDGreenName() {
+	public @NotNull Component getGrayIDGreenName() {
 		return Component.text("[")
 						.append(Component.text(this.getID())
 						.append(Component.text("] ")))
@@ -105,7 +98,7 @@ public class PlayerInfo {
 	 *
 	 * @param ip player ip
 	 */
-	public void setIP(String ip) {
+	public void addIP(@NotNull String ip) {
 		List<String> ips = this.yamlConfiguration.getStringList("ip");
 		ips.add(ip);
 		this.yamlConfiguration.set("ip", ips);
@@ -117,8 +110,7 @@ public class PlayerInfo {
 	 *
 	 * @return player ip
 	 */
-	@Nullable
-	public List<String> getIP() {
+	public @Nullable List<String> getIP() {
 		return this.yamlConfiguration.getStringList("ip");
 	}
 
@@ -127,8 +119,7 @@ public class PlayerInfo {
 	 *
 	 * @return offline player
 	 */
-	@Nonnull
-	public OfflinePlayer getOfflinePlayer() {
+	public @NotNull OfflinePlayer getOfflinePlayer() {
 		return Bukkit.getOfflinePlayer(uuid);
 	}
 
@@ -137,8 +128,7 @@ public class PlayerInfo {
 	 *
 	 * @return online player if it's online, else null
 	 */
-	@Nullable
-	public Player getOnlinePlayer() {
+	public @Nullable Player getOnlinePlayer() {
 		return this.onlinePlayer == null
 				? this.onlinePlayer = this.getOfflinePlayer().getPlayer() != null && this.getOfflinePlayer().isOnline()
 				? this.getOfflinePlayer().getPlayer()
@@ -170,8 +160,7 @@ public class PlayerInfo {
 	 *
 	 * @return player nickname
 	 */
-	@Nullable
-	public String getNickname() {
+	public @Nullable String getNickname() {
 		return this.nickname == null ? this.nickname = this.getOfflinePlayer().getName() : this.nickname;
 	}
 
@@ -181,8 +170,7 @@ public class PlayerInfo {
 	 *
 	 * @return player firstname if it's != null, else returns default firstname
 	 */
-	@Nonnull
-	public String getFirstname() {
+	public @NotNull String getFirstname() {
 		return this.yamlConfiguration == null ? "Иван"
 				: this.firstname == null ? this.firstname = this.yamlConfiguration.getString("name.firstname", "Иван")
 				: this.firstname;
@@ -193,7 +181,7 @@ public class PlayerInfo {
 	 *
 	 * @param firstname player's first name
 	 */
-	public void setFirstname(@Nonnull String firstname) {
+	public void setFirstname(@NotNull String firstname) {
 		if (!this.hasPlayerDataFile()) return;
 		this.firstname = firstname;
 		this.yamlConfiguration.set("name.firstname", firstname);
@@ -205,8 +193,7 @@ public class PlayerInfo {
 	 *
 	 * @return player lastname if it's != null, else returns default lastname
 	 */
-	@Nonnull
-	public String getLastname() {
+	public @NotNull String getLastname() {
 		return this.yamlConfiguration == null ? "Иванов"
 				: this.lastname == null ? this.lastname = this.yamlConfiguration.getString("name.lastname", "Иванов")
 				: this.lastname;
@@ -217,7 +204,7 @@ public class PlayerInfo {
 	 *
 	 * @param lastname player's last name
 	 */
-	public void setLastName(@Nonnull String lastname) {
+	public void setLastName(@NotNull String lastname) {
 		if (!this.hasPlayerDataFile()) return;
 		this.lastname = lastname;
 		this.yamlConfiguration.set("name.lastname", lastname);
@@ -230,8 +217,7 @@ public class PlayerInfo {
 	 *
 	 * @return player patronymic if it's != null, else returns default patronymic
 	 */
-	@Nonnull
-	public String getPatronymic() {
+	public @NotNull String getPatronymic() {
 		return this.yamlConfiguration == null ? "Иваныч"
 				: this.patronymic == null ? this.patronymic = this.yamlConfiguration.getString("name.patronymic", "Иваныч")
 				: this.patronymic;
@@ -242,7 +228,7 @@ public class PlayerInfo {
 	 *
 	 * @param patronymic player's patronymic
 	 */
-	public void setPatronymic(@Nonnull String patronymic) {
+	public void setPatronymic(@NotNull String patronymic) {
 		if (!this.hasPlayerDataFile()) return;
 		this.patronymic = patronymic;
 		this.yamlConfiguration.set("name.patronymic", patronymic);
@@ -254,8 +240,7 @@ public class PlayerInfo {
 	 *
 	 * @return player pronouns if it's != null, else returns null
 	 */
-	@Nonnull
-	public Pronouns getPronouns() {
+	public @NotNull Pronouns getPronouns() {
 		return Pronouns.valueOf(this.yamlConfiguration.getString("pronouns", "HE"));
 	}
 
@@ -264,9 +249,30 @@ public class PlayerInfo {
 	 *
 	 * @param pronouns player pronouns
 	 */
-	public void setPronouns(@Nonnull Pronouns pronouns) {
+	public void setPronouns(@NotNull Pronouns pronouns) {
 		if (!this.hasPlayerDataFile()) return;
 		this.yamlConfiguration.set("pronouns", pronouns.name());
+		this.savePlayerDataFile();
+	}
+
+	/**
+	 * Gets player health from data file
+	 *
+	 * @return player health if it's != null, else returns 20
+	 */
+	public double getHealth() {
+		return this.yamlConfiguration == null ? 20.0d
+				: this.yamlConfiguration.getDouble("health", 20.0d);
+	}
+
+	/**
+	 * Sets health of player in data file
+	 *
+	 * @param health player health
+	 */
+	public void setHealth(double health) {
+		if (!this.hasPlayerDataFile()) return;
+		this.yamlConfiguration.set("health", health);
 		this.savePlayerDataFile();
 	}
 
@@ -275,9 +281,8 @@ public class PlayerInfo {
 	 *
 	 * @return player resource pack type if it's != null, else returns null
 	 */
-	@Nullable
-	public ResourcePackType getResourcePackType() {
-		return ResourcePackType.getResourcePackByString(this.yamlConfiguration.getString("resource-pack", "NULL"));
+	public @Nullable ResourcePackType getResourcePackType() {
+		return ResourcePackType.getResourcePackByString(this.yamlConfiguration.getString("resource-pack.resource-pack-type", "NULL"));
 	}
 
 	/**
@@ -285,9 +290,9 @@ public class PlayerInfo {
 	 *
 	 * @param resourcePackType resource pack type : "FULL/LITE/NONE"
 	 */
-	public void setResourcePackType(@Nonnull ResourcePackType resourcePackType) {
+	public void setResourcePackType(@NotNull ResourcePackType resourcePackType) {
 		if (!this.hasPlayerDataFile()) return;
-		this.yamlConfiguration.set("resource-pack", resourcePackType.name());
+		this.yamlConfiguration.set("resource-pack.resource-pack-type", resourcePackType.name());
 		if (resourcePackType == ResourcePackType.NONE) {
 			this.setDiskType(null);
 		}
@@ -299,9 +304,8 @@ public class PlayerInfo {
 	 *
 	 * @return player disk type if it's != null, else returns default disk type
 	 */
-	@Nonnull
-	public ResourcePackType.DiskType getDiskType() {
-		return ResourcePackType.DiskType.valueOf(this.yamlConfiguration.getString("disk-type", "DROPBOX"));
+	public @NotNull ResourcePackType.DiskType getDiskType() {
+		return ResourcePackType.DiskType.valueOf(this.yamlConfiguration.getString("resource-pack.disk-type", "DROPBOX"));
 	}
 
 	/**
@@ -311,7 +315,7 @@ public class PlayerInfo {
 	 */
 	public void setDiskType(@Nullable ResourcePackType.DiskType diskType) {
 		if (!this.hasPlayerDataFile()) return;
-		this.yamlConfiguration.set("disk-type", diskType != null ? diskType.name() : null);
+		this.yamlConfiguration.set("resource-pack.disk-type", diskType != null ? diskType.name() : null);
 		savePlayerDataFile();
 	}
 
@@ -327,8 +331,7 @@ public class PlayerInfo {
 	 *
 	 * @return player mute reason
 	 */
-	@Nonnull
-	public String getMuteReason() {
+	public @NotNull String getMuteReason() {
 		return this.yamlConfiguration.getString("bans.mute-reason", "неизвестно");
 	}
 
@@ -339,7 +342,7 @@ public class PlayerInfo {
 	 * @param time   mutes for time
 	 * @param reason mute reason
 	 */
-	public boolean setMuted(boolean value, long time, @Nonnull String reason, CommandSender sender) {
+	public boolean setMuted(boolean value, long time, @NotNull String reason, CommandSender sender) {
 		if (this.getNickname() == null || !this.hasPlayerDataFile()) {
 			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
 		}
@@ -401,8 +404,7 @@ public class PlayerInfo {
 	 *
 	 * @return player ban reason
 	 */
-	@Nonnull
-	public String getBanReason() {
+	public @NotNull String getBanReason() {
 		return this.yamlConfiguration.getString("bans.ban-reason", "неизвестно");
 	}
 
@@ -413,7 +415,7 @@ public class PlayerInfo {
 	 * @param time   bans for time
 	 * @param reason ban reason
 	 */
-	public boolean setBanned(boolean value, long time, @Nonnull String reason, @Nullable CommandSender sender) {
+	public boolean setBanned(boolean value, long time, @NotNull String reason, @Nullable CommandSender sender) {
 		if (this.getNickname() == null) {
 			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере, используйте пожалуйста никнем"));
 		}
@@ -460,7 +462,7 @@ public class PlayerInfo {
 		);
 	}
 
-	public boolean setBanned(boolean value, CommandSender commandSender) {
+	public boolean setBanned(boolean value, @Nullable CommandSender commandSender) {
 		return this.setBanned(value, 0, "", commandSender);
 	}
 
@@ -496,8 +498,7 @@ public class PlayerInfo {
 	 *
 	 * @return gamemode
 	 */
-	@Nonnull
-	public GameMode getGameMode() {
+	public @NotNull GameMode getGameMode() {
 		return GameMode.valueOf(this.yamlConfiguration.getString("gamemode", "SURVIVAL"));
 	}
 
@@ -520,6 +521,7 @@ public class PlayerInfo {
 		Player player = this.getOnlinePlayer();
 		if (player == null) return;
 		player.setGameMode(this.getGameMode());
+		player.setHealth(this.getHealth());
 		player.teleportAsync(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
 	}
@@ -529,8 +531,7 @@ public class PlayerInfo {
 	 *
 	 * @return player last leave location
 	 */
-	@Nonnull
-	public Location getLastLeaveLocation() {
+	public @NotNull Location getLastLeaveLocation() {
 		Location spawnLocation = Main.getOverworld().getSpawnLocation();
 		return new Location(
 				Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-leave-location.world", spawnLocation.getBlock().getWorld().getName())),
@@ -571,8 +572,7 @@ public class PlayerInfo {
 	 *
 	 * @return player last death location
 	 */
-	@Nonnull
-	public Location getLastDeathLocation() {
+	public @NotNull Location getLastDeathLocation() {
 		return new Location(
 				Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-death-location.world", Main.getOverworld().getName())),
 				this.yamlConfiguration.getDouble("locations.last-death-location.x"),

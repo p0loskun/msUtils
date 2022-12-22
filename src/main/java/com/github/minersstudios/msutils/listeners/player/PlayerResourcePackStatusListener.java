@@ -1,22 +1,21 @@
-package com.github.minersstudios.msUtils.listeners.player;
+package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.msUtils.enums.ResourcePackType;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.player.ResourcePackType;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerResourcePackStatusListener implements Listener {
 
 	@EventHandler
-	public void onPlayerResourcepackStatus(@Nonnull PlayerResourcePackStatusEvent event) {
+	public void onPlayerResourcepackStatus(@NotNull PlayerResourcePackStatusEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.getResourcePackType() == null) return;

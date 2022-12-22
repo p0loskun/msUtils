@@ -1,16 +1,15 @@
-package com.github.minersstudios.msUtils.listeners.entity;
+package com.github.minersstudios.msutils.listeners.entity;
 
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityDamageByEntityListener implements Listener {
 
 	@EventHandler
-	public void onRemoveItem(@Nonnull EntityDamageByEntityEvent event){
+	public void onRemoveItem(@NotNull EntityDamageByEntityEvent event){
 		if(
 				event.getEntity() instanceof ItemFrame itemFrame
 				&& itemFrame.getScoreboardTags().contains("invisibleItemFrame")

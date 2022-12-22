@@ -1,22 +1,21 @@
-package com.github.minersstudios.msUtils.commands.other;
+package com.github.minersstudios.msutils.commands.other;
 
-import com.github.minersstudios.msUtils.classes.PlayerID;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerID;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class WhitelistCommand implements CommandExecutor {
 
 	@Override
-	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (args.length == 0) return false;
 		if (args[0].equalsIgnoreCase("reload")) {
 			Bukkit.reloadWhitelist();

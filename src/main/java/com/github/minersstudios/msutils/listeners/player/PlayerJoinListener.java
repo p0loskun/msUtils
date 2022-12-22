@@ -1,11 +1,11 @@
-package com.github.minersstudios.msUtils.listeners.player;
+package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.msUtils.enums.ResourcePackType;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.classes.RegistrationProcess;
-import com.github.minersstudios.msUtils.enums.Pronouns;
+import com.github.minersstudios.msutils.player.ResourcePackType;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.RegistrationProcess;
+import com.github.minersstudios.msutils.player.Pronouns;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,15 +13,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerJoinListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerJoin(@Nonnull PlayerJoinEvent event) {
+	public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), ChatUtils.legacyComponentSerialize(player.name()));
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), ChatUtils.convertComponentToString(player.name()));
 
 		event.joinMessage(null);
 		Main.getScoreboardHideTagsTeam().addEntry(player.getName());

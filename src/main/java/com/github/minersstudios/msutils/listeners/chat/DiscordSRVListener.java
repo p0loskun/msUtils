@@ -1,8 +1,7 @@
-package com.github.minersstudios.msUtils.listeners.chat;
+package com.github.minersstudios.msutils.listeners.chat;
 
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.utils.Config;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.Main;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.dependencies.google.common.base.Function;
@@ -14,13 +13,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class DiscordSRVListener {
 
 	@Subscribe
-	public void discordMessageProcessed(@Nonnull DiscordGuildMessagePreProcessEvent event) {
+	public void discordMessageProcessed(@NotNull DiscordGuildMessagePreProcessEvent event) {
 		Message message = event.getMessage(),
 				referencedMessage = message.getReferencedMessage();
 		String reply = referencedMessage != null
@@ -31,7 +29,7 @@ public class DiscordSRVListener {
 						? "(вложения) "
 						: "(вложение) ";
 		Component messageComponent =
-				Config.Symbols.discord
+				ChatUtils.Symbols.DISCORD
 						.color(NamedTextColor.WHITE)
 						.append(Component.text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
 						.append(Component.text(reply, TextColor.color(152, 162, 249)))
@@ -44,11 +42,10 @@ public class DiscordSRVListener {
 				player.sendMessage(messageComponent);
 			}
 		}
-		Bukkit.getLogger().info(ChatUtils.legacyComponentSerialize(messageComponent).substring(2));
+		Bukkit.getLogger().info(ChatUtils.convertComponentToString(messageComponent).substring(2));
 	}
 
-	@Nonnull
-	private static String replaceReplyPlaceholders(@Nonnull String format, @Nonnull Message repliedMessage) {
+	private static @NotNull String replaceReplyPlaceholders(@NotNull String format, @NotNull Message repliedMessage) {
 		Function<String, String> escape = MessageUtil.isLegacy(format)
 				? str -> str
 				: str -> str.replaceAll("([<>])", "\\\\$1");

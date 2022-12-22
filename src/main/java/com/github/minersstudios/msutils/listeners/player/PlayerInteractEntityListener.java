@@ -1,7 +1,7 @@
-package com.github.minersstudios.msUtils.listeners.player;
+package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.utils.Config;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -13,14 +13,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PlayerInteractEntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerInteractEntity(@Nonnull PlayerInteractEntityEvent event) {
+	public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
 		Player playerWhoClicked = event.getPlayer();
 		if (event.getRightClicked() instanceof Player clickedPlayer) {
 			PlayerInfo playerInfo = new PlayerInfo(clickedPlayer.getUniqueId());
@@ -29,7 +29,7 @@ public class PlayerInteractEntityListener implements Listener {
 							.append(playerInfo.getGoldenName())
 							.append(Component.text(" "))
 							.append(Component.text(playerInfo.getPatronymic()))
-							.color(Config.Colors.joinMessageColorPrimary)
+							.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
 							.build()
 			);
 			ItemStack helmet = clickedPlayer.getInventory().getHelmet();

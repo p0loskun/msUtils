@@ -1,18 +1,19 @@
-package com.github.minersstudios.msUtils.classes;
+package com.github.minersstudios.msutils.player;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
-import com.github.minersstudios.msUtils.Main;
+import com.github.minersstudios.msutils.Main;
+import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +25,8 @@ public final class SignMenu {
 	private BiPredicate<Player, String[]> response;
 	private Location location;
 
-	public SignMenu(List<String> text) {
-		this.text = text;
+	public SignMenu(String @NotNull ... text) {
+		this.text = List.of(text);
 
 		Main.getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.UPDATE_SIGN) {
 			@Override
@@ -50,19 +51,22 @@ public final class SignMenu {
 		});
 	}
 
-	public SignMenu response(@Nonnull BiPredicate<Player, String[]> response) {
+	public SignMenu response(@NotNull BiPredicate<Player, String[]> response) {
 		this.response = response;
 		return this;
 	}
 
-	public void open(@Nonnull Player player) {
+	public void open(@NotNull Player player) {
 		this.location = player.getLocation();
 		this.location.setY(200);
 
-		Component[] components = new Component[]{Component.text(this.text.get(0)), Component.text(this.text.get(1)), Component.text(this.text.get(2)), Component.text(this.text.get(3))};
-
 		player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
-		player.sendSignChange(this.location, List.of(components));
+		player.sendSignChange(this.location, Lists.newArrayList(
+				Component.text(this.text.get(0)),
+				Component.text(this.text.get(1)),
+				Component.text(this.text.get(2)),
+				Component.text(this.text.get(3)))
+		);
 
 		PacketContainer openSign = Main.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
 		openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));

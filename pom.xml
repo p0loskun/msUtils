@@ -6,7 +6,7 @@
 
 	<groupId>com.github.minersstudios</groupId>
 	<artifactId>msUtils</artifactId>
-	<version>0.5.0</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>msUtils</name>
@@ -31,7 +31,7 @@
 
 	<properties>
 		<authors>[Poloskun_, PackmanDude]</authors>
-		<mainClass>com.github.minersstudios.msUtils.Main</mainClass>
+		<mainClass>com.github.minersstudios.msutils.Main</mainClass>
 		<apiVersion>1.19</apiVersion>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -112,13 +112,19 @@
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msDecor</artifactId>
-			<version>release-56bd006c18-1</version>
+			<version>release-b66ae999ad-1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msBlock</artifactId>
-			<version>release-d226034457-1</version>
+			<version>release-1a84d43a55-1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.MinersStudios</groupId>
+			<artifactId>msItems</artifactId>
+			<version>release-4ed7c0bb6b-1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

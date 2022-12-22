@@ -1,28 +1,25 @@
-package com.github.minersstudios.msUtils.commands.roleplay;
+package com.github.minersstudios.msutils.commands.roleplay;
 
-import com.github.minersstudios.msDecor.enums.CustomDecorMaterial;
-import com.github.minersstudios.msDecor.objects.CustomDecor;
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
+import com.github.minersstudios.msdecor.customdecor.CustomDecor;
+import com.github.minersstudios.msdecor.utils.CustomDecorUtils;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class FartCommand implements CommandExecutor {
 
 	@Override
-	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
 			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 		}
@@ -42,16 +39,11 @@ public class FartCommand implements CommandExecutor {
 		player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
 		player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
 		if (withPoop) {
-			new CustomDecor(location.getBlock(), player).setCustomDecor(CustomDecorMaterial.POOP, BlockFace.UP, null,
-					Component.text("Какашка ")
-							.append(playerInfo.getDefaultName())
-							.style(Style.style(
-									NamedTextColor.WHITE,
-									TextDecoration.OBFUSCATED.withState(false),
-									TextDecoration.BOLD.withState(false),
-									TextDecoration.ITALIC.withState(false),
-									TextDecoration.STRIKETHROUGH.withState(false),
-									TextDecoration.UNDERLINED.withState(false)))
+			new CustomDecor(location.getBlock(), player, CustomDecorUtils.CUSTOM_DECORS.get("poop"))
+					.setCustomDecor(
+							BlockFace.UP,
+							null,
+							ChatUtils.createDefaultStyledName("Какашка " + ChatUtils.convertComponentToString(playerInfo.getDefaultName()))
 			);
 		}
 		if (args.length > 0) {

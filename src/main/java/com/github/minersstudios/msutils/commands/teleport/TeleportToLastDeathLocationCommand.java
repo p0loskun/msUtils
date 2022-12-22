@@ -1,9 +1,9 @@
-package com.github.minersstudios.msUtils.commands.teleport;
+package com.github.minersstudios.msutils.commands.teleport;
 
-import com.github.minersstudios.msUtils.classes.PlayerID;
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.classes.PlayerInfo;
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.player.PlayerID;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -11,13 +11,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class TeleportToLastDeathLocationCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
         if (args.length == 0) return false;
         if (args[0].matches("[0-99]+")) {
             OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
@@ -36,7 +35,7 @@ public class TeleportToLastDeathLocationCommand implements CommandExecutor {
         return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
     }
 
-    private static boolean teleportToLastDeathLocation(@Nonnull CommandSender sender, @Nonnull OfflinePlayer offlinePlayer) {
+    private static boolean teleportToLastDeathLocation(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer) {
         if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
             return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
         }

@@ -1,16 +1,15 @@
-package com.github.minersstudios.msUtils.listeners.player;
+package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerArmorStandManipulateListener implements Listener {
 
 	@EventHandler
-	public void onPlayerArmorStandManipulate(@Nonnull PlayerArmorStandManipulateEvent event) {
+	public void onPlayerArmorStandManipulate(@NotNull PlayerArmorStandManipulateEvent event) {
 		event.setCancelled(PlayerUtils.getSeats().containsValue(event.getRightClicked()));
 	}
 }

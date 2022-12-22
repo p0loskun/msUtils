@@ -1,22 +1,26 @@
-package com.github.minersstudios.msUtils.commands;
+package com.github.minersstudios.msutils.commands;
 
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.commands.ban.BanCommand;
-import com.github.minersstudios.msUtils.commands.ban.UnBanCommand;
-import com.github.minersstudios.msUtils.commands.mute.MuteCommand;
-import com.github.minersstudios.msUtils.commands.mute.UnMuteCommand;
-import com.github.minersstudios.msUtils.commands.other.*;
-import com.github.minersstudios.msUtils.commands.roleplay.*;
-import com.github.minersstudios.msUtils.tabCompleters.*;
-import com.github.minersstudios.msUtils.commands.teleport.TeleportToLastDeathLocationCommand;
-import com.github.minersstudios.msUtils.commands.teleport.WorldTeleportCommand;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.commands.ban.BanCommand;
+import com.github.minersstudios.msutils.commands.ban.UnBanCommand;
+import com.github.minersstudios.msutils.commands.mute.MuteCommand;
+import com.github.minersstudios.msutils.commands.mute.UnMuteCommand;
+import com.github.minersstudios.msutils.commands.other.*;
+import com.github.minersstudios.msutils.commands.roleplay.*;
+import com.github.minersstudios.msutils.tabcompleters.*;
+import com.github.minersstudios.msutils.commands.teleport.TeleportToLastDeathLocationCommand;
+import com.github.minersstudios.msutils.commands.teleport.WorldTeleportCommand;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
-public class RegCommands {
+public final class RegCommands {
 
-	public static void init(@Nonnull Main plugin) {
+	private RegCommands() {
+		throw new IllegalStateException();
+	}
+
+	public static void init(@NotNull Main plugin) {
 		Objects.requireNonNull(plugin.getCommand("ban")).setExecutor(new BanCommand());
 		Objects.requireNonNull(plugin.getCommand("ban")).setTabCompleter(new AllPlayers());
 		Objects.requireNonNull(plugin.getCommand("unban")).setExecutor(new UnBanCommand());

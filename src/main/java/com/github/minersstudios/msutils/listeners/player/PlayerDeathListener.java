@@ -1,18 +1,17 @@
-package com.github.minersstudios.msUtils.listeners.player;
+package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.msUtils.utils.ChatUtils;
-import com.github.minersstudios.msUtils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.utils.PlayerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerDeathListener implements Listener {
 
 	@EventHandler
-	public void onPlayerDeath(@Nonnull PlayerDeathEvent event) {
+	public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
 		Player killedPlayer = event.getEntity();
 		event.deathMessage(null);
 		PlayerUtils.setSitting(killedPlayer, null, (String) null);

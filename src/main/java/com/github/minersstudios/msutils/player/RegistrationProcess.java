@@ -1,9 +1,7 @@
-package com.github.minersstudios.msUtils.classes;
+package com.github.minersstudios.msutils.player;
 
-import com.github.minersstudios.msUtils.Main;
-import com.github.minersstudios.msUtils.enums.Pronouns;
-import com.github.minersstudios.msUtils.enums.ResourcePackType;
-import com.github.minersstudios.msUtils.utils.Config;
+import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -11,9 +9,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.Locale;
 
 public class RegistrationProcess {
@@ -22,7 +19,7 @@ public class RegistrationProcess {
 	private Location playerLocation;
 	private static final String regex = "[-А-яҐґІіЇїЁё]+";
 
-	public void registerPlayer(@Nonnull PlayerInfo playerInfo) {
+	public void registerPlayer(@NotNull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 		this.player = playerInfo.getOnlinePlayer();
 		if (this.player == null) return;
@@ -42,7 +39,7 @@ public class RegistrationProcess {
 	}
 
 	private void setFirstname() {
-		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "имя")).response((player, strings) -> {
+		SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "имя").response((player, strings) -> {
 			String firstname = strings[0].trim();
 			if (!firstname.matches(regex)) {
 				return this.sendWarningMessage();
@@ -61,7 +58,7 @@ public class RegistrationProcess {
 	}
 
 	private void setLastname() {
-		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите вашу", "фамилию")).response((player, strings) -> {
+		SignMenu menu = new SignMenu("", "---===+===---", "Введите вашу", "фамилию").response((player, strings) -> {
 			String lastname = strings[0].trim();
 			if (!lastname.matches(regex)) {
 				return this.sendWarningMessage();
@@ -74,7 +71,7 @@ public class RegistrationProcess {
 	}
 
 	private void setPatronymic() {
-		SignMenu menu = new SignMenu(Arrays.asList("", "---===+===---", "Введите ваше", "отчество")).response((player, strings) -> {
+		SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "отчество").response((player, strings) -> {
 			String patronymic = strings[0].trim();
 			if (!patronymic.matches(regex)) {
 				return this.sendWarningMessage();
@@ -96,7 +93,7 @@ public class RegistrationProcess {
 		menu.open(this.player);
 	}
 
-	public void setPronouns(@Nonnull Player player, @Nonnull PlayerInfo playerInfo) {
+	public void setPronouns(@NotNull Player player, @NotNull PlayerInfo playerInfo) {
 		this.player = player;
 		this.playerLocation = player.getLocation();
 		this.playerInfo = playerInfo;
@@ -125,21 +122,20 @@ public class RegistrationProcess {
 		return false;
 	}
 
-	private void sendDialogueMessage(@Nonnull String message, long delay) {
+	private void sendDialogueMessage(@NotNull String message, long delay) {
 		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
 			this.player.sendMessage(
 					Component.text(" ")
 					.append(Component.text(" [0] Незнакомец : ")
-					.color(Config.Colors.chatColorPrimary))
+					.color(ChatUtils.Colors.CHAT_COLOR_PRIMARY))
 					.append(Component.text(message))
-					.color(Config.Colors.chatColorSecondary)
+					.color(ChatUtils.Colors.CHAT_COLOR_SECONDARY)
 			);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
 		}, delay);
 	}
 
-	@Nonnull
-	private static String strNormalize(@Nonnull String string) {
+	private static @NotNull String strNormalize(@NotNull String string) {
 		return string.substring(0, 1).toUpperCase(Locale.ROOT) + string.substring(1).toLowerCase(Locale.ROOT);
 	}
 }

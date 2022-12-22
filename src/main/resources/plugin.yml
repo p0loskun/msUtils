@@ -12,6 +12,7 @@ softdepend:
   - DiscordSRV
   - msDecor
   - msBlock
+  - msItems
 
 commands:
   msutils:
