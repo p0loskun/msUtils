@@ -1,9 +1,9 @@
 chat:
   local:
     radius: 25.0
-    discord-channel-id: 000000000000000000
+    discord-channel-id: 0
   global:
-    discord-channel-id: 000000000000000000
+    discord-channel-id: 0
 resource-pack:
   full:
     hash:
