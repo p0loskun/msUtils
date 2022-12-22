@@ -15,12 +15,14 @@ public class InventoryDragListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onInventoryDrag(@NotNull InventoryDragEvent event) {
 		Component inventoryTitle = event.getView().title();
-		event.setCancelled(
+		if (
 				inventoryTitle.contains(CraftsMenu.CRAFT_NAME)
 				|| inventoryTitle.contains(CraftsMenu.CRAFTS_NAME)
 				|| inventoryTitle.contains(CraftsMenu.CATEGORY_NAME)
 				|| inventoryTitle.contains(ResourcePackType.NAME)
 				|| inventoryTitle.contains(Pronouns.NAME)
-		);
+		) {
+			event.setCancelled(true);
+		}
 	}
 }
