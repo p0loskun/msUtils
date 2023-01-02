@@ -363,8 +363,8 @@ public class PlayerInfo {
 					.append(Component.text(
 							Instant.ofEpochMilli(time).atZone(
 									sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
-											? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
-											: ZoneId.systemDefault()
+									? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress().getAddress()))
+									: ZoneId.systemDefault()
 							).format(timeFormatter))
 					)
 			);
@@ -374,7 +374,7 @@ public class PlayerInfo {
 					.append(Component.text("\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))
-					.append(Component.text(Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(timeFormatter)))
+					.append(Component.text(Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress().getAddress()))).format(timeFormatter)))
 			);
 		}
 		ChatUtils.sendFine(sender,
@@ -432,7 +432,7 @@ public class PlayerInfo {
 				PlayerUtils.kickPlayer(player, "Вы были забанены",
 						reason
 						+ "\"\n До : \n"
-						+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress()))).format(timeFormatter)
+						+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress().getAddress()))).format(timeFormatter)
 				);
 			}
 			return ChatUtils.sendFine(sender,
@@ -446,7 +446,7 @@ public class PlayerInfo {
 					.append(Component.text(
 							Instant.ofEpochMilli(time).atZone(
 									sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
-											? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress()))
+											? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress().getAddress()))
 											: ZoneId.systemDefault()
 							).format(timeFormatter))
 					)
@@ -610,7 +610,11 @@ public class PlayerInfo {
 		if (this.hasPlayerDataFile()) return;
 		this.yamlConfiguration.set("nickname", this.getNickname());
 		if (this.getOnlinePlayer() != null) {
-			this.yamlConfiguration.set("ip", this.getOnlinePlayer().getAddress() == null ? null : this.getOnlinePlayer().getAddress().getHostName());
+			this.yamlConfiguration.set(
+					"ip",
+					this.getOnlinePlayer().getAddress() == null ? null
+					: this.getOnlinePlayer().getAddress().getAddress().getHostAddress()
+			);
 			this.yamlConfiguration.set("time.first-join", System.currentTimeMillis());
 		}
 		this.savePlayerDataFile();

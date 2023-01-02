@@ -23,7 +23,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +35,14 @@ import static com.github.minersstudios.msutils.utils.ChatUtils.Symbols.*;
 public final class ChatUtils {
 	public static final Style DEFAULT_STYLE = Style.style(
 			NamedTextColor.WHITE,
+			TextDecoration.OBFUSCATED.withState(false),
+			TextDecoration.BOLD.withState(false),
+			TextDecoration.ITALIC.withState(false),
+			TextDecoration.STRIKETHROUGH.withState(false),
+			TextDecoration.UNDERLINED.withState(false)
+	);
+
+	public static final Style COLORLESS_DEFAULT_STYLE = Style.style(
 			TextDecoration.OBFUSCATED.withState(false),
 			TextDecoration.BOLD.withState(false),
 			TextDecoration.ITALIC.withState(false),
@@ -420,6 +430,18 @@ public final class ChatUtils {
 
 	public static @NotNull String convertComponentToString(@NotNull Component component) {
 		return LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().serialize(component);
+	}
+
+	public static @Nullable List<Component> convertStringsToComponents(@Nullable Style style, String @NotNull ... text) {
+		List<Component> components = new ArrayList<>();
+		for (String string : text) {
+			Component component = Component.text(string);
+			components.add(
+					style == null ? component
+					: component.style(style)
+			);
+		}
+		return components.isEmpty() ? null : components;
 	}
 
 	public static @NotNull Component createDefaultStyledName(@NotNull String name) {

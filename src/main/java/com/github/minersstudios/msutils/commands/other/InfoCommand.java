@@ -45,7 +45,7 @@ public class InfoCommand implements CommandExecutor {
 						+ "\n Firstname : " + playerInfo.getFirstname()
 						+ "\n Lastname : " + playerInfo.getLastname()
 						+ "\n Patronymic : " + playerInfo.getPatronymic()
-						+ "\n RPtype : " + playerInfo.getResourcePackType()
+						+ "\n RP-type : " + playerInfo.getResourcePackType()
 						+ "\n Muted : " + playerInfo.isMuted()
 						+ "\n Banned : " + playerInfo.isBanned()
 						+ "\n First join : " + playerInfo.getFirstJoin()

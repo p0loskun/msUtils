@@ -19,7 +19,7 @@ public class WhitelistCommand implements CommandExecutor {
 		if (args.length == 0) return false;
 		if (args[0].equalsIgnoreCase("reload")) {
 			Bukkit.reloadWhitelist();
-			return ChatUtils.sendFine(sender, Component.text("Вайтлист был перезагружён"));
+			return ChatUtils.sendFine(sender, Component.text("Вайт-Лист был перезагружен"));
 		}
 		if (args.length > 1 && args[1].matches("[0-99]+")) {
 			if (args[0].equalsIgnoreCase("add")) {

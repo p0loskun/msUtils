@@ -1,13 +1,15 @@
 package com.github.minersstudios.msutils.utils;
 
-import com.google.common.base.Charsets;
 import com.github.minersstudios.msutils.Main;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.google.common.base.Charsets;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.io.IOUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,7 +21,7 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
@@ -165,8 +167,8 @@ public final class PlayerUtils {
 		return true;
 	}
 
-	public static @NotNull String getTimezone(@NotNull InetSocketAddress ip) {
-		try (InputStream input = new URL("http://ip-api.com/json/" + ip.getHostName()).openStream()) {
+	public static @NotNull String getTimezone(@NotNull InetAddress ip) {
+		try (InputStream input = new URL("http://ip-api.com/json/" + ip.getHostAddress()).openStream()) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 			StringBuilder entirePage = new StringBuilder();
 			String inputLine;

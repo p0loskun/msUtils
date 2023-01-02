@@ -14,7 +14,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
 
 	@EventHandler
 	public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
-		String hostName = event.getAddress().getHostName(),
+		String hostName = event.getAddress().getHostAddress(),
 				nickname = event.getName();
 		PlayerInfo playerInfo = new PlayerInfo(event.getUniqueId(), nickname);
 
