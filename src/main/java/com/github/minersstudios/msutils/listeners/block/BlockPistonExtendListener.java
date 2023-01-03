@@ -9,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockPistonExtendListener implements Listener {
 
-    @EventHandler
-    public void onBlockPistonExtend(@NotNull BlockPistonExtendEvent event) {
-        for (Block block : event.getBlocks()) {
-            event.setCancelled(block.getType() == Material.NOTE_BLOCK || block.getType() == Material.STRUCTURE_VOID);
-        }
-    }
+	@EventHandler
+	public void onBlockPistonExtend(@NotNull BlockPistonExtendEvent event) {
+		for (Block block : event.getBlocks()) {
+			event.setCancelled(block.getType() == Material.NOTE_BLOCK || block.getType() == Material.STRUCTURE_VOID);
+		}
+	}
 }

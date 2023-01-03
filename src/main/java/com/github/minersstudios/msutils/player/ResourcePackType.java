@@ -31,7 +31,7 @@ public enum ResourcePackType {
 	NONE("", "", "");
 
 	private final String dropBoxURL, yandexDiskURL, hash;
-	public static final Component NAME = Component.text("\"Выберите нужный текстурпак").color(NamedTextColor.DARK_GRAY);
+	public static final Component NAME = Component.text("Выберите нужный текстурпак", NamedTextColor.DARK_GRAY);
 
 	ResourcePackType(
 			@NotNull String dropBoxURL,
@@ -91,13 +91,9 @@ public enum ResourcePackType {
 		liteMeta.lore(convertStringsToComponents(
 				COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
 				"Имеет в себе :",
-				" - текстуры и модельки",
-				"   мебели",
-				" - текстуры значков",
-				" - текстуры меню",
-				" - переименования некоторых",
-				"   предметов",
-				" - изменённая модель головы"
+				" - кастомные текстуры и модельки",
+				" - переименуемые предметы",
+				" - изменённая модель головы стива"
 		));
 		lite.setItemMeta(liteMeta);
 
@@ -107,22 +103,18 @@ public enum ResourcePackType {
 		fullMeta.lore(convertStringsToComponents(
 				COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
 				"Имеет в себе :",
-				" - текстуры и модельки",
-				"   мебели",
-				" - текстуры значков",
-				" - текстуры меню",
-				" - переименования некоторых",
-				"   предметов",
-				" - изменённая модель головы",
-				" - OF текстуры и модельки :",
-				"   Небо",
-				"   Некоторые мобы",
-				"   Шапки/Еда/Прочее",
+				" - кастомные текстуры и модельки",
+				" - переименуемые предметы",
+				" - изменённая модель головы стива",
 				" - анимированные текстуры",
 				"   блоков/предметов",
 				" - изменённые текстуры/модели",
 				"   блоков/предметов/интерфейса",
-				" - 3D модель фонаря"
+				" - 3D модель фонаря",
+				" - OF текстуры и модельки :",
+				"   Небо",
+				"   Стойка для брони",
+				"   CIT предметы"
 		));
 		full.setItemMeta(fullMeta);
 

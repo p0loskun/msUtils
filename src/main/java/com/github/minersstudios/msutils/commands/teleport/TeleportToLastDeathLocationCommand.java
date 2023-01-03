@@ -15,57 +15,57 @@ import org.jetbrains.annotations.NotNull;
 
 public class TeleportToLastDeathLocationCommand implements CommandExecutor {
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
-        if (args.length == 0) return false;
-        if (args[0].matches("[0-99]+")) {
-            OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-            if (offlinePlayer == null) {
-                return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
-            }
-            return teleportToLastDeathLocation(sender, offlinePlayer);
-        }
-        if (args[0].length() > 2) {
-            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
-            if (offlinePlayer == null) {
-                return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
-            }
-            return teleportToLastDeathLocation(sender, offlinePlayer);
-        }
-        return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
-    }
+	@Override
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+		if (args.length == 0) return false;
+		if (args[0].matches("[0-99]+")) {
+			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
+			if (offlinePlayer == null) {
+				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+			}
+			return teleportToLastDeathLocation(sender, offlinePlayer);
+		}
+		if (args[0].length() > 2) {
+			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+			if (offlinePlayer == null) {
+				return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+			}
+			return teleportToLastDeathLocation(sender, offlinePlayer);
+		}
+		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+	}
 
-    private static boolean teleportToLastDeathLocation(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer) {
-        if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
-            return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
-        }
-        PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-        Location lastDeathLocation = offlinePlayer.getLastDeathLocation();
-        if (offlinePlayer.getPlayer() == null) {
-            return ChatUtils.sendWarning(sender,
-                    Component.text("Игрок : \"")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .append(Component.text(" ("))
-                            .append(Component.text(offlinePlayer.getName()))
-                            .append(Component.text(")\" не в сети!"))
-            );
-        }
-        if (lastDeathLocation == null) {
-            return ChatUtils.sendWarning(sender,
-                    Component.text("Игрок : \"")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .append(Component.text(" ("))
-                            .append(Component.text(offlinePlayer.getName()))
-                            .append(Component.text(")\" не имеет последней точки смерти!"))
-            );
-        }
-        offlinePlayer.getPlayer().teleportAsync(lastDeathLocation.add(0.5d, 0.0d, 0.5d), PlayerTeleportEvent.TeleportCause.PLUGIN);
-        return ChatUtils.sendFine(sender,
-                Component.text("Игрок : \"")
-                .append(playerInfo.getGrayIDGreenName())
-                .append(Component.text(" ("))
-                .append(Component.text(offlinePlayer.getName()))
-                .append(Component.text(")\" был телепортирован на последние координаты смерти"))
-        );
-    }
+	private static boolean teleportToLastDeathLocation(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer) {
+		if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
+			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
+		}
+		PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+		Location lastDeathLocation = offlinePlayer.getLastDeathLocation();
+		if (offlinePlayer.getPlayer() == null) {
+			return ChatUtils.sendWarning(sender,
+					Component.text("Игрок : \"")
+							.append(playerInfo.getGrayIDGreenName())
+							.append(Component.text(" ("))
+							.append(Component.text(offlinePlayer.getName()))
+							.append(Component.text(")\" не в сети!"))
+			);
+		}
+		if (lastDeathLocation == null) {
+			return ChatUtils.sendWarning(sender,
+					Component.text("Игрок : \"")
+							.append(playerInfo.getGrayIDGreenName())
+							.append(Component.text(" ("))
+							.append(Component.text(offlinePlayer.getName()))
+							.append(Component.text(")\" не имеет последней точки смерти!"))
+			);
+		}
+		offlinePlayer.getPlayer().teleportAsync(lastDeathLocation.add(0.5d, 0.0d, 0.5d), PlayerTeleportEvent.TeleportCause.PLUGIN);
+		return ChatUtils.sendFine(sender,
+				Component.text("Игрок : \"")
+						.append(playerInfo.getGrayIDGreenName())
+						.append(Component.text(" ("))
+						.append(Component.text(offlinePlayer.getName()))
+						.append(Component.text(")\" был телепортирован на последние координаты смерти"))
+		);
+	}
 }
