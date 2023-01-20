@@ -1,5 +1,6 @@
 package com.github.minersstudios.msutils.commands.roleplay;
 
+import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msdecor.customdecor.CustomDecor;
 import com.github.minersstudios.msdecor.utils.CustomDecorUtils;
 import com.github.minersstudios.msutils.Main;
@@ -29,7 +30,10 @@ public class FartCommand implements CommandExecutor {
 			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 		}
 		Location location = player.getLocation();
-		boolean withPoop = new Random().nextInt(10) == 0 && location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid();
+		boolean withPoop =
+				new Random().nextInt(10) == 0
+				&& location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid()
+				&& BlockUtils.REPLACE.contains(location.clone().getBlock().getType());
 		for (Entity nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
 			if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.PLAYER) {
 				withPoop = false;

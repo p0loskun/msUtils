@@ -21,19 +21,19 @@ public class PlayerAdvancementDoneListener implements Listener {
 		AdvancementDisplay.Frame frame = advancementDisplay.frame();
 		event.message(
 				Component.text(" ")
-						.append(Component.translatable(
-								"chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
-								new PlayerInfo(event.getPlayer().getUniqueId()).getDefaultName(),
-								Component.text("[")
-										.append(advancementDisplay.title())
-										.append(Component.text("]"))
-										.color(frame.color())
-										.hoverEvent(HoverEvent.showText(
-												advancementDisplay.title()
-												.append(Component.newline().append(advancementDisplay.description()))
-												.color(frame.color())
-										))
-						).color(NamedTextColor.GRAY))
+				.append(Component.translatable(
+						"chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
+						new PlayerInfo(event.getPlayer().getUniqueId()).getDefaultName(),
+						Component.text("[")
+						.append(advancementDisplay.title())
+						.append(Component.text("]"))
+						.color(frame.color())
+						.hoverEvent(HoverEvent.showText(
+								advancementDisplay.title()
+								.append(Component.newline().append(advancementDisplay.description()))
+								.color(frame.color())
+						))
+				).color(NamedTextColor.GRAY))
 		);
 	}
 }
