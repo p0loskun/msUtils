@@ -5,6 +5,7 @@ import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -60,7 +61,7 @@ public class PlayerInteractEntityListener implements Listener {
 					&& itemInMainHandMaterial == Material.SHEARS
 					&& !itemFrame.getScoreboardTags().contains("invisibleItemFrame")
 			) {
-				playerWhoClicked.getWorld().playSound(itemFrame.getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1.0f, 1.0f);
+				playerWhoClicked.getWorld().playSound(itemFrame.getLocation(), Sound.ENTITY_SHEEP_SHEAR, SoundCategory.PLAYERS, 1.0f, 1.0f);
 				itemFrame.addScoreboardTag("invisibleItemFrame");
 				itemFrame.setVisible(itemInItemFrameMaterial.isAir());
 				event.setCancelled(true);

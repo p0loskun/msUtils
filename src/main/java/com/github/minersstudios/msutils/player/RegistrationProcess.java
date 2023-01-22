@@ -4,10 +4,7 @@ import com.github.minersstudios.msutils.Main;
 import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +21,7 @@ public class RegistrationProcess {
 		this.player = playerInfo.getOnlinePlayer();
 		if (this.player == null) return;
 		this.playerLocation = this.player.getLocation();
-		this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, 0.15f, 1.25f);
+		this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, SoundCategory.MUSIC, 0.15f, 1.25f);
 		playerInfo.createPlayerDataFile();
 
 		this.sendDialogueMessage("Оу...", 100L);
@@ -131,7 +128,7 @@ public class RegistrationProcess {
 					.append(Component.text(message))
 					.color(ChatUtils.Colors.CHAT_COLOR_SECONDARY)
 			);
-			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, 0.5f, 1.5f);
+			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 0.5f, 1.5f);
 		}, delay);
 	}
 

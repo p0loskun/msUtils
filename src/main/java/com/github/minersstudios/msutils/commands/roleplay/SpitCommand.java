@@ -6,6 +6,7 @@ import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -32,7 +33,7 @@ public class SpitCommand implements CommandExecutor {
 				location.toVector().add(location.getDirection().multiply(0.8d)).toLocation(world).add(0.0d, 1.0d, 0.0d),
 				EntityType.LLAMA_SPIT
 		).setVelocity(player.getEyeLocation().getDirection().multiply(1));
-		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, 1.0f, 1.0f);
+		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, SoundCategory.PLAYERS, 1.0f, 1.0f);
 		if (args.length > 0) {
 			return ChatUtils.sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("плюнув"), ChatUtils.RolePlayActionType.TODO);
 		}

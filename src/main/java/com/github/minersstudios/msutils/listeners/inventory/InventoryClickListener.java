@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -105,7 +106,7 @@ public class InventoryClickListener implements Listener {
 					playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
 					player.setResourcePack(ResourcePackType.LITE.getDropBoxURL(), ResourcePackType.LITE.getHash());
 				}
-				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 				event.setCancelled(true);
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
@@ -127,7 +128,7 @@ public class InventoryClickListener implements Listener {
 				} else if (playerInfo.getResourcePackType() != null) {
 					playerInfo.teleportToLastLeaveLocation();
 				}
-				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 				event.setCancelled(true);
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}
@@ -140,16 +141,16 @@ public class InventoryClickListener implements Listener {
 					int firstItemIndex = getItemIndex(firstItem, category);
 					if (PREVIOUS_PAGE_BUTTON_SLOTS.contains(slot) && firstItemIndex - 35 >= 0) {
 						openCategory(player, firstItemIndex - 36, category);
-						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 					} else if (slot == CRAFTS_QUIT_BUTTON) {
 						openCategories(player);
-						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 					} else if (NEXT_PAGE_BUTTON_SLOTS.contains(slot) && firstItemIndex + 36 < category.getRecipes().size()) {
 						openCategory(player, firstItemIndex + 36, category);
-						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 					} else if (currentItem != null) {
 						openCraft(player, currentItem, firstItemIndex, category);
-						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 					}
 				}
 				event.setCancelled(!event.getClick().isCreativeAction());
@@ -161,7 +162,7 @@ public class InventoryClickListener implements Listener {
 				if (category == null) return;
 				ItemStack arrow = clickedInventory.getItem(ARROW_SLOT);
 				if (arrow != null && arrow.getItemMeta() != null && slot == CRAFT_QUIT_BUTTON) {
-					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 					openCategory(player, arrow.getItemMeta().getCustomModelData() - 1, category);
 				}
 				event.setCancelled(!event.getClick().isCreativeAction());
@@ -176,7 +177,7 @@ public class InventoryClickListener implements Listener {
 				} else if (ITEMS_CATEGORY_SLOTS.contains(slot)) {
 					openCategory(player, 0, Category.ITEMS);
 				}
-				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 				event.setCancelled(!event.getClick().isCreativeAction());
 				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
 			}

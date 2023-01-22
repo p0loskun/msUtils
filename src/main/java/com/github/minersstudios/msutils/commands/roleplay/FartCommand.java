@@ -40,7 +40,7 @@ public class FartCommand implements CommandExecutor {
 				break;
 			}
 		}
-		player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
+		player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 1, 1);
 		player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
 		if (withPoop) {
 			new CustomDecor(location.getBlock(), player, CustomDecorUtils.CUSTOM_DECORS.get("poop"))
