@@ -1,5 +1,6 @@
 package com.github.minersstudios.msutils.listeners.player;
 
+import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@MSListener
 public class PlayerInteractEntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -26,12 +28,11 @@ public class PlayerInteractEntityListener implements Listener {
 		if (event.getRightClicked() instanceof Player clickedPlayer) {
 			PlayerInfo playerInfo = new PlayerInfo(clickedPlayer.getUniqueId());
 			playerWhoClicked.sendActionBar(
-					Component.text()
-							.append(playerInfo.getGoldenName())
-							.append(Component.text(" "))
-							.append(Component.text(playerInfo.getPatronymic()))
-							.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
-							.build()
+					Component.empty()
+					.append(playerInfo.getGoldenName())
+					.append(Component.space())
+					.append(Component.text(playerInfo.getPatronymic()))
+					.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
 			);
 			ItemStack helmet = clickedPlayer.getInventory().getHelmet();
 			if (

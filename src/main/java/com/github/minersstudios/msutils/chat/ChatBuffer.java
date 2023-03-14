@@ -1,7 +1,7 @@
 package com.github.minersstudios.msutils.chat;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.Badges;
+import com.github.minersstudios.msutils.MSUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -57,14 +57,14 @@ public class ChatBuffer {
 		CHAT_QUEUE.get(UUID).add(message);
 	}
 
-	private static void scheduleMessageUpdate(@NotNull Player player, @NotNull String UUID, int timer) {
-		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-			if (CHAT_QUEUE.get(UUID).isEmpty() || !player.isOnline()) {
-				CHAT_QUEUE.remove(UUID);
+	private static void scheduleMessageUpdate(@NotNull Player player, @NotNull String uuid, int delay) {
+		Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
+			if (CHAT_QUEUE.get(uuid).isEmpty() || !player.isOnline()) {
+				CHAT_QUEUE.remove(uuid);
 			} else {
-				scheduleMessageUpdate(player, UUID, spawnMessage(player, Objects.requireNonNull(CHAT_QUEUE.get(UUID).poll())) + 5);
+				scheduleMessageUpdate(player, uuid, spawnMessage(player, Objects.requireNonNull(CHAT_QUEUE.get(uuid).poll())) + 5);
 			}
-		}, timer);
+		}, delay);
 	}
 
 	public static int spawnMessage(@NotNull Player player, @NotNull String chat) {
@@ -84,19 +84,19 @@ public class ChatBuffer {
 			int duration,
 			boolean firstLine
 	) {
-		return spawnPoint.getWorld().spawn(spawnPoint, AreaEffectCloud.class, (areaEffectCloud) -> {
-			areaEffectCloud.setParticle(Particle.TOWN_AURA);
-			areaEffectCloud.setRadius(0);
-			areaEffectCloud.customName(
-					(firstLine ? ChatUtils.Symbols.SPEECH : Component.text(""))
+		return spawnPoint.getWorld().spawn(spawnPoint, AreaEffectCloud.class, (entity) -> {
+			entity.customName(
+					(firstLine ? Badges.SPEECH : Component.empty())
 					.append(Component.text(text))
-					.append(Component.text(" "))
+					.append(Component.space())
 					.color(NamedTextColor.WHITE)
 			);
-			areaEffectCloud.setCustomNameVisible(true);
-			areaEffectCloud.setWaitTime(0);
-			areaEffectCloud.setDuration(duration);
-			vehicle.addPassenger(areaEffectCloud);
+			entity.setParticle(Particle.TOWN_AURA);
+			entity.setRadius(0);
+			entity.setCustomNameVisible(true);
+			entity.setWaitTime(0);
+			entity.setDuration(duration);
+			vehicle.addPassenger(entity);
 		});
 	}
 }

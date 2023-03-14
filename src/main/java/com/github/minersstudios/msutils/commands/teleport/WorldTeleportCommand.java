@@ -1,8 +1,11 @@
 package com.github.minersstudios.msutils.commands.teleport;
 
+import com.github.minersstudios.mscore.MSCommand;
+import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerID;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -10,18 +13,23 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class WorldTeleportCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+@MSCommand(command = "worldteleport")
+public class WorldTeleportCommand implements MSCommandExecutor {
 	private static final String coordinatesRegex = "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$";
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (args.length < 2) return false;
-		if (args[0].matches("[0-99]+")) {
+		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null) {
 				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
@@ -38,6 +46,29 @@ public class WorldTeleportCommand implements CommandExecutor {
 		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
 	}
 
+	@Override
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+		List<String> completions = new ArrayList<>();
+		if (args.length == 1) {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				int id = playerInfo.getID(false, false);
+				if (id != -1) {
+					completions.add(String.valueOf(id));
+				}
+				completions.add(player.getName());
+			}
+		}
+		if (args.length == 2) {
+			for (World world : Bukkit.getWorlds()) {
+				if (world != MSUtils.getWorldDark()) {
+					completions.add(world.getName());
+				}
+			}
+		}
+		return completions;
+	}
+
 	private static boolean teleportToWorld(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer, String @NotNull ... args) {
 		if (!offlinePlayer.hasPlayedBefore()) {
 			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
@@ -46,8 +77,8 @@ public class WorldTeleportCommand implements CommandExecutor {
 		if (offlinePlayer.getPlayer() == null) {
 			return ChatUtils.sendWarning(sender,
 					Component.text("Игрок : \"")
-							.append(playerInfo.getGrayIDGoldName())
-							.append(Component.text("\" не в сети!"))
+					.append(playerInfo.getGrayIDGoldName())
+					.append(Component.text("\" не в сети!"))
 			);
 		}
 		World world = Bukkit.getWorld(args[1]);
@@ -71,18 +102,18 @@ public class WorldTeleportCommand implements CommandExecutor {
 		offlinePlayer.getPlayer().teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		return ChatUtils.sendFine(sender,
 				Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGreenName())
-						.append(Component.text(" ("))
-						.append(Component.text(args[0]))
-						.append(Component.text(")\" был телепортирован :"))
-						.append(Component.text("\n    - Мир : "))
-						.append(Component.text(world.getName()))
-						.append(Component.text("\n    - X : "))
-						.append(Component.text(x))
-						.append(Component.text("\n    - Y : "))
-						.append(Component.text(y))
-						.append(Component.text("\n    - Z : "))
-						.append(Component.text(z))
+				.append(playerInfo.getGrayIDGreenName())
+				.append(Component.text(" ("))
+				.append(Component.text(args[0]))
+				.append(Component.text(")\" был телепортирован :"))
+				.append(Component.text("\n    - Мир : "))
+				.append(Component.text(world.getName()))
+				.append(Component.text("\n    - X : "))
+				.append(Component.text(x))
+				.append(Component.text("\n    - Y : "))
+				.append(Component.text(y))
+				.append(Component.text("\n    - Z : "))
+				.append(Component.text(z))
 		);
 	}
 }

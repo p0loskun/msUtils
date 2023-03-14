@@ -1,8 +1,9 @@
 package com.github.minersstudios.msutils.listeners.chat;
 
+import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.chat.ChatBuffer;
 import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
@@ -12,13 +13,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
+import static com.github.minersstudios.mscore.utils.ChatUtils.*;
+
+@MSListener
 public class AsyncChatListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onAsyncPlayerChat(@NotNull AsyncChatEvent event) {
+	public void onAsyncChat(@NotNull AsyncChatEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
-		if (player.getWorld() == Main.getWorldDark() || !Main.getAuthMeApi().isAuthenticated(player)) return;
+		if (player.getWorld() == MSUtils.getWorldDark() || !MSUtils.getAuthMeApi().isAuthenticated(player)) return;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 
 		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0) {
@@ -26,11 +30,11 @@ public class AsyncChatListener implements Listener {
 		}
 
 		if (playerInfo.isMuted()) {
-			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			sendWarning(player, Component.text("Вы замьючены"));
 			return;
 		}
 
-		String message = ChatUtils.convertComponentToString(event.originalMessage());
+		String message = serializeLegacyComponent(event.originalMessage());
 		if (message.startsWith("!")) {
 			message = message.substring(1).trim();
 			if (!message.isEmpty()) {
@@ -52,7 +56,7 @@ public class AsyncChatListener implements Listener {
 				String action = message.substring(message.indexOf('*') + 1).trim(),
 						speech = message.substring(0 , message.indexOf('*')).trim();
 				if (action.length() == 0 || speech.length() == 0) {
-					ChatUtils.sendError(player, Component.text("Используй: * [речь] * [действие]"));
+					sendError(player, Component.text("Используй: * [речь] * [действие]"));
 					return;
 				}
 				ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action), ChatUtils.RolePlayActionType.TODO);

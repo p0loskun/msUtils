@@ -1,3 +1,6 @@
+developer-mode: false
+anomaly-check-rate: 100
+anomaly-particles-check-rate: 10
 chat:
   local:
     radius: 25.0
@@ -5,11 +8,12 @@ chat:
   global:
     discord-channel-id: 0
 resource-pack:
+  version:
+  user: minersstudios
+  repo: mstextures
   full:
+    file-name: full-msTextures-%s.zip
     hash:
-    dropbox-url:
-    yandex-disk-url:
   lite:
+    file-name: lite-msTextures-%s.zip
     hash:
-    dropbox-url:
-    yandex-disk-url:

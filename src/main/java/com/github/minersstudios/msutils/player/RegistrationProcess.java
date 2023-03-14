@@ -1,20 +1,34 @@
 package com.github.minersstudios.msutils.player;
 
-import com.github.minersstudios.msutils.Main;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.BlockPosition;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.function.BiPredicate;
 
 public class RegistrationProcess {
 	private Player player;
 	private PlayerInfo playerInfo;
 	private Location playerLocation;
-	private static final String regex = "[-А-яҐґІіЇїЁё]+";
+
+	/**
+	 * Regex supports all <a href="https://jrgraphix.net/r/Unicode/0400-04FF">cyrillic</a> characters
+	 */
+	private static final String REGEX = "[-Ѐ-ӿ]+";
 
 	public void registerPlayer(@NotNull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
@@ -32,13 +46,13 @@ public class RegistrationProcess {
 		this.sendDialogueMessage("Напомни-ка своё имя", 400L);
 		this.sendDialogueMessage("Только говори честно, иначе буду тебя ошибочно называть до конца дней своих", 450L);
 
-		Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setFirstname, 550L);
+		Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setFirstname, 550L);
 	}
 
 	private void setFirstname() {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "имя").response((player, strings) -> {
 			String firstname = strings[0].trim();
-			if (!firstname.matches(regex)) {
+			if (!firstname.matches(REGEX)) {
 				return this.sendWarningMessage();
 			}
 			this.playerInfo.setFirstname(strNormalize(firstname));
@@ -48,7 +62,7 @@ public class RegistrationProcess {
 			this.sendDialogueMessage("Но тебя вижу впервые", 225L);
 			this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
 
-			Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setLastname, 375L);
+			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setLastname, 375L);
 			return true;
 		});
 		menu.open(this.player);
@@ -57,11 +71,11 @@ public class RegistrationProcess {
 	private void setLastname() {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите вашу", "фамилию").response((player, strings) -> {
 			String lastname = strings[0].trim();
-			if (!lastname.matches(regex)) {
+			if (!lastname.matches(REGEX)) {
 				return this.sendWarningMessage();
 			}
 			this.playerInfo.setLastName(strNormalize(lastname));
-			Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setPatronymic, 10L);
+			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setPatronymic, 10L);
 			return true;
 		});
 		menu.open(this.player);
@@ -70,7 +84,7 @@ public class RegistrationProcess {
 	private void setPatronymic() {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "отчество").response((player, strings) -> {
 			String patronymic = strings[0].trim();
-			if (!patronymic.matches(regex)) {
+			if (!patronymic.matches(REGEX)) {
 				return this.sendWarningMessage();
 			}
 			this.playerInfo.setPatronymic(strNormalize(patronymic));
@@ -84,7 +98,7 @@ public class RegistrationProcess {
 			this.sendDialogueMessage("Слушай", 100L);
 			this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
 
-			Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> this.player.openInventory(Pronouns.getInventory()), 225L);
+			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> this.player.openInventory(Pronouns.getInventory()), 225L);
 			return true;
 		});
 		menu.open(this.player);
@@ -100,17 +114,17 @@ public class RegistrationProcess {
 		this.sendDialogueMessage("Мне уже пора", 125L);
 		this.sendDialogueMessage("Хорошей " + this.playerInfo.getPronouns().getPronouns() + " дороги, " + this.playerInfo.getPronouns().getTraveler(), 175L);
 
-		Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::setOther, 225L);
+		Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setOther, 225L);
 	}
 
 	private void setOther() {
 		this.player.displayName(this.playerInfo.getDefaultName());
 		if (this.playerInfo.getResourcePackType() == null) {
-			Bukkit.getScheduler().runTask(Main.getInstance(), () -> this.player.openInventory(ResourcePackType.getInventory()));
-		} else if (this.playerInfo.getResourcePackType() == ResourcePackType.NONE) {
-			Bukkit.getScheduler().runTask(Main.getInstance(), this.playerInfo::teleportToLastLeaveLocation);
+			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> this.player.openInventory(ResourcePack.Menu.getInventory()));
+		} else if (this.playerInfo.getResourcePackType() == ResourcePack.Type.NONE) {
+			Bukkit.getScheduler().runTask(MSUtils.getInstance(), this.playerInfo::teleportToLastLeaveLocation);
 		} else {
-			ResourcePackType.setResourcePack(this.playerInfo);
+			ResourcePack.setResourcePack(this.playerInfo);
 		}
 	}
 
@@ -120,9 +134,9 @@ public class RegistrationProcess {
 	}
 
 	private void sendDialogueMessage(@NotNull String message, long delay) {
-		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+		Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
 			this.player.sendMessage(
-					Component.text(" ")
+					Component.space()
 					.append(Component.text(" [0] Незнакомец : ")
 					.color(ChatUtils.Colors.CHAT_COLOR_PRIMARY))
 					.append(Component.text(message))
@@ -134,5 +148,66 @@ public class RegistrationProcess {
 
 	private static @NotNull String strNormalize(@NotNull String string) {
 		return string.substring(0, 1).toUpperCase(Locale.ROOT) + string.substring(1).toLowerCase(Locale.ROOT);
+	}
+
+	public static final class SignMenu {
+		private static final Map<Player, SignMenu> inputs = new HashMap<>();
+		private final List<String> text;
+		private BiPredicate<Player, String[]> response;
+		private Location location;
+
+		public SignMenu(String @NotNull ... text) {
+			this.text = List.of(text);
+
+			MSUtils.getProtocolManager().addPacketListener(new PacketAdapter(MSUtils.getInstance(), PacketType.Play.Client.UPDATE_SIGN) {
+				@Override
+				public void onPacketReceiving(PacketEvent event) {
+					Player player = event.getPlayer();
+					SignMenu menu = inputs.remove(player);
+
+					if (menu == null) return;
+
+					event.setCancelled(true);
+					menu.location.setY(200);
+
+					if (!menu.response.test(player, event.getPacket().getStringArrays().read(0))) {
+						Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
+					}
+					Bukkit.getScheduler().runTask(this.plugin, () -> {
+						if (player.isOnline()) {
+							player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
+						}
+					});
+				}
+			});
+		}
+
+		public SignMenu response(@NotNull BiPredicate<Player, String[]> response) {
+			this.response = response;
+			return this;
+		}
+
+		public void open(@NotNull Player player) {
+			this.location = player.getLocation();
+			this.location.setY(200);
+
+			player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
+			player.sendSignChange(this.location, Lists.newArrayList(
+					Component.text(this.text.get(0)),
+					Component.text(this.text.get(1)),
+					Component.text(this.text.get(2)),
+					Component.text(this.text.get(3)))
+			);
+
+			PacketContainer openSign = MSUtils.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
+			openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));
+			try {
+				MSUtils.getProtocolManager().sendServerPacket(player, openSign);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
+			inputs.put(player, this);
+		}
 	}
 }

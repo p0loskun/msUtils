@@ -1,9 +1,7 @@
 package com.github.minersstudios.msutils.player;
 
-import com.github.minersstudios.msblock.utils.BlockUtils;
-import com.github.minersstudios.msdecor.utils.CustomDecorUtils;
-import com.github.minersstudios.msitems.utils.ItemUtils;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.mscore.MSCore;
+import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -15,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -23,9 +22,9 @@ import java.util.List;
 
 public class CraftsMenu {
 	public static final Component
-			CATEGORY_NAME = ChatUtils.createDefaultStyledName("뀂ꀲ"),
-			CRAFTS_NAME = ChatUtils.createDefaultStyledName("뀂ꀧ"),
-			CRAFT_NAME = ChatUtils.createDefaultStyledName("뀂ꀨ");
+			CATEGORY_NAME = ChatUtils.createDefaultStyledText("뀂ꀲ"),
+			CRAFTS_NAME = ChatUtils.createDefaultStyledText("뀂ꀧ"),
+			CRAFT_NAME = ChatUtils.createDefaultStyledText("뀂ꀨ");
 
 	public static final int
 			ARROW_SLOT = 14,
@@ -40,14 +39,15 @@ public class CraftsMenu {
 			DECORS_CATEGORY_SLOTS = Lists.newArrayList(3, 4, 5, 12, 13, 14, 21, 22, 23, 30, 31, 32),
 			ITEMS_CATEGORY_SLOTS = Lists.newArrayList(6, 7, 8, 15, 16, 17, 24, 25, 26, 33, 34, 35);
 
-	protected static final List<Recipe> customDecorRecipes = CustomDecorUtils.CUSTOM_DECOR_RECIPES;
-	protected static final List<Recipe> customBlockRecipes = BlockUtils.CUSTOM_BLOCK_RECIPES;
-	protected static final List<Recipe> customItemRecipes =ItemUtils.CUSTOM_ITEM_RECIPES;
+	protected static final List<Recipe> customDecorRecipes = MSCore.getConfigCache().customDecorRecipes;
+	protected static final List<Recipe> customBlockRecipes = MSCore.getConfigCache().customBlockRecipes;
+	protected static final List<Recipe> customItemRecipes = MSCore.getConfigCache().customItemRecipes;
 
 	public static int getItemIndex(@NotNull ItemStack itemStack, @NotNull Category category) {
 		int index = 0;
 		for (Recipe recipe : category.recipes) {
-			if (itemStack.isSimilar(recipe.getResult())) {
+			ItemStack result = recipe.getResult();
+			if (itemStack.isSimilar(result) && itemStack.getAmount() == result.getAmount()) {
 				return index;
 			}
 			index++;
@@ -55,9 +55,15 @@ public class CraftsMenu {
 		return -1;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void openCraft(@NotNull Player player, @NotNull ItemStack itemStack, @Range(from = 0, to = Integer.MAX_VALUE) int pageIndex, @NotNull Category category) {
 		for (Recipe recipe : category.recipes) {
-			if (recipe instanceof ShapedRecipe shapedRecipe && itemStack.isSimilar(shapedRecipe.getResult())) {
+			ItemStack result = recipe.getResult();
+			if (
+					recipe instanceof ShapedRecipe shapedRecipe
+					&& itemStack.isSimilar(result)
+					&& itemStack.getAmount() == result.getAmount()
+			) {
 				Inventory inventory = Bukkit.createInventory(null, 4 * 9, CRAFT_NAME);
 				String[] shapes = shapedRecipe.getShape();
 				int i = 0;
@@ -112,6 +118,7 @@ public class CraftsMenu {
 		player.openInventory(Bukkit.createInventory(null, 4 * 9, CATEGORY_NAME));
 	}
 
+	@Contract(" -> new")
 	private static ItemStack @NotNull [] getPreviousPageButton() {
 		ItemStack previousPage = new ItemStack(Material.PAPER),
 				previousPageNoCMD = new ItemStack(Material.PAPER);
@@ -126,6 +133,7 @@ public class CraftsMenu {
 		return new ItemStack[]{previousPage, previousPageNoCMD};
 	}
 
+	@Contract(" -> new")
 	private static ItemStack @NotNull [] getNextPageButton() {
 		ItemStack nextPage = new ItemStack(Material.PAPER),
 				nextPageNoCMD = new ItemStack(Material.PAPER);
@@ -140,6 +148,7 @@ public class CraftsMenu {
 		return new ItemStack[]{nextPage, nextPageNoCMD};
 	}
 
+	@Contract(" -> new")
 	private static @NotNull ItemStack getQuitButton() {
 		ItemStack quit = new ItemStack(Material.PAPER);
 		ItemMeta quitMeta = quit.getItemMeta();
@@ -173,6 +182,7 @@ public class CraftsMenu {
 			return recipes;
 		}
 
+		@Contract("null -> null")
 		public static @Nullable Category getCategory(@Nullable ItemStack itemStack) {
 			if (itemStack == null) return null;
 			for (Recipe recipe : customBlockRecipes) {

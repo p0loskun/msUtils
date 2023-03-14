@@ -1,15 +1,19 @@
 package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.msutils.MSUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
+@MSListener
 public class PlayerMoveListener implements Listener {
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onPlayerMove(@NotNull PlayerMoveEvent event) {
-		event.setCancelled(event.getPlayer().getWorld() == Main.getWorldDark());
+		if (event.getPlayer().getWorld() == MSUtils.getWorldDark()) {
+			event.setCancelled(true);
+		}
 	}
 }

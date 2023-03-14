@@ -1,5 +1,6 @@
 package com.github.minersstudios.msutils.listeners.player;
 
+import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import io.papermc.paper.advancement.AdvancementDisplay;
 import net.kyori.adventure.text.Component;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+@MSListener
 public class PlayerAdvancementDoneListener implements Listener {
 
 	@EventHandler
@@ -20,19 +22,19 @@ public class PlayerAdvancementDoneListener implements Listener {
 		if (advancementDisplay == null || event.message() == null) return;
 		AdvancementDisplay.Frame frame = advancementDisplay.frame();
 		event.message(
-				Component.text(" ")
+				Component.space()
 				.append(Component.translatable(
-						"chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
-						new PlayerInfo(event.getPlayer().getUniqueId()).getDefaultName(),
-						Component.text("[")
-						.append(advancementDisplay.title())
-						.append(Component.text("]"))
+				"chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
+				new PlayerInfo(event.getPlayer().getUniqueId()).getDefaultName(),
+				Component.text("[")
+				.append(advancementDisplay.title())
+				.append(Component.text("]"))
+				.color(frame.color())
+				.hoverEvent(HoverEvent.showText(
+						advancementDisplay.title()
+						.append(Component.newline().append(advancementDisplay.description()))
 						.color(frame.color())
-						.hoverEvent(HoverEvent.showText(
-								advancementDisplay.title()
-								.append(Component.newline().append(advancementDisplay.description()))
-								.color(frame.color())
-						))
+				))
 				).color(NamedTextColor.GRAY))
 		);
 	}

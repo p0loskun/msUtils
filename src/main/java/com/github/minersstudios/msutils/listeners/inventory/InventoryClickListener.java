@@ -1,11 +1,12 @@
 package com.github.minersstudios.msutils.listeners.inventory;
 
-import com.github.minersstudios.msutils.player.Pronouns;
-import com.github.minersstudios.msutils.player.ResourcePackType;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.Pronouns;
 import com.github.minersstudios.msutils.player.RegistrationProcess;
+import com.github.minersstudios.msutils.player.ResourcePack;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -24,9 +25,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-
 import static com.github.minersstudios.msutils.player.CraftsMenu.*;
 
+@MSListener
 public class InventoryClickListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -39,18 +40,17 @@ public class InventoryClickListener implements Listener {
 				currentItem = event.getCurrentItem();
 
 		if (clickedInventory == null) return;
-
 		if (
 				(clickedInventory.getType() == InventoryType.PLAYER
 				&& (event.getClick().isShiftClick() || event.getClick() == ClickType.DOUBLE_CLICK)
-				&& (inventoryTitle.contains(ResourcePackType.NAME)
+				&& (inventoryTitle.contains(ResourcePack.Menu.NAME)
 				|| inventoryTitle.contains(Pronouns.NAME)
 				|| inventoryTitle.contains(CRAFT_NAME)
 				|| inventoryTitle.contains(CRAFTS_NAME)))
-				|| player.getWorld() == Main.getWorldDark()
+				|| player.getWorld() == MSUtils.getWorldDark()
 		) {
 			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+			Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
 		}
 
 		if (
@@ -62,7 +62,7 @@ public class InventoryClickListener implements Listener {
 				&& cursorItem.getType() != Material.AIR
 		) {
 			player.setItemOnCursor(null);
-			Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.getInventory().setHelmet(cursorItem));
+			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.getInventory().setHelmet(cursorItem));
 		}
 
 		if (currentItem != null && currentItem.getType() != Material.AIR) {
@@ -76,39 +76,48 @@ public class InventoryClickListener implements Listener {
 				clickedInventory.setItem(slot, new ItemStack(Material.AIR));
 				ChatUtils.sendWarning(null,
 						Component.text(" У игрока : ")
-								.append(Component.text(player.getName()))
-								.append(Component.text(" был убран предмет : \n"))
-								.append(Component.text(currentItem.toString()))
+						.append(Component.text(player.getName()))
+						.append(Component.text(" был убран предмет : \n"))
+						.append(Component.text(currentItem.toString()))
 				);
 				event.setCancelled(true);
-				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+				Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
 			}
 		}
 
 		if (clickedInventory.getType() != InventoryType.PLAYER) {
-			if (inventoryTitle.contains(ResourcePackType.NAME)) {
+			if (inventoryTitle.contains(ResourcePack.Menu.NAME)) {
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				if (
+						ResourcePack.Type.FULL.getUrl() == null
+						|| ResourcePack.Type.FULL.getHash() == null
+						|| ResourcePack.Type.LITE.getUrl() == null
+						|| ResourcePack.Type.LITE.getHash() == null
+				) {
+					PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Сервер ещё не запущен");
+					return;
+				}
 				if (slot == 0 || slot == 1) {
-					if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePackType.NONE)
-						Bukkit.getScheduler().runTask(Main.getInstance(), () -> PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Этот параметр требует перезахода на сервер"));
-					playerInfo.setResourcePackType(ResourcePackType.NONE);
+					if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != ResourcePack.Type.NONE)
+						Bukkit.getScheduler().runTask(MSUtils.getInstance(),
+								() -> PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Этот параметр требует повторного захода на сервер")
+						);
+					playerInfo.setResourcePackType(ResourcePack.Type.NONE);
 					player.closeInventory();
-					if (player.getWorld() == Main.getWorldDark())
+					if (player.getWorld() == MSUtils.getWorldDark())
 						playerInfo.teleportToLastLeaveLocation();
 				} else if (slot == 2 || slot == 3 || slot == 5 || slot == 6) {
 					player.closeInventory();
-					playerInfo.setResourcePackType(ResourcePackType.FULL);
-					playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
-					player.setResourcePack(ResourcePackType.FULL.getDropBoxURL(), ResourcePackType.FULL.getHash());
+					playerInfo.setResourcePackType(ResourcePack.Type.FULL);
+					player.setResourcePack(ResourcePack.Type.FULL.getUrl(), ResourcePack.Type.FULL.getHash());
 				} else if (slot == 7 || slot == 8) {
 					player.closeInventory();
-					playerInfo.setResourcePackType(ResourcePackType.LITE);
-					playerInfo.setDiskType(ResourcePackType.DiskType.DROPBOX);
-					player.setResourcePack(ResourcePackType.LITE.getDropBoxURL(), ResourcePackType.LITE.getHash());
+					playerInfo.setResourcePackType(ResourcePack.Type.LITE);
+					player.setResourcePack(ResourcePack.Type.LITE.getUrl(), ResourcePack.Type.LITE.getHash());
 				}
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 				event.setCancelled(true);
-				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+				Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
 			}
 
 			if (inventoryTitle.contains(Pronouns.NAME)) {
@@ -130,7 +139,7 @@ public class InventoryClickListener implements Listener {
 				}
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 				event.setCancelled(true);
-				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+				Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
 			}
 
 			if (inventoryTitle.contains(CRAFTS_NAME)) {
@@ -154,7 +163,7 @@ public class InventoryClickListener implements Listener {
 					}
 				}
 				event.setCancelled(!event.getClick().isCreativeAction());
-				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+				Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
 			}
 
 			if (inventoryTitle.contains(CRAFT_NAME)) {
@@ -166,7 +175,7 @@ public class InventoryClickListener implements Listener {
 					openCategory(player, arrow.getItemMeta().getCustomModelData() - 1, category);
 				}
 				event.setCancelled(!event.getClick().isCreativeAction());
-				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+				Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
 			}
 
 			if (inventoryTitle.contains(CATEGORY_NAME)) {
@@ -179,7 +188,7 @@ public class InventoryClickListener implements Listener {
 				}
 				player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 0.5f, 1.0f);
 				event.setCancelled(!event.getClick().isCreativeAction());
-				Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+				Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
 			}
 		}
 	}

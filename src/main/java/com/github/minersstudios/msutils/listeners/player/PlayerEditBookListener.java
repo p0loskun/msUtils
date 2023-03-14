@@ -1,5 +1,6 @@
 package com.github.minersstudios.msutils.listeners.player;
 
+import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
@@ -8,6 +9,7 @@ import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 
+@MSListener
 public class PlayerEditBookListener implements Listener {
 
 	@EventHandler

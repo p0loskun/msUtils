@@ -1,9 +1,10 @@
 package com.github.minersstudios.msutils.listeners.chat;
 
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.Main;
+import com.github.minersstudios.mscore.utils.Badges;
+import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import github.scarsz.discordsrv.api.Subscribe;
-import github.scarsz.discordsrv.api.events.*;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.dependencies.google.common.base.Function;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.util.LangUtil;
@@ -15,10 +16,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class DiscordSRVListener {
+public class DiscordGuildMessagePreProcessListener {
 
 	@Subscribe
-	public void discordMessageProcessed(@NotNull DiscordGuildMessagePreProcessEvent event) {
+	public void onDiscordGuildMessagePreProcess(@NotNull DiscordGuildMessagePreProcessEvent event) {
 		Message message = event.getMessage(),
 				referencedMessage = message.getReferencedMessage();
 		String reply = referencedMessage != null
@@ -29,20 +30,20 @@ public class DiscordSRVListener {
 						? "(вложения) "
 						: "(вложение) ";
 		Component messageComponent =
-				ChatUtils.Symbols.DISCORD
-						.color(NamedTextColor.WHITE)
-						.append(Component.text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
-						.append(Component.text(reply, TextColor.color(152, 162, 249)))
-						.append(Component.text(" : ", TextColor.color(112, 125, 223)))
-						.append(Component.text(attachment, TextColor.color(165, 165, 255)))
-						.append(Component.text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
+				Badges.DISCORD
+				.color(NamedTextColor.WHITE)
+				.append(Component.text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
+				.append(Component.text(reply, TextColor.color(152, 162, 249)))
+				.append(Component.text(" : ", TextColor.color(112, 125, 223)))
+				.append(Component.text(attachment, TextColor.color(165, 165, 255)))
+				.append(Component.text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
 
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			if (player.getWorld() != Main.getWorldDark()) {
+			if (player.getWorld() != MSUtils.getWorldDark()) {
 				player.sendMessage(messageComponent);
 			}
 		}
-		Bukkit.getLogger().info(ChatUtils.convertComponentToString(messageComponent).substring(2));
+		Bukkit.getLogger().info(ChatUtils.serializeLegacyComponent(messageComponent).substring(2));
 	}
 
 	private static @NotNull String replaceReplyPlaceholders(@NotNull String format, @NotNull Message repliedMessage) {

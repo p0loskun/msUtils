@@ -1,6 +1,5 @@
 package com.github.minersstudios.msutils.player;
 
-import com.github.minersstudios.msutils.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,8 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static com.github.minersstudios.msutils.MSUtils.getInstance;
+
 public class PlayerID {
-	private static final File idFile = new File(Main.getInstance().getDataFolder(), "ids.yml");
+	private static final File idFile = new File(getInstance().getPluginFolder(), "ids.yml");
 	private final YamlConfiguration yamlConfiguration;
 
 	public PlayerID() {
@@ -28,8 +29,8 @@ public class PlayerID {
 		this.yamlConfiguration.set(uuid.toString(), ID);
 		try {
 			this.yamlConfiguration.save(idFile);
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
 		}
 		return ID;
 	}

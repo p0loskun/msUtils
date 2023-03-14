@@ -1,7 +1,7 @@
 package com.github.minersstudios.msutils.player;
 
-import com.github.minersstudios.msutils.Main;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,12 +15,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
+import static com.github.minersstudios.msutils.MSUtils.getInstance;
+import static com.github.minersstudios.msutils.utils.ChatUtils.Colors.*;
+import static com.github.minersstudios.msutils.utils.ChatUtils.sendJoinMessage;
 
 public class PlayerInfo {
 	private final File dataFile;
@@ -30,10 +32,13 @@ public class PlayerInfo {
 	private final UUID uuid;
 	private @Nullable String nickname, firstname, lastname, patronymic;
 
-	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd HH:mm z");
-
 	public PlayerInfo(@NotNull UUID uuid, @Nullable String nickname) {
-		this.dataFile = new File(Main.getInstance().getDataFolder(), "players/" + uuid + ".yml");
+		this.dataFile = new File(
+				getInstance().getPluginFolder(),
+				"players/"
+				+ ("$Console".equals(nickname) ? "console" : uuid)
+				+ ".yml"
+		);
 		this.yamlConfiguration = YamlConfiguration.loadConfiguration(this.dataFile);
 		this.uuid = uuid;
 		this.nickname = nickname;
@@ -53,44 +58,44 @@ public class PlayerInfo {
 
 	public @NotNull Component getDefaultName() {
 		return Component.text("[")
-						.append(Component.text(this.getID()))
-						.append(Component.text("] "))
-						.append(Component.text(this.getFirstname()))
-						.append(Component.text(" "))
-						.append(Component.text(this.getLastname()));
+				.append(Component.text(this.getID()))
+				.append(Component.text("] "))
+				.append(Component.text(this.getFirstname()))
+				.append(this.getLastname().isEmpty() ? Component.empty() : Component.space())
+				.append(Component.text(this.getLastname()));
 	}
 
 	public @NotNull Component getGoldenName() {
 		return Component.text("[")
-						.append(Component.text(this.getID())
-						.append(Component.text("] ")))
-						.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_SECONDARY)
-						.append(Component.text(this.getFirstname())
-						.append(Component.text(" ")
-						.append(Component.text(this.getLastname())))
-						.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY));
+				.append(Component.text(this.getID())
+				.append(Component.text("] ")))
+				.color(JOIN_MESSAGE_COLOR_SECONDARY)
+				.append(Component.text(this.getFirstname())
+				.append(this.getLastname().isEmpty() ? Component.empty() : Component.space()
+				.append(Component.text(this.getLastname())))
+				.color(JOIN_MESSAGE_COLOR_PRIMARY));
 	}
 
 	public @NotNull Component getGrayIDGoldName() {
 		return Component.text("[")
-						.append(Component.text(this.getID())
-						.append(Component.text("] ")))
-						.color(NamedTextColor.GRAY)
-						.append(Component.text(this.getFirstname())
-						.append(Component.text(" ")
-						.append(Component.text(this.getLastname())))
-						.color(ChatUtils.Colors.RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
+				.append(Component.text(this.getID())
+				.append(Component.text("] ")))
+				.color(NamedTextColor.GRAY)
+				.append(Component.text(this.getFirstname())
+				.append(this.getLastname().isEmpty() ? Component.empty() : Component.space()
+				.append(Component.text(this.getLastname())))
+				.color(RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
 	}
 
 	public @NotNull Component getGrayIDGreenName() {
 		return Component.text("[")
-						.append(Component.text(this.getID())
-						.append(Component.text("] ")))
-						.color(NamedTextColor.GRAY)
-						.append(Component.text(this.getFirstname())
-						.append(Component.text(" ")
-						.append(Component.text(this.getLastname())))
-						.color(NamedTextColor.GREEN));
+				.append(Component.text(this.getID())
+				.append(Component.text("] ")))
+				.color(NamedTextColor.GRAY)
+				.append(Component.text(this.getFirstname())
+				.append(this.getLastname().isEmpty() ? Component.empty() : Component.space()
+				.append(Component.text(this.getLastname())))
+				.color(NamedTextColor.GREEN));
 	}
 
 	/**
@@ -152,6 +157,7 @@ public class PlayerInfo {
 	 * @return player ID
 	 */
 	public int getID() {
+		if (this == MSUtils.CONSOLE_PLAYER_INFO) return -1;
 		return this.getID(false, true);
 	}
 
@@ -163,7 +169,6 @@ public class PlayerInfo {
 	public @Nullable String getNickname() {
 		return this.nickname == null ? this.nickname = this.getOfflinePlayer().getName() : this.nickname;
 	}
-
 
 	/**
 	 * Gets player firstname from data file
@@ -281,8 +286,8 @@ public class PlayerInfo {
 	 *
 	 * @return player resource pack type if it's != null, else returns null
 	 */
-	public @Nullable ResourcePackType getResourcePackType() {
-		return ResourcePackType.getResourcePackByString(this.yamlConfiguration.getString("resource-pack.resource-pack-type", "NULL"));
+	public @Nullable ResourcePack.Type getResourcePackType() {
+		return ResourcePack.Type.getResourcePackByString(this.yamlConfiguration.getString("resource-pack.resource-pack-type", "NULL"));
 	}
 
 	/**
@@ -290,32 +295,9 @@ public class PlayerInfo {
 	 *
 	 * @param resourcePackType resource pack type : "FULL/LITE/NONE"
 	 */
-	public void setResourcePackType(@NotNull ResourcePackType resourcePackType) {
+	public void setResourcePackType(@NotNull ResourcePack.Type resourcePackType) {
 		if (!this.hasPlayerDataFile()) return;
 		this.yamlConfiguration.set("resource-pack.resource-pack-type", resourcePackType.name());
-		if (resourcePackType == ResourcePackType.NONE) {
-			this.setDiskType(null);
-		}
-		savePlayerDataFile();
-	}
-
-	/**
-	 * Gets player disk type from data file
-	 *
-	 * @return player disk type if it's != null, else returns default disk type
-	 */
-	public @NotNull ResourcePackType.DiskType getDiskType() {
-		return ResourcePackType.DiskType.valueOf(this.yamlConfiguration.getString("resource-pack.disk-type", "DROPBOX"));
-	}
-
-	/**
-	 * Sets disk type in data file
-	 *
-	 * @param diskType disk type : "DROPBOX/YANDEX_DISK"
-	 */
-	public void setDiskType(@Nullable ResourcePackType.DiskType diskType) {
-		if (!this.hasPlayerDataFile()) return;
-		this.yamlConfiguration.set("resource-pack.disk-type", diskType != null ? diskType.name() : null);
 		savePlayerDataFile();
 	}
 
@@ -339,19 +321,20 @@ public class PlayerInfo {
 	 * Mutes/unmutes player
 	 *
 	 * @param value  mute value
-	 * @param time   mutes for time
+	 * @param date   date for the mute's expiration
 	 * @param reason mute reason
 	 */
-	public boolean setMuted(boolean value, long time, @NotNull String reason, CommandSender sender) {
+	public boolean setMuted(boolean value, @NotNull Date date, @NotNull String reason, CommandSender sender) {
 		if (this.getNickname() == null || !this.hasPlayerDataFile()) {
 			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
 		}
 		this.yamlConfiguration.set("bans.muted", value);
-		this.yamlConfiguration.set("time.muted-to", time);
+		this.yamlConfiguration.set("time.muted-to", date.getTime());
 		this.yamlConfiguration.set("bans.mute-reason", reason);
 		savePlayerDataFile();
 		Player player = this.getOnlinePlayer();
 		if (value && player != null && player.getAddress() != null) {
+			getConfigCache().addMutedPlayer(this.onlinePlayer, date.getTime());
 			ChatUtils.sendFine(sender,
 					Component.text("Игрок : \"")
 					.append(this.getGrayIDGreenName())
@@ -360,13 +343,7 @@ public class PlayerInfo {
 					.append(Component.text(")\" был замьючен :\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))
-					.append(Component.text(
-							Instant.ofEpochMilli(time).atZone(
-									sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
-									? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress().getAddress()))
-									: ZoneId.systemDefault()
-							).format(timeFormatter))
-					)
+					.append(Component.text(PlayerUtils.getDate(date, sender)))
 			);
 			return ChatUtils.sendWarning(
 					player,
@@ -374,9 +351,10 @@ public class PlayerInfo {
 					.append(Component.text("\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))
-					.append(Component.text(Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress().getAddress()))).format(timeFormatter)))
+					.append(Component.text(PlayerUtils.getDate(date, player)))
 			);
 		}
+		getConfigCache().removeMutedPlayer(this.onlinePlayer);
 		ChatUtils.sendFine(sender,
 				Component.text("Игрок : \"")
 				.append(this.getGrayIDGreenName())
@@ -384,11 +362,14 @@ public class PlayerInfo {
 				.append(Component.text(this.getNickname()))
 				.append(Component.text(")\" был размучен"))
 		);
-		return ChatUtils.sendWarning(player, Component.text("Вы были размучены"));
+		if (player != null) {
+			return ChatUtils.sendWarning(player, Component.text("Вы были размучены"));
+		}
+		return true;
 	}
 
 	public boolean setMuted(boolean value, CommandSender commandSender) {
-		return this.setMuted(value, 0, "", commandSender);
+		return this.setMuted(value, new Date(0), "", commandSender);
 	}
 
 	/**
@@ -412,27 +393,29 @@ public class PlayerInfo {
 	 * Bans/unbans player
 	 *
 	 * @param value  ban value
-	 * @param time   bans for time
+	 * @param date   date for the ban's expiration
 	 * @param reason ban reason
 	 */
-	public boolean setBanned(boolean value, long time, @NotNull String reason, @Nullable CommandSender sender) {
+	public boolean setBanned(boolean value, @NotNull Date date, @NotNull String reason, @Nullable CommandSender sender) {
 		if (this.getNickname() == null) {
 			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере, используйте пожалуйста никнем"));
 		}
+
 		if (this.hasPlayerDataFile()) {
 			this.yamlConfiguration.set("bans.banned", value);
-			this.yamlConfiguration.set("time.banned-to", time);
+			this.yamlConfiguration.set("time.banned-to", date.getTime());
 			this.yamlConfiguration.set("bans.ban-reason", reason);
-			savePlayerDataFile();
+			this.savePlayerDataFile();
 		}
+
 		if (value && sender != null) {
 			Player player = this.getOnlinePlayer();
-			Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, new Date(time), sender.getName());
+			Bukkit.getBanList(BanList.Type.NAME).addBan(this.getNickname(), reason, date, sender.getName());
 			if (player != null && player.getAddress() != null) {
 				PlayerUtils.kickPlayer(player, "Вы были забанены",
 						reason
 						+ "\"\n До : \n"
-						+ Instant.ofEpochMilli(time).atZone(ZoneId.of(PlayerUtils.getTimezone(player.getAddress().getAddress()))).format(timeFormatter)
+						+ PlayerUtils.getDate(date, player)
 				);
 			}
 			return ChatUtils.sendFine(sender,
@@ -443,27 +426,22 @@ public class PlayerInfo {
 					.append(Component.text(")\" был забанен :\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))
-					.append(Component.text(
-							Instant.ofEpochMilli(time).atZone(
-									sender instanceof Player senderPlayer && senderPlayer.getAddress() != null
-											? ZoneId.of(PlayerUtils.getTimezone(senderPlayer.getAddress().getAddress()))
-											: ZoneId.systemDefault()
-							).format(timeFormatter))
-					)
+					.append(Component.text(PlayerUtils.getDate(date, sender)))
 			);
 		}
+
 		Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
 		return ChatUtils.sendFine(sender,
 				Component.text("Игрок : \"")
-						.append(this.getGrayIDGreenName())
-						.append(Component.text(" ("))
-						.append(Component.text(this.getNickname()))
-						.append(Component.text(")\" был разбанен"))
+				.append(this.getGrayIDGreenName())
+				.append(Component.text(" ("))
+				.append(Component.text(this.getNickname()))
+				.append(Component.text(")\" был разбанен"))
 		);
 	}
 
 	public boolean setBanned(boolean value, @Nullable CommandSender commandSender) {
-		return this.setBanned(value, 0, "", commandSender);
+		return this.setBanned(value, new Date(0), "", commandSender);
 	}
 
 	/**
@@ -511,7 +489,7 @@ public class PlayerInfo {
 		if (player.isDead()) {
 			player.spigot().respawn();
 		}
-		player.teleportAsync(new Location(Main.getWorldDark(), 0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
+		player.teleportAsync(new Location(MSUtils.getWorldDark(), 0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 	}
 
 	/**
@@ -522,8 +500,12 @@ public class PlayerInfo {
 		if (player == null) return;
 		player.setGameMode(this.getGameMode());
 		player.setHealth(this.getHealth());
+		player.setFlying(false);
+		player.setAllowFlight(false);
 		player.teleportAsync(this.getLastLeaveLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-		ChatUtils.sendJoinMessage(this, this.getOnlinePlayer());
+		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(),
+				() -> sendJoinMessage(this)
+		);
 	}
 
 	/**
@@ -532,7 +514,7 @@ public class PlayerInfo {
 	 * @return player last leave location
 	 */
 	public @NotNull Location getLastLeaveLocation() {
-		Location spawnLocation = Main.getOverworld().getSpawnLocation();
+		Location spawnLocation = MSUtils.getOverworld().getSpawnLocation();
 		return new Location(
 				Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-leave-location.world", spawnLocation.getBlock().getWorld().getName())),
 				this.yamlConfiguration.getDouble("locations.last-leave-location.x", spawnLocation.getX()),
@@ -551,11 +533,11 @@ public class PlayerInfo {
 		if (
 				player == null
 				|| !this.hasPlayerDataFile()
-				|| player.getWorld() == Main.getWorldDark()
+				|| player.getWorld() == MSUtils.getWorldDark()
 		) return;
 		Location leaveLocation = player.getLocation();
 		if (player.isDead()) {
-			leaveLocation = player.getBedSpawnLocation() != null ? player.getBedSpawnLocation() : Main.getOverworld().getSpawnLocation();
+			leaveLocation = player.getBedSpawnLocation() != null ? player.getBedSpawnLocation() : MSUtils.getOverworld().getSpawnLocation();
 		}
 		this.yamlConfiguration.set("gamemode", player.getGameMode().toString());
 		this.yamlConfiguration.set("locations.last-leave-location.world", leaveLocation.getBlock().getWorld().getName());
@@ -574,7 +556,7 @@ public class PlayerInfo {
 	 */
 	public @NotNull Location getLastDeathLocation() {
 		return new Location(
-				Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-death-location.world", Main.getOverworld().getName())),
+				Bukkit.getWorld(this.yamlConfiguration.getString("locations.last-death-location.world", MSUtils.getOverworld().getName())),
 				this.yamlConfiguration.getDouble("locations.last-death-location.x"),
 				this.yamlConfiguration.getDouble("locations.last-death-location.y"),
 				this.yamlConfiguration.getDouble("locations.last-death-location.z"),
@@ -591,7 +573,7 @@ public class PlayerInfo {
 		if (
 				player == null
 				|| !this.hasPlayerDataFile()
-				&& player.getWorld() == Main.getWorldDark()
+				&& player.getWorld() == MSUtils.getWorldDark()
 		) return;
 		Location location = player.getLocation();
 		this.yamlConfiguration.set("locations.last-death-location.world", location.getBlock().getWorld().getName());
@@ -627,8 +609,8 @@ public class PlayerInfo {
 	public void savePlayerDataFile() {
 		try {
 			this.yamlConfiguration.save(this.dataFile);
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
 		}
 	}
 

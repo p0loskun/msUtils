@@ -1,15 +1,16 @@
-nickname: Steve
+nickname: $Console
 ip:
   - 0.0.0.0
-gamemode: SURVIVAL/CREATIVE/ADVENTURE/SPECTATOR
+gamemode: SPECTATOR
 health: 20.0
 name:
-  firstname: Иван
-  lastname: Иванов
-  patronymic: Иваныч
-pronouns: HE/SHE/THEY
+  firstname: Неизвестный
+  lastname: ""
+  patronymic: ""
+pronouns: THEY
 resource-pack:
-  resource-pack-type: FULL/LITE/NONE
+  resource-pack-type: NONE
+  disk-type: DROPBOX
 bans:
   muted: false
   mute-reason: null
