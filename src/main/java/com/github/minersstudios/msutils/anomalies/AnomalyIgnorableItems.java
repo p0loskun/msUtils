@@ -1,10 +1,11 @@
 package com.github.minersstudios.msutils.anomalies;
 
+import com.github.minersstudios.mscore.utils.ItemUtils;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,10 +48,7 @@ public class AnomalyIgnorableItems {
 			EquipmentSlot equipmentSlot = playerEquippedItem.getKey();
 			ItemStack item = playerEquippedItem.getValue();
 			if (this.isIgnorableItem(equipmentSlot, item)) {
-				if (item.getItemMeta() instanceof Damageable damageable) {
-					damageable.setDamage(damageable.getDamage() + this.breakingPerAction);
-					item.setItemMeta(damageable);
-				}
+				ItemUtils.damageItem((Player) inventory.getHolder(), equipmentSlot, item, this.breakingPerAction);
 			}
 		}
 	}
