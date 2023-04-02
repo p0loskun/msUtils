@@ -191,12 +191,17 @@ public final class PlayerUtils {
 	 * @return string date format
 	 */
 	public static @NotNull String getDate(@NotNull Date date, @Nullable InetAddress address) {
-		return Instant.ofEpochMilli(date.getTime())
-				.atZone(
-						address != null
-						? ZoneId.of(PlayerUtils.getTimezone(address))
-						: ZoneId.systemDefault()
-				).format(MSCore.getConfigCache().timeFormatter);
+		Instant milli = Instant.ofEpochMilli(date.getTime());
+		ZoneId zoneId = ZoneId.systemDefault();
+		if (address == null) {
+			return milli.atZone(zoneId).format(MSCore.getConfigCache().timeFormatter);
+		}
+		String timeZone = PlayerUtils.getTimezone(address);
+		return milli.atZone(
+				ZoneId.of(timeZone.equalsIgnoreCase("Europe/Kyiv")
+				? "Europe/Kiev"
+				: timeZone
+		)).format(MSCore.getConfigCache().timeFormatter);
 	}
 
 	/**
@@ -256,11 +261,9 @@ public final class PlayerUtils {
 	public static boolean isOnline(@Nullable OfflinePlayer offlinePlayer, boolean ignoreWorld) {
 		if (offlinePlayer == null) return false;
 		Player player = offlinePlayer.getPlayer();
-		if (
-				player != null
+		return player != null
 				&& (ignoreWorld || player.getWorld() != MSUtils.getWorldDark())
-		) return true;
-		return !VanishAPI.isInvisibleOffline(offlinePlayer.getUniqueId());
+				&& !VanishAPI.isInvisibleOffline(offlinePlayer.getUniqueId());
 	}
 
 	public static @NotNull Map<@NotNull EquipmentSlot, @Nullable ItemStack> getPlayerEquippedItems(@NotNull PlayerInventory inventory) {
