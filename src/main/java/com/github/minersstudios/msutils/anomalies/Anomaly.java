@@ -77,7 +77,7 @@ public class Anomaly {
 			String name = equipmentSlot.name().toLowerCase(Locale.ROOT);
 			ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
 			ItemMeta itemMeta = itemStack.getItemMeta();
-			itemMeta.setCustomModelData(config.getInt("ignorable-items." + name + ".custom-model-data"));
+			itemMeta.setCustomModelData(slotsSection.getInt(name + ".custom-model-data"));
 			itemStack.setItemMeta(itemMeta);
 			items.put(equipmentSlot, itemStack);
 		}
