@@ -20,7 +20,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.github.minersstudios.mscore.utils.ChatUtils.*;
+import static com.github.minersstudios.mscore.utils.ChatUtils.sendInfo;
+import static com.github.minersstudios.mscore.utils.ChatUtils.serializeLegacyComponent;
 import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.github.minersstudios.msutils.utils.ChatUtils.Colors.*;
 import static github.scarsz.discordsrv.util.DiscordUtil.getTextChannelById;

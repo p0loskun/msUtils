@@ -4,7 +4,6 @@ import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.google.common.base.Charsets;
-import de.myzelyam.api.vanish.VanishAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -21,6 +20,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -158,10 +158,11 @@ public final class PlayerUtils {
 	public static boolean setSitting(@NotNull Player player, @Nullable Location sitLocation, String @Nullable [] args) {
 		if (player.getVehicle() != null && player.getVehicle().getType() != EntityType.ARMOR_STAND) return true;
 		if (!getConfigCache().seats.containsKey(player) && sitLocation != null) {
-			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 1.7d, 0.0d), ArmorStand.class, (armorStand) -> {
+			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.95d, 0.0d), ArmorStand.class, (armorStand) -> {
 				armorStand.setGravity(false);
 				armorStand.setVisible(false);
 				armorStand.setCollidable(false);
+				armorStand.setSmall(true);
 				armorStand.addPassenger(player);
 				armorStand.addScoreboardTag("customDecor");
 				getConfigCache().seats.put(player, armorStand);
@@ -170,14 +171,13 @@ public final class PlayerUtils {
 					? ChatUtils.sendRPEventMessage(player, Component.text(extractMessage(args, 0)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO)
 					: ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
 		} else if (sitLocation == null && getConfigCache().seats.containsKey(player)) {
-			ArmorStand armorStand = getConfigCache().seats.get(player);
-			getConfigCache().seats.remove(player);
-			player.eject();
-			Location getUpLocation = armorStand.getLocation().add(0.0d, 2.0d, 0.0d);
-			getUpLocation.setYaw(player.getLocation().getYaw());
-			getUpLocation.setPitch(player.getLocation().getPitch());
-			player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
+			ArmorStand armorStand = getConfigCache().seats.remove(player);
+			Location playerLoc = player.getLocation();
+			Location getUpLocation = armorStand.getLocation().add(0.0d, 1.7d, 0.0d);
+			getUpLocation.setYaw(playerLoc.getYaw());
+			getUpLocation.setPitch(playerLoc.getPitch());
 			armorStand.remove();
+			player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 			ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getUnSitMessage()), ChatUtils.RolePlayActionType.ME);
 		}
 		return true;
@@ -263,7 +263,11 @@ public final class PlayerUtils {
 		Player player = offlinePlayer.getPlayer();
 		return player != null
 				&& (ignoreWorld || player.getWorld() != MSUtils.getWorldDark())
-				&& !VanishAPI.isInvisibleOffline(offlinePlayer.getUniqueId());
+				&& !isVanished(player);
+	}
+
+	public static boolean isVanished(@NotNull Player player) {
+		return player.getMetadata("vanished").stream().anyMatch(MetadataValue::asBoolean);
 	}
 
 	public static @NotNull Map<@NotNull EquipmentSlot, @Nullable ItemStack> getPlayerEquippedItems(@NotNull PlayerInventory inventory) {
