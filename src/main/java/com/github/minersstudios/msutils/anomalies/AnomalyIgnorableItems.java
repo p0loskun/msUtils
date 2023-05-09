@@ -13,7 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class AnomalyIgnorableItems {
 	private final @NotNull Map<EquipmentSlot, ItemStack> includedItems;
 	private final int breakingPerAction;
@@ -54,7 +56,7 @@ public class AnomalyIgnorableItems {
 					&& this.isIgnorableItem(equipmentSlot, item)
 			) {
 				Bukkit.getScheduler().runTask(MSUtils.getInstance(), () ->
-						ItemUtils.damageItem((Player) inventory.getHolder(), equipmentSlot, item, this.breakingPerAction)
+						ItemUtils.damageItem((Player) Objects.requireNonNull(inventory.getHolder()), equipmentSlot, item, this.breakingPerAction)
 				);
 			}
 		}

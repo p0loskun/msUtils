@@ -324,9 +324,10 @@ public class PlayerInfo {
 	 * @param date   date for the mute's expiration
 	 * @param reason mute reason
 	 */
-	public boolean setMuted(boolean value, @NotNull Date date, @NotNull String reason, CommandSender sender) {
+	public void setMuted(boolean value, @NotNull Date date, @NotNull String reason, CommandSender sender) {
 		if (this.getNickname() == null || !this.hasPlayerDataFile()) {
-			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
+			ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
+			return;
 		}
 		this.yamlConfiguration.set("bans.muted", value);
 		this.yamlConfiguration.set("time.muted-to", date.getTime());
@@ -345,7 +346,7 @@ public class PlayerInfo {
 					.append(Component.text("\"\n    - До : "))
 					.append(Component.text(PlayerUtils.getDate(date, sender)))
 			);
-			return ChatUtils.sendWarning(
+			ChatUtils.sendWarning(
 					player,
 					Component.text("Вы были замьючены : ")
 					.append(Component.text("\n    - Причина : \""))
@@ -353,6 +354,7 @@ public class PlayerInfo {
 					.append(Component.text("\"\n    - До : "))
 					.append(Component.text(PlayerUtils.getDate(date, player)))
 			);
+			return;
 		}
 		getConfigCache().removeMutedPlayer(this.onlinePlayer);
 		ChatUtils.sendFine(sender,
@@ -363,13 +365,12 @@ public class PlayerInfo {
 				.append(Component.text(")\" был размучен"))
 		);
 		if (player != null) {
-			return ChatUtils.sendWarning(player, Component.text("Вы были размучены"));
+			ChatUtils.sendWarning(player, Component.text("Вы были размучены"));
 		}
-		return true;
 	}
 
-	public boolean setMuted(boolean value, CommandSender commandSender) {
-		return this.setMuted(value, new Date(0), "", commandSender);
+	public void setMuted(boolean value, CommandSender commandSender) {
+		this.setMuted(value, new Date(0), "", commandSender);
 	}
 
 	/**
@@ -396,9 +397,10 @@ public class PlayerInfo {
 	 * @param date   date for the ban's expiration
 	 * @param reason ban reason
 	 */
-	public boolean setBanned(boolean value, @NotNull Date date, @NotNull String reason, @Nullable CommandSender sender) {
+	public void setBanned(boolean value, @NotNull Date date, @NotNull String reason, @Nullable CommandSender sender) {
 		if (this.getNickname() == null) {
-			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере, используйте пожалуйста никнем"));
+			ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере, используйте пожалуйста никнем"));
+			return;
 		}
 
 		if (this.hasPlayerDataFile()) {
@@ -418,7 +420,7 @@ public class PlayerInfo {
 						+ PlayerUtils.getDate(date, player)
 				);
 			}
-			return ChatUtils.sendFine(sender,
+			ChatUtils.sendFine(sender,
 					Component.text("Игрок : \"")
 					.append(this.getGrayIDGreenName())
 					.append(Component.text(" ("))
@@ -428,10 +430,11 @@ public class PlayerInfo {
 					.append(Component.text("\"\n    - До : "))
 					.append(Component.text(PlayerUtils.getDate(date, sender)))
 			);
+			return;
 		}
 
 		Bukkit.getBanList(BanList.Type.NAME).pardon(this.getNickname());
-		return ChatUtils.sendFine(sender,
+		ChatUtils.sendFine(sender,
 				Component.text("Игрок : \"")
 				.append(this.getGrayIDGreenName())
 				.append(Component.text(" ("))
@@ -440,8 +443,8 @@ public class PlayerInfo {
 		);
 	}
 
-	public boolean setBanned(boolean value, @Nullable CommandSender commandSender) {
-		return this.setBanned(value, new Date(0), "", commandSender);
+	public void setBanned(boolean value, @Nullable CommandSender commandSender) {
+		this.setBanned(value, new Date(0), "", commandSender);
 	}
 
 	/**

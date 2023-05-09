@@ -124,7 +124,8 @@ public final class ChatUtils {
 					.append(message.color(CHAT_COLOR_SECONDARY))
 			);
 			sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), privateMessage);
-			return sendInfo(null, text(privateMessage));
+			sendInfo(null, text(privateMessage));
+			return true;
 		}
 		return false;
 	}
@@ -137,7 +138,7 @@ public final class ChatUtils {
 	 * @param action action
 	 * @param rolePlayActionType rp action type
 	 */
-	public static boolean sendRPEventMessage(@NotNull Player player, @Nullable Component speech, @NotNull Component action, @NotNull RolePlayActionType rolePlayActionType) {
+	public static void sendRPEventMessage(@NotNull Player player, @Nullable Component speech, @NotNull Component action, @NotNull RolePlayActionType rolePlayActionType) {
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		Component fullMessage;
 		if (rolePlayActionType == RolePlayActionType.DO) {
@@ -181,11 +182,10 @@ public final class ChatUtils {
 		);
 		sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), serializeLegacyComponent(fullMessage));
 		Bukkit.getLogger().info(serializeLegacyComponent(fullMessage));
-		return true;
 	}
 
-	public static boolean sendRPEventMessage(@NotNull Player player, @NotNull Component action, @NotNull RolePlayActionType rolePlayActionType) {
-		return sendRPEventMessage(player, null, action, rolePlayActionType);
+	public static void sendRPEventMessage(@NotNull Player player, @NotNull Component action, @NotNull RolePlayActionType rolePlayActionType) {
+		sendRPEventMessage(player, null, action, rolePlayActionType);
 	}
 
 	/**
@@ -301,7 +301,7 @@ public final class ChatUtils {
 		Bukkit.getLogger().info(stringQuitMessage);
 	}
 
-	private static void sendActionMessage(@NotNull Player player, @NotNull TextChannel textChannel, @NotNull String actionMessage, int colorRaw) {
+	private static void sendActionMessage(@NotNull Player player, TextChannel textChannel, @NotNull String actionMessage, int colorRaw) {
 		if (DiscordUtil.getJda() == null) return;
 		DiscordUtil.queueMessage(textChannel,
 				DiscordSRV.translateMessage(

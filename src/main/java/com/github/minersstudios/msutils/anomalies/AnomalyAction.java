@@ -10,6 +10,7 @@ import java.util.Map;
 
 import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 
+@SuppressWarnings("unused")
 public abstract class AnomalyAction {
 	protected static final SecureRandom random = new SecureRandom();
 

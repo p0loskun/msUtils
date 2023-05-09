@@ -23,19 +23,25 @@ import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionTyp
 import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.TODO;
 import static com.github.minersstudios.msutils.utils.ChatUtils.sendRPEventMessage;
 
-@MSCommand(command = "fart")
+@MSCommand(
+		command = "fart",
+		usage = " ꀑ §cИспользуй: /<command> [речь]",
+		description = "Пукни вкусно на публику"
+)
 public class FartCommand implements MSCommandExecutor {
 	private final SecureRandom random = new SecureRandom();
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			return true;
 		}
 		if (!PlayerUtils.isOnline(player)) return true;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			return true;
 		}
 		Location location = player.getLocation();
 		boolean withPoop =
@@ -61,8 +67,10 @@ public class FartCommand implements MSCommandExecutor {
 			);
 		}
 		if (args.length > 0) {
-			return sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text(withPoop ? "пукнув с подливой" : "пукнув"), TODO);
+			sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text(withPoop ? "пукнув с подливой" : "пукнув"), TODO);
+			return true;
 		}
-		return sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getFartMessage()).append(Component.text(withPoop ? " с подливой" : "")), ME);
+		sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getFartMessage()).append(Component.text(withPoop ? " с подливой" : "")), ME);
+		return true;
 	}
 }

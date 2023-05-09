@@ -1,131 +1,173 @@
 package com.github.minersstudios.msutils.player;
 
 import com.github.minersstudios.mscore.MSCore;
-import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.google.common.collect.Lists;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import com.github.minersstudios.mscore.inventory.CustomInventory;
+import com.github.minersstudios.mscore.inventory.ElementListedInventory;
+import com.github.minersstudios.mscore.inventory.InventoryButton;
+import com.github.minersstudios.mscore.inventory.ListedInventory;
+import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
+import com.github.minersstudios.mscore.utils.InventoryUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
+import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
 
 public class CraftsMenu {
-	public static final Component
-			CATEGORY_NAME = ChatUtils.createDefaultStyledText("뀂ꀲ"),
-			CRAFTS_NAME = ChatUtils.createDefaultStyledText("뀂ꀧ"),
-			CRAFT_NAME = ChatUtils.createDefaultStyledText("뀂ꀨ");
-
 	public static final int
-			ARROW_SLOT = 14,
 			RESULT_SLOT = 15,
 			CRAFT_QUIT_BUTTON = 31,
 			CRAFTS_QUIT_BUTTON = 40;
 
-	public static final List<Integer>
-			PREVIOUS_PAGE_BUTTON_SLOTS = Lists.newArrayList(36, 37, 38, 39),
-			NEXT_PAGE_BUTTON_SLOTS = Lists.newArrayList(41, 42, 43, 44),
-			BLOCKS_CATEGORY_SLOTS = Lists.newArrayList(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29),
-			DECORS_CATEGORY_SLOTS = Lists.newArrayList(3, 4, 5, 12, 13, 14, 21, 22, 23, 30, 31, 32),
-			ITEMS_CATEGORY_SLOTS = Lists.newArrayList(6, 7, 8, 15, 16, 17, 24, 25, 26, 33, 34, 35);
+	public static @NotNull CustomInventory create() {
+		CustomInventory customInventory = new CustomInventory("뀂ꀲ", 4);
 
-	protected static final List<Recipe> customDecorRecipes = MSCore.getConfigCache().customDecorRecipes;
-	protected static final List<Recipe> customBlockRecipes = MSCore.getConfigCache().customBlockRecipes;
-	protected static final List<Recipe> customItemRecipes = MSCore.getConfigCache().customItemRecipes;
+		InventoryButton blocksButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
+			Player player = (Player) event.getWhoClicked();
+			player.openInventory(createCraftsInventory(MSCore.getConfigCache().customBlockRecipes));
+			playClickSound(player);
+		});
+		customInventory.setButtons(
+				IntStream.of(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29)
+				.boxed()
+				.collect(Collectors.toMap(Function.identity(), slot -> blocksButton))
+		);
 
-	public static int getItemIndex(@NotNull ItemStack itemStack, @NotNull Category category) {
-		int index = 0;
-		for (Recipe recipe : category.recipes) {
-			ItemStack result = recipe.getResult();
-			if (itemStack.isSimilar(result) && itemStack.getAmount() == result.getAmount()) {
-				return index;
-			}
-			index++;
-		}
-		return -1;
+		InventoryButton decorsButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
+			Player player = (Player) event.getWhoClicked();
+			player.openInventory(createCraftsInventory(MSCore.getConfigCache().customDecorRecipes));
+			playClickSound(player);
+		});
+		customInventory.setButtons(
+				IntStream.of(3, 4, 5, 12, 13, 14, 21, 22, 23, 30, 31, 32)
+				.boxed()
+				.collect(Collectors.toMap(Function.identity(), slot -> decorsButton))
+		);
+
+		InventoryButton itemsButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
+			Player player = (Player) event.getWhoClicked();
+			player.openInventory(createCraftsInventory(MSCore.getConfigCache().customItemRecipes));
+			playClickSound(player);
+		});
+		customInventory.setButtons(
+				IntStream.of(6, 7, 8, 15, 16, 17, 24, 25, 26, 33, 34, 35)
+				.boxed()
+				.collect(Collectors.toMap(Function.identity(), slot -> itemsButton))
+		);
+
+		return customInventory;
 	}
 
-	@SuppressWarnings("deprecation")
-	public static void openCraft(@NotNull Player player, @NotNull ItemStack itemStack, @Range(from = 0, to = Integer.MAX_VALUE) int pageIndex, @NotNull Category category) {
-		for (Recipe recipe : category.recipes) {
-			ItemStack result = recipe.getResult();
-			if (
-					recipe instanceof ShapedRecipe shapedRecipe
-					&& itemStack.isSimilar(result)
-					&& itemStack.getAmount() == result.getAmount()
-			) {
-				Inventory inventory = Bukkit.createInventory(null, 4 * 9, CRAFT_NAME);
-				String[] shapes = shapedRecipe.getShape();
-				int i = 0;
-				for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
-					for (Character character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
-						ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
-						if (ingredient == null) {
+	public static boolean open(@NotNull Player player) {
+		CustomInventory customInventory = InventoryUtils.getCustomInventory("crafts");
+		if (customInventory == null) return false;
+		player.openInventory(customInventory);
+		return true;
+	}
+
+	private static @NotNull CustomInventory createCraftsInventory(@NotNull List<Recipe> recipes) {
+		List<InventoryButton> elements = new ArrayList<>();
+		for (Recipe recipe : recipes) {
+			ItemStack resultItem = recipe.getResult();
+			elements.add(new InventoryButton(resultItem, (clickEvent, inventory, button) -> {
+				Player player = (Player) clickEvent.getWhoClicked();
+				CustomInventory craftInventory = new CustomInventory("뀂ꀨ", 4);
+				if (recipe instanceof ShapedRecipe shapedRecipe) {
+					String[] shapes = shapedRecipe.getShape();
+					int i = 0;
+					for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
+						for (Character character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
+							ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
+							if (ingredient == null) {
+								i++;
+								continue;
+							}
+							switch (i) {
+								case 0 -> craftInventory.setItem(2, ingredient);
+								case 1 -> craftInventory.setItem(3, ingredient);
+								case 2 -> craftInventory.setItem(4, ingredient);
+								case 3 -> craftInventory.setItem(11, ingredient);
+								case 4 -> craftInventory.setItem(12, ingredient);
+								case 5 -> craftInventory.setItem(13, ingredient);
+								case 6 -> craftInventory.setItem(20, ingredient);
+								case 7 -> craftInventory.setItem(21, ingredient);
+								case 8 -> craftInventory.setItem(22, ingredient);
+							}
 							i++;
-							continue;
 						}
-						switch (i) {
-							case 0 -> inventory.setItem(2, ingredient);
-							case 1 -> inventory.setItem(3, ingredient);
-							case 2 -> inventory.setItem(4, ingredient);
-							case 3 -> inventory.setItem(11, ingredient);
-							case 4 -> inventory.setItem(12, ingredient);
-							case 5 -> inventory.setItem(13, ingredient);
-							case 6 -> inventory.setItem(20, ingredient);
-							case 7 -> inventory.setItem(21, ingredient);
-							case 8 -> inventory.setItem(22, ingredient);
-						}
-						i++;
 					}
+					craftInventory.setItem(RESULT_SLOT, resultItem);
+					craftInventory.setButtonAt(CRAFT_QUIT_BUTTON, new InventoryButton(createQuitButton(), (e, inv, b) -> {
+						player.openInventory(inventory);
+						playClickSound(player);
+					}));
+					player.openInventory(craftInventory);
 				}
-				inventory.setItem(ARROW_SLOT, getArrow(pageIndex));
-				inventory.setItem(RESULT_SLOT, itemStack);
-				inventory.setItem(CRAFT_QUIT_BUTTON, getQuitButton());
-				player.openInventory(inventory);
+			}));
+		}
+
+		ElementListedInventory craftsInventory = new ElementListedInventory("뀂ꀧ", 5, elements, IntStream.range(0, 36).toArray());
+
+		ButtonClickAction previousClick = (event, customInventory, button) -> {
+			if (!(customInventory instanceof ListedInventory listedInventory)) return;
+			Player player = (Player) event.getWhoClicked();
+			ListedInventory previousPage = craftsInventory.getPage(listedInventory.getPreviousPageIndex());
+			if (previousPage != null) {
+				player.openInventory(previousPage);
+				playClickSound(player);
 			}
-		}
-	}
+		};
+		craftsInventory.setStaticButtonAt(36, inventory -> new InventoryButton(createPreviousPageButton()[inventory.getPreviousPageIndex() == -1 ? 1 : 0], previousClick));
+		craftsInventory.setStaticButtonAt(37, i -> new InventoryButton(createPreviousPageButton()[1], previousClick));
+		craftsInventory.setStaticButtonAt(38, i -> new InventoryButton(createPreviousPageButton()[1], previousClick));
+		craftsInventory.setStaticButtonAt(39, i -> new InventoryButton(createPreviousPageButton()[1], previousClick));
 
-	public static void openCategory(@NotNull Player player, @Range(from = 0, to = Integer.MAX_VALUE) int index, @NotNull Category category) {
-		List<Recipe> recipes = category.recipes;
-		Inventory inventory = Bukkit.createInventory(null, 5 * 9, CRAFTS_NAME);
-		inventory.setItem(PREVIOUS_PAGE_BUTTON_SLOTS.get(0), getPreviousPageButton()[index == 0 ? 1 : 0]);
-		inventory.setItem(PREVIOUS_PAGE_BUTTON_SLOTS.get(1), getPreviousPageButton()[1]);
-		inventory.setItem(PREVIOUS_PAGE_BUTTON_SLOTS.get(2), getPreviousPageButton()[1]);
-		inventory.setItem(PREVIOUS_PAGE_BUTTON_SLOTS.get(3), getPreviousPageButton()[1]);
-		inventory.setItem(CRAFTS_QUIT_BUTTON, getQuitButton());
-		inventory.setItem(NEXT_PAGE_BUTTON_SLOTS.get(0), getNextPageButton()[index + 37 > recipes.size() ? 1 : 0]);
-		inventory.setItem(NEXT_PAGE_BUTTON_SLOTS.get(1), getNextPageButton()[1]);
-		inventory.setItem(NEXT_PAGE_BUTTON_SLOTS.get(2), getNextPageButton()[1]);
-		inventory.setItem(NEXT_PAGE_BUTTON_SLOTS.get(3), getNextPageButton()[1]);
-		for (int i = 0, page = index; i <= 35 && page < recipes.size(); page++, i++) {
-			inventory.setItem(i, recipes.get(page).getResult());
-		}
-		player.openInventory(inventory);
-	}
+		craftsInventory.setStaticButtonAt(CRAFTS_QUIT_BUTTON, i -> new InventoryButton(createQuitButton(), (event, customInventory, inventoryButton) -> {
+			Player player = (Player) event.getWhoClicked();
+			open(player);
+			playClickSound(player);
+		}));
 
-	public static void openCategories(@NotNull Player player) {
-		player.openInventory(Bukkit.createInventory(null, 4 * 9, CATEGORY_NAME));
+		ButtonClickAction nextClick = (event, customInventory, button) -> {
+			if (!(customInventory instanceof ListedInventory listedInventory)) return;
+			Player player = (Player) event.getWhoClicked();
+			ListedInventory nextPage = craftsInventory.getPage(listedInventory.getNextPageIndex());
+			if (nextPage != null) {
+				player.openInventory(nextPage);
+				playClickSound(player);
+			}
+		};
+		craftsInventory.setStaticButtonAt(41, inventory -> new InventoryButton(createNextPageButton()[inventory.getNextPageIndex() == -1 ? 1 : 0], nextClick));
+		craftsInventory.setStaticButtonAt(42, i -> new InventoryButton(createNextPageButton()[1], nextClick));
+		craftsInventory.setStaticButtonAt(43, i -> new InventoryButton(createNextPageButton()[1], nextClick));
+		craftsInventory.setStaticButtonAt(44, i -> new InventoryButton(createNextPageButton()[1], nextClick));
+
+		craftsInventory.updatePages();
+
+		return Objects.requireNonNull(craftsInventory.getPage(0));
 	}
 
 	@Contract(" -> new")
-	private static ItemStack @NotNull [] getPreviousPageButton() {
+	private static ItemStack @NotNull [] createPreviousPageButton() {
 		ItemStack previousPage = new ItemStack(Material.PAPER),
 				previousPageNoCMD = new ItemStack(Material.PAPER);
 		ItemMeta previousPageMeta = previousPage.getItemMeta(),
 				previousPageMetaNoCMD = previousPageNoCMD.getItemMeta();
-		previousPageMetaNoCMD.displayName(Component.text(ChatColor.WHITE + "Предыдущая страница"));
-		previousPageMeta.displayName(Component.text(ChatColor.WHITE + "Предыдущая страница"));
+		previousPageMetaNoCMD.displayName(createDefaultStyledText("Предыдущая страница"));
+		previousPageMeta.displayName(createDefaultStyledText("Предыдущая страница"));
 		previousPageMeta.setCustomModelData(5001);
 		previousPageMetaNoCMD.setCustomModelData(1);
 		previousPageNoCMD.setItemMeta(previousPageMetaNoCMD);
@@ -134,13 +176,13 @@ public class CraftsMenu {
 	}
 
 	@Contract(" -> new")
-	private static ItemStack @NotNull [] getNextPageButton() {
+	private static ItemStack @NotNull [] createNextPageButton() {
 		ItemStack nextPage = new ItemStack(Material.PAPER),
 				nextPageNoCMD = new ItemStack(Material.PAPER);
 		ItemMeta nextPageMeta = nextPage.getItemMeta(),
 				nextPageMetaNoCMD = nextPageNoCMD.getItemMeta();
-		nextPageMetaNoCMD.displayName(Component.text(ChatColor.WHITE + "Следующая страница"));
-		nextPageMeta.displayName(Component.text(ChatColor.WHITE + "Следующая страница"));
+		nextPageMetaNoCMD.displayName(createDefaultStyledText("Следующая страница"));
+		nextPageMeta.displayName(createDefaultStyledText("Следующая страница"));
 		nextPageMeta.setCustomModelData(5002);
 		nextPageMetaNoCMD.setCustomModelData(1);
 		nextPageNoCMD.setItemMeta(nextPageMetaNoCMD);
@@ -149,58 +191,12 @@ public class CraftsMenu {
 	}
 
 	@Contract(" -> new")
-	private static @NotNull ItemStack getQuitButton() {
+	private static @NotNull ItemStack createQuitButton() {
 		ItemStack quit = new ItemStack(Material.PAPER);
 		ItemMeta quitMeta = quit.getItemMeta();
-		quitMeta.displayName(Component.text(ChatColor.WHITE + "Вернуться"));
+		quitMeta.displayName(createDefaultStyledText("Вернуться"));
 		quitMeta.setCustomModelData(1);
 		quit.setItemMeta(quitMeta);
 		return quit;
-	}
-
-	private static @NotNull ItemStack getArrow(@Range(from = 0, to = Integer.MAX_VALUE) int pageIndex) {
-		ItemStack arrow = new ItemStack(Material.PAPER);
-		ItemMeta arrowMeta = arrow.getItemMeta();
-		arrowMeta.displayName(Component.text(ChatColor.GRAY + " -> "));
-		arrowMeta.setCustomModelData(pageIndex + 1);
-		arrow.setItemMeta(arrowMeta);
-		return arrow;
-	}
-
-	public enum Category {
-		BLOCKS(customBlockRecipes),
-		DECORS(customDecorRecipes),
-		ITEMS(customItemRecipes);
-
-		private final @NotNull List<Recipe> recipes;
-
-		Category(@NotNull List<Recipe> recipes) {
-			this.recipes = recipes;
-		}
-
-		public @NotNull List<Recipe> getRecipes() {
-			return recipes;
-		}
-
-		@Contract("null -> null")
-		public static @Nullable Category getCategory(@Nullable ItemStack itemStack) {
-			if (itemStack == null) return null;
-			for (Recipe recipe : customBlockRecipes) {
-				if (recipe.getResult().isSimilar(itemStack)) {
-					return BLOCKS;
-				}
-			}
-			for (Recipe recipe : customDecorRecipes) {
-				if (recipe.getResult().isSimilar(itemStack)) {
-					return DECORS;
-				}
-			}
-			for (Recipe recipe : customItemRecipes) {
-				if (recipe.getResult().isSimilar(itemStack)) {
-					return ITEMS;
-				}
-			}
-			return null;
-		}
 	}
 }

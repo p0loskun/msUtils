@@ -11,18 +11,26 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@MSCommand(command = "sit")
+@MSCommand(
+		command = "sit",
+		aliases = {"s"},
+		usage = " ꀑ §cИспользуй: /<command> [речь]",
+		description = "Сядь на картаны и порви жопу"
+)
 public class SitCommand implements MSCommandExecutor {
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			return true;
 		}
 		if (!PlayerUtils.isOnline(player)) return true;
 		if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
-			return ChatUtils.sendWarning(player, Component.text("Сидеть в воздухе нельзя!"));
+			ChatUtils.sendWarning(player, Component.text("Сидеть в воздухе нельзя!"));
+			return true;
 		}
-		return PlayerUtils.setSitting(player, MSUtils.getConfigCache().seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
+		PlayerUtils.setSitting(player, MSUtils.getConfigCache().seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
+		return true;
 	}
 }

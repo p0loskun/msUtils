@@ -1,6 +1,10 @@
 package com.github.minersstudios.msutils.player;
 
+import com.github.minersstudios.mscore.inventory.CustomInventory;
+import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.InventoryUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -9,11 +13,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -34,8 +36,8 @@ import java.security.MessageDigest;
 import java.util.Map;
 import java.util.logging.Level;
 
-import static com.github.minersstudios.mscore.utils.ChatUtils.COLORLESS_DEFAULT_STYLE;
-import static com.github.minersstudios.mscore.utils.ChatUtils.convertStringsToComponents;
+import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
+import static com.github.minersstudios.mscore.utils.ChatUtils.*;
 import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.github.minersstudios.msutils.MSUtils.getInstance;
 
@@ -200,19 +202,17 @@ public class ResourcePack {
 				ChatUtils.sendWarning(player, Component.text("Вы зашли на сервер без ресурспака"));
 			}
 		} else {
-			player.openInventory(ResourcePack.Menu.getInventory());
+			ResourcePack.Menu.open(player);
 		}
 	}
 
 	public enum Type {
-		FULL(null),
-		LITE(null),
-		NONE(null);
+		FULL, LITE, NONE;
 
 		private @Nullable ResourcePack resourcePack;
 
-		Type(@Nullable ResourcePack resourcePack) {
-			this.resourcePack = resourcePack;
+		Type() {
+			this.resourcePack = null;
 		}
 
 		public @Nullable String getHash() {
@@ -238,15 +238,11 @@ public class ResourcePack {
 	}
 
 	public static class Menu {
-		public static final Component NAME = Component.text("Выберите нужный текстурпак", NamedTextColor.DARK_GRAY);
 
-		/**
-		 * @return Resource pack GUI
-		 */
-		public static @NotNull Inventory getInventory() {
+		public static @NotNull CustomInventory create() {
 			ItemStack pick = new ItemStack(Material.KNOWLEDGE_BOOK);
 			ItemMeta pickMeta = pick.getItemMeta();
-			pickMeta.displayName(Component.text(ChatColor.WHITE + "Ресурспаки"));
+			pickMeta.displayName(createDefaultStyledText("Ресурспаки"));
 			pickMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
 			pickMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
 			pickMeta.lore(convertStringsToComponents(
@@ -261,7 +257,7 @@ public class ResourcePack {
 
 			ItemStack none = new ItemStack(Material.COAL_BLOCK);
 			ItemMeta noneMeta = none.getItemMeta();
-			noneMeta.displayName(Component.text(ChatColor.WHITE + "Без текстурпака"));
+			noneMeta.displayName(createDefaultStyledText("Без текстурпака"));
 			noneMeta.lore(convertStringsToComponents(
 					COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
 					"Имеет в себе :",
@@ -271,7 +267,7 @@ public class ResourcePack {
 
 			ItemStack lite = new ItemStack(Material.IRON_BLOCK);
 			ItemMeta liteMeta = lite.getItemMeta();
-			liteMeta.displayName(Component.text(ChatColor.WHITE + "Облегчённая версия"));
+			liteMeta.displayName(createDefaultStyledText("Облегчённая версия"));
 			liteMeta.lore(convertStringsToComponents(
 					COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
 					"Имеет в себе :",
@@ -283,7 +279,7 @@ public class ResourcePack {
 
 			ItemStack full = new ItemStack(Material.NETHERITE_BLOCK);
 			ItemMeta fullMeta = full.getItemMeta();
-			fullMeta.displayName(Component.text(ChatColor.WHITE + "Полная версия"));
+			fullMeta.displayName(createDefaultStyledText("Полная версия"));
 			fullMeta.lore(convertStringsToComponents(
 					COLORLESS_DEFAULT_STYLE.color(NamedTextColor.GRAY),
 					"Имеет в себе :",
@@ -302,9 +298,82 @@ public class ResourcePack {
 			));
 			full.setItemMeta(fullMeta);
 
-			Inventory inventory = Bukkit.createInventory(null, 9, NAME);
-			inventory.setContents(new ItemStack[]{none, none, full, full, pick, full, full, lite, lite});
-			return inventory;
+			CustomInventory customInventory = new CustomInventory("§8Выберите нужный текстурпак", 1);
+
+			InventoryButton noneButton = new InventoryButton(none, (event, inventory, button) -> {
+				Player player = (Player) event.getWhoClicked();
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != Type.NONE) {
+					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () ->
+							PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Этот параметр требует повторного захода на сервер")
+					);
+				}
+				playerInfo.setResourcePackType(Type.NONE);
+				player.closeInventory();
+				if (player.getWorld() == MSUtils.getWorldDark()) {
+					playerInfo.teleportToLastLeaveLocation();
+				}
+				playClickSound(player);
+			});
+			customInventory.setButtonAt(0, noneButton);
+			customInventory.setButtonAt(1, noneButton);
+
+			InventoryButton fullButton = new InventoryButton(full, (event, inventory, button) -> {
+				Player player = (Player) event.getWhoClicked();
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				if (
+						Type.FULL.getUrl() == null
+						|| Type.FULL.getHash() == null
+				) {
+					PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Сервер ещё не запущен");
+					return;
+				}
+				player.closeInventory();
+				playerInfo.setResourcePackType(Type.FULL);
+				player.setResourcePack(Type.FULL.getUrl(), Type.FULL.getHash());
+				playClickSound(player);
+			});
+			customInventory.setButtonAt(2, fullButton);
+			customInventory.setButtonAt(3, fullButton);
+			customInventory.setButtonAt(5, fullButton);
+			customInventory.setButtonAt(6, fullButton);
+
+			InventoryButton liteButton = new InventoryButton(lite, (event, inventory, button) -> {
+				Player player = (Player) event.getWhoClicked();
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				if (
+						Type.LITE.getUrl() == null
+						|| Type.LITE.getHash() == null
+				) {
+					PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Сервер ещё не запущен");
+					return;
+				}
+				player.closeInventory();
+				playerInfo.setResourcePackType(Type.LITE);
+				player.setResourcePack(Type.LITE.getUrl(), Type.LITE.getHash());
+				playClickSound(player);
+			});
+			customInventory.setButtonAt(7, liteButton);
+			customInventory.setButtonAt(8, liteButton);
+
+			customInventory.setItem(4, pick);
+
+			customInventory.setCloseAction(((event, inventory) -> {
+				Player player = (Player) event.getPlayer();
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				if (playerInfo.getResourcePackType() == null) {
+					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(inventory));
+				}
+			}));
+
+			return customInventory;
+		}
+
+		public static boolean open(@NotNull Player player) {
+			CustomInventory customInventory = InventoryUtils.getCustomInventory("resourcepack");
+			if (customInventory == null) return false;
+			player.openInventory(customInventory);
+			return true;
 		}
 	}
 }

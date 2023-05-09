@@ -14,20 +14,27 @@ import org.jetbrains.annotations.NotNull;
 import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.DO;
 import static com.github.minersstudios.msutils.utils.ChatUtils.sendRPEventMessage;
 
-@MSCommand(command = "do")
+@MSCommand(
+		command = "do",
+		usage = " ꀑ §cИспользуй: /<command> [действие]",
+		description = "Описывает состояние вашего персонажа и объектов вокруг вас"
+)
 public class DoCommand implements MSCommandExecutor {
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			return true;
 		}
 		if (!PlayerUtils.isOnline(player)) return true;
 		if (args.length == 0) return false;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			return true;
 		}
-		return sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), DO);
+		sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), DO);
+		return true;
 	}
 }

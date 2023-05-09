@@ -8,13 +8,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class ReloadCommand {
 
-	public static boolean runCommand(@NotNull CommandSender sender) {
+	public static void runCommand(@NotNull CommandSender sender) {
 		long time = System.currentTimeMillis();
 		MSUtils.getConfigCache().playerAnomalyActionMap.clear();
 		MSUtils.reloadConfigs();
 		if (MSUtils.getInstance().isEnabled()) {
-			return ChatUtils.sendFine(sender, Component.text("Плагин был успешно перезагружён за " + (System.currentTimeMillis() - time) + "ms"));
+			ChatUtils.sendFine(sender, Component.text("Плагин был успешно перезагружен за " + (System.currentTimeMillis() - time) + "ms"));
+			return;
 		}
-		return ChatUtils.sendError(sender, Component.text("Плагин был перезагружён неудачно"));
+		ChatUtils.sendError(sender, Component.text("Плагин был перезагружен неудачно"));
 	}
 }

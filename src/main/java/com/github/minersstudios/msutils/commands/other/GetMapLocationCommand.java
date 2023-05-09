@@ -13,27 +13,38 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
+import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 
-@MSCommand(command = "getmaploc")
+@MSCommand(
+		command = "getmaplocation",
+		aliases = {"getmaploc"},
+		usage = " ꀑ §cИспользуй: /<command>",
+		description = "Добывает координаты карты, находящейся в руке",
+		permission = "msutils.maplocation",
+		permissionDefault = PermissionDefault.OP
+)
 public class GetMapLocationCommand implements MSCommandExecutor {
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			return true;
 		}
 		if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof MapMeta mapMeta)) {
-			return ChatUtils.sendWarning(player, Component.text("Возьмите в правую руку карту!"));
+			ChatUtils.sendWarning(player, Component.text("Возьмите в правую руку карту!"));
+			return true;
 		}
 		MapView mapView = mapMeta.getMapView();
 		if (mapView == null || mapView.getWorld() == null) {
-			return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+			ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+			return true;
 		}
 		int x = mapView.getCenterX();
 		int z = mapView.getCenterZ();
 		int y = mapView.getWorld().getHighestBlockYAt(x, z) + 1;
-		return ChatUtils.sendWarning(player,
+		ChatUtils.sendWarning(player,
 				Component.text("Мир карты : ")
 				.append(Component.text(mapView.getWorld().getName(), NamedTextColor.WHITE))
 				.append(Component.text("\n ꀓ ", NamedTextColor.WHITE))
@@ -50,5 +61,6 @@ public class GetMapLocationCommand implements MSCommandExecutor {
 						))
 				)
 		);
+		return true;
 	}
 }

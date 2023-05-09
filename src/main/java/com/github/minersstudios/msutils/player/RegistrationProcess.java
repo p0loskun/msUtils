@@ -53,7 +53,8 @@ public class RegistrationProcess {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "имя").response((player, strings) -> {
 			String firstname = strings[0].trim();
 			if (!firstname.matches(REGEX)) {
-				return this.sendWarningMessage();
+				this.sendWarningMessage();
+				return false;
 			}
 			this.playerInfo.setFirstname(strNormalize(firstname));
 
@@ -72,7 +73,8 @@ public class RegistrationProcess {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите вашу", "фамилию").response((player, strings) -> {
 			String lastname = strings[0].trim();
 			if (!lastname.matches(REGEX)) {
-				return this.sendWarningMessage();
+				this.sendWarningMessage();
+				return false;
 			}
 			this.playerInfo.setLastName(strNormalize(lastname));
 			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setPatronymic, 10L);
@@ -85,20 +87,21 @@ public class RegistrationProcess {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "отчество").response((player, strings) -> {
 			String patronymic = strings[0].trim();
 			if (!patronymic.matches(REGEX)) {
-				return this.sendWarningMessage();
+				this.sendWarningMessage();
+				return false;
 			}
 			this.playerInfo.setPatronymic(strNormalize(patronymic));
 
 			this.sendDialogueMessage(
 					"Ну вот и отлично, "
-					+ ChatColor.GRAY + "[" + playerInfo.getID(true, false) + "] "
-					+ ChatColor.WHITE + this.playerInfo.getFirstname() + " "
+					+ "§7" + "[" + playerInfo.getID(true, false) + "] "
+					+ "§f" + this.playerInfo.getFirstname() + " "
 					+ this.playerInfo.getLastname() + " "
 					+ this.playerInfo.getPatronymic(), 25L);
 			this.sendDialogueMessage("Слушай", 100L);
 			this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
 
-			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> this.player.openInventory(Pronouns.getInventory()), 225L);
+			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> Pronouns.Menu.open(this.player), 225L);
 			return true;
 		});
 		menu.open(this.player);
@@ -120,7 +123,7 @@ public class RegistrationProcess {
 	private void setOther() {
 		this.player.displayName(this.playerInfo.getDefaultName());
 		if (this.playerInfo.getResourcePackType() == null) {
-			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> this.player.openInventory(ResourcePack.Menu.getInventory()));
+			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> ResourcePack.Menu.open(this.player));
 		} else if (this.playerInfo.getResourcePackType() == ResourcePack.Type.NONE) {
 			Bukkit.getScheduler().runTask(MSUtils.getInstance(), this.playerInfo::teleportToLastLeaveLocation);
 		} else {
@@ -128,9 +131,8 @@ public class RegistrationProcess {
 		}
 	}
 
-	private boolean sendWarningMessage() {
+	private void sendWarningMessage() {
 		this.player.sendMessage(Component.text(" Используйте только кириллицу, без пробелов!", NamedTextColor.GOLD));
-		return false;
 	}
 
 	private void sendDialogueMessage(@NotNull String message, long delay) {

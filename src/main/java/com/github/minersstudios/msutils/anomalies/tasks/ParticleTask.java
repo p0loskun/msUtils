@@ -4,33 +4,36 @@ import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.anomalies.Anomaly;
 import com.github.minersstudios.msutils.anomalies.AnomalyAction;
 import com.github.minersstudios.msutils.anomalies.actions.SpawnParticlesAction;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 public class ParticleTask implements Runnable {
 
 	@Override
 	public void run() {
-		Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-		if (onlinePlayers.isEmpty()) return;
+		Set<Map.Entry<Player, Map<AnomalyAction, Long>>> entries = MSUtils.getConfigCache().playerAnomalyActionMap.entrySet();
+		if (entries.isEmpty()) return;
 		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () ->
-				onlinePlayers.stream()
-				.filter(PlayerUtils::isOnline)
-				.forEach((player) -> {
+				entries
+				.forEach(entry -> entry.getValue().keySet().stream()
+				.filter(action -> action instanceof SpawnParticlesAction)
+				.forEach(action -> {
+					Player player = entry.getKey();
 					for (Anomaly anomaly : MSUtils.getConfigCache().anomalies.values()) {
 						Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
-						if (radiusInside != null) {
-							for (AnomalyAction action : anomaly.getAnomalyActionMap().get(radiusInside)) {
-								if (action instanceof SpawnParticlesAction) {
-									action.doAction(player, null);
-								}
-							}
+						if (
+								radiusInside != null
+								&& anomaly.getAnomalyActionMap().get(radiusInside).stream().anyMatch(anomalyAction -> anomalyAction.equals(action))
+						) {
+							action.doAction(player, null);
+						} else {
+							action.removeAction(player);
 						}
 					}
-				})
+				}))
 		);
 	}
 }

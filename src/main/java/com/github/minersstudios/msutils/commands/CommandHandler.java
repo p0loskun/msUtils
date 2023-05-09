@@ -5,6 +5,7 @@ import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.msutils.commands.other.ReloadCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-@MSCommand(command = "msutils")
+@MSCommand(
+		command = "msutils",
+		usage = " ꀑ §cИспользуй: /<command> [параметры]",
+		description = "Прочие команды",
+		permission = "msutils.*",
+		permissionDefault = PermissionDefault.OP,
+		permissionParentKeys = {"msUtils.info", "msUtils.ban", "msUtils.mute", "msUtils.kick", "msUtils.maplocation", "msUtils.whitelist", "msUtils.teleporttolastdeathlocation", "msUtils.worldteleport"},
+		permissionParentValues = {true, true, true, true, true, true, true, true}
+)
 public class CommandHandler implements MSCommandExecutor {
 
 	@Override
@@ -20,7 +29,8 @@ public class CommandHandler implements MSCommandExecutor {
 		if (args.length > 0) {
 			String utilsCommand = args[0].toLowerCase(Locale.ROOT);
 			if ("reload".equals(utilsCommand)) {
-				return ReloadCommand.runCommand(sender);
+				ReloadCommand.runCommand(sender);
+				return true;
 			}
 		}
 		return false;

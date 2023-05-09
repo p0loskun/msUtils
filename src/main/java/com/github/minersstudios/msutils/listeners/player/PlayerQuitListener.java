@@ -1,6 +1,7 @@
 package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.ChatUtils;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
@@ -27,6 +28,7 @@ public class PlayerQuitListener implements Listener {
 		}
 
 		PlayerUtils.setSitting(player, null, null);
+		MSUtils.getConfigCache().playerAnomalyActionMap.remove(player);
 		playerInfo.setLastLeaveLocation();
 		playerInfo.setHealth(player.getHealth());
 		ChatUtils.sendQuitMessage(playerInfo, player);

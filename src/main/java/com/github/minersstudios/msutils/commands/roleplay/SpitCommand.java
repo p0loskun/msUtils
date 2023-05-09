@@ -20,20 +20,26 @@ import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionTyp
 import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.TODO;
 import static com.github.minersstudios.msutils.utils.ChatUtils.sendRPEventMessage;
 
-@MSCommand(command = "spit")
+@MSCommand(
+		command = "spit",
+		usage = " ꀑ §cИспользуй: /<command> [речь]",
+		description = "Покажи свою дерзость и плюнь кому-то в лицо"
+)
 public class SpitCommand implements MSCommandExecutor {
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			return true;
 		}
 		World world = player.getWorld();
 		Location location = player.getLocation();
 		if (!PlayerUtils.isOnline(player)) return true;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			return true;
 		}
 		world.spawnEntity(
 				location.toVector().add(location.getDirection().multiply(0.8d)).toLocation(world).add(0.0d, 1.0d, 0.0d),
@@ -41,8 +47,10 @@ public class SpitCommand implements MSCommandExecutor {
 		).setVelocity(player.getEyeLocation().getDirection().multiply(1));
 		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, SoundCategory.PLAYERS, 1.0f, 1.0f);
 		if (args.length > 0) {
-			return sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("плюнув"), TODO);
+			sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("плюнув"), TODO);
+			return true;
 		}
-		return sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getSpitMessage()), ME);
+		sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getSpitMessage()), ME);
+		return true;
 	}
 }

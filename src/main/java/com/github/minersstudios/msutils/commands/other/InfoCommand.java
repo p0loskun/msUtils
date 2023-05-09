@@ -12,12 +12,19 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@MSCommand(command = "info")
+@MSCommand(
+		command = "info",
+		usage = " ꀑ §cИспользуй: /<command> [ID]",
+		description = "Выводит информацию про игрока",
+		permission = "msutils.info",
+		permissionDefault = PermissionDefault.OP
+)
 public class InfoCommand implements MSCommandExecutor {
 
 	@Override
@@ -26,30 +33,35 @@ public class InfoCommand implements MSCommandExecutor {
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null) {
-				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				return true;
 			}
-			return sendInfo(new PlayerInfo(offlinePlayer.getUniqueId()), sender);
+			sendInfo(new PlayerInfo(offlinePlayer.getUniqueId()), sender);
+			return true;
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) {
-				return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				return true;
 			}
-			return sendInfo(new PlayerInfo(offlinePlayer.getUniqueId()), sender);
+			sendInfo(new PlayerInfo(offlinePlayer.getUniqueId()), sender);
+			return true;
 		}
-		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		return true;
 	}
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		return new AllPlayers().onTabComplete(sender, command, label, args);
 	}
 
-	private static boolean sendInfo(@NotNull PlayerInfo playerInfo, @NotNull CommandSender sender) {
+	private static void sendInfo(@NotNull PlayerInfo playerInfo, @NotNull CommandSender sender) {
 		Location
 				lastLeaveLocation = playerInfo.getLastLeaveLocation(),
 				lastDeathLocation = playerInfo.getLastDeathLocation();
-		return ChatUtils.sendInfo(sender, Component.text(
+		ChatUtils.sendInfo(sender, Component.text(
 				"UUID : " + playerInfo.getUuid()
 				+ "\n ID : " + playerInfo.getID(false, false)
 				+ "\n Nickname : " + playerInfo.getNickname()

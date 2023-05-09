@@ -14,24 +14,31 @@ import org.jetbrains.annotations.NotNull;
 import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.TODO;
 import static com.github.minersstudios.msutils.utils.ChatUtils.sendRPEventMessage;
 
-@MSCommand(command = "todo")
+@MSCommand(
+		command = "todo",
+		usage = " ꀑ §cИспользуй: /<command> [речь] * [действие]",
+		description = "Описывает действие и речь в чате"
+)
 public class TodoCommand implements MSCommandExecutor {
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			return ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			return true;
 		}
 		if (!PlayerUtils.isOnline(player)) return true;
 		String message = ChatUtils.extractMessage(args, 0);
 		if (args.length < 3 || !message.contains("*")) return false;
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
-			return ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			return true;
 		}
 		String action = message.substring(message.indexOf('*') + 1).trim(),
 				speech = message.substring(0 , message.indexOf('*')).trim();
 		if (action.isEmpty() || speech.isEmpty()) return false;
-		return sendRPEventMessage(player, Component.text(speech), Component.text(action), TODO);
+		sendRPEventMessage(player, Component.text(speech), Component.text(action), TODO);
+		return true;
 	}
 }

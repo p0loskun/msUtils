@@ -4,10 +4,13 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.minersstudios.mscore.MSPlugin;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msutils.anomalies.tasks.ParticleTask;
 import com.github.minersstudios.msutils.listeners.chat.DiscordGuildMessagePreProcessListener;
+import com.github.minersstudios.msutils.player.CraftsMenu;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.Pronouns;
 import com.github.minersstudios.msutils.player.ResourcePack;
 import com.github.minersstudios.msutils.utils.ConfigCache;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
@@ -155,6 +158,10 @@ public final class MSUtils extends MSPlugin {
 		configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(instance,
 				() -> new ParticleTask().run(), 0L, configCache.anomalyParticlesCheckRate
 		));
+
+		InventoryUtils.registerCustomInventory("pronouns", Pronouns.Menu.create());
+		InventoryUtils.registerCustomInventory("resourcepack", ResourcePack.Menu.create());
+		InventoryUtils.registerCustomInventory("crafts", CraftsMenu.create());
 	}
 
 	public static MSUtils getInstance() {

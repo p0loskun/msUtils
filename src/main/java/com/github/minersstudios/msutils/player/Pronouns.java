@@ -1,16 +1,22 @@
 package com.github.minersstudios.msutils.player;
 
+import com.github.minersstudios.mscore.inventory.CustomInventory;
+import com.github.minersstudios.mscore.inventory.InventoryButton;
+import com.github.minersstudios.mscore.utils.InventoryUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+
+import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
+import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
 
 public enum Pronouns {
 	HE(
@@ -65,7 +71,6 @@ public enum Pronouns {
 			deathMessage,
 			killMessage,
 			saidMessage;
-	public static final Component NAME = Component.text("Выберите форму обращения").color(NamedTextColor.DARK_GRAY);
 
 	Pronouns(
 			@NotNull String joinMessage,
@@ -92,48 +97,6 @@ public enum Pronouns {
 		this.killMessage = killMessage;
 		this.saidMessage = saidMessage;
 	}
-
-	/**
-	 * @return Pronouns GUI
-	 */
-	public static @NotNull Inventory getInventory() {
-		ItemStack he = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
-		ItemMeta heMeta = he.getItemMeta();
-		heMeta.displayName(Component.text(ChatColor.WHITE + "Он"));
-		ArrayList<Component> loreHe = new ArrayList<>();
-		loreHe.add(Component.text("К вам будут обращаться как к нему").color(NamedTextColor.GRAY));
-		heMeta.lore(loreHe);
-		he.setItemMeta(heMeta);
-
-		ItemStack she = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-		ItemMeta sheMeta = she.getItemMeta();
-		sheMeta.displayName(Component.text(ChatColor.WHITE + "Она"));
-		ArrayList<Component> loreShe = new ArrayList<>();
-		loreShe.add(Component.text("К вам будут обращаться как к ней").color(NamedTextColor.GRAY));
-		sheMeta.lore(loreShe);
-		she.setItemMeta(sheMeta);
-
-		ItemStack they = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-		ItemMeta theyMeta = they.getItemMeta();
-		theyMeta.displayName(Component.text(ChatColor.WHITE + "Они"));
-		ArrayList<Component> loreThey = new ArrayList<>();
-		loreThey.add(Component.text("К вам будут обращаться как к ним").color(NamedTextColor.GRAY));
-		theyMeta.lore(loreThey);
-		they.setItemMeta(theyMeta);
-
-		Inventory inventory = Bukkit.createInventory(null, 9, NAME);
-		inventory.setItem(0, he);
-		inventory.setItem(1, he);
-		inventory.setItem(2, he);
-		inventory.setItem(3, she);
-		inventory.setItem(4, she);
-		inventory.setItem(5, she);
-		inventory.setItem(6, they);
-		inventory.setItem(7, they);
-		inventory.setItem(8, they);
-		return inventory;
-	}
-
 
 	public @NotNull String getJoinMessage() {
 		return this.joinMessage;
@@ -177,5 +140,97 @@ public enum Pronouns {
 
 	public @NotNull String getSaidMessage() {
 		return this.saidMessage;
+	}
+
+	public static class Menu {
+
+		public static @NotNull CustomInventory create() {
+			ItemStack he = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+			ItemMeta heMeta = he.getItemMeta();
+			heMeta.displayName(createDefaultStyledText("Он"));
+			ArrayList<Component> loreHe = new ArrayList<>();
+			loreHe.add(Component.text("К вам будут обращаться как к нему").color(NamedTextColor.GRAY));
+			heMeta.lore(loreHe);
+			he.setItemMeta(heMeta);
+
+			ItemStack she = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			ItemMeta sheMeta = she.getItemMeta();
+			sheMeta.displayName(createDefaultStyledText("Она"));
+			ArrayList<Component> loreShe = new ArrayList<>();
+			loreShe.add(Component.text("К вам будут обращаться как к ней").color(NamedTextColor.GRAY));
+			sheMeta.lore(loreShe);
+			she.setItemMeta(sheMeta);
+
+			ItemStack they = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+			ItemMeta theyMeta = they.getItemMeta();
+			theyMeta.displayName(createDefaultStyledText("Они"));
+			ArrayList<Component> loreThey = new ArrayList<>();
+			loreThey.add(Component.text("К вам будут обращаться как к ним").color(NamedTextColor.GRAY));
+			theyMeta.lore(loreThey);
+			they.setItemMeta(theyMeta);
+
+			CustomInventory customInventory = new CustomInventory("§8Выберите форму обращения", 1);
+
+			InventoryButton heButton = new InventoryButton(he, (event, inventory, button) -> {
+				Player player = (Player) event.getWhoClicked();
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				playerInfo.setPronouns(Pronouns.HE);
+				playClickSound(player);
+				player.closeInventory();
+				finishSet(playerInfo, player);
+			});
+			customInventory.setButtonAt(0, heButton);
+			customInventory.setButtonAt(1, heButton);
+			customInventory.setButtonAt(2, heButton);
+
+			InventoryButton sheButton = new InventoryButton(she, (event, inventory, button) -> {
+				Player player = (Player) event.getWhoClicked();
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				playerInfo.setPronouns(Pronouns.SHE);
+				playClickSound(player);
+				player.closeInventory();
+				finishSet(playerInfo, player);
+			});
+			customInventory.setButtonAt(3, sheButton);
+			customInventory.setButtonAt(4, sheButton);
+			customInventory.setButtonAt(5, sheButton);
+
+			InventoryButton theyButton = new InventoryButton(they, (event, inventory, button) -> {
+				Player player = (Player) event.getWhoClicked();
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				playerInfo.setPronouns(Pronouns.THEY);
+				playClickSound(player);
+				player.closeInventory();
+				finishSet(playerInfo, player);
+			});
+			customInventory.setButtonAt(6, theyButton);
+			customInventory.setButtonAt(7, theyButton);
+			customInventory.setButtonAt(8, theyButton);
+
+			customInventory.setCloseAction(((event, inventory) -> {
+				Player player = (Player) event.getPlayer();
+				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				if (playerInfo.getYamlConfiguration().getString("pronouns") == null) {
+					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(customInventory));
+				}
+			}));
+
+			return customInventory;
+		}
+
+		public static boolean open(@NotNull Player player) {
+			CustomInventory customInventory = InventoryUtils.getCustomInventory("pronouns");
+			if (customInventory == null) return false;
+			player.openInventory(customInventory);
+			return true;
+		}
+
+		private static void finishSet(@NotNull PlayerInfo playerInfo, @NotNull Player player) {
+			if (playerInfo.getYamlConfiguration().getString("pronouns") != null) {
+				new RegistrationProcess().setPronouns(player, playerInfo);
+			} else if (playerInfo.getResourcePackType() != null) {
+				playerInfo.teleportToLastLeaveLocation();
+			}
+		}
 	}
 }

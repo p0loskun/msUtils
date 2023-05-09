@@ -20,7 +20,12 @@ import java.util.List;
 
 import static com.github.minersstudios.msutils.utils.ChatUtils.sendPrivateMessage;
 
-@MSCommand(command = "privatemessage")
+@MSCommand(
+		command = "privatemessage",
+		aliases = {"pmessage", "pm", "w", "tell", "msg"},
+		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname] [сообщение]",
+		description = "Отправь другому игроку приватное сообщение"
+)
 public class PrivateMessageCommand implements MSCommandExecutor {
 
 	@Override
@@ -30,34 +35,40 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 				? new PlayerInfo(player.getUniqueId())
 				: MSUtils.CONSOLE_PLAYER_INFO;
 		if (senderInfo.isMuted()) {
-			return ChatUtils.sendWarning(sender, Component.text("Вы замьючены"));
+			ChatUtils.sendWarning(sender, Component.text("Вы замьючены"));
+			return true;
 		}
 		String message = ChatUtils.extractMessage(args, 1);
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
 			if (!(offlinePlayer instanceof Player player)) {
-				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				return true;
 			}
 			if (!PlayerUtils.isOnline(player)) {
-				return ChatUtils.sendWarning(sender, Component.text("Данный игрок не в сети"));
+				ChatUtils.sendWarning(sender, Component.text("Данный игрок не в сети"));
+				return true;
 			}
 			return sendPrivateMessage(senderInfo, new PlayerInfo(player.getUniqueId()), Component.text(message));
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (!(offlinePlayer instanceof Player player)) {
-				return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				return true;
 			}
 			if (!PlayerUtils.isOnline(player)) {
-				return ChatUtils.sendWarning(sender, Component.text("Данный игрок не в сети"));
+				ChatUtils.sendWarning(sender, Component.text("Данный игрок не в сети"));
+				return true;
 			}
 			return sendPrivateMessage(senderInfo, new PlayerInfo(player.getUniqueId()), Component.text(message));
 		}
-		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		return true;
 	}
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		return new AllLocalPlayers().onTabComplete(sender, command, label, args);
 	}
 }

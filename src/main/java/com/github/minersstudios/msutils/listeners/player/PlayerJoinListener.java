@@ -44,7 +44,7 @@ public class PlayerJoinListener implements Listener {
 					} else {
 						this.cancel();
 						if (playerInfo.getYamlConfiguration().getString("pronouns") == null) {
-							player.openInventory(Pronouns.getInventory());
+							Pronouns.Menu.open(player);
 						} else {
 							if (playerInfo.getResourcePackType() == ResourcePack.Type.NONE) {
 								playerInfo.teleportToLastLeaveLocation();

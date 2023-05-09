@@ -137,13 +137,13 @@ public final class PlayerUtils {
 		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation();
 		offlinePlayer.getPlayer().kick(
 				Component.empty()
-						.append(Component.text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
-						.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-						.append(Component.text("\nПричина :\n\"")
-						.append(Component.text(reason)
-						.append(Component.text("\"")))
-						.color(NamedTextColor.GRAY))
-						.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+				.append(Component.text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
+				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+				.append(Component.text("\nПричина :\n\"")
+				.append(Component.text(reason)
+				.append(Component.text("\"")))
+				.color(NamedTextColor.GRAY))
+				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
 		);
 		return true;
 	}
@@ -155,8 +155,8 @@ public final class PlayerUtils {
 	 * @param sitLocation location where the player will sit
 	 * @param args        player comment ({player-sit-massage} {args})
 	 */
-	public static boolean setSitting(@NotNull Player player, @Nullable Location sitLocation, String @Nullable [] args) {
-		if (player.getVehicle() != null && player.getVehicle().getType() != EntityType.ARMOR_STAND) return true;
+	public static void setSitting(@NotNull Player player, @Nullable Location sitLocation, String @Nullable [] args) {
+		if (player.getVehicle() != null && player.getVehicle().getType() != EntityType.ARMOR_STAND) return;
 		if (!getConfigCache().seats.containsKey(player) && sitLocation != null) {
 			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.95d, 0.0d), ArmorStand.class, (armorStand) -> {
 				armorStand.setGravity(false);
@@ -167,9 +167,11 @@ public final class PlayerUtils {
 				armorStand.addScoreboardTag("customDecor");
 				getConfigCache().seats.put(player, armorStand);
 			});
-			return args != null
-					? ChatUtils.sendRPEventMessage(player, Component.text(extractMessage(args, 0)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO)
-					: ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
+			if (args == null) {
+				ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
+			} else {
+				ChatUtils.sendRPEventMessage(player, Component.text(extractMessage(args, 0)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO);
+			}
 		} else if (sitLocation == null && getConfigCache().seats.containsKey(player)) {
 			ArmorStand armorStand = getConfigCache().seats.remove(player);
 			Location playerLoc = player.getLocation();
@@ -180,7 +182,6 @@ public final class PlayerUtils {
 			player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 			ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getUnSitMessage()), ChatUtils.RolePlayActionType.ME);
 		}
-		return true;
 	}
 
 	/**

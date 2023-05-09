@@ -16,13 +16,21 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@MSCommand(command = "worldteleport")
+@MSCommand(
+		command = "worldteleport",
+		aliases = {"worldteleport", "worldtp", "wtp", "teleportworld", "tpworld", "tpw"},
+		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname] [world name] [x] [y] [z]",
+		description = "Телепортирует игрока на координаты в указанном мире, если координаты не указаны, телепортирует на точку спавна данного мира",
+		permission = "msutils.worldteleport",
+		permissionDefault = PermissionDefault.OP
+)
 public class WorldTeleportCommand implements MSCommandExecutor {
 	private static final String coordinatesRegex = "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$";
 
@@ -32,18 +40,21 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null) {
-				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				return true;
 			}
 			return teleportToWorld(sender, offlinePlayer, args);
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) {
-				return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				return true;
 			}
 			return teleportToWorld(sender, offlinePlayer, args);
 		}
-		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		return true;
 	}
 
 	@Override
@@ -71,19 +82,22 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 
 	private static boolean teleportToWorld(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer, String @NotNull ... args) {
 		if (!offlinePlayer.hasPlayedBefore()) {
-			return ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
+			ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
+			return true;
 		}
 		PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 		if (offlinePlayer.getPlayer() == null) {
-			return ChatUtils.sendWarning(sender,
+			ChatUtils.sendWarning(sender,
 					Component.text("Игрок : \"")
 					.append(playerInfo.getGrayIDGoldName())
 					.append(Component.text("\" не в сети!"))
 			);
+			return true;
 		}
 		World world = Bukkit.getWorld(args[1]);
 		if (world == null) {
-			return ChatUtils.sendWarning(sender, Component.text("Такого мира не существует!"));
+			ChatUtils.sendWarning(sender, Component.text("Такого мира не существует!"));
+			return true;
 		}
 		Location spawnLoc = world.getSpawnLocation();
 		double
@@ -96,11 +110,12 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 			y = Double.parseDouble(args[3]);
 			z = Double.parseDouble(args[4]);
 			if (x > 29999984 || z > 29999984) {
-				return ChatUtils.sendWarning(sender, Component.text("Указаны слишком большие координаты!"));
+				ChatUtils.sendWarning(sender, Component.text("Указаны слишком большие координаты!"));
+				return true;
 			}
 		}
 		offlinePlayer.getPlayer().teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
-		return ChatUtils.sendFine(sender,
+		ChatUtils.sendFine(sender,
 				Component.text("Игрок : \"")
 				.append(playerInfo.getGrayIDGreenName())
 				.append(Component.text(" ("))
@@ -115,5 +130,6 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 				.append(Component.text("\n    - Z : "))
 				.append(Component.text(z))
 		);
+		return true;
 	}
 }

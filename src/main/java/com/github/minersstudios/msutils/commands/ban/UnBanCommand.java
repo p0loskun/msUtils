@@ -11,13 +11,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@MSCommand(command = "unban")
+@MSCommand(
+		command = "unban",
+		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname]",
+		description = "Разбанить игрока",
+		permission = "msutils.ban",
+		permissionDefault = PermissionDefault.OP
+)
 public class UnBanCommand implements MSCommandExecutor {
 
 	@Override
@@ -26,36 +33,43 @@ public class UnBanCommand implements MSCommandExecutor {
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null) {
-				return ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				return true;
 			}
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
 			if (!playerInfo.isBanned()) {
-				return ChatUtils.sendWarning(sender,
+				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
 						.append(playerInfo.getGrayIDGoldName())
 						.append(Component.text("\" не забанен"))
 				);
+				return true;
 			}
-			return playerInfo.setBanned(false, sender);
+			playerInfo.setBanned(false, sender);
+			return true;
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) {
-				return ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				return true;
 			}
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			if (!playerInfo.isBanned()) {
-				return ChatUtils.sendWarning(sender,
+				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
 						.append(playerInfo.getGrayIDGoldName())
 						.append(Component.text(" ("))
 						.append(Component.text(args[0]))
 						.append(Component.text(")\" не забанен"))
 				);
+				return true;
 			}
-			return playerInfo.setBanned(false, sender);
+			playerInfo.setBanned(false, sender);
+			return true;
 		}
-		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		return true;
 	}
 
 	@Override
