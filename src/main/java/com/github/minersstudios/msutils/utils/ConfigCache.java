@@ -37,8 +37,8 @@ public final class ConfigCache {
 
 	public final @NotNull Map<OfflinePlayer, Long> mutedPlayers = new HashMap<>();
 
-	public final @NotNull Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();
 	public final @NotNull Map<Player, ArmorStand> seats = new HashMap<>();
+	public final @NotNull Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();
 	public final @NotNull Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap = new ConcurrentHashMap<>();
 
 	public final String

@@ -9,8 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
@@ -28,24 +26,32 @@ public class MainAnomalyActionsTask implements Runnable {
 				.forEach((player) -> {
 					for (Anomaly anomaly : getConfigCache().anomalies.values()) {
 						Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+						boolean isIgnorable = anomaly.getIgnorablePlayers().contains(player);
 						if (radiusInside == null) continue;
-						Map<AnomalyAction, Long> actionMap = new HashMap<>(playerActionMap.getOrDefault(player, Collections.emptyMap()));
+						Map<AnomalyAction, Long> actionMap = playerActionMap.get(player);
 
 						for (AnomalyAction action : anomaly.getAnomalyActionMap().get(radiusInside)) {
-							actionMap.put(action, System.currentTimeMillis());
-							playerActionMap.put(player, actionMap);
+							if (actionMap == null || !actionMap.containsKey(action)) {
+								if (isIgnorable && action instanceof SpawnParticlesAction) {
+									action.putAction(player);
+									return;
+								} else if (!isIgnorable) {
+									actionMap = action.putAction(player);
+								}
+							}
 						}
 
-						if (anomaly.getIgnorablePlayers().contains(player) || actionMap.isEmpty()) continue;
+						if (actionMap == null) return;
 						for (AnomalyAction action : actionMap.keySet()) {
-							if (action instanceof SpawnParticlesAction) continue;
 							if (anomaly.isAnomalyActionRadius(action, radiusInside)) {
-								action.doAction(player, anomaly.getIgnorableItems());
-								return;
+								if (!(action instanceof SpawnParticlesAction)) {
+									action.doAction(player, anomaly.getIgnorableItems());
+								}
 							} else {
 								action.removeAction(player);
 							}
 						}
+						return;
 					}
 					playerActionMap.remove(player);
 				})

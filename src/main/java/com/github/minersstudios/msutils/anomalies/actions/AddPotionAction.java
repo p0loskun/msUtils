@@ -9,7 +9,6 @@ import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,21 +26,7 @@ public class AddPotionAction extends AnomalyAction {
 
 	@Override
 	public void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems) {
-		Map<Player, Map<AnomalyAction, Long>> playerActionMap = MSUtils.getConfigCache().playerAnomalyActionMap;
-		if (
-				playerActionMap.containsKey(player)
-				&& !playerActionMap.get(player).containsKey(this)
-		) {
-			Map<AnomalyAction, Long> actions = new HashMap<>(playerActionMap.get(player));
-			actions.put(this, System.currentTimeMillis());
-			playerActionMap.put(player, actions);
-		} else if (
-				!playerActionMap.containsKey(player)
-		) {
-			playerActionMap.put(player, Map.of(this, System.currentTimeMillis()));
-		}
-
-		Map<AnomalyAction, Long> actionMap = playerActionMap.get(player);
+		Map<AnomalyAction, Long> actionMap = MSUtils.getConfigCache().playerAnomalyActionMap.get(player);
 		if (
 				actionMap.containsKey(this)
 				&& System.currentTimeMillis() - actionMap.get(this) >= (this.time * 50)

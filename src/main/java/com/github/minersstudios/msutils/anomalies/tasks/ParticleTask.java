@@ -24,10 +24,8 @@ public class ParticleTask implements Runnable {
 					Player player = entry.getKey();
 					for (Anomaly anomaly : MSUtils.getConfigCache().anomalies.values()) {
 						Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
-						if (
-								radiusInside != null
-								&& anomaly.getAnomalyActionMap().get(radiusInside).stream().anyMatch(anomalyAction -> anomalyAction.equals(action))
-						) {
+						if (radiusInside == null) continue;
+						if (anomaly.getAnomalyActionMap().get(radiusInside).contains(action)) {
 							action.doAction(player, null);
 						} else {
 							action.removeAction(player);
