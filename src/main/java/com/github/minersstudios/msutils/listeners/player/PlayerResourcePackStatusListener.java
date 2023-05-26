@@ -4,6 +4,7 @@ import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerSettings;
 import com.github.minersstudios.msutils.player.ResourcePack;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
@@ -20,8 +21,9 @@ public class PlayerResourcePackStatusListener implements Listener {
 	public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-		if (playerInfo.getResourcePackType() == null) return;
+		if (playerSettings.getResourcePackType() == null) return;
 		switch (event.getStatus()) {
 			case ACCEPTED -> ChatUtils.sendFine(null, Component.text(player.getName()).append(Component.text(" принял ресурспак")));
 			case SUCCESSFULLY_LOADED -> {
@@ -32,7 +34,8 @@ public class PlayerResourcePackStatusListener implements Listener {
 			}
 			case FAILED_DOWNLOAD -> {
 				ChatUtils.sendWarning(null, Component.text(player.getName()).append(Component.text(" не установился ресурспак")));
-				playerInfo.setResourcePackType(ResourcePack.Type.NONE);
+				playerSettings.setResourcePackType(ResourcePack.Type.NONE);
+				playerSettings.save();
 				PlayerUtils.kickPlayer(player, "Кажется, что-то пошло не так", "Обратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n \"Без текстурпака\"");
 			}
 			case DECLINED -> {

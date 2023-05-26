@@ -36,7 +36,7 @@ public class AllPlayers implements TabCompleter {
 				if (id != -1) {
 					completions.add(String.valueOf(id));
 				}
-				if (playerInfo.hasPlayerDataFile()) {
+				if (playerInfo.getPlayerFile().exists()) {
 					completions.add(offlinePlayer.getName());
 				}
 			}

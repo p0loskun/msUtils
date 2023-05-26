@@ -184,6 +184,7 @@ public class ResourcePack {
 	public static void setResourcePack(@NotNull PlayerInfo playerInfo) {
 		if (playerInfo.getOnlinePlayer() == null) return;
 		Player player = playerInfo.getOnlinePlayer();
+		PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 		if (
 				Type.FULL.getUrl() == null
 				|| Type.FULL.getHash() == null
@@ -193,10 +194,10 @@ public class ResourcePack {
 			PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Сервер ещё не запущен");
 			return;
 		}
-		if (playerInfo.getResourcePackType() != null) {
-			if (playerInfo.getResourcePackType() == Type.FULL) {
+		if (playerSettings.getResourcePackType() != null) {
+			if (playerSettings.getResourcePackType() == Type.FULL) {
 				player.setResourcePack(Type.FULL.getUrl(), Type.FULL.getHash());
-			} else if (playerInfo.getResourcePackType() == Type.LITE) {
+			} else if (playerSettings.getResourcePackType() == Type.LITE) {
 				player.setResourcePack(Type.LITE.getUrl(), Type.LITE.getHash());
 			} else {
 				ChatUtils.sendWarning(player, Component.text("Вы зашли на сервер без ресурспака"));
@@ -303,12 +304,14 @@ public class ResourcePack {
 			InventoryButton noneButton = new InventoryButton(none, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-				if (playerInfo.getResourcePackType() != null && playerInfo.getResourcePackType() != Type.NONE) {
+				PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+				if (playerSettings.getResourcePackType() != null && playerSettings.getResourcePackType() != Type.NONE) {
 					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () ->
 							PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Этот параметр требует повторного захода на сервер")
 					);
 				}
-				playerInfo.setResourcePackType(Type.NONE);
+				playerSettings.setResourcePackType(Type.NONE);
+				playerSettings.save();
 				player.closeInventory();
 				if (player.getWorld() == MSUtils.getWorldDark()) {
 					playerInfo.teleportToLastLeaveLocation();
@@ -321,6 +324,7 @@ public class ResourcePack {
 			InventoryButton fullButton = new InventoryButton(full, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 				if (
 						Type.FULL.getUrl() == null
 						|| Type.FULL.getHash() == null
@@ -329,7 +333,8 @@ public class ResourcePack {
 					return;
 				}
 				player.closeInventory();
-				playerInfo.setResourcePackType(Type.FULL);
+				playerSettings.setResourcePackType(Type.FULL);
+				playerSettings.save();
 				player.setResourcePack(Type.FULL.getUrl(), Type.FULL.getHash());
 				playClickSound(player);
 			});
@@ -341,6 +346,7 @@ public class ResourcePack {
 			InventoryButton liteButton = new InventoryButton(lite, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 				if (
 						Type.LITE.getUrl() == null
 						|| Type.LITE.getHash() == null
@@ -349,7 +355,8 @@ public class ResourcePack {
 					return;
 				}
 				player.closeInventory();
-				playerInfo.setResourcePackType(Type.LITE);
+				playerSettings.setResourcePackType(Type.LITE);
+				playerSettings.save();
 				player.setResourcePack(Type.LITE.getUrl(), Type.LITE.getHash());
 				playClickSound(player);
 			});
@@ -361,7 +368,7 @@ public class ResourcePack {
 			customInventory.setCloseAction(((event, inventory) -> {
 				Player player = (Player) event.getPlayer();
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-				if (playerInfo.getResourcePackType() == null) {
+				if (playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType() == null) {
 					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(inventory));
 				}
 			}));

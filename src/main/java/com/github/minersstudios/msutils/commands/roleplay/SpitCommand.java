@@ -50,7 +50,7 @@ public class SpitCommand implements MSCommandExecutor {
 			sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("плюнув"), TODO);
 			return true;
 		}
-		sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getSpitMessage()), ME);
+		sendRPEventMessage(player, Component.text(playerInfo.getPlayerFile().getPronouns().getSpitMessage()), ME);
 		return true;
 	}
 }

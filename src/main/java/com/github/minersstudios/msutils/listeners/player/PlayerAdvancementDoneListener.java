@@ -25,7 +25,7 @@ public class PlayerAdvancementDoneListener implements Listener {
 				Component.space()
 				.append(Component.translatable(
 				"chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
-				new PlayerInfo(event.getPlayer().getUniqueId()).getDefaultName(),
+				new PlayerInfo(event.getPlayer().getUniqueId()).createDefaultName(),
 				Component.text("[")
 				.append(advancementDisplay.title())
 				.append(Component.text("]"))

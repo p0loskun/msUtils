@@ -29,8 +29,7 @@ public class DoCommand implements MSCommandExecutor {
 		}
 		if (!PlayerUtils.isOnline(player)) return true;
 		if (args.length == 0) return false;
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-		if (playerInfo.isMuted()) {
+		if (new PlayerInfo(player.getUniqueId()).getPlayerFile().isMuted()) {
 			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 			return true;
 		}

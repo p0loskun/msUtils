@@ -46,7 +46,7 @@ public final class ChatUtils {
 	public static void sendMessageToChat(@NotNull PlayerInfo playerInfo, @Nullable Location location, Chat chat, @NotNull Component message) {
 		if (chat == Chat.LOCAL && location != null) {
 			Component localMessage = space()
-					.append(playerInfo.getDefaultName()
+					.append(playerInfo.createDefaultName()
 					.append(text(" : "))
 					.color(CHAT_COLOR_PRIMARY)
 					.hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
@@ -65,7 +65,7 @@ public final class ChatUtils {
 		}
 		Component globalMessage = space()
 				.append(text("[WM] ")
-				.append(playerInfo.getDefaultName()
+				.append(playerInfo.createDefaultName()
 				.append(text(" : ")))
 				.color(CHAT_COLOR_PRIMARY)
 				.hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
@@ -99,9 +99,9 @@ public final class ChatUtils {
 		if (commandSender != null && receiver.getOnlinePlayer() != null) {
 			String privateMessage = serializeLegacyComponent(
 					space()
-					.append(sender.getDefaultName()
+					.append(sender.createDefaultName()
 					.append(text(" -> ")
-					.append(receiver.getDefaultName()
+					.append(receiver.createDefaultName()
 					.append(text(" : ")))))
 					.color(CHAT_COLOR_PRIMARY)
 					.append(message.color(CHAT_COLOR_SECONDARY))
@@ -109,7 +109,7 @@ public final class ChatUtils {
 			commandSender.sendMessage(
 					Badges.SPEECH.append(text()
 					.append(text("Вы -> ")
-					.append(receiver.getDefaultName()
+					.append(receiver.createDefaultName()
 					.append(text(" : ")))
 					.hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
 					.clickEvent(ClickEvent.suggestCommand("/pm " + receiver.getID() + " ")))
@@ -117,7 +117,7 @@ public final class ChatUtils {
 					.append(message.color(CHAT_COLOR_SECONDARY))
 			);
 			receiver.getOnlinePlayer().sendMessage(
-					Badges.SPEECH.append(sender.getDefaultName().append(text(" -> Вам : "))
+					Badges.SPEECH.append(sender.createDefaultName().append(text(" -> Вам : "))
 					.color(CHAT_COLOR_PRIMARY)
 					.hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
 					.clickEvent(ClickEvent.suggestCommand("/pm " + sender.getID() + " ")))
@@ -146,7 +146,7 @@ public final class ChatUtils {
 					text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
 					.append(action.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
 					.append(text(" * | ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY))
-					.append(playerInfo.getGrayIDGoldName());
+					.append(playerInfo.createGrayIDGoldName());
 		} else if (rolePlayActionType == RolePlayActionType.IT) {
 			fullMessage =
 					text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
@@ -159,10 +159,10 @@ public final class ChatUtils {
 					.append(speech
 					.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
 					.append(text(" - ")
-					.append(text(playerInfo.getPronouns().getSaidMessage())))
+					.append(text(playerInfo.getPlayerFile().getPronouns().getSaidMessage())))
 					.color(RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
 					.append(space())
-					.append(playerInfo.getGrayIDGoldName())
+					.append(playerInfo.createGrayIDGoldName())
 					.append(text(", ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY))
 					.append(action
 					.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
@@ -170,7 +170,7 @@ public final class ChatUtils {
 		} else {
 			fullMessage =
 					text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
-					.append(playerInfo.getGrayIDGoldName())
+					.append(playerInfo.createGrayIDGoldName())
 					.append(space()
 					.append(action.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY)))
 					.append(text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
@@ -200,16 +200,16 @@ public final class ChatUtils {
 		Component deathMessage =
 				killerInfo != null
 				? space()
-					.append(killerInfo.getGoldenName()
+					.append(killerInfo.createGoldenName()
 					.append(space()))
-					.append(text(killerInfo.getPronouns().getKillMessage())
+					.append(text(killerInfo.getPlayerFile().getPronouns().getKillMessage())
 					.color(JOIN_MESSAGE_COLOR_PRIMARY)
 					.append(space()))
-					.append(killedInfo.getGoldenName())
+					.append(killedInfo.createGoldenName())
 				: space()
-					.append(killedInfo.getGoldenName()
+					.append(killedInfo.createGoldenName()
 					.append(space()))
-					.append(text(killedInfo.getPronouns().getDeathMessage()))
+					.append(text(killedInfo.getPlayerFile().getPronouns().getDeathMessage()))
 					.color(JOIN_MESSAGE_COLOR_PRIMARY);
 		String stringDeathMessage = serializeLegacyComponent(deathMessage);
 
@@ -228,7 +228,7 @@ public final class ChatUtils {
 		Location deathLocation = killed.getLocation();
 		sendInfo(null,
 				text("Мир и координаты смерти игрока : \"")
-				.append(killedInfo.getDefaultName())
+				.append(killedInfo.createDefaultName())
 				.append(text(" ("))
 				.append(text(killed.getName()))
 				.append(text(")\" : "))
@@ -251,9 +251,9 @@ public final class ChatUtils {
 		Player player = playerInfo.getOnlinePlayer();
 		if (!PlayerUtils.isOnline(player, true)) return;
 		Component joinMessage = space()
-						.append(playerInfo.getGoldenName()
+						.append(playerInfo.createGoldenName()
 						.append(space()))
-						.append(text(playerInfo.getPronouns().getJoinMessage()))
+						.append(text(playerInfo.getPlayerFile().getPronouns().getJoinMessage()))
 						.color(JOIN_MESSAGE_COLOR_PRIMARY);
 		String stringJoinMessage = serializeLegacyComponent(joinMessage);
 
@@ -277,14 +277,11 @@ public final class ChatUtils {
 	 * @param player     player
 	 */
 	public static void sendQuitMessage(@NotNull PlayerInfo playerInfo, @NotNull Player player) {
-		if (
-				playerInfo.hasNoName()
-				|| !PlayerUtils.isOnline(player)
-		) return;
+		if (!PlayerUtils.isOnline(player)) return;
 		Component quitMessage = space()
-						.append(playerInfo.getGoldenName()
+						.append(playerInfo.createGoldenName()
 						.append(space()))
-						.append(text(playerInfo.getPronouns().getQuitMessage()))
+						.append(text(playerInfo.getPlayerFile().getPronouns().getQuitMessage()))
 						.color(JOIN_MESSAGE_COLOR_PRIMARY);
 		String stringQuitMessage = serializeLegacyComponent(quitMessage);
 

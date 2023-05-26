@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 @MSCommand(
 		command = "kick",
@@ -39,10 +40,10 @@ public class KickCommand implements MSCommandExecutor {
 				return true;
 			}
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			if (PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", reason)) {
+			if (PlayerUtils.kickPlayer(Objects.requireNonNull(offlinePlayer.getPlayer()), "Вы были кикнуты", reason)) {
 				ChatUtils.sendFine(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGreenName())
+						.append(playerInfo.createGrayIDGreenName())
 						.append(Component.text("\" был кикнут :\n    - Причина : \""))
 						.append(Component.text(reason))
 				);
@@ -50,7 +51,7 @@ public class KickCommand implements MSCommandExecutor {
 			}
 			ChatUtils.sendWarning(sender,
 					Component.text("Игрок : \"")
-					.append(playerInfo.getGrayIDGoldName())
+					.append(playerInfo.createGrayIDGoldName())
 					.append(Component.text("\" не в сети!"))
 			);
 			return true;
@@ -62,10 +63,10 @@ public class KickCommand implements MSCommandExecutor {
 				return true;
 			}
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			if (PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", reason)) {
+			if (PlayerUtils.kickPlayer(Objects.requireNonNull(offlinePlayer.getPlayer()), "Вы были кикнуты", reason)) {
 				ChatUtils.sendFine(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGreenName())
+						.append(playerInfo.createGrayIDGreenName())
 						.append(Component.text(" ("))
 						.append(Component.text(args[0]))
 						.append(Component.text(")\" был кикнут :\n    - Причина : \""))
@@ -75,7 +76,7 @@ public class KickCommand implements MSCommandExecutor {
 			}
 			ChatUtils.sendWarning(sender,
 					Component.text("Игрок : \"")
-					.append(playerInfo.getGrayIDGoldName())
+					.append(playerInfo.createGrayIDGoldName())
 					.append(Component.text(" ("))
 					.append(Component.text(args[0]))
 					.append(Component.text(")\" не в сети!"))

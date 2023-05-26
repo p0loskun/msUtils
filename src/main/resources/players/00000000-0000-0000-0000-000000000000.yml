@@ -1,24 +1,26 @@
-nickname: Steve
-ip:
-  - 0.0.0.0
-gamemode: SURVIVAL/CREATIVE/ADVENTURE/SPECTATOR
-health: 20.0
 name:
-  firstname: Иван
-  lastname: Иванов
+  nickname: Steve
+  first-name: Иван
+  last-name: Иванов
   patronymic: Иваныч
 pronouns: HE/SHE/THEY
-resource-pack:
+ip-list:
+  - 0.0.0.0
+game-params:
+  game-mode: SURVIVAL/CREATIVE/ADVENTURE/SPECTATOR
+  health: 20.0
+  air: 300
+settings:
   resource-pack-type: FULL/LITE/NONE
-bans:
+first-join: 0
+mute:
   muted: false
-  mute-reason: null
+  reason: null
+  to: 0
+ban:
   banned: false
-  ban-reason: null
-time:
-  first-join: 0
-  muted-to: 0
-  banned-to: 0
+  reason: null
+  to: 0
 locations:
   last-death-location:
     world: overworld

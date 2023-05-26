@@ -3,6 +3,7 @@ package com.github.minersstudios.msutils.listeners.player;
 import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
@@ -30,6 +31,28 @@ public class AsyncPlayerPreLoginListener implements Listener {
 		String nickname = event.getName();
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(event.getUniqueId());
 		PlayerInfo playerInfo = new PlayerInfo(event.getUniqueId(), nickname);
+		PlayerFile playerFile = playerInfo.getPlayerFile();
+
+		if (
+				playerFile.exists()
+				&& !playerFile.getIpList().contains(hostAddress)
+		) {
+			ChatUtils.sendWarning(null,
+					Component.text("Игроку : \"")
+					.append(playerInfo.createGrayIDGoldName())
+					.append(Component.text("\" был добавлен новый айпи адрес : "))
+					.append(Component.text(hostAddress))
+			);
+			playerFile.addIp(hostAddress);
+			playerFile.save();
+		}
+
+		if (
+				(playerInfo.getPlayerFile().isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
+				|| (playerInfo.getPlayerFile().isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(nickname))
+		) {
+			playerInfo.setBanned(false);
+		}
 
 		if (MSUtils.getConfigCache().developerMode && !Bukkit.getOfflinePlayer(event.getUniqueId()).isOp()) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
@@ -52,7 +75,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
 		}
 
 		if (Bukkit.getBannedPlayers().contains(offlinePlayer)) {
-			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
+			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
 					Component.empty()
 					.append(Component.text("Вы всё ещё забанены!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
 					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
@@ -63,28 +86,6 @@ public class AsyncPlayerPreLoginListener implements Listener {
 					.color(NamedTextColor.GRAY)
 					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
 			);
-		}
-
-		if (
-				playerInfo.hasPlayerDataFile()
-				&& playerInfo.getIP() != null
-				&& !playerInfo.getIP().contains(hostAddress)
-		) {
-			ChatUtils.sendWarning(null,
-					Component.text("Игроку : \"")
-					.append(playerInfo.getGrayIDGoldName())
-					.append(Component.text("\" был добавлен новый айпи адрес : "))
-					.append(Component.text(hostAddress))
-			);
-			playerInfo.addIP(hostAddress);
-		}
-
-		if (
-				(playerInfo.isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
-				|| (playerInfo.isBanned()
-				&& !Bukkit.getBanList(BanList.Type.NAME).isBanned(nickname))
-		) {
-			playerInfo.setBanned(false, null);
 		}
 	}
 }

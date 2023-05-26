@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.player;
+package com.github.minersstudios.msutils.inventory;
 
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;

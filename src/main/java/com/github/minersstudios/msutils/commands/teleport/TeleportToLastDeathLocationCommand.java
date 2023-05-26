@@ -69,7 +69,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 		if (offlinePlayer.getPlayer() == null) {
 			ChatUtils.sendWarning(sender,
 					Component.text("Игрок : \"")
-					.append(playerInfo.getGrayIDGreenName())
+					.append(playerInfo.createGrayIDGreenName())
 					.append(Component.text(" ("))
 					.append(Component.text(offlinePlayer.getName()))
 					.append(Component.text(")\" не в сети!"))
@@ -79,7 +79,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 		if (lastDeathLocation == null) {
 			ChatUtils.sendWarning(sender,
 					Component.text("Игрок : \"")
-					.append(playerInfo.getGrayIDGreenName())
+					.append(playerInfo.createGrayIDGreenName())
 					.append(Component.text(" ("))
 					.append(Component.text(offlinePlayer.getName()))
 					.append(Component.text(")\" не имеет последней точки смерти!"))
@@ -89,7 +89,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 		offlinePlayer.getPlayer().teleportAsync(lastDeathLocation.add(0.5d, 0.0d, 0.5d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendFine(sender,
 				Component.text("Игрок : \"")
-				.append(playerInfo.getGrayIDGreenName())
+				.append(playerInfo.createGrayIDGreenName())
 				.append(Component.text(" ("))
 				.append(Component.text(offlinePlayer.getName()))
 				.append(Component.text(")\" был телепортирован на последние координаты смерти"))

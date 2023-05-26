@@ -174,7 +174,9 @@ public enum Pronouns {
 			InventoryButton heButton = new InventoryButton(he, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-				playerInfo.setPronouns(Pronouns.HE);
+				PlayerFile playerFile = playerInfo.getPlayerFile();
+				playerFile.setPronouns(Pronouns.HE);
+				playerFile.save();
 				playClickSound(player);
 				player.closeInventory();
 				finishSet(playerInfo, player);
@@ -186,7 +188,9 @@ public enum Pronouns {
 			InventoryButton sheButton = new InventoryButton(she, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-				playerInfo.setPronouns(Pronouns.SHE);
+				PlayerFile playerFile = playerInfo.getPlayerFile();
+				playerFile.setPronouns(Pronouns.SHE);
+				playerFile.save();
 				playClickSound(player);
 				player.closeInventory();
 				finishSet(playerInfo, player);
@@ -198,7 +202,9 @@ public enum Pronouns {
 			InventoryButton theyButton = new InventoryButton(they, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-				playerInfo.setPronouns(Pronouns.THEY);
+				PlayerFile playerFile = playerInfo.getPlayerFile();
+				playerFile.setPronouns(Pronouns.THEY);
+				playerFile.save();
 				playClickSound(player);
 				player.closeInventory();
 				finishSet(playerInfo, player);
@@ -210,7 +216,7 @@ public enum Pronouns {
 			customInventory.setCloseAction(((event, inventory) -> {
 				Player player = (Player) event.getPlayer();
 				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
-				if (playerInfo.getYamlConfiguration().getString("pronouns") == null) {
+				if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
 					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(customInventory));
 				}
 			}));
@@ -218,17 +224,16 @@ public enum Pronouns {
 			return customInventory;
 		}
 
-		public static boolean open(@NotNull Player player) {
+		public static void open(@NotNull Player player) {
 			CustomInventory customInventory = InventoryUtils.getCustomInventory("pronouns");
-			if (customInventory == null) return false;
+			if (customInventory == null) return;
 			player.openInventory(customInventory);
-			return true;
 		}
 
 		private static void finishSet(@NotNull PlayerInfo playerInfo, @NotNull Player player) {
-			if (playerInfo.getYamlConfiguration().getString("pronouns") != null) {
+			if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") != null) {
 				new RegistrationProcess().setPronouns(player, playerInfo);
-			} else if (playerInfo.getResourcePackType() != null) {
+			} else if (playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType() != null) {
 				playerInfo.teleportToLastLeaveLocation();
 			}
 		}

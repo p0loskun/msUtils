@@ -3,7 +3,7 @@ package com.github.minersstudios.msutils.commands.other;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msutils.player.CraftsMenu;
+import com.github.minersstudios.msutils.inventory.CraftsMenu;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

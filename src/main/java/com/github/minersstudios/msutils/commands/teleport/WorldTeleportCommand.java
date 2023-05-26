@@ -89,7 +89,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		if (offlinePlayer.getPlayer() == null) {
 			ChatUtils.sendWarning(sender,
 					Component.text("Игрок : \"")
-					.append(playerInfo.getGrayIDGoldName())
+					.append(playerInfo.createGrayIDGoldName())
 					.append(Component.text("\" не в сети!"))
 			);
 			return true;
@@ -117,7 +117,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		offlinePlayer.getPlayer().teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendFine(sender,
 				Component.text("Игрок : \"")
-				.append(playerInfo.getGrayIDGreenName())
+				.append(playerInfo.createGrayIDGreenName())
 				.append(Component.text(" ("))
 				.append(Component.text(args[0]))
 				.append(Component.text(")\" был телепортирован :"))

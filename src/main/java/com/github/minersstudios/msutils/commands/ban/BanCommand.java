@@ -37,7 +37,7 @@ public class BanCommand implements MSCommandExecutor {
 				: "неизвестно";
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-			if (offlinePlayer == null) {
+			if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
 				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 				return true;
 			}
@@ -45,7 +45,7 @@ public class BanCommand implements MSCommandExecutor {
 			if (playerInfo.isBanned()) {
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGoldName())
+						.append(playerInfo.createGrayIDGoldName())
 						.append(Component.text("\" уже забанен"))
 				);
 				return true;
@@ -63,7 +63,7 @@ public class BanCommand implements MSCommandExecutor {
 			if (playerInfo.isBanned()) {
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGoldName())
+						.append(playerInfo.createGrayIDGoldName())
 						.append(Component.text(" ("))
 						.append(Component.text(args[0]))
 						.append(Component.text(")\" уже забанен"))

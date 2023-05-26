@@ -42,8 +42,10 @@ public class PlayerID {
 	 * @return player's ID int
 	 */
 	public int getPlayerID(@NotNull UUID uuid, boolean addPlayer, boolean zeroIfNull) {
-		return this.yamlConfiguration.getValues(true).containsKey(uuid.toString()) ? this.yamlConfiguration.getInt(uuid.toString())
-				: addPlayer ? this.addPlayer(uuid)
+		return this.yamlConfiguration.getValues(true).containsKey(uuid.toString())
+				? this.yamlConfiguration.getInt(uuid.toString())
+						: addPlayer
+						? this.addPlayer(uuid)
 				: zeroIfNull ? 0 : -1;
 	}
 

@@ -3,10 +3,7 @@ package com.github.minersstudios.msutils.listeners.player;
 import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.player.Pronouns;
-import com.github.minersstudios.msutils.player.RegistrationProcess;
-import com.github.minersstudios.msutils.player.ResourcePack;
+import com.github.minersstudios.msutils.player.*;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,9 +20,10 @@ public class PlayerJoinListener implements Listener {
 	public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), ChatUtils.serializeLegacyComponent(player.name()));
+		PlayerFile playerFile = playerInfo.getPlayerFile();
 		MSUtils.getScoreboardHideTagsTeam().addEntry(player.getName());
 		player.setScoreboard(MSUtils.getScoreboardHideTags());
-		player.displayName(playerInfo.getDefaultName());
+		player.displayName(playerInfo.createDefaultName());
 		player.setGameMode(GameMode.SPECTATOR);
 
 		event.joinMessage(null);
@@ -38,15 +36,15 @@ public class PlayerJoinListener implements Listener {
 			public void run() {
 				if (!player.isOnline()) this.cancel();
 				if (MSUtils.getAuthMeApi().isAuthenticated(player)) {
-					if (!playerInfo.hasPlayerDataFile() || (playerInfo.hasPlayerDataFile() && playerInfo.hasNoName())) {
+					if (!playerFile.exists() || (playerFile.exists() && playerFile.isNoName())) {
 						this.cancel();
 						new RegistrationProcess().registerPlayer(playerInfo);
 					} else {
 						this.cancel();
-						if (playerInfo.getYamlConfiguration().getString("pronouns") == null) {
+						if (playerFile.getYamlConfiguration().getString("pronouns") == null) {
 							Pronouns.Menu.open(player);
 						} else {
-							if (playerInfo.getResourcePackType() == ResourcePack.Type.NONE) {
+							if (playerFile.getPlayerSettings().getResourcePackType() == ResourcePack.Type.NONE) {
 								playerInfo.teleportToLastLeaveLocation();
 							} else {
 								ResourcePack.setResourcePack(playerInfo);

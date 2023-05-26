@@ -8,7 +8,7 @@ import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msutils.anomalies.tasks.ParticleTask;
 import com.github.minersstudios.msutils.listeners.chat.DiscordGuildMessagePreProcessListener;
-import com.github.minersstudios.msutils.player.CraftsMenu;
+import com.github.minersstudios.msutils.inventory.CraftsMenu;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.Pronouns;
 import com.github.minersstudios.msutils.player.ResourcePack;

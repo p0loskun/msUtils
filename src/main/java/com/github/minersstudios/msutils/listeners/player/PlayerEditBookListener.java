@@ -21,7 +21,7 @@ public class PlayerEditBookListener implements Listener {
 		event.setNewBookMeta(bookMeta
 				.author(
 						isAnon ? Component.text("Аноним")
-						: new PlayerInfo(event.getPlayer().getUniqueId()).getDefaultName()
+						: new PlayerInfo(event.getPlayer().getUniqueId()).createDefaultName()
 				).title(
 						isAnon ? Component.text(title.substring(1))
 						: bookMeta.title()

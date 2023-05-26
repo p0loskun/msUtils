@@ -29,9 +29,9 @@ public class PlayerInteractEntityListener implements Listener {
 			PlayerInfo playerInfo = new PlayerInfo(clickedPlayer.getUniqueId());
 			playerWhoClicked.sendActionBar(
 					Component.empty()
-					.append(playerInfo.getGoldenName())
+					.append(playerInfo.createGoldenName())
 					.append(Component.space())
-					.append(Component.text(playerInfo.getPatronymic()))
+					.append(Component.text(playerInfo.getPlayerFile().getPlayerName().getPatronymic()))
 					.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
 			);
 			ItemStack helmet = clickedPlayer.getInventory().getHelmet();

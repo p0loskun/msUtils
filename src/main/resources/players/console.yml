@@ -1,25 +1,26 @@
-nickname: $Console
-ip:
-  - 0.0.0.0
-gamemode: SPECTATOR
-health: 20.0
 name:
-  firstname: Неизвестный
-  lastname: ""
+  nickname: $Console
+  first-name: Неизвестный
+  last-name: ""
   patronymic: ""
 pronouns: THEY
-resource-pack:
+ip-list:
+  - 0.0.0.0
+game-params:
+  game-mode: SPECTATOR
+  health: 20.0
+  air: 300
+settings:
   resource-pack-type: NONE
-  disk-type: DROPBOX
-bans:
+first-join: 0
+mute:
   muted: false
-  mute-reason: null
+  reason: null
+  to: 0
+ban:
   banned: false
-  ban-reason: null
-time:
-  first-join: 0
-  muted-to: 0
-  banned-to: 0
+  reason: null
+  to: 0
 locations:
   last-death-location:
     world: overworld

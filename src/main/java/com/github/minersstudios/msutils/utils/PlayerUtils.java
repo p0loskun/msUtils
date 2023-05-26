@@ -2,6 +2,7 @@ package com.github.minersstudios.msutils.utils;
 
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.google.common.base.Charsets;
 import net.kyori.adventure.text.Component;
@@ -100,8 +101,9 @@ public final class PlayerUtils {
 		} else {
 			Bukkit.getScheduler().callSyncMethod(MSUtils.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:whitelist remove " + nickname));
 		}
-		if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
-			PlayerUtils.kickPlayer(offlinePlayer, "Вы были кикнуты", "Вас удалили из белого списка");
+		Player onlinePlayer = offlinePlayer.getPlayer();
+		if (offlinePlayer.isOnline() && onlinePlayer != null) {
+			PlayerUtils.kickPlayer(onlinePlayer, "Вы были кикнуты", "Вас удалили из белого списка");
 		}
 		return true;
 	}
@@ -128,14 +130,20 @@ public final class PlayerUtils {
 	/**
 	 * Kicks the player
 	 *
-	 * @param offlinePlayer offline player
-	 * @param reason        kick reason
+	 * @param player player
+	 * @param reason kick reason
 	 * @return True if player successfully kicked
 	 */
-	public static boolean kickPlayer(@NotNull OfflinePlayer offlinePlayer, @NotNull String title, @NotNull String reason) {
-		if (!offlinePlayer.isOnline() || offlinePlayer.getPlayer() == null) return false;
-		new PlayerInfo(offlinePlayer.getUniqueId()).setLastLeaveLocation();
-		offlinePlayer.getPlayer().kick(
+	public static boolean kickPlayer(@NotNull Player player, @NotNull String title, @NotNull String reason) {
+		if (!player.isOnline() || player.getPlayer() == null) return false;
+		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		PlayerFile playerFile = playerInfo.getPlayerFile();
+		playerInfo.setLastLeaveLocation();
+		playerFile.setGameMode(player.getGameMode());
+		playerFile.setHealth(player.getHealth());
+		playerFile.setAir(player.getRemainingAir());
+		playerFile.save();
+		player.getPlayer().kick(
 				Component.empty()
 				.append(Component.text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
 				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
@@ -168,7 +176,7 @@ public final class PlayerUtils {
 				getConfigCache().seats.put(player, armorStand);
 			});
 			if (args == null) {
-				ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
+				ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPlayerFile().getPronouns().getSitMessage()), ChatUtils.RolePlayActionType.ME);
 			} else {
 				ChatUtils.sendRPEventMessage(player, Component.text(extractMessage(args, 0)), Component.text("приседая"), ChatUtils.RolePlayActionType.TODO);
 			}
@@ -180,7 +188,7 @@ public final class PlayerUtils {
 			getUpLocation.setPitch(playerLoc.getPitch());
 			armorStand.remove();
 			player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
-			ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPronouns().getUnSitMessage()), ChatUtils.RolePlayActionType.ME);
+			ChatUtils.sendRPEventMessage(player, Component.text(new PlayerInfo(player.getUniqueId()).getPlayerFile().getPronouns().getUnSitMessage()), ChatUtils.RolePlayActionType.ME);
 		}
 	}
 

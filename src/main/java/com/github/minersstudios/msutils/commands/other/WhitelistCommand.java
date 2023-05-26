@@ -50,7 +50,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				if (offlinePlayer.getName() != null && PlayerUtils.removePlayerFromWhitelist(offlinePlayer, offlinePlayer.getName())) {
 					ChatUtils.sendFine(sender,
 							Component.text("Игрок : \"")
-							.append(playerInfo.getGrayIDGreenName())
+							.append(playerInfo.createGrayIDGreenName())
 							.append(Component.text(" ("))
 							.append(Component.text(offlinePlayer.getName()))
 							.append(Component.text(")\" был удалён из белого списка"))
@@ -59,7 +59,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				}
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGoldName())
+						.append(playerInfo.createGrayIDGoldName())
 						.append(Component.text(" ("))
 						.append(Component.text(offlinePlayer.getName()))
 						.append(Component.text(")\" не состоит в белом списке"))
@@ -79,7 +79,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				if (PlayerUtils.addPlayerToWhitelist(offlinePlayer, args[1])) {
 					ChatUtils.sendFine(sender,
 							Component.text("Игрок : \"")
-							.append(playerInfo.getGrayIDGreenName())
+							.append(playerInfo.createGrayIDGreenName())
 							.append(Component.text(" ("))
 							.append(Component.text(args[1]))
 							.append(Component.text(")\" был добавлен в белый список"))
@@ -88,7 +88,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				}
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGoldName())
+						.append(playerInfo.createGrayIDGoldName())
 						.append(Component.text(" ("))
 						.append(Component.text(args[1]))
 						.append(Component.text(")\" уже состоит в белом списке"))
@@ -99,7 +99,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				if (PlayerUtils.removePlayerFromWhitelist(offlinePlayer, args[1])) {
 					ChatUtils.sendFine(sender,
 							Component.text("Игрок : \"")
-							.append(playerInfo.getGrayIDGreenName())
+							.append(playerInfo.createGrayIDGreenName())
 							.append(Component.text(" ("))
 							.append(Component.text(args[1]))
 							.append(Component.text(")\" был удалён из белого списка"))
@@ -108,7 +108,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				}
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGoldName())
+						.append(playerInfo.createGrayIDGoldName())
 						.append(Component.text(" ("))
 						.append(Component.text(args[1]))
 						.append(Component.text(")\" не состоит в белом списке"))

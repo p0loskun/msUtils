@@ -3,8 +3,8 @@ package com.github.minersstudios.msutils.commands.other;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msutils.player.PlayerID;
-import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.player.*;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
 import com.github.minersstudios.msutils.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
@@ -58,31 +58,43 @@ public class InfoCommand implements MSCommandExecutor {
 	}
 
 	private static void sendInfo(@NotNull PlayerInfo playerInfo, @NotNull CommandSender sender) {
+		PlayerFile playerFile = playerInfo.getPlayerFile();
+		PlayerName playerName = playerFile.getPlayerName();
+		PlayerSettings playerSettings = playerFile.getPlayerSettings();
 		Location
-				lastLeaveLocation = playerInfo.getLastLeaveLocation(),
-				lastDeathLocation = playerInfo.getLastDeathLocation();
+				lastLeaveLocation = playerFile.getLastLeaveLocation(),
+				lastDeathLocation = playerFile.getLastDeathLocation();
+
+		if (lastLeaveLocation == null) {
+			lastLeaveLocation = new Location(MSUtils.getOverworld(), 0, 0, 0);
+		}
+
+		if (lastDeathLocation == null) {
+			lastDeathLocation = new Location(MSUtils.getOverworld(), 0, 0, 0);
+		}
+
 		ChatUtils.sendInfo(sender, Component.text(
-				"UUID : " + playerInfo.getUuid()
+				"UUID : " + playerInfo.getOfflinePlayer().getUniqueId()
 				+ "\n ID : " + playerInfo.getID(false, false)
-				+ "\n Nickname : " + playerInfo.getNickname()
-				+ "\n Firstname : " + playerInfo.getFirstname()
-				+ "\n Lastname : " + playerInfo.getLastname()
-				+ "\n Patronymic : " + playerInfo.getPatronymic()
-				+ "\n RP-type : " + playerInfo.getResourcePackType()
+				+ "\n Nickname : " + playerName.getNickname()
+				+ "\n Firstname : " + playerName.getFirstName()
+				+ "\n Lastname : " + playerName.getLastName()
+				+ "\n Patronymic : " + playerName.getPatronymic()
+				+ "\n RP-type : " + playerSettings.getResourcePackType()
 				+ "\n Muted : " + playerInfo.isMuted()
 				+ "\n Banned : " + playerInfo.isBanned()
-				+ "\n First join : " + playerInfo.getFirstJoin()
+				+ "\n First join : " + playerFile.getFirstJoin()
 				+ "\n Mute reason : " + playerInfo.getMuteReason()
 				+ "\n Muted to : " + playerInfo.getMutedTo()
 				+ "\n Ban reason : " + playerInfo.getBanReason()
 				+ "\n Banned to : " + playerInfo.getBannedTo()
-				+ "\n Last death world : " + lastDeathLocation.getBlock().getWorld().getName()
+				+ "\n Last death world : " + lastDeathLocation.getWorld().getName()
 				+ "\n Last death X : " + lastDeathLocation.getX()
 				+ "\n Last death Y : " + lastDeathLocation.getY()
 				+ "\n Last death Z : " + lastDeathLocation.getZ()
 				+ "\n Last death Yaw : " + lastDeathLocation.getYaw()
 				+ "\n Last death Pitch : " + lastDeathLocation.getPitch()
-				+ "\n Last leave world : " + lastLeaveLocation.getBlock().getWorld().getName()
+				+ "\n Last leave world : " + lastLeaveLocation.getWorld().getName()
 				+ "\n Last leave X : " + lastLeaveLocation.getX()
 				+ "\n Last leave Y : " + lastLeaveLocation.getY()
 				+ "\n Last leave Z : " + lastLeaveLocation.getZ()

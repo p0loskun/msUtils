@@ -63,14 +63,14 @@ public class FartCommand implements MSCommandExecutor {
 					"msdecor:poop",
 					BlockFace.UP,
 					null,
-					ChatUtils.createDefaultStyledText("Какашка " + ChatUtils.serializeLegacyComponent(playerInfo.getDefaultName()))
+					ChatUtils.createDefaultStyledText("Какашка " + ChatUtils.serializeLegacyComponent(playerInfo.createDefaultName()))
 			);
 		}
 		if (args.length > 0) {
 			sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text(withPoop ? "пукнув с подливой" : "пукнув"), TODO);
 			return true;
 		}
-		sendRPEventMessage(player, Component.text(playerInfo.getPronouns().getFartMessage()).append(Component.text(withPoop ? " с подливой" : "")), ME);
+		sendRPEventMessage(player, Component.text(playerInfo.getPlayerFile().getPronouns().getFartMessage()).append(Component.text(withPoop ? " с подливой" : "")), ME);
 		return true;
 	}
 }

@@ -3,6 +3,7 @@ package com.github.minersstudios.msutils.commands.mute;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerID;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
@@ -36,10 +37,11 @@ public class UnMuteCommand implements MSCommandExecutor {
 				return true;
 			}
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			if (!playerInfo.isMuted()) {
+			PlayerFile playerFile = playerInfo.getPlayerFile();
+			if (!playerFile.isMuted()) {
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGoldName())
+						.append(playerInfo.createGrayIDGoldName())
 						.append(Component.text("\" не замьючен"))
 				);
 				return true;
@@ -54,10 +56,11 @@ public class UnMuteCommand implements MSCommandExecutor {
 				return true;
 			}
 			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
-			if (!playerInfo.isMuted()) {
+			PlayerFile playerFile = playerInfo.getPlayerFile();
+			if (!playerFile.isMuted()) {
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
-						.append(playerInfo.getGrayIDGoldName())
+						.append(playerInfo.createGrayIDGoldName())
 						.append(Component.text(" ("))
 						.append(Component.text(args[0]))
 						.append(Component.text(")\" не замьючен"))

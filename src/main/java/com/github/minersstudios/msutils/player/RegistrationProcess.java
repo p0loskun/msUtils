@@ -56,7 +56,7 @@ public class RegistrationProcess {
 				this.sendWarningMessage();
 				return false;
 			}
-			this.playerInfo.setFirstname(strNormalize(firstname));
+			this.playerInfo.getPlayerFile().getPlayerName().setFirstName(strNormalize(firstname));
 
 			this.sendDialogueMessage("Интересно...", 25L);
 			this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем", 100L);
@@ -76,7 +76,7 @@ public class RegistrationProcess {
 				this.sendWarningMessage();
 				return false;
 			}
-			this.playerInfo.setLastName(strNormalize(lastname));
+			this.playerInfo.getPlayerFile().getPlayerName().setLastName(strNormalize(lastname));
 			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setPatronymic, 10L);
 			return true;
 		});
@@ -90,14 +90,19 @@ public class RegistrationProcess {
 				this.sendWarningMessage();
 				return false;
 			}
-			this.playerInfo.setPatronymic(strNormalize(patronymic));
+
+			PlayerFile playerFile = this.playerInfo.getPlayerFile();
+			PlayerName name = playerFile.getPlayerName();
+			name.setPatronymic(strNormalize(patronymic));
+			playerFile.updateName();
+			playerFile.save();
 
 			this.sendDialogueMessage(
 					"Ну вот и отлично, "
-					+ "§7" + "[" + playerInfo.getID(true, false) + "] "
-					+ "§f" + this.playerInfo.getFirstname() + " "
-					+ this.playerInfo.getLastname() + " "
-					+ this.playerInfo.getPatronymic(), 25L);
+					+ "§7" + "[" + this.playerInfo.getID(true, false) + "] "
+					+ "§f" + name.getFirstName() + " "
+					+ name.getLastName() + " "
+					+ name.getPatronymic(), 25L);
 			this.sendDialogueMessage("Слушай", 100L);
 			this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
 
@@ -111,20 +116,22 @@ public class RegistrationProcess {
 		this.player = player;
 		this.playerLocation = player.getLocation();
 		this.playerInfo = playerInfo;
+		Pronouns pronouns = this.playerInfo.getPlayerFile().getPronouns();
 
 		this.sendDialogueMessage("Славно", 25L);
 		this.sendDialogueMessage("Ну что же...", 75L);
 		this.sendDialogueMessage("Мне уже пора", 125L);
-		this.sendDialogueMessage("Хорошей " + this.playerInfo.getPronouns().getPronouns() + " дороги, " + this.playerInfo.getPronouns().getTraveler(), 175L);
+		this.sendDialogueMessage("Хорошей " + pronouns.getPronouns() + " дороги, " + pronouns.getTraveler(), 175L);
 
 		Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setOther, 225L);
 	}
 
 	private void setOther() {
-		this.player.displayName(this.playerInfo.getDefaultName());
-		if (this.playerInfo.getResourcePackType() == null) {
+		PlayerSettings playerSettings = this.playerInfo.getPlayerFile().getPlayerSettings();
+		this.player.displayName(this.playerInfo.createDefaultName());
+		if (playerSettings.getResourcePackType() == null) {
 			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> ResourcePack.Menu.open(this.player));
-		} else if (this.playerInfo.getResourcePackType() == ResourcePack.Type.NONE) {
+		} else if (playerSettings.getResourcePackType() == ResourcePack.Type.NONE) {
 			Bukkit.getScheduler().runTask(MSUtils.getInstance(), this.playerInfo::teleportToLastLeaveLocation);
 		} else {
 			ResourcePack.setResourcePack(this.playerInfo);
