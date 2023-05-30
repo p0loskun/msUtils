@@ -1,8 +1,8 @@
 package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.MSListener;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -13,7 +13,7 @@ public class PlayerTeleportListener implements Listener {
 
 	@EventHandler
 	public void onPlayerTeleport(@NotNull PlayerTeleportEvent event) {
-		PlayerUtils.setSitting(event.getPlayer(), null, null);
+		MSPlayerUtils.getPlayerInfo(event.getPlayer()).unsetSitting();
 		if (
 				event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE
 				&& event.getPlayer().getWorld() == MSUtils.getWorldDark()

@@ -2,6 +2,7 @@ package com.github.minersstudios.msutils.tabcompleters;
 
 import com.github.minersstudios.mscore.utils.CommandUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AllPlayers implements TabCompleter {
 
@@ -20,7 +22,7 @@ public class AllPlayers implements TabCompleter {
 		List<String> completions = new ArrayList<>();
 		if (args.length == 1) {
 			for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-				PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
 				int id = playerInfo.getID(false, false);
 				switch (command.getName()) {
 					case "mute" -> {

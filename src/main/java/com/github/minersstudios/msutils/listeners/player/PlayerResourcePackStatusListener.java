@@ -6,7 +6,7 @@ import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerSettings;
 import com.github.minersstudios.msutils.player.ResourcePack;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +20,7 @@ public class PlayerResourcePackStatusListener implements Listener {
 	@EventHandler
 	public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
 		Player player = event.getPlayer();
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 		PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
 		if (playerSettings.getResourcePackType() == null) return;
@@ -36,11 +36,11 @@ public class PlayerResourcePackStatusListener implements Listener {
 				ChatUtils.sendWarning(null, Component.text(player.getName()).append(Component.text(" не установился ресурспак")));
 				playerSettings.setResourcePackType(ResourcePack.Type.NONE);
 				playerSettings.save();
-				PlayerUtils.kickPlayer(player, "Кажется, что-то пошло не так", "Обратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n \"Без текстурпака\"");
+				playerInfo.kickPlayer("Кажется, что-то пошло не так", "Обратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n \"Без текстурпака\"");
 			}
 			case DECLINED -> {
 				ChatUtils.sendWarning(null, Component.text(player.getName()).append(Component.text(" не принял ресурспак")));
-				PlayerUtils.kickPlayer(player, "Кажется, что-то пошло не так", "В настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\"");
+				playerInfo.kickPlayer("Кажется, что-то пошло не так", "В настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\"");
 			}
 		}
 	}

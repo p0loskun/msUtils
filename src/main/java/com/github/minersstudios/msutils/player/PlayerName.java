@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
-import static com.github.minersstudios.msutils.utils.ChatUtils.Colors.*;
+import static com.github.minersstudios.msutils.utils.MessageUtils.Colors.*;
 
 @SuppressWarnings("unused")
 public class PlayerName {

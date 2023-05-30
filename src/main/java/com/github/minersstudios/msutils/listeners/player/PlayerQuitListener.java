@@ -4,8 +4,8 @@ import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.github.minersstudios.msutils.utils.MessageUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +19,7 @@ public class PlayerQuitListener implements Listener {
 	@EventHandler
 	public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 		PlayerFile playerFile = playerInfo.getPlayerFile();
 
 		event.quitMessage(null);
@@ -29,7 +29,7 @@ public class PlayerQuitListener implements Listener {
 			vehicle.eject();
 		}
 
-		PlayerUtils.setSitting(player, null, null);
+		playerInfo.unsetSitting();
 		MSUtils.getConfigCache().playerAnomalyActionMap.remove(player);
 		if (player.getWorld() != MSUtils.getWorldDark()) {
 			playerInfo.setLastLeaveLocation();
@@ -37,7 +37,7 @@ public class PlayerQuitListener implements Listener {
 			playerFile.setHealth(player.getHealth());
 			playerFile.setAir(player.getRemainingAir());
 			playerFile.save();
-			ChatUtils.sendQuitMessage(playerInfo, player);
+			MessageUtils.sendQuitMessage(playerInfo, player);
 		}
 	}
 }

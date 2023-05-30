@@ -4,7 +4,6 @@ import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.anomalies.Anomaly;
 import com.github.minersstudios.msutils.anomalies.AnomalyAction;
 import com.github.minersstudios.msutils.anomalies.actions.SpawnParticlesAction;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -21,9 +20,8 @@ public class MainAnomalyActionsTask implements Runnable {
 		if (onlinePlayers.isEmpty()) return;
 		Map<Player, Map<AnomalyAction, Long>> playerActionMap = MSUtils.getConfigCache().playerAnomalyActionMap;
 		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () ->
-				onlinePlayers.stream()
-				.filter(PlayerUtils::isOnline)
-				.forEach((player) -> {
+				onlinePlayers
+				.forEach(player -> {
 					for (Anomaly anomaly : getConfigCache().anomalies.values()) {
 						Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
 						boolean isIgnorable = anomaly.getIgnorablePlayers().contains(player);

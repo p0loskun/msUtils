@@ -3,10 +3,11 @@ package com.github.minersstudios.msutils.commands.other;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msutils.player.PlayerID;
+import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllLocalPlayers;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.IDUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 @MSCommand(
 		command = "kick",
@@ -34,13 +34,13 @@ public class KickCommand implements MSCommandExecutor {
 				? ChatUtils.extractMessage(args, 1)
 				: "неизвестно";
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-			if (offlinePlayer == null) {
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
+			if (offlinePlayer == null || offlinePlayer.getName() == null) {
 				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 				return true;
 			}
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			if (PlayerUtils.kickPlayer(Objects.requireNonNull(offlinePlayer.getPlayer()), "Вы были кикнуты", reason)) {
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+			if (playerInfo.kickPlayer("Вы были кикнуты", reason)) {
 				ChatUtils.sendFine(sender,
 						Component.text("Игрок : \"")
 						.append(playerInfo.createGrayIDGreenName())
@@ -62,8 +62,8 @@ public class KickCommand implements MSCommandExecutor {
 				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
 				return true;
 			}
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
-			if (PlayerUtils.kickPlayer(Objects.requireNonNull(offlinePlayer.getPlayer()), "Вы были кикнуты", reason)) {
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
+			if (playerInfo.kickPlayer("Вы были кикнуты", reason)) {
 				ChatUtils.sendFine(sender,
 						Component.text("Игрок : \"")
 						.append(playerInfo.createGrayIDGreenName())

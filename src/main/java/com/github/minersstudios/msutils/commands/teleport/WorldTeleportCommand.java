@@ -3,10 +3,11 @@ package com.github.minersstudios.msutils.commands.teleport;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.player.PlayerID;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.IDUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,7 +39,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (args.length < 2) return false;
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null) {
 				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 				return true;
@@ -62,7 +63,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		List<String> completions = new ArrayList<>();
 		if (args.length == 1) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 				int id = playerInfo.getID(false, false);
 				if (id != -1) {
 					completions.add(String.valueOf(id));
@@ -81,11 +82,11 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 	}
 
 	private static boolean teleportToWorld(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer, String @NotNull ... args) {
-		if (!offlinePlayer.hasPlayedBefore()) {
+		if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
 			ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
 			return true;
 		}
-		PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 		if (offlinePlayer.getPlayer() == null) {
 			ChatUtils.sendWarning(sender,
 					Component.text("Игрок : \"")

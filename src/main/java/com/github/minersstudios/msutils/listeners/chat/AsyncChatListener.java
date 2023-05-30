@@ -1,10 +1,11 @@
 package com.github.minersstudios.msutils.listeners.chat;
 
 import com.github.minersstudios.mscore.MSListener;
-import com.github.minersstudios.msutils.chat.ChatBuffer;
-import com.github.minersstudios.msutils.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.chat.ChatBuffer;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.github.minersstudios.msutils.utils.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public class AsyncChatListener implements Listener {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
 		if (player.getWorld() == MSUtils.getWorldDark() || !MSUtils.getAuthMeApi().isAuthenticated(player)) return;
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 
 		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0) {
 			playerInfo.setMuted(false, null);
@@ -38,7 +39,7 @@ public class AsyncChatListener implements Listener {
 		if (message.startsWith("!")) {
 			message = message.substring(1).trim();
 			if (!message.isEmpty()) {
-				ChatUtils.sendMessageToChat(playerInfo, null, ChatUtils.Chat.GLOBAL, Component.text(message));
+				MessageUtils.sendMessageToChat(playerInfo, null, MessageUtils.Chat.GLOBAL, Component.text(message));
 			}
 		} else if (message.startsWith("*")) {
 			message = message.substring(1).trim();
@@ -47,10 +48,10 @@ public class AsyncChatListener implements Listener {
 				if (message.startsWith("*")) {
 					message = message.substring(1).trim();
 					if (!message.isEmpty()) {
-						ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.IT);
+						MessageUtils.sendRPEventMessage(player, Component.text(message), MessageUtils.RolePlayActionType.IT);
 					}
 				} else if (!message.isEmpty()) {
-					ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.DO);
+					MessageUtils.sendRPEventMessage(player, Component.text(message), MessageUtils.RolePlayActionType.DO);
 				}
 			} else if (message.contains("*")) {
 				String action = message.substring(message.indexOf('*') + 1).trim(),
@@ -59,12 +60,12 @@ public class AsyncChatListener implements Listener {
 					sendError(player, Component.text("Используй: * [речь] * [действие]"));
 					return;
 				}
-				ChatUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action), ChatUtils.RolePlayActionType.TODO);
+				MessageUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action), MessageUtils.RolePlayActionType.TODO);
 			} else if (!message.isEmpty()) {
-				ChatUtils.sendRPEventMessage(player, Component.text(message), ChatUtils.RolePlayActionType.ME);
+				MessageUtils.sendRPEventMessage(player, Component.text(message), MessageUtils.RolePlayActionType.ME);
 			}
 		} else {
-			ChatUtils.sendMessageToChat(playerInfo, player.getLocation(), ChatUtils.Chat.LOCAL, Component.text(message));
+			MessageUtils.sendMessageToChat(playerInfo, player.getLocation(), MessageUtils.Chat.LOCAL, Component.text(message));
 			ChatBuffer.receiveMessage(player, message + " ");
 		}
 	}

@@ -1,9 +1,9 @@
 package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.MSListener;
-import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.*;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +19,7 @@ public class PlayerJoinListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId(), ChatUtils.serializeLegacyComponent(player.name()));
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 		PlayerFile playerFile = playerInfo.getPlayerFile();
 		MSUtils.getScoreboardHideTagsTeam().addEntry(player.getName());
 		player.setScoreboard(MSUtils.getScoreboardHideTags());

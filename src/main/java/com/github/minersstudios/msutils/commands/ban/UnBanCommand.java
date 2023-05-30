@@ -3,9 +3,10 @@ package com.github.minersstudios.msutils.commands.ban;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msutils.player.PlayerID;
+import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.IDUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @MSCommand(
 		command = "unban",
@@ -31,12 +33,12 @@ public class UnBanCommand implements MSCommandExecutor {
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (args.length == 0) return false;
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-			if (offlinePlayer == null) {
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
+			if (offlinePlayer == null || offlinePlayer.getName() == null) {
 				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 				return true;
 			}
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 			if (!playerInfo.isBanned()) {
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
@@ -54,7 +56,7 @@ public class UnBanCommand implements MSCommandExecutor {
 				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
 				return true;
 			}
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			if (!playerInfo.isBanned()) {
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
@@ -78,7 +80,7 @@ public class UnBanCommand implements MSCommandExecutor {
 		if (args.length == 1) {
 			for (OfflinePlayer offlinePlayer : Bukkit.getBannedPlayers()) {
 				if (offlinePlayer != null) {
-					PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+					PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
 					int id = playerInfo.getID(false, false);
 					if (id != -1) {
 						completions.add(String.valueOf(id));

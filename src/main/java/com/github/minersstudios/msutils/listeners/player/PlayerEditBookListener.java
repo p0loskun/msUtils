@@ -1,7 +1,7 @@
 package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.MSListener;
-import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ public class PlayerEditBookListener implements Listener {
 		event.setNewBookMeta(bookMeta
 				.author(
 						isAnon ? Component.text("Аноним")
-						: new PlayerInfo(event.getPlayer().getUniqueId()).createDefaultName()
+						: MSPlayerUtils.getPlayerInfo(event.getPlayer()).createDefaultName()
 				).title(
 						isAnon ? Component.text(title.substring(1))
 						: bookMeta.title()

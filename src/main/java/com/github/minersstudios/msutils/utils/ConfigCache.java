@@ -3,6 +3,7 @@ package com.github.minersstudios.msutils.utils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.anomalies.Anomaly;
 import com.github.minersstudios.msutils.anomalies.AnomalyAction;
+import com.github.minersstudios.msutils.player.PlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
@@ -32,14 +33,20 @@ public final class ConfigCache {
 
 	public final boolean developerMode;
 
+	public final @NotNull File idsFile;
+	public final @NotNull YamlConfiguration idsYaml;
+	public final Map<UUID, Integer> idMap = new HashMap<>();
+
+	public final Map<UUID, PlayerInfo> playerInfoMap = new HashMap<>();
+
 	public final @NotNull File mutedPlayersFile;
 	public final @NotNull YamlConfiguration mutedPlayersYaml;
 
-	public final @NotNull Map<OfflinePlayer, Long> mutedPlayers = new HashMap<>();
+	public final Map<OfflinePlayer, Long> mutedPlayers = new HashMap<>();
 
-	public final @NotNull Map<Player, ArmorStand> seats = new HashMap<>();
-	public final @NotNull Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();
-	public final @NotNull Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap = new ConcurrentHashMap<>();
+	public final Map<Player, ArmorStand> seats = new HashMap<>();
+	public final Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();
+	public final Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap = new ConcurrentHashMap<>();
 
 	public final String
 			discordGlobalChannelId,
@@ -81,6 +88,12 @@ public final class ConfigCache {
 		this.mutedPlayersYaml = YamlConfiguration.loadConfiguration(this.mutedPlayersFile);
 
 		this.mutedPlayers.putAll(this.getMutedPlayers());
+
+		this.idsFile = new File(getInstance().getPluginFolder(), "ids.yml");
+		this.idsYaml = YamlConfiguration.loadConfiguration(this.idsFile);
+		for (Map.Entry<String, Object> entry : this.idsYaml.getValues(true).entrySet()) {
+			this.idMap.put(UUID.fromString(entry.getKey()), (Integer) entry.getValue());
+		}
 
 		this.loadAnomalies();
 	}

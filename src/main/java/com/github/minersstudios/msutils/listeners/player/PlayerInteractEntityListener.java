@@ -2,7 +2,8 @@ package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.github.minersstudios.msutils.utils.MessageUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -26,13 +27,13 @@ public class PlayerInteractEntityListener implements Listener {
 	public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
 		Player playerWhoClicked = event.getPlayer();
 		if (event.getRightClicked() instanceof Player clickedPlayer) {
-			PlayerInfo playerInfo = new PlayerInfo(clickedPlayer.getUniqueId());
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(clickedPlayer);
 			playerWhoClicked.sendActionBar(
 					Component.empty()
 					.append(playerInfo.createGoldenName())
 					.append(Component.space())
 					.append(Component.text(playerInfo.getPlayerFile().getPlayerName().getPatronymic()))
-					.color(ChatUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
+					.color(MessageUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
 			);
 			ItemStack helmet = clickedPlayer.getInventory().getHelmet();
 			if (

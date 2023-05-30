@@ -1,33 +1,42 @@
 package com.github.minersstudios.msutils.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.DateUtils;
+import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.IDUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
-import java.util.Objects;
 import java.util.UUID;
 
+import static com.github.minersstudios.mscore.utils.ChatUtils.extractMessage;
 import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
-import static com.github.minersstudios.msutils.utils.ChatUtils.sendJoinMessage;
+import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.ME;
+import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.TODO;
+import static com.github.minersstudios.msutils.utils.MessageUtils.sendJoinMessage;
+import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMessage;
 
 public class PlayerInfo {
 	private final @NotNull UUID uuid;
 	private final @NotNull String nickname;
 
-	private final @NotNull PlayerFile playerFile;
+	private @NotNull PlayerFile playerFile;
 
-	private @Nullable Player onlinePlayer;
 	private final @NotNull OfflinePlayer offlinePlayer;
 
 	public PlayerInfo(@NotNull UUID uuid, @NotNull String nickname) {
@@ -35,11 +44,15 @@ public class PlayerInfo {
 		this.nickname = nickname;
 
 		this.playerFile = PlayerFile.loadConfig(uuid, nickname);
-		this.offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+		this.offlinePlayer = PlayerUtils.getOfflinePlayer(uuid, nickname);
 	}
 
-	public PlayerInfo(@NotNull UUID uuid) {
-		this(uuid, Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid).getName()));
+	public PlayerInfo(@NotNull Player player) {
+		this.uuid = player.getUniqueId();
+		this.nickname = player.getName();
+
+		this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
+		this.offlinePlayer = PlayerUtils.getOfflinePlayer(this.uuid, this.nickname);
 	}
 
 	public @NotNull Component createDefaultName() {
@@ -59,8 +72,7 @@ public class PlayerInfo {
 	}
 
 	public int getID(boolean addPlayer, boolean zeroIfNull) {
-		int id = new PlayerID().getPlayerID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
-		return this.playerFile.exists() ? id : zeroIfNull ? 0 : -1;
+		return IDUtils.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
 	}
 
 	public int getID() {
@@ -93,7 +105,7 @@ public class PlayerInfo {
 
 		Player player = this.getOnlinePlayer();
 		if (value && player != null && player.getAddress() != null) {
-			getConfigCache().addMutedPlayer(this.onlinePlayer, date.getTime());
+			getConfigCache().addMutedPlayer(this.offlinePlayer, date.getTime());
 			ChatUtils.sendFine(sender,
 					Component.text("Игрок : \"")
 					.append(this.createGrayIDGreenName())
@@ -102,7 +114,7 @@ public class PlayerInfo {
 					.append(Component.text(")\" был замьючен :\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))
-					.append(Component.text(PlayerUtils.getDate(date, sender)))
+					.append(Component.text(DateUtils.getDate(date, sender)))
 			);
 			ChatUtils.sendWarning(
 					player,
@@ -110,11 +122,11 @@ public class PlayerInfo {
 					.append(Component.text("\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))
-					.append(Component.text(PlayerUtils.getDate(date, player)))
+					.append(Component.text(DateUtils.getDate(date, player)))
 			);
 			return;
 		}
-		getConfigCache().removeMutedPlayer(this.onlinePlayer);
+		getConfigCache().removeMutedPlayer(this.offlinePlayer);
 		ChatUtils.sendFine(sender,
 				Component.text("Игрок : \"")
 				.append(this.createGrayIDGreenName())
@@ -145,7 +157,7 @@ public class PlayerInfo {
 
 	public void setBanned(boolean value, @NotNull Date date, @NotNull String reason, @NotNull CommandSender sender) {
 		if (!this.playerFile.exists()) {
-			this.createPlayerDataFile();
+			this.createPlayerFile();
 		}
 
 		this.playerFile.setBanned(value);
@@ -153,16 +165,13 @@ public class PlayerInfo {
 		this.playerFile.setBanReason(reason);
 		this.playerFile.save();
 
-		Player player = this.getOnlinePlayer();
 		if (value) {
 			Bukkit.getBanList(BanList.Type.NAME).addBan(this.nickname, reason, date, sender.getName());
-			if (player != null && player.getAddress() != null) {
-				PlayerUtils.kickPlayer(player, "Вы были забанены",
-						reason
-						+ "\"\n До : \n"
-						+ PlayerUtils.getDate(date, player)
-				);
-			}
+			this.kickPlayer("Вы были забанены",
+					reason
+					+ "\"\n До : \n"
+					+ DateUtils.getDate(date, this.getOnlinePlayer())
+			);
 			ChatUtils.sendFine(sender,
 					Component.text("Игрок : \"")
 					.append(this.createGrayIDGreenName())
@@ -171,7 +180,7 @@ public class PlayerInfo {
 					.append(Component.text(")\" был забанен :\n    - Причина : \""))
 					.append(Component.text(reason))
 					.append(Component.text("\"\n    - До : "))
-					.append(Component.text(PlayerUtils.getDate(date, sender)))
+					.append(Component.text(DateUtils.getDate(date, sender)))
 			);
 		} else {
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.nickname);
@@ -248,7 +257,7 @@ public class PlayerInfo {
 		this.playerFile.save();
 	}
 
-	public void createPlayerDataFile() {
+	public void createPlayerFile() {
 		if (this.playerFile.exists()) return;
 		this.playerFile.getYamlConfiguration().set("name.nickname", this.nickname);
 		if (this.getOnlinePlayer() != null) {
@@ -269,16 +278,122 @@ public class PlayerInfo {
 		return this.playerFile;
 	}
 
+	public void update() {
+		this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
+	}
+
 	public @NotNull OfflinePlayer getOfflinePlayer() {
 		return this.offlinePlayer;
 	}
 
 	public @Nullable Player getOnlinePlayer() {
-		return this.onlinePlayer == null || !this.onlinePlayer.isOnline()
-				? this.onlinePlayer = this.offlinePlayer.getPlayer() != null && this.offlinePlayer.isOnline()
-						? this.offlinePlayer.getPlayer()
-						: null
-				: this.onlinePlayer;
+		return this.offlinePlayer.getPlayer();
+	}
+
+	/**
+	 * @return True if the player isn't in dark_world and hasn't vanished
+	 */
+	public boolean isOnline() {
+		return this.isOnline(false);
+	}
+
+	/**
+	 * @param ignoreWorld ignore world_dark check
+	 * @return True if the player isn't in dark_world and hasn't vanished
+	 */
+	public boolean isOnline(boolean ignoreWorld) {
+		Player player = this.offlinePlayer.getPlayer();
+		return player != null
+				&& (ignoreWorld || player.getWorld() != MSUtils.getWorldDark())
+				&& !this.isVanished();
+	}
+
+	public boolean isVanished() {
+		Player player = this.getOnlinePlayer();
+		return player != null && player.getMetadata("vanished").stream().anyMatch(MetadataValue::asBoolean);
+	}
+
+	public boolean kickPlayer(@NotNull String title, @NotNull String reason) {
+		Player player = this.getOnlinePlayer();
+		if (
+				player == null
+				|| !player.isOnline()
+				|| player.getPlayer() == null
+		) return false;
+		this.setLastLeaveLocation();
+		this.playerFile.setGameMode(player.getGameMode());
+		this.playerFile.setHealth(player.getHealth());
+		this.playerFile.setAir(player.getRemainingAir());
+		this.playerFile.save();
+		player.kick(
+				Component.empty()
+				.append(Component.text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
+				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+				.append(Component.text("\nПричина :\n\"")
+				.append(Component.text(reason)
+				.append(Component.text("\"")))
+				.color(NamedTextColor.GRAY))
+				.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+		);
+		return true;
+	}
+
+	public void setSitting(@Nullable Location sitLocation, String @Nullable ... args) {
+		Player player = this.getOnlinePlayer();
+		if (
+				player == null
+				|| (player.getVehicle() != null
+				&& player.getVehicle().getType() != EntityType.ARMOR_STAND)
+		) return;
+		if (
+				!getConfigCache().seats.containsKey(player)
+				&& sitLocation != null
+		) {
+			player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.95d, 0.0d), ArmorStand.class, (armorStand) -> {
+				armorStand.setGravity(false);
+				armorStand.setVisible(false);
+				armorStand.setCollidable(false);
+				armorStand.setSmall(true);
+				armorStand.addPassenger(player);
+				armorStand.addScoreboardTag("customDecor");
+				getConfigCache().seats.put(player, armorStand);
+			});
+			if (args == null) {
+				sendRPEventMessage(player, Component.text(this.playerFile.getPronouns().getSitMessage()), ME);
+			} else {
+				sendRPEventMessage(player, Component.text(extractMessage(args, 0)), Component.text("приседая"), TODO);
+			}
+		} else if (sitLocation == null && getConfigCache().seats.containsKey(player)) {
+			ArmorStand armorStand = getConfigCache().seats.remove(player);
+			Location playerLoc = player.getLocation();
+			Location getUpLocation = armorStand.getLocation().add(0.0d, 1.7d, 0.0d);
+
+			getUpLocation.setYaw(playerLoc.getYaw());
+			getUpLocation.setPitch(playerLoc.getPitch());
+			armorStand.remove();
+			player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
+			sendRPEventMessage(player, Component.text(this.playerFile.getPronouns().getUnSitMessage()), ME);
+		}
+	}
+
+	public void unsetSitting(String @Nullable ... args) {
+		this.setSitting(null, args);
+	}
+
+	public boolean setWhiteListed(boolean value) {
+		if (value) {
+			if (Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer)) return false;
+			this.offlinePlayer.setWhitelisted(true);
+		} else {
+			if (!Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer)) return false;
+			this.offlinePlayer.setWhitelisted(false);
+			this.kickPlayer("Вы были кикнуты", "Вас удалили из белого списка");
+		}
+		return true;
+	}
+
+	public @Nullable Player loadPlayerData() {
+		return PlayerUtils.loadPlayer(this.offlinePlayer);
 	}
 
 	public @NotNull UUID getUuid() {

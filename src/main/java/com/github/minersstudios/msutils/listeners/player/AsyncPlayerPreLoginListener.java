@@ -2,10 +2,11 @@ package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -29,9 +30,9 @@ public class AsyncPlayerPreLoginListener implements Listener {
 	public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
 		String hostAddress = event.getAddress().getHostAddress();
 		String nickname = event.getName();
-		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(event.getUniqueId());
-		PlayerInfo playerInfo = new PlayerInfo(event.getUniqueId(), nickname);
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(event.getUniqueId(), nickname);
 		PlayerFile playerFile = playerInfo.getPlayerFile();
+		OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
 
 		if (
 				playerFile.exists()
@@ -54,7 +55,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
 			playerInfo.setBanned(false);
 		}
 
-		if (MSUtils.getConfigCache().developerMode && !Bukkit.getOfflinePlayer(event.getUniqueId()).isOp()) {
+		if (MSUtils.getConfigCache().developerMode && !offlinePlayer.isOp()) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
 					Component.empty()
 					.append(Component.text("Вы были кикнуты", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
@@ -82,7 +83,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
 					.append(Component.text("\nПричина :\n\""))
 					.append(Component.text(playerInfo.getBanReason()))
 					.append(Component.text("\"\nДо :\n"))
-					.append(Component.text(PlayerUtils.getDate(Date.from(Instant.ofEpochMilli(playerInfo.getBannedTo())), event.getAddress())))
+					.append(Component.text(DateUtils.getDate(Date.from(Instant.ofEpochMilli(playerInfo.getBannedTo())), event.getAddress())))
 					.color(NamedTextColor.GRAY)
 					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
 			);

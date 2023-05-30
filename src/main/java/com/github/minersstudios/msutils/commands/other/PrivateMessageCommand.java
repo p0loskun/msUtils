@@ -3,11 +3,12 @@ package com.github.minersstudios.msutils.commands.other;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.player.PlayerID;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllLocalPlayers;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.IDUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.github.minersstudios.msutils.utils.ChatUtils.sendPrivateMessage;
+import static com.github.minersstudios.msutils.utils.MessageUtils.sendPrivateMessage;
 
 @MSCommand(
 		command = "privatemessage",
@@ -32,7 +33,7 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (args.length < 2) return false;
 		PlayerInfo senderInfo = sender instanceof Player player
-				? new PlayerInfo(player.getUniqueId())
+				? MSPlayerUtils.getPlayerInfo(player)
 				: MSUtils.CONSOLE_PLAYER_INFO;
 		if (senderInfo.isMuted()) {
 			ChatUtils.sendWarning(sender, Component.text("Вы замьючены"));
@@ -40,16 +41,17 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 		}
 		String message = ChatUtils.extractMessage(args, 1);
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
 			if (!(offlinePlayer instanceof Player player)) {
 				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 				return true;
 			}
-			if (!PlayerUtils.isOnline(player)) {
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+			if (!playerInfo.isOnline()) {
 				ChatUtils.sendWarning(sender, Component.text("Данный игрок не в сети"));
 				return true;
 			}
-			return sendPrivateMessage(senderInfo, new PlayerInfo(player.getUniqueId()), Component.text(message));
+			return sendPrivateMessage(senderInfo, playerInfo, Component.text(message));
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
@@ -57,11 +59,12 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
 				return true;
 			}
-			if (!PlayerUtils.isOnline(player)) {
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+			if (!playerInfo.isOnline()) {
 				ChatUtils.sendWarning(sender, Component.text("Данный игрок не в сети"));
 				return true;
 			}
-			return sendPrivateMessage(senderInfo, new PlayerInfo(player.getUniqueId()), Component.text(message));
+			return sendPrivateMessage(senderInfo, playerInfo, Component.text(message));
 		}
 		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
 		return true;

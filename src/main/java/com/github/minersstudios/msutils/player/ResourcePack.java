@@ -5,7 +5,7 @@ import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -191,7 +191,7 @@ public class ResourcePack {
 				|| Type.LITE.getUrl() == null
 				|| Type.LITE.getHash() == null
 		) {
-			PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Сервер ещё не запущен");
+			playerInfo.kickPlayer("Вы были кикнуты", "Сервер ещё не запущен");
 			return;
 		}
 		if (playerSettings.getResourcePackType() != null) {
@@ -303,11 +303,11 @@ public class ResourcePack {
 
 			InventoryButton noneButton = new InventoryButton(none, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
-				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 				PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 				if (playerSettings.getResourcePackType() != null && playerSettings.getResourcePackType() != Type.NONE) {
 					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () ->
-							PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Этот параметр требует повторного захода на сервер")
+							playerInfo.kickPlayer("Вы были кикнуты", "Этот параметр требует повторного захода на сервер")
 					);
 				}
 				playerSettings.setResourcePackType(Type.NONE);
@@ -323,13 +323,13 @@ public class ResourcePack {
 
 			InventoryButton fullButton = new InventoryButton(full, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
-				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 				PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 				if (
 						Type.FULL.getUrl() == null
 						|| Type.FULL.getHash() == null
 				) {
-					PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Сервер ещё не запущен");
+					playerInfo.kickPlayer("Вы были кикнуты", "Сервер ещё не запущен");
 					return;
 				}
 				player.closeInventory();
@@ -345,13 +345,13 @@ public class ResourcePack {
 
 			InventoryButton liteButton = new InventoryButton(lite, (event, inventory, button) -> {
 				Player player = (Player) event.getWhoClicked();
-				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 				PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 				if (
 						Type.LITE.getUrl() == null
 						|| Type.LITE.getHash() == null
 				) {
-					PlayerUtils.kickPlayer(player, "Вы были кикнуты", "Сервер ещё не запущен");
+					playerInfo.kickPlayer("Вы были кикнуты", "Сервер ещё не запущен");
 					return;
 				}
 				player.closeInventory();
@@ -367,7 +367,7 @@ public class ResourcePack {
 
 			customInventory.setCloseAction(((event, inventory) -> {
 				Player player = (Player) event.getPlayer();
-				PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 				if (playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType() == null) {
 					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(inventory));
 				}

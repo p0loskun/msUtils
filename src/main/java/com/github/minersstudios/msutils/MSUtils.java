@@ -7,13 +7,13 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msutils.anomalies.tasks.ParticleTask;
-import com.github.minersstudios.msutils.listeners.chat.DiscordGuildMessagePreProcessListener;
 import com.github.minersstudios.msutils.inventory.CraftsMenu;
+import com.github.minersstudios.msutils.listeners.chat.DiscordGuildMessagePreProcessListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.Pronouns;
 import com.github.minersstudios.msutils.player.ResourcePack;
 import com.github.minersstudios.msutils.utils.ConfigCache;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.text.Component;
@@ -76,14 +76,14 @@ public final class MSUtils extends MSPlugin {
 			if (configCache.mutedPlayers.isEmpty()) return;
 			configCache.mutedPlayers.keySet().stream()
 					.filter((player) -> configCache.mutedPlayers.get(player) - System.currentTimeMillis() < 0)
-					.forEach((player) -> new PlayerInfo(player.getUniqueId()).setMuted(false, null));
+					.forEach((player) -> MSPlayerUtils.getPlayerInfo(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null));
 		}, 0L, 50L);
 	}
 
 	@Override
 	public void disable() {
 		for (Player player : configCache.seats.keySet()) {
-			PlayerUtils.setSitting(player, null, null);
+			MSPlayerUtils.getPlayerInfo(player).unsetSitting();
 			Entity vehicle = player.getVehicle();
 			if (vehicle != null) {
 				vehicle.eject();
@@ -91,7 +91,7 @@ public final class MSUtils extends MSPlugin {
 		}
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			PlayerUtils.kickPlayer(player, "Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
+			MSPlayerUtils.getPlayerInfo(player).kickPlayer("Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
 		}
 	}
 

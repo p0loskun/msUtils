@@ -3,11 +3,12 @@ package com.github.minersstudios.msutils.commands.mute;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.player.PlayerFile;
-import com.github.minersstudios.msutils.player.PlayerID;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.IDUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -31,12 +32,12 @@ public class UnMuteCommand implements MSCommandExecutor {
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (args.length == 0) return false;
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-			if (offlinePlayer == null) {
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
+			if (offlinePlayer == null || offlinePlayer.getName() == null) {
 				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 				return true;
 			}
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 			PlayerFile playerFile = playerInfo.getPlayerFile();
 			if (!playerFile.isMuted()) {
 				ChatUtils.sendWarning(sender,
@@ -55,7 +56,7 @@ public class UnMuteCommand implements MSCommandExecutor {
 				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
 				return true;
 			}
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			PlayerFile playerFile = playerInfo.getPlayerFile();
 			if (!playerFile.isMuted()) {
 				ChatUtils.sendWarning(sender,

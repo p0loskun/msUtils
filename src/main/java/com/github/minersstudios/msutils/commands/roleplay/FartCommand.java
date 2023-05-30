@@ -6,7 +6,7 @@ import com.github.minersstudios.mscore.utils.BlockUtils;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.security.SecureRandom;
 
-import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.ME;
-import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.TODO;
-import static com.github.minersstudios.msutils.utils.ChatUtils.sendRPEventMessage;
+import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.ME;
+import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.TODO;
+import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMessage;
 
 @MSCommand(
 		command = "fart",
@@ -37,8 +37,8 @@ public class FartCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 			return true;
 		}
-		if (!PlayerUtils.isOnline(player)) return true;
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+		if (!playerInfo.isOnline()) return true;
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 			return true;

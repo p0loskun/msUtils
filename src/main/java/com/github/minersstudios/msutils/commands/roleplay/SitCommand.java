@@ -4,7 +4,8 @@ import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,12 +26,13 @@ public class SitCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 			return true;
 		}
-		if (!PlayerUtils.isOnline(player)) return true;
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+		if (!playerInfo.isOnline()) return true;
 		if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
 			ChatUtils.sendWarning(player, Component.text("Сидеть в воздухе нельзя!"));
 			return true;
 		}
-		PlayerUtils.setSitting(player, MSUtils.getConfigCache().seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
+		playerInfo.setSitting(MSUtils.getConfigCache().seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
 		return true;
 	}
 }

@@ -4,10 +4,11 @@ import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.CommandUtils;
-import com.github.minersstudios.msutils.player.PlayerID;
+import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.IDUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -36,12 +37,12 @@ public class BanCommand implements MSCommandExecutor {
 				? ChatUtils.extractMessage(args, 2)
 				: "неизвестно";
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = new PlayerID().getPlayerByID(Integer.parseInt(args[0]));
-			if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
+			if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
 				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
 				return true;
 			}
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId());
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 			if (playerInfo.isBanned()) {
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")
@@ -59,7 +60,7 @@ public class BanCommand implements MSCommandExecutor {
 				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
 				return true;
 			}
-			PlayerInfo playerInfo = new PlayerInfo(offlinePlayer.getUniqueId(), args[0]);
+			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			if (playerInfo.isBanned()) {
 				ChatUtils.sendWarning(sender,
 						Component.text("Игрок : \"")

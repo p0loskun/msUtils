@@ -4,15 +4,15 @@ import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.IT;
-import static com.github.minersstudios.msutils.utils.ChatUtils.sendRPEventMessage;
+import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.IT;
+import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMessage;
 
 @MSCommand(
 		command = "it",
@@ -27,9 +27,9 @@ public class ItCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
 			return true;
 		}
-		if (!PlayerUtils.isOnline(player)) return true;
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+		if (!playerInfo.isOnline()) return true;
 		if (args.length == 0) return false;
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 			return true;

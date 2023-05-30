@@ -4,7 +4,7 @@ import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.PlayerUtils;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -16,9 +16,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.ME;
-import static com.github.minersstudios.msutils.utils.ChatUtils.RolePlayActionType.TODO;
-import static com.github.minersstudios.msutils.utils.ChatUtils.sendRPEventMessage;
+import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.ME;
+import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.TODO;
+import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMessage;
 
 @MSCommand(
 		command = "spit",
@@ -35,8 +35,8 @@ public class SpitCommand implements MSCommandExecutor {
 		}
 		World world = player.getWorld();
 		Location location = player.getLocation();
-		if (!PlayerUtils.isOnline(player)) return true;
-		PlayerInfo playerInfo = new PlayerInfo(player.getUniqueId());
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+		if (!playerInfo.isOnline()) return true;
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
 			return true;

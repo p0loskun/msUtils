@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.utils.ChatUtils;
+import com.github.minersstudios.msutils.utils.MessageUtils;
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -36,7 +36,7 @@ public class RegistrationProcess {
 		if (this.player == null) return;
 		this.playerLocation = this.player.getLocation();
 		this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, SoundCategory.MUSIC, 0.15f, 1.25f);
-		playerInfo.createPlayerDataFile();
+		playerInfo.createPlayerFile();
 
 		this.sendDialogueMessage("Оу...", 100L);
 		this.sendDialogueMessage("Крайне странное местечко", 150L);
@@ -147,9 +147,9 @@ public class RegistrationProcess {
 			this.player.sendMessage(
 					Component.space()
 					.append(Component.text(" [0] Незнакомец : ")
-					.color(ChatUtils.Colors.CHAT_COLOR_PRIMARY))
+					.color(MessageUtils.Colors.CHAT_COLOR_PRIMARY))
 					.append(Component.text(message))
-					.color(ChatUtils.Colors.CHAT_COLOR_SECONDARY)
+					.color(MessageUtils.Colors.CHAT_COLOR_SECONDARY)
 			);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 0.5f, 1.5f);
 		}, delay);
