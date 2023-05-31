@@ -3,7 +3,6 @@ package com.github.minersstudios.msutils.commands.other;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -15,6 +14,8 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
+
+import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "getmaplocation",
@@ -29,33 +30,33 @@ public class GetMapLocationCommand implements MSCommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
 		if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof MapMeta mapMeta)) {
-			ChatUtils.sendWarning(player, Component.text("Возьмите в правую руку карту!"));
+			ChatUtils.sendWarning(player, "Возьмите карту в правую руку!");
 			return true;
 		}
 		MapView mapView = mapMeta.getMapView();
 		if (mapView == null || mapView.getWorld() == null) {
-			ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+			ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 			return true;
 		}
 		int x = mapView.getCenterX();
 		int z = mapView.getCenterZ();
 		int y = mapView.getWorld().getHighestBlockYAt(x, z) + 1;
 		ChatUtils.sendWarning(player,
-				Component.text("Мир карты : ")
-				.append(Component.text(mapView.getWorld().getName(), NamedTextColor.WHITE))
-				.append(Component.text("\n ꀓ ", NamedTextColor.WHITE))
-				.append(Component.text("Координаты точки центра карты : ", NamedTextColor.GOLD))
-				.append(Component.text("\n   - X : ", NamedTextColor.GREEN))
-				.append(Component.text(x, NamedTextColor.WHITE))
-				.append(Component.text("\n   - Y : ", NamedTextColor.GREEN))
-				.append(Component.text(y, NamedTextColor.WHITE))
-				.append(Component.text("\n   - Z : ", NamedTextColor.GREEN))
-				.append(Component.text(z, NamedTextColor.WHITE))
-				.append(Component.text("\n\n  Телепортироваться - ЖМЯК\n", Style.style(TextDecoration.BOLD))
+				text("Мир карты : ")
+				.append(text(mapView.getWorld().getName(), NamedTextColor.WHITE))
+				.append(text("\n ꀓ ", NamedTextColor.WHITE))
+				.append(text("Координаты точки центра карты : ", NamedTextColor.GOLD))
+				.append(text("\n   - X : ", NamedTextColor.GREEN))
+				.append(text(x, NamedTextColor.WHITE))
+				.append(text("\n   - Y : ", NamedTextColor.GREEN))
+				.append(text(y, NamedTextColor.WHITE))
+				.append(text("\n   - Z : ", NamedTextColor.GREEN))
+				.append(text(z, NamedTextColor.WHITE))
+				.append(text("\n\n  Телепортироваться - ЖМЯК\n", Style.style(TextDecoration.BOLD))
 						.clickEvent(ClickEvent.runCommand(
 								"/tp " + x + " " + y + " " + z
 						))

@@ -1,6 +1,7 @@
 package com.github.minersstudios.msutils.utils;
 
 import com.github.minersstudios.mscore.utils.Badges;
+import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -60,7 +61,7 @@ public final class MessageUtils {
 					(player) -> player.sendMessage(localMessage)
 			);
 			sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), stringLocalMessage);
-			Bukkit.getLogger().info(stringLocalMessage);
+			ChatUtils.sendInfo(stringLocalMessage);
 			return;
 		}
 		Component globalMessage = space()
@@ -80,7 +81,7 @@ public final class MessageUtils {
 		}
 		sendMessage(getTextChannelById(getConfigCache().discordGlobalChannelId), stringGlobalMessage.replaceFirst("\\[WM]", ""));
 		sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), stringGlobalMessage);
-		Bukkit.getLogger().info(stringGlobalMessage);
+		ChatUtils.sendInfo(stringGlobalMessage);
 	}
 
 	/**
@@ -93,7 +94,7 @@ public final class MessageUtils {
 	 */
 	public static boolean sendPrivateMessage(@NotNull PlayerInfo sender, @NotNull PlayerInfo receiver, @NotNull Component message) {
 		CommandSender commandSender =
-				sender == MSUtils.CONSOLE_PLAYER_INFO
+				sender == MSUtils.consolePlayerInfo
 				? Bukkit.getConsoleSender()
 				: sender.getOnlinePlayer();
 		if (commandSender != null && receiver.getOnlinePlayer() != null) {
@@ -124,7 +125,7 @@ public final class MessageUtils {
 					.append(message.color(CHAT_COLOR_SECONDARY))
 			);
 			sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), privateMessage);
-			sendInfo(null, text(privateMessage));
+			sendInfo(privateMessage);
 			return true;
 		}
 		return false;
@@ -181,7 +182,7 @@ public final class MessageUtils {
 				(p) -> p.sendMessage(Badges.YELLOW_EXCLAMATION_MARK.append(fullMessage))
 		);
 		sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), serializeLegacyComponent(fullMessage));
-		Bukkit.getLogger().info(serializeLegacyComponent(fullMessage));
+		ChatUtils.sendInfo(serializeLegacyComponent(fullMessage));
 	}
 
 	public static void sendRPEventMessage(@NotNull Player player, @NotNull Component action, @NotNull RolePlayActionType rolePlayActionType) {
@@ -223,11 +224,10 @@ public final class MessageUtils {
 			sendActionMessage(killed, getTextChannelById(getConfigCache().discordGlobalChannelId), stringDeathMessage, 16757024);
 			sendActionMessage(killed, getTextChannelById(getConfigCache().discordLocalChannelId), stringDeathMessage, 16757024);
 		});
-		Bukkit.getLogger().info(stringDeathMessage);
+		ChatUtils.sendInfo(stringDeathMessage);
 
 		Location deathLocation = killed.getLocation();
-		sendInfo(null,
-				text("Мир и координаты смерти игрока : \"")
+		sendInfo(text("Мир и координаты смерти игрока : \"")
 				.append(killedInfo.createDefaultName())
 				.append(text(" ("))
 				.append(text(killed.getName()))
@@ -267,7 +267,7 @@ public final class MessageUtils {
 			MessageUtils.sendActionMessage(player, getTextChannelById(getConfigCache().discordGlobalChannelId), stringJoinMessage, 65280);
 			MessageUtils.sendActionMessage(player, getTextChannelById(getConfigCache().discordLocalChannelId), stringJoinMessage, 65280);
 		});
-		Bukkit.getLogger().info(stringJoinMessage);
+		ChatUtils.sendInfo(stringJoinMessage);
 	}
 
 	/**
@@ -295,7 +295,7 @@ public final class MessageUtils {
 			MessageUtils.sendActionMessage(player, getTextChannelById(getConfigCache().discordGlobalChannelId), stringQuitMessage, 16711680);
 			MessageUtils.sendActionMessage(player, getTextChannelById(getConfigCache().discordLocalChannelId), stringQuitMessage, 16711680);
 		});
-		Bukkit.getLogger().info(stringQuitMessage);
+		ChatUtils.sendInfo(stringQuitMessage);
 	}
 
 	private static void sendActionMessage(@NotNull Player player, TextChannel textChannel, @NotNull String actionMessage, int colorRaw) {

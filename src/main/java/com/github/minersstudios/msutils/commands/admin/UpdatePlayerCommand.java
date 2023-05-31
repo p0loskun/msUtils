@@ -8,7 +8,6 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -33,26 +32,26 @@ public class UpdatePlayerCommand implements MSCommandExecutor {
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null || offlinePlayer.getName() == null) {
-				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 			playerInfo.update();
-			ChatUtils.sendFine(sender, Component.text("Данные игрока были успешно обновлены"));
+			ChatUtils.sendFine(sender, "Данные игрока были успешно обновлены");
 			return true;
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 				return true;
 			}
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			playerInfo.update();
-			ChatUtils.sendFine(sender, Component.text("Данные игрока были успешно обновлены"));
+			ChatUtils.sendFine(sender, "Данные игрока были успешно обновлены");
 			return true;
 		}
-		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
 

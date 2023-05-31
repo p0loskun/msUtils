@@ -28,25 +28,26 @@ import static com.github.minersstudios.msutils.MSUtils.getInstance;
 public final class ConfigCache {
 	public final @NotNull File configFile;
 	public final @NotNull YamlConfiguration configYaml;
-	public final long anomalyCheckRate;
-	public final long anomalyParticlesCheckRate;
-
-	public final boolean developerMode;
 
 	public final @NotNull File idsFile;
 	public final @NotNull YamlConfiguration idsYaml;
-	public final Map<UUID, Integer> idMap = new HashMap<>();
-
-	public final Map<UUID, PlayerInfo> playerInfoMap = new HashMap<>();
 
 	public final @NotNull File mutedPlayersFile;
 	public final @NotNull YamlConfiguration mutedPlayersYaml;
 
+	public final Map<UUID, PlayerInfo> playerInfoMap = new HashMap<>();
+	public final Map<UUID, Integer> idMap = new HashMap<>();
 	public final Map<OfflinePlayer, Long> mutedPlayers = new HashMap<>();
-
 	public final Map<Player, ArmorStand> seats = new HashMap<>();
 	public final Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();
 	public final Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap = new ConcurrentHashMap<>();
+
+	public final List<BukkitTask> bukkitTasks = new ArrayList<>();
+
+	public final long anomalyCheckRate;
+	public final long anomalyParticlesCheckRate;
+
+	public final boolean developerMode;
 
 	public final String
 			discordGlobalChannelId,
@@ -60,8 +61,6 @@ public final class ConfigCache {
 			liteFileName,
 			liteHash;
 	public final double localChatRadius;
-
-	public final List<BukkitTask> bukkitTasks = new ArrayList<>();
 
 	public ConfigCache() {
 		this.configFile = getInstance().getConfigFile();

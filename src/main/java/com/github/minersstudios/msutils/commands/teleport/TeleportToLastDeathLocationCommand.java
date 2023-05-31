@@ -8,7 +8,6 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "teleporttolastdeathlocation",
@@ -36,7 +37,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
 			teleportToLastDeathLocation(sender, offlinePlayer);
@@ -45,13 +46,13 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 				return true;
 			}
 			teleportToLastDeathLocation(sender, offlinePlayer);
 			return true;
 		}
-		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
 
@@ -62,38 +63,38 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 
 	private static void teleportToLastDeathLocation(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer) {
 		if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
-			ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
+			ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
 			return;
 		}
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
-		Location lastDeathLocation = offlinePlayer.getLastDeathLocation();
+		Location lastDeathLocation = playerInfo.getPlayerFile().getLastDeathLocation();
 		if (offlinePlayer.getPlayer() == null) {
 			ChatUtils.sendWarning(sender,
-					Component.text("Игрок : \"")
+					text("Игрок : \"")
 					.append(playerInfo.createGrayIDGreenName())
-					.append(Component.text(" ("))
-					.append(Component.text(offlinePlayer.getName()))
-					.append(Component.text(")\" не в сети!"))
+					.append(text(" ("))
+					.append(text(offlinePlayer.getName()))
+					.append(text(")\" не в сети!"))
 			);
 			return;
 		}
 		if (lastDeathLocation == null) {
 			ChatUtils.sendWarning(sender,
-					Component.text("Игрок : \"")
+					text("Игрок : \"")
 					.append(playerInfo.createGrayIDGreenName())
-					.append(Component.text(" ("))
-					.append(Component.text(offlinePlayer.getName()))
-					.append(Component.text(")\" не имеет последней точки смерти!"))
+					.append(text(" ("))
+					.append(text(offlinePlayer.getName()))
+					.append(text(")\" не имеет последней точки смерти!"))
 			);
 			return;
 		}
 		offlinePlayer.getPlayer().teleportAsync(lastDeathLocation.add(0.5d, 0.0d, 0.5d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendFine(sender,
-				Component.text("Игрок : \"")
+				text("Игрок : \"")
 				.append(playerInfo.createGrayIDGreenName())
-				.append(Component.text(" ("))
-				.append(Component.text(offlinePlayer.getName()))
-				.append(Component.text(")\" был телепортирован на последние координаты смерти"))
+				.append(text(" ("))
+				.append(text(offlinePlayer.getName()))
+				.append(text(")\" был телепортирован на последние координаты смерти"))
 		);
 	}
 }

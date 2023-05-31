@@ -1,21 +1,18 @@
 package com.github.minersstudios.msutils.listeners.player;
 
+import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
 import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
-public class PlayerInteractListener implements Listener {
+public class PlayerStopSpectatingEntityListener implements Listener {
 
 	@EventHandler
-	public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-
-		if (player.getWorld() == MSUtils.getWorldDark()) {
+	public void onPlayerStopSpectatingEntity(@NotNull PlayerStopSpectatingEntityEvent event) {
+		if (event.getPlayer().getWorld() == MSUtils.getWorldDark()) {
 			event.setCancelled(true);
 		}
 	}

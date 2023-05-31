@@ -1,8 +1,10 @@
 package com.github.minersstudios.msutils.utils;
 
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -31,5 +33,12 @@ public final class MSPlayerUtils {
 			getConfigCache().playerInfoMap.put(uuid, playerInfo);
 		}
 		return playerInfo;
+	}
+
+	public static boolean hideNameTag(@Nullable Player player) {
+		if (player == null) return false;
+		MSUtils.scoreboardHideTagsTeam.addEntry(player.getName());
+		player.setScoreboard(MSUtils.scoreboardHideTags);
+		return true;
 	}
 }

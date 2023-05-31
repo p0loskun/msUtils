@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
 import static com.github.minersstudios.msutils.utils.MessageUtils.Colors.*;
+import static net.kyori.adventure.text.Component.text;
 
 @SuppressWarnings("unused")
 public class PlayerName {
@@ -44,35 +45,35 @@ public class PlayerName {
 		);
 	}
 
-	public @NotNull Component createComponent(
+	public @NotNull Component createName(
 			int id,
 			@Nullable TextColor first,
 			@Nullable TextColor second
 	) {
-		return Component.text("[")
-				.append(Component.text(id)
-				.append(Component.text("] ")))
+		return text("[")
+				.append(text(id)
+				.append(text("] ")))
 				.color(first)
-				.append(Component.text(this.getFirstName())
+				.append(text(this.getFirstName())
 				.append(this.getLastName().isEmpty() ? Component.empty() : Component.space()
-				.append(Component.text(this.getLastName())))
+				.append(text(this.getLastName())))
 				.color(second));
 	}
 
 	public @NotNull Component createDefaultName(int id) {
-		return this.createComponent(id, null, null);
+		return this.createName(id, null, null);
 	}
 
 	public @NotNull Component createGoldenName(int id) {
-		return this.createComponent(id, JOIN_MESSAGE_COLOR_SECONDARY, JOIN_MESSAGE_COLOR_PRIMARY);
+		return this.createName(id, JOIN_MESSAGE_COLOR_SECONDARY, JOIN_MESSAGE_COLOR_PRIMARY);
 	}
 
 	public @NotNull Component createGrayIDGoldName(int id) {
-		return this.createComponent(id, NamedTextColor.GRAY, RP_MESSAGE_MESSAGE_COLOR_PRIMARY);
+		return this.createName(id, NamedTextColor.GRAY, RP_MESSAGE_MESSAGE_COLOR_PRIMARY);
 	}
 
 	public @NotNull Component createGrayIDGreenName(int id) {
-		return this.createComponent(id, NamedTextColor.GRAY, NamedTextColor.GREEN);
+		return this.createName(id, NamedTextColor.GRAY, NamedTextColor.GREEN);
 	}
 
 	public @NotNull String getNickname() {

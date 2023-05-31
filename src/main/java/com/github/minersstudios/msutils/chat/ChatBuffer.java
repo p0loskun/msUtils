@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static net.kyori.adventure.text.Component.space;
+import static net.kyori.adventure.text.Component.text;
+
 public class ChatBuffer {
 	private static final Map<String, Queue<String>> CHAT_QUEUE = new HashMap<>();
 
@@ -87,8 +90,8 @@ public class ChatBuffer {
 		return spawnPoint.getWorld().spawn(spawnPoint, AreaEffectCloud.class, (entity) -> {
 			entity.customName(
 					(firstLine ? Badges.SPEECH : Component.empty())
-					.append(Component.text(text))
-					.append(Component.space())
+					.append(text(text))
+					.append(space())
 					.color(NamedTextColor.WHITE)
 			);
 			entity.setParticle(Particle.TOWN_AURA);

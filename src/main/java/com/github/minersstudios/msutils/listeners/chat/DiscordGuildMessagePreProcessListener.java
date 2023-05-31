@@ -16,6 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static net.kyori.adventure.text.Component.text;
+
 public class DiscordGuildMessagePreProcessListener {
 
 	@Subscribe
@@ -32,18 +34,18 @@ public class DiscordGuildMessagePreProcessListener {
 		Component messageComponent =
 				Badges.DISCORD
 				.color(NamedTextColor.WHITE)
-				.append(Component.text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
-				.append(Component.text(reply, TextColor.color(152, 162, 249)))
-				.append(Component.text(" : ", TextColor.color(112, 125, 223)))
-				.append(Component.text(attachment, TextColor.color(165, 165, 255)))
-				.append(Component.text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
+				.append(text(message.getAuthor().getName(), TextColor.color(112, 125, 223)))
+				.append(text(reply, TextColor.color(152, 162, 249)))
+				.append(text(" : ", TextColor.color(112, 125, 223)))
+				.append(text(attachment, TextColor.color(165, 165, 255)))
+				.append(text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
 
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.getWorld() != MSUtils.getWorldDark()) {
 				player.sendMessage(messageComponent);
 			}
 		}
-		Bukkit.getLogger().info(ChatUtils.serializeLegacyComponent(messageComponent).substring(2));
+		ChatUtils.sendInfo(ChatUtils.serializeLegacyComponent(messageComponent).substring(2));
 	}
 
 	private static @NotNull String replaceReplyPlaceholders(@NotNull String format, @NotNull Message repliedMessage) {

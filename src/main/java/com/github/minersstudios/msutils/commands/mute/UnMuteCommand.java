@@ -9,7 +9,6 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "unmute",
@@ -34,16 +35,16 @@ public class UnMuteCommand implements MSCommandExecutor {
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null || offlinePlayer.getName() == null) {
-				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 			PlayerFile playerFile = playerInfo.getPlayerFile();
 			if (!playerFile.isMuted()) {
 				ChatUtils.sendWarning(sender,
-						Component.text("Игрок : \"")
+						text("Игрок : \"")
 						.append(playerInfo.createGrayIDGoldName())
-						.append(Component.text("\" не замьючен"))
+						.append(text("\" не замьючен"))
 				);
 				return true;
 			}
@@ -53,25 +54,25 @@ public class UnMuteCommand implements MSCommandExecutor {
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 				return true;
 			}
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 			PlayerFile playerFile = playerInfo.getPlayerFile();
 			if (!playerFile.isMuted()) {
 				ChatUtils.sendWarning(sender,
-						Component.text("Игрок : \"")
+						text("Игрок : \"")
 						.append(playerInfo.createGrayIDGoldName())
-						.append(Component.text(" ("))
-						.append(Component.text(args[0]))
-						.append(Component.text(")\" не замьючен"))
+						.append(text(" ("))
+						.append(text(args[0]))
+						.append(text(")\" не замьючен"))
 				);
 				return true;
 			}
 			playerInfo.setMuted(false, sender);
 			return true;
 		}
-		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
 

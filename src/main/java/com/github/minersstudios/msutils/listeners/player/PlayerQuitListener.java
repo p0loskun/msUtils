@@ -2,7 +2,6 @@ package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
@@ -20,7 +19,6 @@ public class PlayerQuitListener implements Listener {
 	public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-		PlayerFile playerFile = playerInfo.getPlayerFile();
 
 		event.quitMessage(null);
 
@@ -31,12 +29,8 @@ public class PlayerQuitListener implements Listener {
 
 		playerInfo.unsetSitting();
 		MSUtils.getConfigCache().playerAnomalyActionMap.remove(player);
+		playerInfo.savePlayerDataParams();
 		if (player.getWorld() != MSUtils.getWorldDark()) {
-			playerInfo.setLastLeaveLocation();
-			playerFile.setGameMode(player.getGameMode());
-			playerFile.setHealth(player.getHealth());
-			playerFile.setAir(player.getRemainingAir());
-			playerFile.save();
 			MessageUtils.sendQuitMessage(playerInfo, player);
 		}
 	}

@@ -4,7 +4,6 @@ import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -20,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static net.kyori.adventure.text.Component.*;
+
 @MSListener
 public class PlayerInteractEntityListener implements Listener {
 
@@ -27,13 +28,21 @@ public class PlayerInteractEntityListener implements Listener {
 	public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
 		Player playerWhoClicked = event.getPlayer();
 		if (event.getRightClicked() instanceof Player clickedPlayer) {
+			float pitch = playerWhoClicked.getEyeLocation().getPitch();
+			if (
+					(pitch >= 80 && pitch <= 90)
+					&& playerWhoClicked.isSneaking()
+					&& !playerWhoClicked.getPassengers().isEmpty()
+			) {
+				playerWhoClicked.eject();
+			}
+
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(clickedPlayer);
 			playerWhoClicked.sendActionBar(
-					Component.empty()
+					empty()
 					.append(playerInfo.createGoldenName())
-					.append(Component.space())
-					.append(Component.text(playerInfo.getPlayerFile().getPlayerName().getPatronymic()))
-					.color(MessageUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY)
+					.append(space())
+					.append(text(playerInfo.getPlayerFile().getPlayerName().getPatronymic(), MessageUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY))
 			);
 			ItemStack helmet = clickedPlayer.getInventory().getHelmet();
 			if (

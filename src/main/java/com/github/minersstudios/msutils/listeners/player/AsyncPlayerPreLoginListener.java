@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Instant;
 import java.util.Date;
 
+import static net.kyori.adventure.text.Component.text;
+
 @MSListener
 public class AsyncPlayerPreLoginListener implements Listener {
 
@@ -38,11 +40,11 @@ public class AsyncPlayerPreLoginListener implements Listener {
 				playerFile.exists()
 				&& !playerFile.getIpList().contains(hostAddress)
 		) {
-			ChatUtils.sendWarning(null,
-					Component.text("Игроку : \"")
+			ChatUtils.sendWarning(
+					text("Игроку : \"")
 					.append(playerInfo.createGrayIDGoldName())
-					.append(Component.text("\" был добавлен новый айпи адрес : "))
-					.append(Component.text(hostAddress))
+					.append(text("\" был добавлен новый айпи адрес : "))
+					.append(text(hostAddress))
 			);
 			playerFile.addIp(hostAddress);
 			playerFile.save();
@@ -58,34 +60,34 @@ public class AsyncPlayerPreLoginListener implements Listener {
 		if (MSUtils.getConfigCache().developerMode && !offlinePlayer.isOp()) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
 					Component.empty()
-					.append(Component.text("Вы были кикнуты", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
-					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-					.append(Component.text("\n\nПроводятся тех-работы\nВ скором времени вы сможете зайти\n\nhttps:\\\\whomine.net\\discord\n", NamedTextColor.GRAY))
-					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+					.append(text("Вы были кикнуты", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
+					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+					.append(text("\n\nПроводятся тех-работы\nВ скором времени вы сможете зайти\n\nhttps:\\\\whomine.net\\discord\n", NamedTextColor.GRAY))
+					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
 			);
 		}
 
 		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
 					Component.empty()
-					.append(Component.text("Вас нету в вайт-листе!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
-					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-					.append(Component.text("\n\nПохоже, вы ещё нам неизвестны\nПожалуйста, обратитесь к администрации\n\nhttps:\\\\whomine.net\\discord\n", NamedTextColor.GRAY))
-					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+					.append(text("Вас нету в вайт-листе!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
+					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+					.append(text("\n\nПохоже, вы ещё нам неизвестны\nПожалуйста, обратитесь к администрации\n\nhttps:\\\\whomine.net\\discord\n", NamedTextColor.GRAY))
+					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
 			);
 		}
 
 		if (Bukkit.getBannedPlayers().contains(offlinePlayer)) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
 					Component.empty()
-					.append(Component.text("Вы всё ещё забанены!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
-					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-					.append(Component.text("\nПричина :\n\""))
-					.append(Component.text(playerInfo.getBanReason()))
-					.append(Component.text("\"\nДо :\n"))
-					.append(Component.text(DateUtils.getDate(Date.from(Instant.ofEpochMilli(playerInfo.getBannedTo())), event.getAddress())))
+					.append(text("Вы всё ещё забанены!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
+					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+					.append(text("\nПричина :\n\""))
+					.append(text(playerInfo.getBanReason()))
+					.append(text("\"\nДо :\n"))
+					.append(text(DateUtils.getDate(Date.from(Instant.ofEpochMilli(playerInfo.getBannedTo())), event.getAddress())))
 					.color(NamedTextColor.GRAY)
-					.append(Component.text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
 			);
 		}
 	}

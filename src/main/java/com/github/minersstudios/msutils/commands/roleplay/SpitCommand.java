@@ -5,7 +5,6 @@ import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -19,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.TODO;
 import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMessage;
+import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "spit",
@@ -30,7 +30,7 @@ public class SpitCommand implements MSCommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
 		World world = player.getWorld();
@@ -38,7 +38,7 @@ public class SpitCommand implements MSCommandExecutor {
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 		if (!playerInfo.isOnline()) return true;
 		if (playerInfo.isMuted()) {
-			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			ChatUtils.sendWarning(player, "Вы замьючены");
 			return true;
 		}
 		world.spawnEntity(
@@ -47,10 +47,10 @@ public class SpitCommand implements MSCommandExecutor {
 		).setVelocity(player.getEyeLocation().getDirection().multiply(1));
 		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, SoundCategory.PLAYERS, 1.0f, 1.0f);
 		if (args.length > 0) {
-			sendRPEventMessage(player, Component.text(ChatUtils.extractMessage(args, 0)), Component.text("плюнув"), TODO);
+			sendRPEventMessage(player, text(ChatUtils.extractMessage(args, 0)), text("плюнув"), TODO);
 			return true;
 		}
-		sendRPEventMessage(player, Component.text(playerInfo.getPlayerFile().getPronouns().getSpitMessage()), ME);
+		sendRPEventMessage(player, text(playerInfo.getPlayerFile().getPronouns().getSpitMessage()), ME);
 		return true;
 	}
 }

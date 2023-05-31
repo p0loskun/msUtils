@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+import static net.kyori.adventure.text.Component.text;
+
 @MSListener
 public class PlayerAdvancementDoneListener implements Listener {
 
@@ -26,9 +28,9 @@ public class PlayerAdvancementDoneListener implements Listener {
 				.append(Component.translatable(
 				"chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
 				MSPlayerUtils.getPlayerInfo(event.getPlayer()).createDefaultName(),
-				Component.text("[")
+				text("[")
 				.append(advancementDisplay.title())
-				.append(Component.text("]"))
+				.append(text("]"))
 				.color(frame.color())
 				.hoverEvent(HoverEvent.showText(
 						advancementDisplay.title()

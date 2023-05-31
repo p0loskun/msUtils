@@ -20,6 +20,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
+import static net.kyori.adventure.text.Component.text;
+
 public class RegistrationProcess {
 	private Player player;
 	private PlayerInfo playerInfo;
@@ -102,7 +104,9 @@ public class RegistrationProcess {
 					+ "§7" + "[" + this.playerInfo.getID(true, false) + "] "
 					+ "§f" + name.getFirstName() + " "
 					+ name.getLastName() + " "
-					+ name.getPatronymic(), 25L);
+					+ name.getPatronymic(),
+					25L
+			);
 			this.sendDialogueMessage("Слушай", 100L);
 			this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
 
@@ -139,17 +143,15 @@ public class RegistrationProcess {
 	}
 
 	private void sendWarningMessage() {
-		this.player.sendMessage(Component.text(" Используйте только кириллицу, без пробелов!", NamedTextColor.GOLD));
+		this.player.sendMessage(text(" Используйте только кириллицу, без пробелов!", NamedTextColor.GOLD));
 	}
 
 	private void sendDialogueMessage(@NotNull String message, long delay) {
 		Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
 			this.player.sendMessage(
 					Component.space()
-					.append(Component.text(" [0] Незнакомец : ")
-					.color(MessageUtils.Colors.CHAT_COLOR_PRIMARY))
-					.append(Component.text(message))
-					.color(MessageUtils.Colors.CHAT_COLOR_SECONDARY)
+					.append(text(" [0] Незнакомец : ", MessageUtils.Colors.CHAT_COLOR_PRIMARY))
+					.append(text(message, MessageUtils.Colors.CHAT_COLOR_SECONDARY))
 			);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 0.5f, 1.5f);
 		}, delay);
@@ -202,10 +204,10 @@ public class RegistrationProcess {
 
 			player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
 			player.sendSignChange(this.location, Lists.newArrayList(
-					Component.text(this.text.get(0)),
-					Component.text(this.text.get(1)),
-					Component.text(this.text.get(2)),
-					Component.text(this.text.get(3)))
+					text(this.text.get(0)),
+					text(this.text.get(1)),
+					text(this.text.get(2)),
+					text(this.text.get(3)))
 			);
 
 			PacketContainer openSign = MSUtils.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);

@@ -2,7 +2,7 @@ package com.github.minersstudios.msutils.commands;
 
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
-import com.github.minersstudios.msutils.commands.other.ReloadCommand;
+import com.github.minersstudios.msutils.commands.admin.ReloadCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;

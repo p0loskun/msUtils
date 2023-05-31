@@ -1,15 +1,17 @@
-package com.github.minersstudios.msutils.commands.other;
+package com.github.minersstudios.msutils.commands.admin;
 
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.player.*;
+import com.github.minersstudios.msutils.player.PlayerFile;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerName;
+import com.github.minersstudios.msutils.player.PlayerSettings;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -35,7 +37,7 @@ public class InfoCommand implements MSCommandExecutor {
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null || offlinePlayer.getName() == null) {
-				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
 			sendInfo(MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName()), sender);
@@ -44,13 +46,13 @@ public class InfoCommand implements MSCommandExecutor {
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 				return true;
 			}
 			sendInfo(MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]), sender);
 			return true;
 		}
-		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
 
@@ -75,7 +77,7 @@ public class InfoCommand implements MSCommandExecutor {
 			lastDeathLocation = new Location(MSUtils.getOverworld(), 0, 0, 0);
 		}
 
-		ChatUtils.sendInfo(sender, Component.text(
+		ChatUtils.sendInfo(sender,
 				"UUID : " + playerInfo.getOfflinePlayer().getUniqueId()
 				+ "\n ID : " + playerInfo.getID(false, false)
 				+ "\n Nickname : " + playerName.getNickname()
@@ -102,6 +104,6 @@ public class InfoCommand implements MSCommandExecutor {
 				+ "\n Last leave Z : " + lastLeaveLocation.getZ()
 				+ "\n Last leave Yaw : " + lastLeaveLocation.getYaw()
 				+ "\n Last leave Pitch : " + lastLeaveLocation.getPitch()
-		));
+		);
 	}
 }

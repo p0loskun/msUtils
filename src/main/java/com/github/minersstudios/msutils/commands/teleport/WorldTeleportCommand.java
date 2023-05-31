@@ -8,7 +8,6 @@ import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -23,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "worldteleport",
@@ -41,7 +42,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
 			return teleportToWorld(sender, offlinePlayer, args);
@@ -49,12 +50,12 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 				return true;
 			}
 			return teleportToWorld(sender, offlinePlayer, args);
 		}
-		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
 
@@ -83,21 +84,21 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 
 	private static boolean teleportToWorld(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer, String @NotNull ... args) {
 		if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
-			ChatUtils.sendWarning(sender, Component.text("Данный игрок ещё ни разу не играл на сервере"));
+			ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
 			return true;
 		}
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 		if (offlinePlayer.getPlayer() == null) {
 			ChatUtils.sendWarning(sender,
-					Component.text("Игрок : \"")
+					text("Игрок : \"")
 					.append(playerInfo.createGrayIDGoldName())
-					.append(Component.text("\" не в сети!"))
+					.append(text("\" не в сети!"))
 			);
 			return true;
 		}
 		World world = Bukkit.getWorld(args[1]);
 		if (world == null) {
-			ChatUtils.sendWarning(sender, Component.text("Такого мира не существует!"));
+			ChatUtils.sendWarning(sender, "Такого мира не существует!");
 			return true;
 		}
 		Location spawnLoc = world.getSpawnLocation();
@@ -111,25 +112,25 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 			y = Double.parseDouble(args[3]);
 			z = Double.parseDouble(args[4]);
 			if (x > 29999984 || z > 29999984) {
-				ChatUtils.sendWarning(sender, Component.text("Указаны слишком большие координаты!"));
+				ChatUtils.sendWarning(sender, "Указаны слишком большие координаты!");
 				return true;
 			}
 		}
 		offlinePlayer.getPlayer().teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendFine(sender,
-				Component.text("Игрок : \"")
+				text("Игрок : \"")
 				.append(playerInfo.createGrayIDGreenName())
-				.append(Component.text(" ("))
-				.append(Component.text(args[0]))
-				.append(Component.text(")\" был телепортирован :"))
-				.append(Component.text("\n    - Мир : "))
-				.append(Component.text(world.getName()))
-				.append(Component.text("\n    - X : "))
-				.append(Component.text(x))
-				.append(Component.text("\n    - Y : "))
-				.append(Component.text(y))
-				.append(Component.text("\n    - Z : "))
-				.append(Component.text(z))
+				.append(text(" ("))
+				.append(text(args[0]))
+				.append(text(")\" был телепортирован :"))
+				.append(text("\n    - Мир : "))
+				.append(text(world.getName()))
+				.append(text("\n    - X : "))
+				.append(text(x))
+				.append(text("\n    - Y : "))
+				.append(text(y))
+				.append(text("\n    - Z : "))
+				.append(text(z))
 		);
 		return true;
 	}

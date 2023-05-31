@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AllPlayers implements TabCompleter {
 
@@ -22,7 +21,9 @@ public class AllPlayers implements TabCompleter {
 		List<String> completions = new ArrayList<>();
 		if (args.length == 1) {
 			for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
+				String nickname = offlinePlayer.getName();
+				if (nickname == null) continue;
+				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), nickname);
 				int id = playerInfo.getID(false, false);
 				switch (command.getName()) {
 					case "mute" -> {
@@ -39,7 +40,7 @@ public class AllPlayers implements TabCompleter {
 					completions.add(String.valueOf(id));
 				}
 				if (playerInfo.getPlayerFile().exists()) {
-					completions.add(offlinePlayer.getName());
+					completions.add(nickname);
 				}
 			}
 		}

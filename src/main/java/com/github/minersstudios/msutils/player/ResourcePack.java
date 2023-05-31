@@ -2,14 +2,12 @@ package com.github.minersstudios.msutils.player;
 
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
-import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
@@ -200,7 +198,7 @@ public class ResourcePack {
 			} else if (playerSettings.getResourcePackType() == Type.LITE) {
 				player.setResourcePack(Type.LITE.getUrl(), Type.LITE.getHash());
 			} else {
-				ChatUtils.sendWarning(player, Component.text("Вы зашли на сервер без ресурспака"));
+				sendWarning(player, "Вы зашли на сервер без ресурспака");
 			}
 		} else {
 			ResourcePack.Menu.open(player);
@@ -306,9 +304,7 @@ public class ResourcePack {
 				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 				PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 				if (playerSettings.getResourcePackType() != null && playerSettings.getResourcePackType() != Type.NONE) {
-					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () ->
-							playerInfo.kickPlayer("Вы были кикнуты", "Этот параметр требует повторного захода на сервер")
-					);
+					playerInfo.kickPlayer("Вы были кикнуты", "Этот параметр требует повторного захода на сервер");
 				}
 				playerSettings.setResourcePackType(Type.NONE);
 				playerSettings.save();

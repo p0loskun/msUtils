@@ -16,6 +16,7 @@ import java.security.SecureRandom;
 
 import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMessage;
+import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "try",
@@ -28,22 +29,22 @@ public class TryCommand implements MSCommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (!(sender instanceof Player player)) {
-			ChatUtils.sendError(sender, Component.text("Только игрок может использовать эту команду!"));
+			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 		if (!playerInfo.isOnline()) return true;
 		if (args.length == 0) return false;
 		if (playerInfo.isMuted()) {
-			ChatUtils.sendWarning(player, Component.text("Вы замьючены"));
+			ChatUtils.sendWarning(player, "Вы замьючены");
 			return true;
 		}
 		sendRPEventMessage(player,
-				Component.text(ChatUtils.extractMessage(args, 0))
+				text(ChatUtils.extractMessage(args, 0))
 				.append(Component.space())
 				.append(new Component[]{
-						Component.text("Успешно", NamedTextColor.GREEN),
-						Component.text("Неуспешно", NamedTextColor.RED)
+						text("Успешно", NamedTextColor.GREEN),
+						text("Неуспешно", NamedTextColor.RED)
 				}[this.random.nextInt(2)]),
 				ME
 		);

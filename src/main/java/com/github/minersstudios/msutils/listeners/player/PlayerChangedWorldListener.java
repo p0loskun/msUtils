@@ -1,8 +1,7 @@
 package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.MSListener;
-import com.github.minersstudios.msutils.MSUtils;
-import org.bukkit.entity.Player;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -13,8 +12,6 @@ public class PlayerChangedWorldListener implements Listener {
 
 	@EventHandler
 	public void onPlayerChangedWorld(@NotNull PlayerChangedWorldEvent event) {
-		Player player = event.getPlayer();
-		MSUtils.getScoreboardHideTagsTeam().addEntry(player.getName());
-		player.setScoreboard(MSUtils.getScoreboardHideTags());
+		MSPlayerUtils.hideNameTag(event.getPlayer());
 	}
 }

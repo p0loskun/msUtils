@@ -7,7 +7,6 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import static com.github.minersstudios.mscore.utils.ChatUtils.*;
+import static net.kyori.adventure.text.Component.text;
 
 @MSListener
 public class AsyncChatListener implements Listener {
@@ -31,7 +31,7 @@ public class AsyncChatListener implements Listener {
 		}
 
 		if (playerInfo.isMuted()) {
-			sendWarning(player, Component.text("Вы замьючены"));
+			sendWarning(player, "Вы замьючены");
 			return;
 		}
 
@@ -39,7 +39,7 @@ public class AsyncChatListener implements Listener {
 		if (message.startsWith("!")) {
 			message = message.substring(1).trim();
 			if (!message.isEmpty()) {
-				MessageUtils.sendMessageToChat(playerInfo, null, MessageUtils.Chat.GLOBAL, Component.text(message));
+				MessageUtils.sendMessageToChat(playerInfo, null, MessageUtils.Chat.GLOBAL, text(message));
 			}
 		} else if (message.startsWith("*")) {
 			message = message.substring(1).trim();
@@ -48,24 +48,24 @@ public class AsyncChatListener implements Listener {
 				if (message.startsWith("*")) {
 					message = message.substring(1).trim();
 					if (!message.isEmpty()) {
-						MessageUtils.sendRPEventMessage(player, Component.text(message), MessageUtils.RolePlayActionType.IT);
+						MessageUtils.sendRPEventMessage(player, text(message), MessageUtils.RolePlayActionType.IT);
 					}
 				} else if (!message.isEmpty()) {
-					MessageUtils.sendRPEventMessage(player, Component.text(message), MessageUtils.RolePlayActionType.DO);
+					MessageUtils.sendRPEventMessage(player, text(message), MessageUtils.RolePlayActionType.DO);
 				}
 			} else if (message.contains("*")) {
 				String action = message.substring(message.indexOf('*') + 1).trim(),
 						speech = message.substring(0 , message.indexOf('*')).trim();
 				if (action.length() == 0 || speech.length() == 0) {
-					sendError(player, Component.text("Используй: * [речь] * [действие]"));
+					sendError(player, "Используй: * [речь] * [действие]");
 					return;
 				}
-				MessageUtils.sendRPEventMessage(player, Component.text(speech), Component.text(action), MessageUtils.RolePlayActionType.TODO);
+				MessageUtils.sendRPEventMessage(player, text(speech), text(action), MessageUtils.RolePlayActionType.TODO);
 			} else if (!message.isEmpty()) {
-				MessageUtils.sendRPEventMessage(player, Component.text(message), MessageUtils.RolePlayActionType.ME);
+				MessageUtils.sendRPEventMessage(player, text(message), MessageUtils.RolePlayActionType.ME);
 			}
 		} else {
-			MessageUtils.sendMessageToChat(playerInfo, player.getLocation(), MessageUtils.Chat.LOCAL, Component.text(message));
+			MessageUtils.sendMessageToChat(playerInfo, player.getLocation(), MessageUtils.Chat.LOCAL, text(message));
 			ChatBuffer.receiveMessage(player, message + " ");
 		}
 	}

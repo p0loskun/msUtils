@@ -3,7 +3,6 @@ package com.github.minersstudios.msutils;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.minersstudios.mscore.MSPlugin;
-import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msutils.anomalies.tasks.ParticleTask;
@@ -16,14 +15,16 @@ import com.github.minersstudios.msutils.utils.ConfigCache;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -37,10 +38,8 @@ import java.util.UUID;
 public final class MSUtils extends MSPlugin {
 	private static MSUtils instance;
 
-	private static Scoreboard scoreboardHideTags;
-	private static Team scoreboardHideTagsTeam;
-
 	private static World worldDark;
+	private static Entity darkEntity;
 	private static World overworld;
 
 	private static AuthMeApi authMeApi;
@@ -48,28 +47,32 @@ public final class MSUtils extends MSPlugin {
 
 	private static ConfigCache configCache;
 
-	public static PlayerInfo CONSOLE_PLAYER_INFO;
+	public static PlayerInfo consolePlayerInfo;
+
+	public static Scoreboard scoreboardHideTags;
+	public static Team scoreboardHideTagsTeam;
 
 	@Override
 	public void enable() {
 		instance = this;
-		scoreboardHideTags = (Objects.requireNonNull(Bukkit.getScoreboardManager())).getNewScoreboard();
-		scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("HideTags");
-		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
-		Bukkit.getScheduler().runTask(instance, () -> worldDark = setWorldDark());
+		worldDark = setWorldDark();
+		darkEntity = setDarkEntity();
 		overworld = setOverworld();
 		protocolManager = ProtocolLibrary.getProtocolManager();
 		authMeApi = AuthMeApi.getInstance();
+
+		scoreboardHideTags = Bukkit.getScoreboardManager().getNewScoreboard();
+		scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("hide_tags");
+		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
 		reloadConfigs();
 
 		DiscordSRV.api.subscribe(new DiscordGuildMessagePreProcessListener());
 
 		Bukkit.getScheduler().runTaskTimerAsynchronously(this, () ->
-				configCache.seats.values().forEach(
-						(armorStand) -> armorStand.setRotation(armorStand.getPassengers().get(0).getLocation().getYaw(), 0.0f)
-				), 0L, 1L
+				configCache.seats.forEach((key, value) -> value.setRotation(key.getLocation().getYaw(), 0.0f)),
+				0L, 1L
 		);
 
 		Bukkit.getScheduler().runTaskTimer(this, () -> {
@@ -93,9 +96,11 @@ public final class MSUtils extends MSPlugin {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			MSPlayerUtils.getPlayerInfo(player).kickPlayer("Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
 		}
+
+		configCache.bukkitTasks.forEach(BukkitTask::cancel);
 	}
 
-	private static @Nullable World setWorldDark() {
+	private static @NotNull World setWorldDark() {
 		World world = Bukkit.getWorld("world_dark");
 		if (world != null) return world;
 		world = new WorldCreator("world_dark")
@@ -105,9 +110,8 @@ public final class MSUtils extends MSPlugin {
 				.environment(World.Environment.NORMAL)
 				.createWorld();
 		if (world == null) {
-			ChatUtils.sendError(null, Component.text("MSUtils#generateWorld() world_dark = null"));
 			Bukkit.shutdown();
-			return null;
+			throw new NullPointerException("MSUtils#generateWorld() world_dark = null");
 		}
 		world.setTime(18000L);
 		world.setDifficulty(Difficulty.PEACEFUL);
@@ -120,6 +124,17 @@ public final class MSUtils extends MSPlugin {
 		world.setGameRule(GameRule.KEEP_INVENTORY, true);
 		world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
 		return world;
+	}
+
+	private static @NotNull Entity setDarkEntity() {
+		return worldDark.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
+				worldDark.spawn(new Location(worldDark, 0, 0, 0), ItemFrame.class, (entity) -> {
+					entity.setGravity(false);
+					entity.setFixed(true);
+					entity.setVisible(false);
+					entity.setInvulnerable(true);
+				})
+		);
 	}
 
 	public @Nullable World setOverworld() {
@@ -146,7 +161,7 @@ public final class MSUtils extends MSPlugin {
 		if (!consoleDataFile.exists()) {
 			instance.saveResource("players/console.yml", false);
 		}
-		CONSOLE_PLAYER_INFO = new PlayerInfo(UUID.randomUUID(), "$Console");
+		consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
 
 		configCache = new ConfigCache();
 		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), ResourcePack::init);
@@ -164,35 +179,38 @@ public final class MSUtils extends MSPlugin {
 		InventoryUtils.registerCustomInventory("crafts", CraftsMenu.create());
 	}
 
-	public static MSUtils getInstance() {
+	@Contract(pure = true)
+	public static @NotNull MSUtils getInstance() {
 		return instance;
 	}
 
-	public static Scoreboard getScoreboardHideTags() {
-		return scoreboardHideTags;
-	}
-
-	public static Team getScoreboardHideTagsTeam() {
-		return scoreboardHideTagsTeam;
-	}
-
-	public static World getWorldDark() {
+	@Contract(pure = true)
+	public static @NotNull World getWorldDark() {
 		return worldDark;
 	}
 
-	public static World getOverworld() {
+	@Contract(pure = true)
+	public static @NotNull Entity getDarkEntity() {
+		return darkEntity;
+	}
+
+	@Contract(pure = true)
+	public static @NotNull World getOverworld() {
 		return overworld;
 	}
 
-	public static AuthMeApi getAuthMeApi() {
+	@Contract(pure = true)
+	public static @NotNull AuthMeApi getAuthMeApi() {
 		return authMeApi;
 	}
 
-	public static ProtocolManager getProtocolManager() {
+	@Contract(pure = true)
+	public static @NotNull ProtocolManager getProtocolManager() {
 		return protocolManager;
 	}
 
-	public static ConfigCache getConfigCache() {
+	@Contract(pure = true)
+	public static @NotNull ConfigCache getConfigCache() {
 		return configCache;
 	}
 }

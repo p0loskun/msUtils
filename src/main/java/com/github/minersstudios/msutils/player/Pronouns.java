@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
 import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
+import static net.kyori.adventure.text.Component.text;
 
 public enum Pronouns {
 	HE(
@@ -150,7 +151,7 @@ public enum Pronouns {
 			ItemMeta heMeta = he.getItemMeta();
 			heMeta.displayName(createDefaultStyledText("Он"));
 			ArrayList<Component> loreHe = new ArrayList<>();
-			loreHe.add(Component.text("К вам будут обращаться как к нему").color(NamedTextColor.GRAY));
+			loreHe.add(text("К вам будут обращаться как к нему").color(NamedTextColor.GRAY));
 			heMeta.lore(loreHe);
 			he.setItemMeta(heMeta);
 
@@ -158,7 +159,7 @@ public enum Pronouns {
 			ItemMeta sheMeta = she.getItemMeta();
 			sheMeta.displayName(createDefaultStyledText("Она"));
 			ArrayList<Component> loreShe = new ArrayList<>();
-			loreShe.add(Component.text("К вам будут обращаться как к ней").color(NamedTextColor.GRAY));
+			loreShe.add(text("К вам будут обращаться как к ней").color(NamedTextColor.GRAY));
 			sheMeta.lore(loreShe);
 			she.setItemMeta(sheMeta);
 
@@ -166,7 +167,7 @@ public enum Pronouns {
 			ItemMeta theyMeta = they.getItemMeta();
 			theyMeta.displayName(createDefaultStyledText("Они"));
 			ArrayList<Component> loreThey = new ArrayList<>();
-			loreThey.add(Component.text("К вам будут обращаться как к ним").color(NamedTextColor.GRAY));
+			loreThey.add(text("К вам будут обращаться как к ним").color(NamedTextColor.GRAY));
 			theyMeta.lore(loreThey);
 			they.setItemMeta(theyMeta);
 

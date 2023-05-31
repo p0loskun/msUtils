@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.commands.other;
+package com.github.minersstudios.msutils.commands.admin;
 
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
@@ -7,7 +7,6 @@ import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -18,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "whitelist",
@@ -33,37 +34,37 @@ public class WhitelistCommand implements MSCommandExecutor {
 		if (args.length == 0) return false;
 		if (args[0].equalsIgnoreCase("reload")) {
 			Bukkit.reloadWhitelist();
-			ChatUtils.sendFine(sender, Component.text("Вайт-Лист был перезагружен"));
+			ChatUtils.sendFine(sender, "Вайт-Лист был перезагружен");
 			return true;
 		}
 		if (args.length > 1 && args[1].matches("-?\\d+")) {
 			if (args[0].equalsIgnoreCase("add")) {
-				ChatUtils.sendWarning(sender, Component.text("Для добавления игрока используйте ник!"));
+				ChatUtils.sendWarning(sender, "Для добавления игрока используйте ник!");
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("remove")) {
 				OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[1]));
 				if (offlinePlayer == null || offlinePlayer.getName() == null) {
-					ChatUtils.sendError(sender, Component.text("Вы ошиблись айди, игрока привязанного к нему не существует"));
+					ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 					return true;
 				}
 				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 				if (playerInfo.setWhiteListed(false)) {
 					ChatUtils.sendFine(sender,
-							Component.text("Игрок : \"")
+							text("Игрок : \"")
 							.append(playerInfo.createGrayIDGreenName())
-							.append(Component.text(" ("))
-							.append(Component.text(offlinePlayer.getName()))
-							.append(Component.text(")\" был удалён из белого списка"))
+							.append(text(" ("))
+							.append(text(offlinePlayer.getName()))
+							.append(text(")\" был удалён из белого списка"))
 					);
 					return true;
 				}
 				ChatUtils.sendWarning(sender,
-						Component.text("Игрок : \"")
+						text("Игрок : \"")
 						.append(playerInfo.createGrayIDGoldName())
-						.append(Component.text(" ("))
-						.append(Component.text(offlinePlayer.getName()))
-						.append(Component.text(")\" не состоит в белом списке"))
+						.append(text(" ("))
+						.append(text(offlinePlayer.getName()))
+						.append(text(")\" не состоит в белом списке"))
 				);
 				return true;
 			}
@@ -72,53 +73,53 @@ public class WhitelistCommand implements MSCommandExecutor {
 		if (args.length > 1 && args[1].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[1]);
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, Component.text("Что-то пошло не так..."));
+				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 				return true;
 			}
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
 			if (args[0].equalsIgnoreCase("add")) {
 				if (playerInfo.setWhiteListed(true)) {
 					ChatUtils.sendFine(sender,
-							Component.text("Игрок : \"")
+							text("Игрок : \"")
 							.append(playerInfo.createGrayIDGreenName())
-							.append(Component.text(" ("))
-							.append(Component.text(args[1]))
-							.append(Component.text(")\" был добавлен в белый список"))
+							.append(text(" ("))
+							.append(text(args[1]))
+							.append(text(")\" был добавлен в белый список"))
 					);
 					return true;
 				}
 				ChatUtils.sendWarning(sender,
-						Component.text("Игрок : \"")
+						text("Игрок : \"")
 						.append(playerInfo.createGrayIDGoldName())
-						.append(Component.text(" ("))
-						.append(Component.text(args[1]))
-						.append(Component.text(")\" уже состоит в белом списке"))
+						.append(text(" ("))
+						.append(text(args[1]))
+						.append(text(")\" уже состоит в белом списке"))
 				);
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("remove")) {
 				if (playerInfo.setWhiteListed(false)) {
 					ChatUtils.sendFine(sender,
-							Component.text("Игрок : \"")
+							text("Игрок : \"")
 							.append(playerInfo.createGrayIDGreenName())
-							.append(Component.text(" ("))
-							.append(Component.text(args[1]))
-							.append(Component.text(")\" был удалён из белого списка"))
+							.append(text(" ("))
+							.append(text(args[1]))
+							.append(text(")\" был удалён из белого списка"))
 					);
 					return true;
 				}
 				ChatUtils.sendWarning(sender,
-						Component.text("Игрок : \"")
+						text("Игрок : \"")
 						.append(playerInfo.createGrayIDGoldName())
-						.append(Component.text(" ("))
-						.append(Component.text(args[1]))
-						.append(Component.text(")\" не состоит в белом списке"))
+						.append(text(" ("))
+						.append(text(args[1]))
+						.append(text(")\" не состоит в белом списке"))
 				);
 				return true;
 			}
 			return false;
 		}
-		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
 

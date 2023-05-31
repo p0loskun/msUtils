@@ -147,7 +147,7 @@
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msCore</artifactId>
-			<version>release-a1ce28be34-1</version>
+			<version>release-ce08d5afc9-1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

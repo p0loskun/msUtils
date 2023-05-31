@@ -4,13 +4,15 @@ import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.*;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
 @MSListener
@@ -21,38 +23,41 @@ public class PlayerJoinListener implements Listener {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 		PlayerFile playerFile = playerInfo.getPlayerFile();
-		MSUtils.getScoreboardHideTagsTeam().addEntry(player.getName());
-		player.setScoreboard(MSUtils.getScoreboardHideTags());
-		player.displayName(playerInfo.createDefaultName());
-		player.setGameMode(GameMode.SPECTATOR);
 
 		event.joinMessage(null);
 
+		playerInfo.hideNameTag();
+		player.displayName(playerInfo.createDefaultName());
 		if (player.isDead()) {
-			playerInfo.teleportToDarkWorld();
+			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
+				player.spigot().respawn();
+				player.teleport(new Location(MSUtils.getWorldDark(), 0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
+				player.setGameMode(GameMode.SPECTATOR);
+			}, 8L);
+		} else {
+			player.setGameMode(GameMode.SPECTATOR);
+			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.setSpectatorTarget(MSUtils.getDarkEntity()));
 		}
 
-		new BukkitRunnable() {
-			public void run() {
-				if (!player.isOnline()) this.cancel();
-				if (MSUtils.getAuthMeApi().isAuthenticated(player)) {
-					if (!playerFile.exists() || (playerFile.exists() && playerFile.isNoName())) {
-						this.cancel();
-						new RegistrationProcess().registerPlayer(playerInfo);
+		Bukkit.getScheduler().runTaskTimer(MSUtils.getInstance(), (task) -> {
+			if (!player.isOnline()) task.cancel();
+			if (MSUtils.getAuthMeApi().isAuthenticated(player) && !player.isDead()) {
+				if (!playerFile.exists() || (playerFile.exists() && playerFile.isNoName())) {
+					task.cancel();
+					new RegistrationProcess().registerPlayer(playerInfo);
+				} else {
+					task.cancel();
+					if (playerFile.getYamlConfiguration().getString("pronouns") == null) {
+						Pronouns.Menu.open(player);
 					} else {
-						this.cancel();
-						if (playerFile.getYamlConfiguration().getString("pronouns") == null) {
-							Pronouns.Menu.open(player);
+						if (playerFile.getPlayerSettings().getResourcePackType() == ResourcePack.Type.NONE) {
+							playerInfo.teleportToLastLeaveLocation();
 						} else {
-							if (playerFile.getPlayerSettings().getResourcePackType() == ResourcePack.Type.NONE) {
-								playerInfo.teleportToLastLeaveLocation();
-							} else {
-								ResourcePack.setResourcePack(playerInfo);
-							}
+							ResourcePack.setResourcePack(playerInfo);
 						}
 					}
 				}
 			}
-		}.runTaskTimer(MSUtils.getInstance(), 1L, 1L);
+		}, 1L, 1L);
 	}
 }

@@ -33,11 +33,11 @@ public class PlayerFile {
 
 	private long firstJoin;
 
-	private boolean isMuted;
+	private boolean muted;
 	private @NotNull String muteReason;
 	private long mutedTo;
 
-	private boolean isBanned;
+	private boolean banned;
 	private @NotNull String banReason;
 	private long bannedTo;
 
@@ -69,11 +69,11 @@ public class PlayerFile {
 
 		this.firstJoin = yamlConfiguration.getLong("first-join", 0);
 
-		this.isMuted = yamlConfiguration.getBoolean("mute.muted", false);
+		this.muted = yamlConfiguration.getBoolean("mute.muted", false);
 		this.muteReason = yamlConfiguration.getString("mute.reason", "неизвестно");
 		this.mutedTo = yamlConfiguration.getInt("mute.to", 0);
 
-		this.isBanned = yamlConfiguration.getBoolean("ban.banned", false);
+		this.banned = yamlConfiguration.getBoolean("ban.banned", false);
 		this.banReason = yamlConfiguration.getString("ban.reason", "неизвестно");
 		this.bannedTo = yamlConfiguration.getLong("ban.to", 0);
 
@@ -222,11 +222,11 @@ public class PlayerFile {
 	}
 
 	public boolean isMuted() {
-		return this.isMuted;
+		return this.muted;
 	}
 
 	public void setMuted(boolean muted) {
-		this.isMuted = muted;
+		this.muted = muted;
 		this.yamlConfiguration.set("mute.muted", muted);
 	}
 
@@ -248,12 +248,18 @@ public class PlayerFile {
 		this.yamlConfiguration.set("mute.to", mutedTo);
 	}
 
+	public void setMute(boolean muted, @NotNull String muteReason, long mutedTo) {
+		this.setMuted(muted);
+		this.setMuteReason(muteReason);
+		this.setMutedTo(mutedTo);
+	}
+
 	public boolean isBanned() {
-		return this.isBanned;
+		return this.banned;
 	}
 
 	public void setBanned(boolean banned) {
-		this.isBanned = banned;
+		this.banned = banned;
 		this.yamlConfiguration.set("ban.banned", banned);
 	}
 
@@ -273,6 +279,12 @@ public class PlayerFile {
 	public void setBannedTo(long bannedTo) {
 		this.bannedTo = bannedTo;
 		this.yamlConfiguration.set("ban.to", bannedTo);
+	}
+
+	public void setBan(boolean banned, @NotNull String banReason, long bannedTo) {
+		this.setBanned(banned);
+		this.setBanReason(banReason);
+		this.setBannedTo(bannedTo);
 	}
 
 	public @Nullable Location getLastLeaveLocation() {
@@ -303,8 +315,7 @@ public class PlayerFile {
 		boolean isNull = location == null;
 
 		if (!isNull) {
-			World world = location.getWorld();
-			if (world == MSUtils.getWorldDark()) {
+			if (location.getWorld() == MSUtils.getWorldDark()) {
 				throw new IllegalArgumentException("The world cannot be world_dark");
 			}
 		}
