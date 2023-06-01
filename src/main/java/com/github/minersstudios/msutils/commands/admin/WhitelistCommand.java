@@ -22,7 +22,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "whitelist",
-		usage = " ꀑ §cИспользуй: /<command> [add/remove/reload] [ID/Nickname]",
+		usage = " ꀑ §cИспользуй: /<command> [add/remove/reload] [id/никнейм]",
 		description = "Удаляет/добавляет игрока в вайтлист, или перезагружает его",
 		permission = "msutils.whitelist",
 		permissionDefault = PermissionDefault.OP

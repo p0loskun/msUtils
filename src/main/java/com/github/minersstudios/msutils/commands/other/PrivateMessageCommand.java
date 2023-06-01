@@ -23,8 +23,14 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "privatemessage",
-		aliases = {"pmessage", "pm", "w", "tell", "msg"},
-		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname] [сообщение]",
+		aliases = {
+				"pmessage",
+				"pm",
+				"w",
+				"tell",
+				"msg"
+		},
+		usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [сообщение]",
 		description = "Отправь другому игроку приватное сообщение"
 )
 public class PrivateMessageCommand implements MSCommandExecutor {

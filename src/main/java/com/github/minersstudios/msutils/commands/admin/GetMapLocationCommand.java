@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.commands.other;
+package com.github.minersstudios.msutils.commands.admin;
 
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;

@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.commands.admin;
+package com.github.minersstudios.msutils.commands.admin.player;
 
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
@@ -15,17 +15,18 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @MSCommand(
-		command = "updateplayer",
-		usage = " ꀑ §cИспользуй: /<command> [ID]",
-		description = "Обновляет файл игрока",
-		permission = "msutils.updateplayer",
+		command = "player",
+		usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [параметры]",
+		description = "Команды, отвечающие за параметры игрока",
+		permission = "msutils.player.*",
 		permissionDefault = PermissionDefault.OP
 )
-public class UpdatePlayerCommand implements MSCommandExecutor {
-
+public class PlayerCommandHandler implements MSCommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (args.length == 0) return false;
@@ -35,10 +36,7 @@ public class UpdatePlayerCommand implements MSCommandExecutor {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
-			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
-			playerInfo.update();
-			ChatUtils.sendFine(sender, "Данные игрока были успешно обновлены");
-			return true;
+			return runCommand(sender, args, offlinePlayer);
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
@@ -46,10 +44,7 @@ public class UpdatePlayerCommand implements MSCommandExecutor {
 				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 				return true;
 			}
-			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
-			playerInfo.update();
-			ChatUtils.sendFine(sender, "Данные игрока были успешно обновлены");
-			return true;
+			return runCommand(sender, args, offlinePlayer);
 		}
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
@@ -57,6 +52,26 @@ public class UpdatePlayerCommand implements MSCommandExecutor {
 
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
-		return new AllPlayers().onTabComplete(sender, command, label, args);
+		switch (args.length) {
+			case 1 -> {
+				return new AllPlayers().onTabComplete(sender, command, label, args);
+			}
+			case 2 -> {
+				return List.of(
+						"update",
+						"info"
+				);
+			}
+		}
+		return new ArrayList<>();
+	}
+
+	private static boolean runCommand(@NotNull CommandSender sender, String @NotNull [] args, @NotNull OfflinePlayer offlinePlayer) {
+		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
+		return switch (args[1]) {
+			case "update" -> UpdatePlayerCommand.runCommand(sender, playerInfo);
+			case "info" -> InfoCommand.runCommand(sender, playerInfo);
+			default -> false;
+		};
 	}
 }

@@ -21,7 +21,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "kick",
-		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname] [причина]",
+		usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [причина]",
 		description = "Кикнуть игрока",
 		permission = "msutils.kick",
 		permissionDefault = PermissionDefault.OP

@@ -11,7 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 @MSCommand(
 		command = "resourcepack",
-		aliases = {"texturepack", "rp"},
+		aliases = {
+				"texturepack",
+				"rp"
+		},
 		usage = " ꀑ §cИспользуй: /<command>",
 		description = "Открывает меню с ресурспаками"
 )

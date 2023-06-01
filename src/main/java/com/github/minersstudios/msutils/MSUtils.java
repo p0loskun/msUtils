@@ -15,24 +15,26 @@ import com.github.minersstudios.msutils.utils.ConfigCache;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
+import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.generator.WorldInfo;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.UUID;
 
 public final class MSUtils extends MSPlugin {
@@ -55,11 +57,21 @@ public final class MSUtils extends MSPlugin {
 	@Override
 	public void enable() {
 		instance = this;
-		worldDark = setWorldDark();
-		darkEntity = setDarkEntity();
-		overworld = setOverworld();
 		protocolManager = ProtocolLibrary.getProtocolManager();
 		authMeApi = AuthMeApi.getInstance();
+
+		Bukkit.getScheduler().runTask(this, () -> {
+			worldDark = setWorldDark();
+			darkEntity = worldDark.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
+					worldDark.spawn(new Location(worldDark, 0, 0, 0), ItemFrame.class, (entity) -> {
+						entity.setGravity(false);
+						entity.setFixed(true);
+						entity.setVisible(false);
+						entity.setInvulnerable(true);
+					})
+			);
+		});
+		overworld = ((CraftServer) this.getServer()).getServer().overworld().getWorld();
 
 		scoreboardHideTags = Bukkit.getScoreboardManager().getNewScoreboard();
 		scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("hide_tags");
@@ -101,51 +113,46 @@ public final class MSUtils extends MSPlugin {
 	}
 
 	private static @NotNull World setWorldDark() {
-		World world = Bukkit.getWorld("world_dark");
-		if (world != null) return world;
-		world = new WorldCreator("world_dark")
+		String name = "world_dark";
+		boolean exists = new File(Bukkit.getWorldContainer(), name).exists();
+		World world = new WorldCreator(name)
+				.type(WorldType.FLAT)
+				.environment(World.Environment.NORMAL)
+				.biomeProvider(new BiomeProvider() {
+					@Override
+					public @NotNull Biome getBiome(@NotNull WorldInfo worldInfo, int x, int y, int z) {
+						return Biome.FOREST;
+					}
+
+					@Override
+					public @NotNull List<Biome> getBiomes(@NotNull WorldInfo worldInfo) {
+						return new ArrayList<>();
+					}
+				})
 				.generator(new ChunkGenerator() {})
 				.generateStructures(false)
-				.type(WorldType.NORMAL)
-				.environment(World.Environment.NORMAL)
+				.hardcore(false)
+				.keepSpawnLoaded(TriState.TRUE)
 				.createWorld();
+
 		if (world == null) {
 			Bukkit.shutdown();
-			throw new NullPointerException("MSUtils#generateWorld() world_dark = null");
+			throw new NullPointerException("MSUtils#setWorldDark() " + name + " = null");
 		}
-		world.setTime(18000L);
-		world.setDifficulty(Difficulty.PEACEFUL);
-		world.setGameRule(GameRule.FALL_DAMAGE, false);
-		world.setGameRule(GameRule.FIRE_DAMAGE, false);
-		world.setGameRule(GameRule.DROWNING_DAMAGE, false);
-		world.setGameRule(GameRule.FREEZE_DAMAGE, false);
-		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-		world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
-		world.setGameRule(GameRule.KEEP_INVENTORY, true);
-		world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+
+		if (!exists) {
+			world.setTime(18000L);
+			world.setDifficulty(Difficulty.PEACEFUL);
+			world.setGameRule(GameRule.FALL_DAMAGE, false);
+			world.setGameRule(GameRule.FIRE_DAMAGE, false);
+			world.setGameRule(GameRule.DROWNING_DAMAGE, false);
+			world.setGameRule(GameRule.FREEZE_DAMAGE, false);
+			world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+			world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
+			world.setGameRule(GameRule.KEEP_INVENTORY, true);
+			world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+		}
 		return world;
-	}
-
-	private static @NotNull Entity setDarkEntity() {
-		return worldDark.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
-				worldDark.spawn(new Location(worldDark, 0, 0, 0), ItemFrame.class, (entity) -> {
-					entity.setGravity(false);
-					entity.setFixed(true);
-					entity.setVisible(false);
-					entity.setInvulnerable(true);
-				})
-		);
-	}
-
-	public @Nullable World setOverworld() {
-		try (InputStream input = new FileInputStream("server.properties")) {
-			Properties properties = new Properties();
-			properties.load(input);
-			input.close();
-			return Bukkit.getWorld(properties.getProperty("level-name"));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public static void reloadConfigs() {
@@ -155,6 +162,7 @@ public final class MSUtils extends MSPlugin {
 		if (configCache != null) {
 			configCache.bukkitTasks.forEach(BukkitTask::cancel);
 		}
+		configCache = new ConfigCache();
 
 		instance.saveResource("anomalies/example.yml", true);
 		File consoleDataFile = new File(instance.getPluginFolder(), "players/console.yml");
@@ -163,7 +171,6 @@ public final class MSUtils extends MSPlugin {
 		}
 		consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
 
-		configCache = new ConfigCache();
 		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), ResourcePack::init);
 
 		configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(instance,

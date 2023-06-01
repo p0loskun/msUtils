@@ -23,7 +23,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "unban",
-		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname]",
+		usage = " ꀑ §cИспользуй: /<command> [id/никнейм]",
 		description = "Разбанить игрока",
 		permission = "msutils.ban",
 		permissionDefault = PermissionDefault.OP

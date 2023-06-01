@@ -23,7 +23,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "ban",
-		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname] [время][s/m/h/d/M/y] [причина]",
+		usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [время][s/m/h/d/M/y] [причина]",
 		description = "Покажи кто тут главный и забань игрока",
 		permission = "msutils.ban",
 		permissionDefault = PermissionDefault.OP

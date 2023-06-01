@@ -1,67 +1,18 @@
-package com.github.minersstudios.msutils.commands.admin;
+package com.github.minersstudios.msutils.commands.admin.player;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerName;
 import com.github.minersstudios.msutils.player.PlayerSettings;
-import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
-import com.github.minersstudios.msutils.utils.IDUtils;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+public class InfoCommand {
 
-@MSCommand(
-		command = "info",
-		usage = " ꀑ §cИспользуй: /<command> [ID]",
-		description = "Выводит информацию про игрока",
-		permission = "msutils.info",
-		permissionDefault = PermissionDefault.OP
-)
-public class InfoCommand implements MSCommandExecutor {
-
-	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
-		if (args.length == 0) return false;
-		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
-			if (offlinePlayer == null || offlinePlayer.getName() == null) {
-				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
-				return true;
-			}
-			sendInfo(MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName()), sender);
-			return true;
-		}
-		if (args[0].length() > 2) {
-			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
-			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
-				return true;
-			}
-			sendInfo(MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]), sender);
-			return true;
-		}
-		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
-		return true;
-	}
-
-	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
-		return new AllPlayers().onTabComplete(sender, command, label, args);
-	}
-
-	private static void sendInfo(@NotNull PlayerInfo playerInfo, @NotNull CommandSender sender) {
+	public static boolean runCommand(@NotNull CommandSender sender, @NotNull PlayerInfo playerInfo) {
 		PlayerFile playerFile = playerInfo.getPlayerFile();
 		PlayerName playerName = playerFile.getPlayerName();
 		PlayerSettings playerSettings = playerFile.getPlayerSettings();
@@ -105,5 +56,6 @@ public class InfoCommand implements MSCommandExecutor {
 				+ "\n Last leave Yaw : " + lastLeaveLocation.getYaw()
 				+ "\n Last leave Pitch : " + lastLeaveLocation.getPitch()
 		);
+		return true;
 	}
 }

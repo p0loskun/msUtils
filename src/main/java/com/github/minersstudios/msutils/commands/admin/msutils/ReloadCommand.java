@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.commands.admin;
+package com.github.minersstudios.msutils.commands.admin.msutils;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;

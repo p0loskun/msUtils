@@ -27,8 +27,14 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "worldteleport",
-		aliases = {"worldteleport", "worldtp", "wtp", "teleportworld", "tpworld", "tpw"},
-		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname] [world name] [x] [y] [z]",
+		aliases = {
+				"worldtp",
+				"wtp",
+				"teleportworld",
+				"tpworld",
+				"tpw"
+		},
+		usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [world name] [x] [y] [z]",
 		description = "Телепортирует игрока на координаты в указанном мире, если координаты не указаны, телепортирует на точку спавна данного мира",
 		permission = "msutils.worldteleport",
 		permissionDefault = PermissionDefault.OP

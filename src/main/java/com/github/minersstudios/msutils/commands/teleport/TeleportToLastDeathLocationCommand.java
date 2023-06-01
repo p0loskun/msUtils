@@ -23,8 +23,13 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "teleporttolastdeathlocation",
-		aliases = {"teleporttolastdeathloc", "tptolastdeathlocation", "tptolastdeathloc", "tptolastdeath"},
-		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname]",
+		aliases = {
+				"teleporttolastdeathloc",
+				"tptolastdeathlocation",
+				"tptolastdeathloc",
+				"tptolastdeath"
+		},
+		usage = " ꀑ §cИспользуй: /<command> [id/никнейм]",
 		description = "Телепортирует игрока на его последнее место смерти",
 		permission = "msutils.teleporttolastdeathlocation",
 		permissionDefault = PermissionDefault.OP

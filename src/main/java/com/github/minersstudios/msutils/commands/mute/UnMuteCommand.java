@@ -22,7 +22,7 @@ import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
 		command = "unmute",
-		usage = " ꀑ §cИспользуй: /<command> [ID/Nickname]",
+		usage = " ꀑ §cИспользуй: /<command> [id/никнейм]",
 		description = "Размьютить игрока",
 		permission = "msutils.mute",
 		permissionDefault = PermissionDefault.OP
