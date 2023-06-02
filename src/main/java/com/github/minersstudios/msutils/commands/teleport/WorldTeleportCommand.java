@@ -43,7 +43,12 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 	private static final String coordinatesRegex = "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$";
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public boolean onCommand(
+			@NotNull CommandSender sender, 
+			@NotNull Command command, 
+			@NotNull String label, 
+			String @NotNull ... args
+	) {
 		if (args.length < 2) return false;
 		if (args[0].matches("-?\\d+")) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));

@@ -2,6 +2,7 @@ package com.github.minersstudios.msutils.tabcompleters;
 
 import com.github.minersstudios.mscore.utils.CommandUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -17,29 +18,36 @@ import java.util.List;
 public class AllPlayers implements TabCompleter {
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public @Nullable List<String> onTabComplete(
+			@NotNull CommandSender sender,
+			@NotNull Command command,
+			@NotNull String label,
+			String @NotNull ... args
+	) {
 		List<String> completions = new ArrayList<>();
 		if (args.length == 1) {
 			for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
 				String nickname = offlinePlayer.getName();
 				if (nickname == null) continue;
-				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), nickname);
-				int id = playerInfo.getID(false, false);
+				int id = IDUtils.getID(offlinePlayer.getUniqueId(), false, false);
 				switch (command.getName()) {
 					case "mute" -> {
+						PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), nickname);
 						if (playerInfo.isMuted()) continue;
 					}
 					case "unmute" -> {
+						PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), nickname);
 						if (!playerInfo.isMuted()) continue;
 					}
 					case "ban" -> {
+						PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), nickname);
 						if (playerInfo.isBanned()) continue;
 					}
 				}
 				if (id != -1) {
 					completions.add(String.valueOf(id));
 				}
-				if (playerInfo.getPlayerFile().exists()) {
+				if (offlinePlayer.hasPlayedBefore()) {
 					completions.add(nickname);
 				}
 			}

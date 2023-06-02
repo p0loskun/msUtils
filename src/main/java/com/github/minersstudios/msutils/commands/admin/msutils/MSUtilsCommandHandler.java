@@ -42,10 +42,14 @@ import java.util.Locale;
 public class MSUtilsCommandHandler implements MSCommandExecutor {
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public boolean onCommand(
+			@NotNull CommandSender sender, 
+			@NotNull Command command, 
+			@NotNull String label, 
+			String @NotNull ... args
+	) {
 		if (args.length > 0) {
-			String utilsCommand = args[0].toLowerCase(Locale.ROOT);
-			switch (utilsCommand) {
+			switch (args[0].toLowerCase(Locale.ENGLISH)) {
 				case "reload" -> ReloadCommand.runCommand(sender);
 				case "updateids" -> UpdateIdsCommand.runCommand(sender);
 				default -> {

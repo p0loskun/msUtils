@@ -26,7 +26,7 @@ public class PlayerAdvancementDoneListener implements Listener {
 		event.message(
 				Component.space()
 				.append(Component.translatable(
-				"chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
+				"chat.type.advancement." + frame.name().toLowerCase(Locale.ENGLISH),
 				MSPlayerUtils.getPlayerInfo(event.getPlayer()).createDefaultName(),
 				text("[")
 				.append(advancementDisplay.title())

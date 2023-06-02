@@ -32,7 +32,12 @@ public class FartCommand implements MSCommandExecutor {
 	private final SecureRandom random = new SecureRandom();
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public boolean onCommand(
+			@NotNull CommandSender sender, 
+			@NotNull Command command, 
+			@NotNull String label, 
+			String @NotNull ... args
+	) {
 		if (!(sender instanceof Player player)) {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;

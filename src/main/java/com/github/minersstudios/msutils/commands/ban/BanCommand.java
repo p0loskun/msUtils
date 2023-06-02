@@ -31,7 +31,12 @@ import static net.kyori.adventure.text.Component.text;
 public class BanCommand implements MSCommandExecutor {
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public boolean onCommand(
+			@NotNull CommandSender sender, 
+			@NotNull Command command, 
+			@NotNull String label, 
+			String @NotNull ... args
+	) {
 		if (args.length < 2 || !args[1].matches("\\d+[smhdMy]")) return false;
 		Date date = CommandUtils.getDateFromString(args[1]);
 		String reason = args.length > 2

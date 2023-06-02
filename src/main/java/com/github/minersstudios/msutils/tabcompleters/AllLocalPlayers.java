@@ -16,7 +16,12 @@ import java.util.List;
 public class AllLocalPlayers implements TabCompleter {
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public @Nullable List<String> onTabComplete(
+			@NotNull CommandSender sender,
+			@NotNull Command command,
+			@NotNull String label,
+			String @NotNull ... args
+	) {
 		List<String> completions = new ArrayList<>();
 		if (args.length == 1) {
 			for (Player player : Bukkit.getOnlinePlayers()) {

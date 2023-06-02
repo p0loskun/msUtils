@@ -34,9 +34,9 @@ public class PlayerSettings {
 		return this.resourcePackType.getValue();
 	}
 
-	public void setResourcePackType(@NotNull ResourcePack.Type resourcePackType) {
+	public void setResourcePackType(@Nullable ResourcePack.Type resourcePackType) {
 		this.resourcePackType.setValue(resourcePackType);
-		this.resourcePackType.setForYaml(this.config, resourcePackType.name());
+		this.resourcePackType.setForYaml(this.config, resourcePackType == null ? null : resourcePackType.name());
 	}
 
 	public static class Parameter<V> {

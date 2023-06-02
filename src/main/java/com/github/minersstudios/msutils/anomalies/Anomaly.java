@@ -65,7 +65,7 @@ public class Anomaly {
 		if (slotsSection != null) {
 			try {
 				for (String string : slotsSection.getValues(false).keySet()) {
-					equipmentSlots.add(EquipmentSlot.valueOf(string.toUpperCase(Locale.ROOT)));
+					equipmentSlots.add(EquipmentSlot.valueOf(string.toUpperCase(Locale.ENGLISH)));
 				}
 			} catch (IllegalArgumentException e) {
 				throw new IllegalArgumentException("Anomaly config specified an invalid equipment slot name", e);
@@ -74,7 +74,7 @@ public class Anomaly {
 
 		Map<EquipmentSlot, ItemStack> items = new HashMap<>();
 		for (EquipmentSlot equipmentSlot : equipmentSlots) {
-			String name = equipmentSlot.name().toLowerCase(Locale.ROOT);
+			String name = equipmentSlot.name().toLowerCase(Locale.ENGLISH);
 			ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
 			ItemMeta itemMeta = itemStack.getItemMeta();
 			itemMeta.setCustomModelData(slotsSection.getInt(name + ".custom-model-data"));

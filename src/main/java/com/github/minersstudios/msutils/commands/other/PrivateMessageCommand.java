@@ -36,7 +36,12 @@ import static net.kyori.adventure.text.Component.text;
 public class PrivateMessageCommand implements MSCommandExecutor {
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public boolean onCommand(
+			@NotNull CommandSender sender, 
+			@NotNull Command command, 
+			@NotNull String label, 
+			String @NotNull ... args
+	) {
 		if (args.length < 2) return false;
 		PlayerInfo senderInfo = sender instanceof Player player
 				? MSPlayerUtils.getPlayerInfo(player)

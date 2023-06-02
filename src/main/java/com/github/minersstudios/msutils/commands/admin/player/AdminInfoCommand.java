@@ -10,9 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-public class InfoCommand {
+public class AdminInfoCommand {
 
-	public static boolean runCommand(@NotNull CommandSender sender, @NotNull PlayerInfo playerInfo) {
+	public static boolean runCommand(
+			@NotNull CommandSender sender,
+			@NotNull PlayerInfo playerInfo
+	) {
 		PlayerFile playerFile = playerInfo.getPlayerFile();
 		PlayerName playerName = playerFile.getPlayerName();
 		PlayerSettings playerSettings = playerFile.getPlayerSettings();
