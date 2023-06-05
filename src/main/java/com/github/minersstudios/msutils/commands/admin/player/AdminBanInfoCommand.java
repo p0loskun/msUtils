@@ -31,7 +31,7 @@ public class AdminBanInfoCommand {
 		if (args.length == 2) {
 			ChatUtils.sendFine(sender,
 					text("Информация о бане игрока : ")
-					.append(playerInfo.createGrayIDGreenName())
+					.append(playerInfo.getGrayIDGreenName())
 					.appendNewline()
 					.append(
 							banned
@@ -49,17 +49,18 @@ public class AdminBanInfoCommand {
 		if (!banned) {
 			ChatUtils.sendError(sender,
 					text("Данный параметр не может быть изменён/считан, так как игрок : ")
-					.append(playerInfo.createGrayIDGreenName())
+					.append(playerInfo.getGrayIDGreenName())
 					.appendNewline()
 					.append(text("    - Не забанен"))
 			);
+			return true;
 		}
 		switch (paramString) {
 			case "reason" -> {
 				if (!haveArg) {
 					ChatUtils.sendFine(sender,
 							text("Причиной бана игрока : ")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.appendNewline()
 							.append(text("    Является : \""))
 							.append(text(playerFile.getBanReason()))
@@ -72,7 +73,7 @@ public class AdminBanInfoCommand {
 				playerFile.save();
 				ChatUtils.sendFine(sender,
 						text("Причина бана игрока : ")
-						.append(playerInfo.createGrayIDGreenName())
+						.append(playerInfo.getGrayIDGreenName())
 						.appendNewline()
 						.append(text("    Была успешно изменена на : \""))
 						.append(text(reason))
@@ -84,7 +85,7 @@ public class AdminBanInfoCommand {
 				if (!haveArg) {
 					ChatUtils.sendFine(sender,
 							text("Крайней датой бана игрока : ")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.appendNewline()
 							.append(text("    Является : "))
 							.append(text(DateUtils.getDate(new Date(playerFile.getBannedTo()), sender)))
@@ -95,7 +96,11 @@ public class AdminBanInfoCommand {
 					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
 					return true;
 				}
-				Date date = CommandUtils.getDateFromString(args[3]);
+				Date date = CommandUtils.getDateFromString(args[1], false);
+				if (date == null) {
+					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
+					return true;
+				}
 				playerFile.setBannedTo(date.getTime());
 				playerFile.save();
 				BanEntry banEntry = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(playerInfo.getNickname());
@@ -105,7 +110,7 @@ public class AdminBanInfoCommand {
 				}
 				ChatUtils.sendFine(sender,
 						text("Крайней датой бана игрока : ")
-						.append(playerInfo.createGrayIDGreenName())
+						.append(playerInfo.getGrayIDGreenName())
 						.appendNewline()
 						.append(text("    Стала : "))
 						.append(text(DateUtils.getDate(date, sender)))

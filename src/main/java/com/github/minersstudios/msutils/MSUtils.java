@@ -7,11 +7,12 @@ import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msutils.anomalies.tasks.ParticleTask;
 import com.github.minersstudios.msutils.inventory.CraftsMenu;
+import com.github.minersstudios.msutils.inventory.PronounsMenu;
+import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
 import com.github.minersstudios.msutils.listeners.chat.DiscordGuildMessagePreProcessListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.player.Pronouns;
 import com.github.minersstudios.msutils.player.ResourcePack;
-import com.github.minersstudios.msutils.utils.ConfigCache;
+import com.github.minersstudios.msutils.config.ConfigCache;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -181,8 +182,8 @@ public final class MSUtils extends MSPlugin {
 				() -> new ParticleTask().run(), 0L, configCache.anomalyParticlesCheckRate
 		));
 
-		InventoryUtils.registerCustomInventory("pronouns", Pronouns.Menu.create());
-		InventoryUtils.registerCustomInventory("resourcepack", ResourcePack.Menu.create());
+		InventoryUtils.registerCustomInventory("pronouns", PronounsMenu.create());
+		InventoryUtils.registerCustomInventory("resourcepack", ResourcePackMenu.create());
 		InventoryUtils.registerCustomInventory("crafts", CraftsMenu.create());
 	}
 

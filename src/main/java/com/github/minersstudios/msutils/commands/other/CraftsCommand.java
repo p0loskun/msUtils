@@ -1,13 +1,16 @@
 package com.github.minersstudios.msutils.commands.other;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.inventory.CraftsMenu;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @MSCommand(
 		command = "crafts",
@@ -33,5 +36,10 @@ public class CraftsCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 		}
 		return true;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return LiteralArgumentBuilder.literal("crafts").build();
 	}
 }

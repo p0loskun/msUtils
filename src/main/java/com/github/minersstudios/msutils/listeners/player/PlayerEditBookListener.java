@@ -1,6 +1,6 @@
 package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +22,7 @@ public class PlayerEditBookListener implements Listener {
 		event.setNewBookMeta(bookMeta
 				.author(
 						isAnon ? text("Аноним")
-						: MSPlayerUtils.getPlayerInfo(event.getPlayer()).createDefaultName()
+						: MSPlayerUtils.getPlayerInfo(event.getPlayer()).getDefaultName()
 				).title(
 						isAnon ? text(title.substring(1))
 						: bookMeta.title()

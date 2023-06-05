@@ -48,7 +48,10 @@ public class DiscordGuildMessagePreProcessListener {
 		ChatUtils.sendInfo(ChatUtils.serializeLegacyComponent(messageComponent).substring(2));
 	}
 
-	private static @NotNull String replaceReplyPlaceholders(@NotNull String format, @NotNull Message repliedMessage) {
+	private static @NotNull String replaceReplyPlaceholders(
+			@NotNull String format,
+			@NotNull Message repliedMessage
+	) {
 		Function<String, String> escape = MessageUtil.isLegacy(format)
 				? str -> str
 				: str -> str.replaceAll("([<>])", "\\\\$1");

@@ -248,7 +248,11 @@ public class PlayerFile {
 		this.yamlConfiguration.set("mute.to", mutedTo);
 	}
 
-	public void setMute(boolean muted, @NotNull String muteReason, long mutedTo) {
+	public void setMute(
+			boolean muted,
+			@NotNull String muteReason,
+			long mutedTo
+	) {
 		this.setMuted(muted);
 		this.setMuteReason(muteReason);
 		this.setMutedTo(mutedTo);
@@ -281,7 +285,11 @@ public class PlayerFile {
 		this.yamlConfiguration.set("ban.to", bannedTo);
 	}
 
-	public void setBan(boolean banned, @NotNull String banReason, long bannedTo) {
+	public void setBan(
+			boolean banned,
+			@NotNull String banReason,
+			long bannedTo
+	) {
 		this.setBanned(banned);
 		this.setBanReason(banReason);
 		this.setBannedTo(bannedTo);
@@ -311,15 +319,16 @@ public class PlayerFile {
 		);
 	}
 
-	private static void setLocation(@NotNull ConfigurationSection section, @Nullable Location location) {
+	private static void setLocation(
+			@NotNull ConfigurationSection section,
+			@Nullable Location location
+	) {
 		boolean isNull = location == null;
-
 		if (!isNull) {
 			if (location.getWorld() == MSUtils.getWorldDark()) {
 				throw new IllegalArgumentException("The world cannot be world_dark");
 			}
 		}
-
 		section.set("world", isNull ? null : location.getWorld().getName());
 		section.set("x", isNull ? null : location.getX());
 		section.set("y", isNull ? null : location.getY());

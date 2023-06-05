@@ -1,6 +1,6 @@
 package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -22,7 +22,7 @@ public class AdminPronounsCommand {
 		if (args.length == 2) {
 			ChatUtils.sendFine(sender,
 					text("Местоимение игрока : ")
-					.append(playerInfo.createGrayIDGreenName())
+					.append(playerInfo.getGrayIDGreenName())
 					.appendNewline()
 					.append(text("    Равно : \""))
 					.append(text(playerFile.getPronouns().name().toLowerCase(Locale.ENGLISH)))
@@ -42,7 +42,7 @@ public class AdminPronounsCommand {
 			playerFile.save();
 			ChatUtils.sendFine(sender,
 					text("Местоимение игрока : ")
-					.append(playerInfo.createGrayIDGreenName())
+					.append(playerInfo.getGrayIDGreenName())
 					.appendNewline()
 					.append(text("    Было успешно изменено на : \""))
 					.append(text(pronounsString.toLowerCase(Locale.ENGLISH)))

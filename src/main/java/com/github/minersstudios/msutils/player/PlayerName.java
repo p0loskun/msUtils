@@ -7,22 +7,22 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
+import java.util.Locale;
+
 import static com.github.minersstudios.msutils.utils.MessageUtils.Colors.*;
 import static net.kyori.adventure.text.Component.text;
 
-@SuppressWarnings("unused")
 public class PlayerName {
-	private @NotNull Name nickname;
-	private @NotNull Name firstName;
-	private @NotNull Name lastName;
-	private @NotNull Name patronymic;
+	private @NotNull String nickname;
+	private @NotNull String firstName;
+	private @NotNull String lastName;
+	private @NotNull String patronymic;
 
 	protected PlayerName(
-			@NotNull Name nickname,
-			@NotNull Name firstName,
-			@NotNull Name lastName,
-			@NotNull Name patronymic
+			@NotNull String nickname,
+			@NotNull String firstName,
+			@NotNull String lastName,
+			@NotNull String patronymic
 	) {
 		this.nickname = nickname;
 		this.firstName = firstName;
@@ -38,10 +38,10 @@ public class PlayerName {
 			@NotNull String patronymic
 	) {
 		return new PlayerName(
-				Name.create(nickname),
-				Name.create(firstName),
-				Name.create(lastName),
-				Name.create(patronymic)
+				nickname,
+				normalize(firstName),
+				normalize(lastName),
+				normalize(patronymic)
 		);
 	}
 
@@ -77,92 +77,41 @@ public class PlayerName {
 	}
 
 	public @NotNull String getNickname() {
-		return this.nickname.getString();
-	}
-
-	public @NotNull Component getNicknameComponent() {
-		return this.nickname.getComponent();
+		return this.nickname;
 	}
 
 	public void setNickname(@NotNull String nickname) {
-		this.nickname = Name.create(nickname);
+		this.nickname = nickname;
 	}
 
 	public @NotNull String getFirstName() {
-		return this.firstName.getString();
-	}
-
-	public @NotNull Component getFirstNameComponent() {
-		return this.firstName.getComponent();
+		return this.firstName;
 	}
 
 	public void setFirstName(@NotNull String firstName) {
-		this.firstName = Name.create(firstName);
+		this.firstName = normalize(firstName);
 	}
 
 	public @NotNull String getLastName() {
-		return this.lastName.getString();
-	}
-
-	public @NotNull Component getLastNameComponent() {
-		return this.lastName.getComponent();
+		return this.lastName;
 	}
 
 	public void setLastName(@NotNull String lastName) {
-		this.lastName = Name.create(lastName);
+		this.lastName = normalize(lastName);
 	}
 
 	public @NotNull String getPatronymic() {
-		return this.patronymic.getString();
-	}
-
-	public @NotNull Component getPatronymicComponent() {
-		return this.patronymic.getComponent();
+		return this.patronymic;
 	}
 
 	public void setPatronymic(@NotNull String patronymic) {
-		this.patronymic = Name.create(patronymic);
+		this.patronymic = normalize(patronymic);
 	}
 
-	public static class Name {
-		protected @NotNull String string;
-		protected @NotNull Component component;
-
-		protected Name(
-				@NotNull String string,
-				@NotNull Component component
-		) {
-			this.string = string;
-			this.component = component;
-		}
-
-		@Contract("_ -> new")
-		public static @NotNull Name create(@NotNull String string) {
-			return new Name(
-					string,
-					createDefaultStyledText(string)
-			);
-		}
-
-		public void setName(@NotNull String string) {
-			this.string = string;
-			this.component = createDefaultStyledText(string);
-		}
-
-		public @NotNull String getString() {
-			return this.string;
-		}
-
-		public void setString(@NotNull String string) {
-			this.string = string;
-		}
-
-		public @NotNull Component getComponent() {
-			return this.component;
-		}
-
-		public void setComponent(@NotNull Component component) {
-			this.component = component;
-		}
+	private static @NotNull String normalize(@NotNull String string) {
+		if (string.isEmpty()) return string;
+		String firstLetter = string.substring(0, 1).toUpperCase(Locale.ROOT);
+		String other = string.substring(1).toLowerCase(Locale.ROOT);
+		return firstLetter + other;
 	}
 }

@@ -1,10 +1,14 @@
 package com.github.minersstudios.msutils.commands.roleplay;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -14,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.TODO;
@@ -57,5 +62,12 @@ public class SpitCommand implements MSCommandExecutor {
 		}
 		sendRPEventMessage(player, text(playerInfo.getPlayerFile().getPronouns().getSpitMessage()), ME);
 		return true;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return LiteralArgumentBuilder.literal("spit")
+				.then(RequiredArgumentBuilder.argument("речь", StringArgumentType.greedyString()))
+				.build();
 	}
 }

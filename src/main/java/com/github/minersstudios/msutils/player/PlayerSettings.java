@@ -55,7 +55,10 @@ public class PlayerSettings {
 			this.setForYaml(yamlConfiguration, this.value);
 		}
 
-		public void setForYaml(@NotNull YamlConfiguration yamlConfiguration, Object value) {
+		public void setForYaml(
+				@NotNull YamlConfiguration yamlConfiguration,
+				Object value
+		) {
 			yamlConfiguration.set(this.path, value);
 		}
 
@@ -64,7 +67,10 @@ public class PlayerSettings {
 			playerFile.save();
 		}
 
-		public void saveForFile(@NotNull PlayerFile playerFile, Object value) {
+		public void saveForFile(
+				@NotNull PlayerFile playerFile,
+				Object value
+		) {
 			this.setForYaml(
 					playerFile.getYamlConfiguration(),
 					value

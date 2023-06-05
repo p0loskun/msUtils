@@ -1,13 +1,17 @@
 package com.github.minersstudios.msutils.commands.teleport;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -45,7 +49,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 	) {
 		if (args.length == 0) return false;
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
 			if (offlinePlayer == null) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
@@ -67,11 +71,19 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 	}
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public @Nullable List<String> onTabComplete(
+			@NotNull CommandSender sender,
+			@NotNull Command command,
+			@NotNull String label,
+			String @NotNull ... args
+	) {
 		return new AllLocalPlayers().onTabComplete(sender, command, label, args);
 	}
 
-	private static void teleportToLastDeathLocation(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer) {
+	private static void teleportToLastDeathLocation(
+			@NotNull CommandSender sender,
+			@NotNull OfflinePlayer offlinePlayer
+	) {
 		if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
 			ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
 			return;
@@ -81,7 +93,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 		if (offlinePlayer.getPlayer() == null) {
 			ChatUtils.sendWarning(sender,
 					text("Игрок : \"")
-					.append(playerInfo.createGrayIDGreenName())
+					.append(playerInfo.getGrayIDGreenName())
 					.append(text(" ("))
 					.append(text(offlinePlayer.getName()))
 					.append(text(")\" не в сети!"))
@@ -91,7 +103,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 		if (lastDeathLocation == null) {
 			ChatUtils.sendWarning(sender,
 					text("Игрок : \"")
-					.append(playerInfo.createGrayIDGreenName())
+					.append(playerInfo.getGrayIDGreenName())
 					.append(text(" ("))
 					.append(text(offlinePlayer.getName()))
 					.append(text(")\" не имеет последней точки смерти!"))
@@ -101,10 +113,17 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 		offlinePlayer.getPlayer().teleportAsync(lastDeathLocation.add(0.5d, 0.0d, 0.5d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendFine(sender,
 				text("Игрок : \"")
-				.append(playerInfo.createGrayIDGreenName())
+				.append(playerInfo.getGrayIDGreenName())
 				.append(text(" ("))
 				.append(text(offlinePlayer.getName()))
 				.append(text(")\" был телепортирован на последние координаты смерти"))
 		);
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return LiteralArgumentBuilder.literal("teleporttolastdeathlocation")
+				.then(RequiredArgumentBuilder.argument("id/никнейм", StringArgumentType.greedyString()))
+				.build();
 	}
 }

@@ -18,7 +18,7 @@ public class AdminFirstJoinCommand {
 	) {
 		ChatUtils.sendFine(sender,
 				text("Впервые игрок : ")
-				.append(playerInfo.createGrayIDGreenName())
+				.append(playerInfo.getGrayIDGreenName())
 				.appendNewline()
 				.append(text("    Зашёл на сервер в : "))
 				.append(text(DateUtils.getDate(new Date(playerInfo.getPlayerFile().getFirstJoin()), sender)))

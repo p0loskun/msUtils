@@ -1,15 +1,20 @@
 package com.github.minersstudios.msutils.commands.roleplay;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -40,5 +45,12 @@ public class SitCommand implements MSCommandExecutor {
 		}
 		playerInfo.setSitting(MSUtils.getConfigCache().seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
 		return true;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return LiteralArgumentBuilder.literal("sit")
+				.then(RequiredArgumentBuilder.argument("речь", StringArgumentType.greedyString()))
+				.build();
 	}
 }

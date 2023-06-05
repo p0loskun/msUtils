@@ -1,8 +1,10 @@
 package com.github.minersstudios.msutils.commands.admin;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -14,6 +16,7 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -68,5 +71,10 @@ public class GetMapLocationCommand implements MSCommandExecutor {
 				)
 		);
 		return true;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return LiteralArgumentBuilder.literal("getmaplocation").build();
 	}
 }

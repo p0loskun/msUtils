@@ -1,12 +1,14 @@
 package com.github.minersstudios.msutils.commands.admin;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -18,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -48,7 +52,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("remove")) {
-				OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[1]));
+				OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[1]);
 				if (offlinePlayer == null || offlinePlayer.getName() == null) {
 					ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 					return true;
@@ -57,7 +61,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				if (playerInfo.setWhiteListed(false)) {
 					ChatUtils.sendFine(sender,
 							text("Игрок : \"")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.append(text(" ("))
 							.append(text(offlinePlayer.getName()))
 							.append(text(")\" был удалён из белого списка"))
@@ -66,7 +70,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				}
 				ChatUtils.sendWarning(sender,
 						text("Игрок : \"")
-						.append(playerInfo.createGrayIDGoldName())
+						.append(playerInfo.getGrayIDGoldName())
 						.append(text(" ("))
 						.append(text(offlinePlayer.getName()))
 						.append(text(")\" не состоит в белом списке"))
@@ -86,7 +90,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				if (playerInfo.setWhiteListed(true)) {
 					ChatUtils.sendFine(sender,
 							text("Игрок : \"")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.append(text(" ("))
 							.append(text(args[1]))
 							.append(text(")\" был добавлен в белый список"))
@@ -95,7 +99,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				}
 				ChatUtils.sendWarning(sender,
 						text("Игрок : \"")
-						.append(playerInfo.createGrayIDGoldName())
+						.append(playerInfo.getGrayIDGoldName())
 						.append(text(" ("))
 						.append(text(args[1]))
 						.append(text(")\" уже состоит в белом списке"))
@@ -106,7 +110,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				if (playerInfo.setWhiteListed(false)) {
 					ChatUtils.sendFine(sender,
 							text("Игрок : \"")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.append(text(" ("))
 							.append(text(args[1]))
 							.append(text(")\" был удалён из белого списка"))
@@ -115,7 +119,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 				}
 				ChatUtils.sendWarning(sender,
 						text("Игрок : \"")
-						.append(playerInfo.createGrayIDGoldName())
+						.append(playerInfo.getGrayIDGoldName())
 						.append(text(" ("))
 						.append(text(args[1]))
 						.append(text(")\" не состоит в белом списке"))
@@ -129,7 +133,12 @@ public class WhitelistCommand implements MSCommandExecutor {
 	}
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public @Nullable List<String> onTabComplete(
+			@NotNull CommandSender sender,
+			@NotNull Command command,
+			@NotNull String label,
+			String @NotNull ... args
+	) {
 		List<String> completions = new ArrayList<>();
 		if (args.length == 1) {
 			completions.add("add");
@@ -146,5 +155,14 @@ public class WhitelistCommand implements MSCommandExecutor {
 			}
 		}
 		return completions;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return literal("whitelist")
+				.then(literal("add").then(argument("никнейм", StringArgumentType.word())))
+				.then(literal("remove").then(argument("id/никнейм", StringArgumentType.word())))
+				.then(literal("reload"))
+				.build();
 	}
 }

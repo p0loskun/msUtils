@@ -1,4 +1,4 @@
-package com.github.minersstudios.msutils.utils;
+package com.github.minersstudios.msutils.config;
 
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.anomalies.Anomaly;
@@ -12,7 +12,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +29,7 @@ public final class ConfigCache {
 	public final @NotNull YamlConfiguration configYaml;
 
 	public final @NotNull File idsFile;
-	public final @NotNull YamlConfiguration idsYaml;
+	public @NotNull YamlConfiguration idsYaml;
 
 	public final @NotNull File mutedPlayersFile;
 	public final @NotNull YamlConfiguration mutedPlayersYaml;
@@ -86,7 +85,9 @@ public final class ConfigCache {
 		this.mutedPlayersFile = new File(getInstance().getPluginFolder(), "muted_players.yml");
 		this.mutedPlayersYaml = YamlConfiguration.loadConfiguration(this.mutedPlayersFile);
 
-		this.mutedPlayers.putAll(this.getMutedPlayers());
+		for (Map.Entry<String, Object> uuid : this.mutedPlayersYaml.getValues(true).entrySet()) {
+			this.mutedPlayers.put(Bukkit.getOfflinePlayer(UUID.fromString(uuid.getKey())), (Long) uuid.getValue());
+		}
 
 		this.idsFile = new File(getInstance().getPluginFolder(), "ids.yml");
 		this.idsYaml = YamlConfiguration.loadConfiguration(this.idsFile);
@@ -95,36 +96,6 @@ public final class ConfigCache {
 		}
 
 		this.loadAnomalies();
-	}
-
-	public @NotNull Map<OfflinePlayer, Long> getMutedPlayers() {
-		Map<OfflinePlayer, Long> players = new HashMap<>();
-		for (Map.Entry<String, Object> uuid : this.mutedPlayersYaml.getValues(true).entrySet()) {
-			players.put(Bukkit.getOfflinePlayer(UUID.fromString(uuid.getKey())), (Long) uuid.getValue());
-		}
-		return players;
-	}
-
-	public void addMutedPlayer(@Nullable OfflinePlayer player, long time) {
-		if (player == null) return;
-		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () -> this.mutedPlayers.put(player, time));
-		this.mutedPlayersYaml.set(player.getUniqueId().toString(), time);
-		try {
-			this.mutedPlayersYaml.save(this.mutedPlayersFile);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public void removeMutedPlayer(@Nullable OfflinePlayer player) {
-		if (player == null) return;
-		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () -> this.mutedPlayers.remove(player));
-		this.mutedPlayersYaml.set(player.getUniqueId().toString(), null);
-		try {
-			this.mutedPlayersYaml.save(this.mutedPlayersFile);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	private void loadAnomalies() {

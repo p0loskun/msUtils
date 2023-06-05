@@ -1,7 +1,7 @@
 package com.github.minersstudios.msutils.commands.admin.player;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.CommandUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
@@ -9,6 +9,10 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
 @MSCommand(
 		command = "player",
@@ -38,7 +45,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 	) {
 		if (args.length < 2) return false;
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
 			if (offlinePlayer == null || offlinePlayer.getName() == null) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
@@ -180,5 +187,72 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 			case "mute-info" -> AdminMuteInfoCommand.runCommand(sender, args, playerInfo);
 			default -> false;
 		};
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return literal("player")
+				.then(
+						argument("айди/никнейм", StringArgumentType.word())
+						.then(literal("update"))
+						.then(literal("info"))
+						.then(
+								literal("pronouns")
+								.then(literal("he"))
+								.then(literal("she"))
+								.then(literal("they"))
+						)
+						.then(
+								literal("game-params")
+								.then(
+										literal("game-mode")
+										.then(literal("survival"))
+										.then(literal("creative"))
+										.then(literal("spectator"))
+										.then(literal("adventure"))
+								)
+								.then(
+										literal("health")
+										.then(argument("значение", DoubleArgumentType.doubleArg()))
+								)
+								.then(
+										literal("air")
+										.then(argument("значение", IntegerArgumentType.integer()))
+								)
+						)
+						.then(literal("first-join"))
+						.then(
+								literal("settings")
+								.then(
+										literal("resourcepack-type")
+										.then(literal("full"))
+										.then(literal("lite"))
+										.then(literal("none"))
+										.then(literal("null"))
+								)
+						)
+						.then(
+								literal("ban-info")
+								.then(
+										literal("reason")
+										.then(argument("причина", StringArgumentType.greedyString()))
+								)
+								.then(
+										literal("time")
+										.then(argument("время", DoubleArgumentType.doubleArg()))
+								)
+						)
+						.then(
+								literal("mute-info")
+								.then(
+										literal("reason")
+										.then(argument("причина", StringArgumentType.greedyString()))
+								)
+								.then(
+										literal("time")
+										.then(argument("время", DoubleArgumentType.doubleArg()))
+								)
+						)
+				).build();
 	}
 }

@@ -44,10 +44,15 @@ public final class MessageUtils {
 	 * @param chat       chat
 	 * @param message    message
 	 */
-	public static void sendMessageToChat(@NotNull PlayerInfo playerInfo, @Nullable Location location, Chat chat, @NotNull Component message) {
+	public static void sendMessageToChat(
+			@NotNull PlayerInfo playerInfo,
+			@Nullable Location location,
+			@NotNull Chat chat,
+			@NotNull Component message
+	) {
 		if (chat == Chat.LOCAL && location != null) {
 			Component localMessage = space()
-					.append(playerInfo.createDefaultName()
+					.append(playerInfo.getDefaultName()
 					.append(text(" : "))
 					.color(CHAT_COLOR_PRIMARY)
 					.hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
@@ -66,7 +71,7 @@ public final class MessageUtils {
 		}
 		Component globalMessage = space()
 				.append(text("[WM] ")
-				.append(playerInfo.createDefaultName()
+				.append(playerInfo.getDefaultName()
 				.append(text(" : ")))
 				.color(CHAT_COLOR_PRIMARY)
 				.hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
@@ -92,17 +97,22 @@ public final class MessageUtils {
 	 * @param message  private message
 	 * @return True if sender or receiver == null
 	 */
-	public static boolean sendPrivateMessage(@NotNull PlayerInfo sender, @NotNull PlayerInfo receiver, @NotNull Component message) {
+	public static boolean sendPrivateMessage(
+			@NotNull PlayerInfo sender,
+			@NotNull PlayerInfo receiver,
+			@NotNull Component message
+	) {
 		CommandSender commandSender =
 				sender == MSUtils.consolePlayerInfo
 				? Bukkit.getConsoleSender()
 				: sender.getOnlinePlayer();
-		if (commandSender != null && receiver.getOnlinePlayer() != null) {
+		Player receiverPlayer = receiver.getOnlinePlayer();
+		if (commandSender != null && receiverPlayer != null) {
 			String privateMessage = serializeLegacyComponent(
 					space()
-					.append(sender.createDefaultName()
+					.append(sender.getDefaultName()
 					.append(text(" -> ")
-					.append(receiver.createDefaultName()
+					.append(receiver.getDefaultName()
 					.append(text(" : ")))))
 					.color(CHAT_COLOR_PRIMARY)
 					.append(message.color(CHAT_COLOR_SECONDARY))
@@ -110,15 +120,15 @@ public final class MessageUtils {
 			commandSender.sendMessage(
 					Badges.SPEECH.append(text()
 					.append(text("Вы -> ")
-					.append(receiver.createDefaultName()
+					.append(receiver.getDefaultName()
 					.append(text(" : ")))
 					.hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
 					.clickEvent(ClickEvent.suggestCommand("/pm " + receiver.getID() + " ")))
 					.color(CHAT_COLOR_PRIMARY))
 					.append(message.color(CHAT_COLOR_SECONDARY))
 			);
-			receiver.getOnlinePlayer().sendMessage(
-					Badges.SPEECH.append(sender.createDefaultName().append(text(" -> Вам : "))
+			receiverPlayer.sendMessage(
+					Badges.SPEECH.append(sender.getDefaultName().append(text(" -> Вам : "))
 					.color(CHAT_COLOR_PRIMARY)
 					.hoverEvent(HoverEvent.showText(text("Нажмите, чтобы написать приватное сообщение данному игроку", NamedTextColor.GRAY)))
 					.clickEvent(ClickEvent.suggestCommand("/pm " + sender.getID() + " ")))
@@ -139,7 +149,12 @@ public final class MessageUtils {
 	 * @param action action
 	 * @param rolePlayActionType rp action type
 	 */
-	public static void sendRPEventMessage(@NotNull Player player, @Nullable Component speech, @NotNull Component action, @NotNull RolePlayActionType rolePlayActionType) {
+	public static void sendRPEventMessage(
+			@NotNull Player player,
+			@Nullable Component speech,
+			@NotNull Component action,
+			@NotNull RolePlayActionType rolePlayActionType
+	) {
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 		Component fullMessage;
 		if (rolePlayActionType == RolePlayActionType.DO) {
@@ -147,7 +162,7 @@ public final class MessageUtils {
 					text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
 					.append(action.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
 					.append(text(" * | ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY))
-					.append(playerInfo.createGrayIDGoldName());
+					.append(playerInfo.getGrayIDGoldName());
 		} else if (rolePlayActionType == RolePlayActionType.IT) {
 			fullMessage =
 					text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
@@ -163,7 +178,7 @@ public final class MessageUtils {
 					.append(text(playerInfo.getPlayerFile().getPronouns().getSaidMessage())))
 					.color(RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
 					.append(space())
-					.append(playerInfo.createGrayIDGoldName())
+					.append(playerInfo.getGrayIDGoldName())
 					.append(text(", ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY))
 					.append(action
 					.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
@@ -171,7 +186,7 @@ public final class MessageUtils {
 		} else {
 			fullMessage =
 					text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
-					.append(playerInfo.createGrayIDGoldName())
+					.append(playerInfo.getGrayIDGoldName())
 					.append(space()
 					.append(action.color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY)))
 					.append(text(" *", RP_MESSAGE_MESSAGE_COLOR_PRIMARY));
@@ -185,7 +200,11 @@ public final class MessageUtils {
 		ChatUtils.sendInfo(serializeLegacyComponent(fullMessage));
 	}
 
-	public static void sendRPEventMessage(@NotNull Player player, @NotNull Component action, @NotNull RolePlayActionType rolePlayActionType) {
+	public static void sendRPEventMessage(
+			@NotNull Player player,
+			@NotNull Component action,
+			@NotNull RolePlayActionType rolePlayActionType
+	) {
 		sendRPEventMessage(player, null, action, rolePlayActionType);
 	}
 
@@ -195,20 +214,23 @@ public final class MessageUtils {
 	 * @param killed killed player
 	 * @param killer killer player
 	 */
-	public static void sendDeathMessage(@NotNull Player killed, @Nullable Player killer) {
+	public static void sendDeathMessage(
+			@NotNull Player killed,
+			@Nullable Player killer
+	) {
 		PlayerInfo killedInfo = MSPlayerUtils.getPlayerInfo(killed), killerInfo = killer != null ? MSPlayerUtils.getPlayerInfo(killer) : null;
 		killedInfo.setLastDeathLocation();
 		Component deathMessage =
 				killerInfo != null
 				? space()
-					.append(killerInfo.createGoldenName()
+					.append(killerInfo.getGoldenName()
 					.append(space()))
 					.append(text(killerInfo.getPlayerFile().getPronouns().getKillMessage())
 					.color(JOIN_MESSAGE_COLOR_PRIMARY)
 					.append(space()))
-					.append(killedInfo.createGoldenName())
+					.append(killedInfo.getGoldenName())
 				: space()
-					.append(killedInfo.createGoldenName()
+					.append(killedInfo.getGoldenName()
 					.append(space()))
 					.append(text(killedInfo.getPlayerFile().getPronouns().getDeathMessage()))
 					.color(JOIN_MESSAGE_COLOR_PRIMARY);
@@ -228,7 +250,7 @@ public final class MessageUtils {
 
 		Location deathLocation = killed.getLocation();
 		sendInfo(text("Мир и координаты смерти игрока : \"")
-				.append(killedInfo.createDefaultName())
+				.append(killedInfo.getDefaultName())
 				.append(text(" ("))
 				.append(text(killed.getName()))
 				.append(text(")\" : "))
@@ -251,7 +273,7 @@ public final class MessageUtils {
 		Player player = playerInfo.getOnlinePlayer();
 		if (!playerInfo.isOnline(true) || player == null) return;
 		Component joinMessage = space()
-						.append(playerInfo.createGoldenName()
+						.append(playerInfo.getGoldenName()
 						.append(space()))
 						.append(text(playerInfo.getPlayerFile().getPronouns().getJoinMessage()))
 						.color(JOIN_MESSAGE_COLOR_PRIMARY);
@@ -276,10 +298,13 @@ public final class MessageUtils {
 	 * @param playerInfo playerInfo
 	 * @param player     player
 	 */
-	public static void sendQuitMessage(@NotNull PlayerInfo playerInfo, @NotNull Player player) {
+	public static void sendQuitMessage(
+			@NotNull PlayerInfo playerInfo,
+			@NotNull Player player
+	) {
 		if (!playerInfo.isOnline()) return;
 		Component quitMessage = space()
-						.append(playerInfo.createGoldenName()
+						.append(playerInfo.getGoldenName()
 						.append(space()))
 						.append(text(playerInfo.getPlayerFile().getPronouns().getQuitMessage()))
 						.color(JOIN_MESSAGE_COLOR_PRIMARY);
@@ -298,7 +323,12 @@ public final class MessageUtils {
 		ChatUtils.sendInfo(stringQuitMessage);
 	}
 
-	private static void sendActionMessage(@NotNull Player player, TextChannel textChannel, @NotNull String actionMessage, int colorRaw) {
+	private static void sendActionMessage(
+			@NotNull Player player,
+			TextChannel textChannel,
+			@NotNull String actionMessage,
+			int colorRaw
+	) {
 		if (DiscordUtil.getJda() == null) return;
 		DiscordUtil.queueMessage(textChannel,
 				DiscordSRV.translateMessage(

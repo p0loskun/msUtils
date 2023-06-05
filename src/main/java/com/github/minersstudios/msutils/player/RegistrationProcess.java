@@ -6,6 +6,8 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.inventory.PronounsMenu;
+import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
@@ -16,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
@@ -58,7 +59,7 @@ public class RegistrationProcess {
 				this.sendWarningMessage();
 				return false;
 			}
-			this.playerInfo.getPlayerFile().getPlayerName().setFirstName(strNormalize(firstname));
+			this.playerInfo.getPlayerFile().getPlayerName().setFirstName(firstname);
 
 			this.sendDialogueMessage("Интересно...", 25L);
 			this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем", 100L);
@@ -78,7 +79,7 @@ public class RegistrationProcess {
 				this.sendWarningMessage();
 				return false;
 			}
-			this.playerInfo.getPlayerFile().getPlayerName().setLastName(strNormalize(lastname));
+			this.playerInfo.getPlayerFile().getPlayerName().setLastName(lastname);
 			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setPatronymic, 10L);
 			return true;
 		});
@@ -95,7 +96,7 @@ public class RegistrationProcess {
 
 			PlayerFile playerFile = this.playerInfo.getPlayerFile();
 			PlayerName name = playerFile.getPlayerName();
-			name.setPatronymic(strNormalize(patronymic));
+			name.setPatronymic(patronymic);
 			playerFile.updateName();
 			playerFile.save();
 
@@ -110,13 +111,16 @@ public class RegistrationProcess {
 			this.sendDialogueMessage("Слушай", 100L);
 			this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
 
-			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> Pronouns.Menu.open(this.player), 225L);
+			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> PronounsMenu.open(this.player), 225L);
 			return true;
 		});
 		menu.open(this.player);
 	}
 
-	public void setPronouns(@NotNull Player player, @NotNull PlayerInfo playerInfo) {
+	public void setPronouns(
+			@NotNull Player player,
+			@NotNull PlayerInfo playerInfo
+	) {
 		this.player = player;
 		this.playerLocation = player.getLocation();
 		this.playerInfo = playerInfo;
@@ -132,9 +136,9 @@ public class RegistrationProcess {
 
 	private void setOther() {
 		PlayerSettings playerSettings = this.playerInfo.getPlayerFile().getPlayerSettings();
-		this.player.displayName(this.playerInfo.createDefaultName());
+		this.player.displayName(this.playerInfo.getDefaultName());
 		if (playerSettings.getResourcePackType() == null) {
-			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> ResourcePack.Menu.open(this.player));
+			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> ResourcePackMenu.open(this.player));
 		} else if (playerSettings.getResourcePackType() == ResourcePack.Type.NONE) {
 			Bukkit.getScheduler().runTask(MSUtils.getInstance(), this.playerInfo::teleportToLastLeaveLocation);
 		} else {
@@ -155,10 +159,6 @@ public class RegistrationProcess {
 			);
 			this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 0.5f, 1.5f);
 		}, delay);
-	}
-
-	private static @NotNull String strNormalize(@NotNull String string) {
-		return string.substring(0, 1).toUpperCase(Locale.ROOT) + string.substring(1).toLowerCase(Locale.ROOT);
 	}
 
 	public static final class SignMenu {

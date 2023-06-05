@@ -32,7 +32,7 @@ public class AdminSettingsCommand {
 					ResourcePack.Type type = playerSettings.getResourcePackType();
 					ChatUtils.sendFine(sender,
 							text("Тип ресурс-пака игрока : ")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.appendNewline()
 							.append(text("    Равен : \""))
 							.append(text(type == null ? "null" : type.name().toLowerCase(Locale.ENGLISH)))
@@ -57,7 +57,7 @@ public class AdminSettingsCommand {
 				}
 				ChatUtils.sendFine(sender,
 						text("Тип ресурс-пака игрока : ")
-						.append(playerInfo.createGrayIDGreenName())
+						.append(playerInfo.getGrayIDGreenName())
 						.appendNewline()
 						.append(text("    Был успешно изменён на : \""))
 						.append(text(paramArgString))

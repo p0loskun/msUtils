@@ -1,7 +1,7 @@
 package com.github.minersstudios.msutils.commands.teleport;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
@@ -51,7 +51,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 	) {
 		if (args.length < 2) return false;
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
 			if (offlinePlayer == null) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
@@ -71,7 +71,12 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 	}
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public @Nullable List<String> onTabComplete(
+			@NotNull CommandSender sender,
+			@NotNull Command command,
+			@NotNull String label,
+			String @NotNull ... args
+	) {
 		List<String> completions = new ArrayList<>();
 		if (args.length == 1) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
@@ -93,7 +98,11 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		return completions;
 	}
 
-	private static boolean teleportToWorld(@NotNull CommandSender sender, @NotNull OfflinePlayer offlinePlayer, String @NotNull ... args) {
+	private static boolean teleportToWorld(
+			@NotNull CommandSender sender,
+			@NotNull OfflinePlayer offlinePlayer,
+			String @NotNull ... args
+	) {
 		if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
 			ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
 			return true;
@@ -102,7 +111,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		if (offlinePlayer.getPlayer() == null) {
 			ChatUtils.sendWarning(sender,
 					text("Игрок : \"")
-					.append(playerInfo.createGrayIDGoldName())
+					.append(playerInfo.getGrayIDGoldName())
 					.append(text("\" не в сети!"))
 			);
 			return true;
@@ -130,7 +139,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 		offlinePlayer.getPlayer().teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendFine(sender,
 				text("Игрок : \"")
-				.append(playerInfo.createGrayIDGreenName())
+				.append(playerInfo.getGrayIDGreenName())
 				.append(text(" ("))
 				.append(text(args[0]))
 				.append(text(")\" был телепортирован :"))

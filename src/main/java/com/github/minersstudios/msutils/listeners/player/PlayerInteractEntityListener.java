@@ -1,6 +1,6 @@
 package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
@@ -40,7 +40,7 @@ public class PlayerInteractEntityListener implements Listener {
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(clickedPlayer);
 			playerWhoClicked.sendActionBar(
 					empty()
-					.append(playerInfo.createGoldenName())
+					.append(playerInfo.getGoldenName())
 					.append(space())
 					.append(text(playerInfo.getPlayerFile().getPlayerName().getPatronymic(), MessageUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY))
 			);

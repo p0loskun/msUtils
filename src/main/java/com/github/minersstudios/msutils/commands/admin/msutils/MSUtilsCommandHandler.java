@@ -1,16 +1,17 @@
 package com.github.minersstudios.msutils.commands.admin.msutils;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
+
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
 @MSCommand(
 		command = "msutils",
@@ -56,18 +57,17 @@ public class MSUtilsCommandHandler implements MSCommandExecutor {
 					return false;
 				}
 			}
+		} else {
+			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
-		if (args.length == 1) {
-			return List.of(
-					"reload",
-					"updateids"
-			);
-		}
-		return new ArrayList<>();
+	public @Nullable CommandNode<?> getCommandNode() {
+		return literal("msutils")
+				.then(literal("reload"))
+				.then(literal("updateids"))
+				.build();
 	}
 }

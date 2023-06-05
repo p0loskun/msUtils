@@ -1,6 +1,6 @@
 package com.github.minersstudios.msutils.listeners.inventory;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import org.bukkit.Bukkit;

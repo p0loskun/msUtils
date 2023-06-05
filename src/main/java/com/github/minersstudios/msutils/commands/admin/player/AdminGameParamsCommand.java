@@ -36,7 +36,7 @@ public class AdminGameParamsCommand {
 				if (!haveArg) {
 					ChatUtils.sendFine(sender,
 							text("Режим игры игрока : ")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.appendNewline()
 							.append(text("    Равен : "))
 							.appendNewline()
@@ -68,7 +68,7 @@ public class AdminGameParamsCommand {
 				playerFile.save();
 				ChatUtils.sendFine(sender,
 						text("Режим игры игрока : ")
-						.append(playerInfo.createGrayIDGreenName())
+						.append(playerInfo.getGrayIDGreenName())
 						.appendNewline()
 						.append(text("    Был успешно изменён на : \""))
 						.append(text(paramArgString))
@@ -80,7 +80,7 @@ public class AdminGameParamsCommand {
 				if (!haveArg) {
 					ChatUtils.sendFine(sender,
 							text("Уровень здоровья игрока : ")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.appendNewline()
 							.append(text("    Равен : "))
 							.appendNewline()
@@ -114,7 +114,7 @@ public class AdminGameParamsCommand {
 				playerFile.save();
 				ChatUtils.sendFine(sender,
 						text("Уровень здоровья игрока : ")
-						.append(playerInfo.createGrayIDGreenName())
+						.append(playerInfo.getGrayIDGreenName())
 						.appendNewline()
 						.append(text("    Был успешно изменён на : "))
 						.append(text(Double.toString(health)))
@@ -125,7 +125,7 @@ public class AdminGameParamsCommand {
 				if (!haveArg) {
 					ChatUtils.sendFine(sender,
 							text("Уровень воздуха игрока : ")
-							.append(playerInfo.createGrayIDGreenName())
+							.append(playerInfo.getGrayIDGreenName())
 							.appendNewline()
 							.append(text("    Равен : "))
 							.appendNewline()
@@ -159,7 +159,7 @@ public class AdminGameParamsCommand {
 				playerFile.save();
 				ChatUtils.sendFine(sender,
 						text("Уровень воздуха игрока : ")
-						.append(playerInfo.createGrayIDGreenName())
+						.append(playerInfo.getGrayIDGreenName())
 						.appendNewline()
 						.append(text("    Был успешно изменён на : "))
 						.append(text(air))

@@ -1,7 +1,8 @@
 package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.inventory.PronounsMenu;
 import com.github.minersstudios.msutils.player.*;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ public class PlayerJoinListener implements Listener {
 		event.joinMessage(null);
 
 		playerInfo.hideNameTag();
-		player.displayName(playerInfo.createDefaultName());
+		player.displayName(playerInfo.getDefaultName());
 		if (player.isDead()) {
 			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
 				player.spigot().respawn();
@@ -48,7 +49,7 @@ public class PlayerJoinListener implements Listener {
 				} else {
 					task.cancel();
 					if (playerFile.getYamlConfiguration().getString("pronouns") == null) {
-						Pronouns.Menu.open(player);
+						PronounsMenu.open(player);
 					} else {
 						if (playerFile.getPlayerSettings().getResourcePackType() == ResourcePack.Type.NONE) {
 							playerInfo.teleportToLastLeaveLocation();

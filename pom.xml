@@ -91,6 +91,10 @@
 			<url>https://github.com/p0loskun/maven-paper-nms/raw/main</url>
 		</repository>
 		<repository>
+			<id>minecraft-repo</id>
+			<url>https://libraries.minecraft.net/</url>
+		</repository>
+		<repository>
 			<id>codemc-repo</id>
 			<url>https://repo.codemc.org/repository/maven-public/</url>
 		</repository>
@@ -121,6 +125,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>io.papermc.paper</groupId>
+			<artifactId>paper-mojangapi</artifactId>
+			<version>1.19.4-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>ca.bkaw</groupId>
 			<artifactId>paper-nms</artifactId>
 			<version>1.19.4-SNAPSHOT</version>
@@ -147,7 +157,7 @@
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msCore</artifactId>
-			<version>release-ce08d5afc9-1</version>
+			<version>release-6eef0fee28-1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

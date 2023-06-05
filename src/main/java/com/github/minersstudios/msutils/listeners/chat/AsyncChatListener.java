@@ -1,6 +1,6 @@
 package com.github.minersstudios.msutils.listeners.chat;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.chat.ChatBuffer;
 import com.github.minersstudios.msutils.player.PlayerInfo;

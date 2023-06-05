@@ -16,7 +16,7 @@ public class AdminUpdateCommand {
 		playerInfo.update();
 		ChatUtils.sendFine(sender,
 				text("Данные игрока : ")
-				.append(playerInfo.createGrayIDGreenName())
+				.append(playerInfo.getGrayIDGreenName())
 				.append(text(" были успешно обновлены"))
 		);
 		return true;

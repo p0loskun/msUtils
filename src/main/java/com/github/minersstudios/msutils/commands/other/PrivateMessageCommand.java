@@ -1,7 +1,7 @@
 package com.github.minersstudios.msutils.commands.other;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
@@ -9,6 +9,8 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -19,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static com.github.minersstudios.msutils.utils.MessageUtils.sendPrivateMessage;
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -52,37 +56,51 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 		}
 		String message = ChatUtils.extractMessage(args, 1);
 		if (args[0].matches("-?\\d+")) {
-			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(Integer.parseInt(args[0]));
+			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
 			if (!(offlinePlayer instanceof Player player)) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-			if (!playerInfo.isOnline()) {
+			if (!playerInfo.isOnline() && !sender.hasPermission("msutils.*")) {
 				ChatUtils.sendWarning(sender, "Данный игрок не в сети");
 				return true;
 			}
-			return sendPrivateMessage(senderInfo, playerInfo, text(message));
+			sendPrivateMessage(senderInfo, playerInfo, text(message));
+			return true;
 		}
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
-			if (!(offlinePlayer instanceof Player player)) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
-				return true;
+			if (offlinePlayer instanceof Player player) {
+				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+				if (playerInfo.isOnline() || sender.hasPermission("msutils.*")) {
+					sendPrivateMessage(senderInfo, playerInfo, text(message));
+					return true;
+				}
 			}
-			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-			if (!playerInfo.isOnline()) {
-				ChatUtils.sendWarning(sender, "Данный игрок не в сети");
-				return true;
-			}
-			return sendPrivateMessage(senderInfo, playerInfo, text(message));
+			ChatUtils.sendWarning(sender, "Данный игрок не в сети");
+			return true;
 		}
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+	public @Nullable List<String> onTabComplete(
+			@NotNull CommandSender sender,
+			@NotNull Command command,
+			@NotNull String label,
+			String @NotNull ... args
+	) {
 		return new AllLocalPlayers().onTabComplete(sender, command, label, args);
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return literal("privatemessage")
+				.then(
+						argument("id/никнейм", StringArgumentType.word())
+						.then(argument("сообщение", StringArgumentType.greedyString()))
+				).build();
 	}
 }

@@ -1,12 +1,16 @@
 package com.github.minersstudios.msutils.commands.roleplay;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.BlockUtils;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
@@ -15,6 +19,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.security.SecureRandom;
 
@@ -68,7 +73,7 @@ public class FartCommand implements MSCommandExecutor {
 					"msdecor:poop",
 					BlockFace.UP,
 					null,
-					ChatUtils.createDefaultStyledText("Какашка " + ChatUtils.serializeLegacyComponent(playerInfo.createDefaultName()))
+					ChatUtils.createDefaultStyledText("Какашка " + ChatUtils.serializeLegacyComponent(playerInfo.getDefaultName()))
 			);
 		}
 		if (args.length > 0) {
@@ -77,5 +82,12 @@ public class FartCommand implements MSCommandExecutor {
 		}
 		sendRPEventMessage(player, text(playerInfo.getPlayerFile().getPronouns().getFartMessage()).append(text(withPoop ? " с подливой" : "")), ME);
 		return true;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return LiteralArgumentBuilder.literal("fart")
+				.then(RequiredArgumentBuilder.argument("речь", StringArgumentType.greedyString()))
+				.build();
 	}
 }

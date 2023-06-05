@@ -6,11 +6,16 @@ import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.github.minersstudios.msutils.utils.MuteFileUtils;
+import com.mojang.authlib.GameProfile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minecraft.server.players.UserWhiteList;
+import net.minecraft.server.players.UserWhiteListEntry;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -38,12 +43,22 @@ public class PlayerInfo {
 
 	private final @NotNull OfflinePlayer offlinePlayer;
 
-	public PlayerInfo(@NotNull UUID uuid, @NotNull String nickname) {
+	private Component defaultName;
+	private Component goldenName;
+	private Component grayIDGoldName;
+	private Component grayIDGreenName;
+
+	public PlayerInfo(
+			@NotNull UUID uuid,
+			@NotNull String nickname
+	) {
 		this.uuid = uuid;
 		this.nickname = nickname;
 
 		this.playerFile = PlayerFile.loadConfig(uuid, nickname);
 		this.offlinePlayer = PlayerUtils.getOfflinePlayer(uuid, nickname);
+
+		this.initNames(this.getID());
 	}
 
 	public PlayerInfo(@NotNull Player player) {
@@ -52,25 +67,38 @@ public class PlayerInfo {
 
 		this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
 		this.offlinePlayer = PlayerUtils.getOfflinePlayer(this.uuid, this.nickname);
+
+		this.initNames(this.getID());
 	}
 
-	public @NotNull Component createDefaultName() {
-		return this.playerFile.getPlayerName().createDefaultName(this.getID());
+	public @NotNull Component getDefaultName() {
+		return this.defaultName;
 	}
 
-	public @NotNull Component createGoldenName() {
-		return this.playerFile.getPlayerName().createGoldenName(this.getID());
+	public @NotNull Component getGoldenName() {
+		return this.goldenName;
 	}
 
-	public @NotNull Component createGrayIDGoldName() {
-		return this.playerFile.getPlayerName().createGrayIDGoldName(this.getID());
+	public @NotNull Component getGrayIDGoldName() {
+		return this.grayIDGoldName;
 	}
 
-	public @NotNull Component createGrayIDGreenName() {
-		return this.playerFile.getPlayerName().createGrayIDGreenName(this.getID());
+	public @NotNull Component getGrayIDGreenName() {
+		return this.grayIDGreenName;
 	}
 
-	public int getID(boolean addPlayer, boolean zeroIfNull) {
+	private void initNames(int id) {
+		PlayerName playerName = this.playerFile.getPlayerName();
+		this.defaultName = playerName.createDefaultName(id);
+		this.goldenName = playerName.createGoldenName(id);
+		this.grayIDGoldName = playerName.createGrayIDGoldName(id);
+		this.grayIDGreenName = playerName.createGrayIDGreenName(id);
+	}
+
+	public int getID(
+			boolean addPlayer,
+			boolean zeroIfNull
+	) {
 		return IDUtils.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
 	}
 
@@ -91,21 +119,33 @@ public class PlayerInfo {
 		return this.playerFile.getMutedTo();
 	}
 
-	public void setMuted(boolean value, @NotNull Date date, @NotNull String reason, CommandSender sender) {
+	public void setMuted(
+			boolean value,
+			@NotNull Date date,
+			@NotNull String reason,
+			CommandSender sender
+	) {
 		if (!this.playerFile.exists()) {
-			ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
-			return;
+			this.createPlayerFile();
 		}
 
-		this.playerFile.setMute(value, reason, date.getTime());
-		this.playerFile.save();
-
 		Player player = this.getOnlinePlayer();
-		if (value && player != null && player.getAddress() != null) {
-			getConfigCache().addMutedPlayer(this.offlinePlayer, date.getTime());
+
+		if (value) {
+			if (this.playerFile.isMuted()) {
+				ChatUtils.sendWarning(sender,
+						text("Игрок : \"")
+						.append(this.getGrayIDGoldName())
+						.append(text(" ("))
+						.append(text(this.nickname))
+						.append(text(")\" уже замьючен"))
+				);
+				return;
+			}
+			MuteFileUtils.addPlayer(this.offlinePlayer, date.getTime());
 			ChatUtils.sendFine(sender,
 					text("Игрок : \"")
-					.append(this.createGrayIDGreenName())
+					.append(this.getGrayIDGreenName())
 					.append(text(" ("))
 					.append(text(this.nickname))
 					.append(text(")\" был замьючен :\n    - Причина : \""))
@@ -113,30 +153,48 @@ public class PlayerInfo {
 					.append(text("\"\n    - До : "))
 					.append(text(DateUtils.getDate(date, sender)))
 			);
-			ChatUtils.sendWarning(
-					player,
-					text("Вы были замьючены : ")
-					.append(text("\n    - Причина : \""))
-					.append(text(reason))
-					.append(text("\"\n    - До : "))
-					.append(text(DateUtils.getDate(date, player)))
+			if (player != null) {
+				ChatUtils.sendWarning(
+						player,
+						text("Вы были замьючены : ")
+						.append(text("\n    - Причина : \""))
+						.append(text(reason))
+						.append(text("\"\n    - До : "))
+						.append(text(DateUtils.getDate(date, player)))
+				);
+			}
+		} else {
+			if (!this.playerFile.isMuted()) {
+				ChatUtils.sendWarning(sender,
+						text("Игрок : \"")
+						.append(this.getGrayIDGoldName())
+						.append(text(" ("))
+						.append(text(this.nickname))
+						.append(text(")\" не замьючен"))
+				);
+				return;
+			}
+			MuteFileUtils.removeMutedPlayer(this.offlinePlayer);
+			ChatUtils.sendFine(sender,
+					text("Игрок : \"")
+					.append(this.getGrayIDGreenName())
+					.append(text(" ("))
+					.append(text(this.nickname))
+					.append(text(")\" был размучен"))
 			);
-			return;
+			if (player != null) {
+				ChatUtils.sendWarning(player, "Вы были размучены");
+			}
 		}
-		getConfigCache().removeMutedPlayer(this.offlinePlayer);
-		ChatUtils.sendFine(sender,
-				text("Игрок : \"")
-				.append(this.createGrayIDGreenName())
-				.append(text(" ("))
-				.append(text(this.playerFile.getPlayerName().getNickname()))
-				.append(text(")\" был размучен"))
-		);
-		if (player != null) {
-			ChatUtils.sendWarning(player, "Вы были размучены");
-		}
+
+		this.playerFile.setMute(value, reason, date.getTime());
+		this.playerFile.save();
 	}
 
-	public void setMuted(boolean value, CommandSender commandSender) {
+	public void setMuted(
+			boolean value,
+			CommandSender commandSender
+	) {
 		this.setMuted(value, new Date(0), "", commandSender);
 	}
 
@@ -152,15 +210,26 @@ public class PlayerInfo {
 		return this.playerFile.getBannedTo();
 	}
 
-	public void setBanned(boolean value, @NotNull Date date, @NotNull String reason, @NotNull CommandSender sender) {
+	public void setBanned(
+			boolean value,
+			@NotNull Date date,
+			@NotNull String reason,
+			@NotNull CommandSender sender
+	) {
 		if (!this.playerFile.exists()) {
 			this.createPlayerFile();
 		}
-
-		this.playerFile.setBan(value, reason, date.getTime());
-		this.playerFile.save();
-
 		if (value) {
+			if (this.isBanned()) {
+				ChatUtils.sendWarning(sender,
+						text("Игрок : \"")
+						.append(this.getGrayIDGoldName())
+						.append(text(" ("))
+						.append(text(this.nickname))
+						.append(text(")\" уже забанен"))
+				);
+				return;
+			}
 			Bukkit.getBanList(BanList.Type.NAME).addBan(this.nickname, reason, date, sender.getName());
 			this.kickPlayer("Вы были забанены",
 					reason
@@ -169,7 +238,7 @@ public class PlayerInfo {
 			);
 			ChatUtils.sendFine(sender,
 					text("Игрок : \"")
-					.append(this.createGrayIDGreenName())
+					.append(this.getGrayIDGreenName())
 					.append(text(" ("))
 					.append(text(this.nickname))
 					.append(text(")\" был забанен :\n    - Причина : \""))
@@ -178,18 +247,34 @@ public class PlayerInfo {
 					.append(text(DateUtils.getDate(date, sender)))
 			);
 		} else {
+			if (!this.isBanned()) {
+				ChatUtils.sendWarning(sender,
+						text("Игрок : \"")
+						.append(this.getGrayIDGoldName())
+						.append(text(" ("))
+						.append(text(this.nickname))
+						.append(text(")\" не забанен"))
+				);
+				return;
+			}
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.nickname);
 			ChatUtils.sendFine(sender,
 					text("Игрок : \"")
-					.append(this.createGrayIDGreenName())
+					.append(this.getGrayIDGreenName())
 					.append(text(" ("))
 					.append(text(this.nickname))
 					.append(text(")\" был разбанен"))
 			);
 		}
+
+		this.playerFile.setBan(value, reason, date.getTime());
+		this.playerFile.save();
 	}
 
-	public void setBanned(boolean value, @NotNull CommandSender commandSender) {
+	public void setBanned(
+			boolean value,
+			@NotNull CommandSender commandSender
+	) {
 		this.setBanned(value, new Date(0), "", commandSender);
 	}
 
@@ -275,6 +360,8 @@ public class PlayerInfo {
 
 	public void update() {
 		this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
+		// TODO fix
+		this.initNames(this.getID());
 	}
 
 	public @NotNull OfflinePlayer getOfflinePlayer() {
@@ -308,7 +395,10 @@ public class PlayerInfo {
 		return player != null && player.getMetadata("vanished").stream().anyMatch(MetadataValue::asBoolean);
 	}
 
-	public boolean kickPlayer(@NotNull String title, @NotNull String reason) {
+	public boolean kickPlayer(
+			@NotNull String title,
+			@NotNull String reason
+	) {
 		Player player = this.getOnlinePlayer();
 		if (
 				player == null
@@ -329,7 +419,10 @@ public class PlayerInfo {
 		return true;
 	}
 
-	public void setSitting(@Nullable Location sitLocation, String @Nullable ... args) {
+	public void setSitting(
+			@Nullable Location sitLocation,
+			String @Nullable ... args
+	) {
 		Player player = this.getOnlinePlayer();
 		if (
 				player == null
@@ -372,12 +465,15 @@ public class PlayerInfo {
 	}
 
 	public boolean setWhiteListed(boolean value) {
+		CraftServer craftServer = (CraftServer) Bukkit.getServer();
+		UserWhiteList userWhiteList = craftServer.getServer().getPlayerList().getWhiteList();
+		GameProfile gameProfile = new GameProfile(this.uuid, this.nickname);
 		if (value) {
 			if (Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer)) return false;
-			this.offlinePlayer.setWhitelisted(true);
+			userWhiteList.add(new UserWhiteListEntry(gameProfile));
 		} else {
 			if (!Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer)) return false;
-			this.offlinePlayer.setWhitelisted(false);
+			userWhiteList.remove(gameProfile);
 			this.kickPlayer("Вы были кикнуты", "Вас удалили из белого списка");
 		}
 		return true;

@@ -1,13 +1,16 @@
 package com.github.minersstudios.msutils.commands.other;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msutils.player.ResourcePack;
+import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @MSCommand(
 		command = "resourcepack",
@@ -31,10 +34,15 @@ public class ResourcePackCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
-		boolean resourcePack = ResourcePack.Menu.open(player);
+		boolean resourcePack = ResourcePackMenu.open(player);
 		if (!resourcePack) {
 			ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 		}
 		return true;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return LiteralArgumentBuilder.literal("resourcepack").build();
 	}
 }

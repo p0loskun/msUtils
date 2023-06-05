@@ -1,6 +1,6 @@
 package com.github.minersstudios.msutils.listeners.player;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msutils.MSUtils;
@@ -42,7 +42,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
 		) {
 			ChatUtils.sendWarning(
 					text("Игроку : \"")
-					.append(playerInfo.createGrayIDGoldName())
+					.append(playerInfo.getGrayIDGoldName())
 					.append(text("\" был добавлен новый айпи адрес : "))
 					.append(text(hostAddress))
 			);

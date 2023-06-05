@@ -16,7 +16,10 @@ public final class MSPlayerUtils {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static @NotNull PlayerInfo getPlayerInfo(@NotNull UUID uuid, @NotNull String nickname) {
+	public static @NotNull PlayerInfo getPlayerInfo(
+			@NotNull UUID uuid,
+			@NotNull String nickname
+	) {
 		PlayerInfo playerInfo = getConfigCache().playerInfoMap.get(uuid);
 		if (playerInfo == null) {
 			playerInfo = new PlayerInfo(uuid, nickname);
