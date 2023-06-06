@@ -123,7 +123,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 	@Override
 	public @Nullable CommandNode<?> getCommandNode() {
 		return LiteralArgumentBuilder.literal("teleporttolastdeathlocation")
-				.then(RequiredArgumentBuilder.argument("id/никнейм", StringArgumentType.greedyString()))
+				.then(RequiredArgumentBuilder.argument("id/никнейм", StringArgumentType.word()))
 				.build();
 	}
 }

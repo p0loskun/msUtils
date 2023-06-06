@@ -35,6 +35,7 @@ import static com.github.minersstudios.msutils.utils.MessageUtils.sendJoinMessag
 import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMessage;
 import static net.kyori.adventure.text.Component.text;
 
+@SuppressWarnings("unused")
 public class PlayerInfo {
 	private final @NotNull UUID uuid;
 	private final @NotNull String nickname;
@@ -58,7 +59,7 @@ public class PlayerInfo {
 		this.playerFile = PlayerFile.loadConfig(uuid, nickname);
 		this.offlinePlayer = PlayerUtils.getOfflinePlayer(uuid, nickname);
 
-		this.initNames(this.getID());
+		this.initNames();
 	}
 
 	public PlayerInfo(@NotNull Player player) {
@@ -68,7 +69,7 @@ public class PlayerInfo {
 		this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
 		this.offlinePlayer = PlayerUtils.getOfflinePlayer(this.uuid, this.nickname);
 
-		this.initNames(this.getID());
+		this.initNames();
 	}
 
 	public @NotNull Component getDefaultName() {
@@ -87,7 +88,8 @@ public class PlayerInfo {
 		return this.grayIDGreenName;
 	}
 
-	private void initNames(int id) {
+	public void initNames() {
+		int id = this.getID();
 		PlayerName playerName = this.playerFile.getPlayerName();
 		this.defaultName = playerName.createDefaultName(id);
 		this.goldenName = playerName.createGoldenName(id);
@@ -360,8 +362,7 @@ public class PlayerInfo {
 
 	public void update() {
 		this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
-		// TODO fix
-		this.initNames(this.getID());
+		this.initNames();
 	}
 
 	public @NotNull OfflinePlayer getOfflinePlayer() {

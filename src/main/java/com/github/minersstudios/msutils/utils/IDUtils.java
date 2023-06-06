@@ -19,13 +19,17 @@ public final class IDUtils {
 		throw new IllegalStateException("Utility class");
 	}
 
+	public static @NotNull Map<UUID, Integer> getMap() {
+		return getConfigCache().idMap;
+	}
+
 	public static int getID(
 			@NotNull UUID uuid,
 			boolean addPlayer,
 			boolean zeroIfNull
 	) {
-		return getConfigCache().idMap.containsKey(uuid)
-				? getConfigCache().idMap.get(uuid)
+		return getMap().containsKey(uuid)
+				? getMap().get(uuid)
 				: addPlayer
 				? addPlayer(uuid)
 				: zeroIfNull ? 0 : -1;
@@ -35,13 +39,13 @@ public final class IDUtils {
 			@NotNull UUID uuid,
 			int id
 	) {
-		getConfigCache().idMap.put(uuid, id);
+		getMap().put(uuid, id);
 		getConfigCache().idsYaml.set(uuid.toString(), id);
 		saveFile();
 	}
 
 	public static int nextID() {
-		Collection<Integer> ids = getConfigCache().idMap.values();
+		Collection<Integer> ids = getMap().values();
 		return nextID(ids, ids.size());
 	}
 
@@ -53,7 +57,7 @@ public final class IDUtils {
 	}
 
 	public static @Nullable UUID getUUIDByID(int id) {
-		return getConfigCache().idMap.entrySet()
+		return getMap().entrySet()
 				.stream()
 				.filter(entry -> entry.getValue().equals(id))
 				.map(Map.Entry::getKey)

@@ -18,13 +18,13 @@ public final class MuteFileUtils {
 		throw new IllegalStateException("Utility class");
 	}
 
-	public static @NotNull Map<OfflinePlayer, Long> getMutedPlayers() {
+	public static @NotNull Map<OfflinePlayer, Long> getMap() {
 		return getConfigCache().mutedPlayers;
 	}
 
 	@Contract("null -> false")
 	public static boolean isMuted(@Nullable OfflinePlayer offlinePlayer) {
-		return offlinePlayer != null && getMutedPlayers().containsKey(offlinePlayer);
+		return offlinePlayer != null && getMap().containsKey(offlinePlayer);
 	}
 
 	public static void addPlayer(
@@ -32,7 +32,7 @@ public final class MuteFileUtils {
 			long time
 	) {
 		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () ->
-				getMutedPlayers().put(player, time)
+				getMap().put(player, time)
 		);
 		getConfigCache().mutedPlayersYaml.set(player.getUniqueId().toString(), time);
 		saveFile();
@@ -41,7 +41,7 @@ public final class MuteFileUtils {
 	public static void removeMutedPlayer(@Nullable OfflinePlayer player) {
 		if (player == null) return;
 		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () ->
-				getMutedPlayers().remove(player)
+				getMap().remove(player)
 		);
 		getConfigCache().mutedPlayersYaml.set(player.getUniqueId().toString(), null);
 		saveFile();

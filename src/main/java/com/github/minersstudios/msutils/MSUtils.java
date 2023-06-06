@@ -64,7 +64,7 @@ public final class MSUtils extends MSPlugin {
 		Bukkit.getScheduler().runTask(this, () -> {
 			worldDark = setWorldDark();
 			darkEntity = worldDark.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
-					worldDark.spawn(new Location(worldDark, 0, 0, 0), ItemFrame.class, (entity) -> {
+					worldDark.spawn(new Location(worldDark, 0, 13, 0), ItemFrame.class, (entity) -> {
 						entity.setGravity(false);
 						entity.setFixed(true);
 						entity.setVisible(false);

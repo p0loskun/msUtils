@@ -8,6 +8,12 @@ import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -78,20 +84,37 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		List<String> completions = new ArrayList<>();
-		if (args.length == 1) {
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-				int id = playerInfo.getID(false, false);
-				if (id != -1) {
-					completions.add(String.valueOf(id));
+		switch (args.length) {
+			case 1 -> {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+					int id = playerInfo.getID(false, false);
+					if (id != -1) {
+						completions.add(String.valueOf(id));
+					}
+					completions.add(player.getName());
 				}
-				completions.add(player.getName());
 			}
-		}
-		if (args.length == 2) {
-			for (World world : Bukkit.getWorlds()) {
-				if (world != MSUtils.getWorldDark()) {
-					completions.add(world.getName());
+			case 2 -> {
+				for (World world : Bukkit.getWorlds()) {
+					if (world != MSUtils.getWorldDark()) {
+						completions.add(world.getName());
+					}
+				}
+			}
+			case 3, 4, 5 -> {
+				Location playerLoc = null;
+				if (sender instanceof Player player && args[1].equals(player.getWorld().getName())) {
+					playerLoc = player.getLocation();
+				}
+				if (playerLoc != null) {
+					double coordinate = switch (args.length) {
+						case 3 -> playerLoc.x();
+						case 4 -> playerLoc.y();
+						default -> playerLoc.z();
+					};
+					double rounded = Math.round(coordinate * 100) / 100.0;
+					completions.add(String.valueOf(rounded));
 				}
 			}
 		}
@@ -127,7 +150,12 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 				y = spawnLoc.getY(),
 				z = spawnLoc.getZ();
 		if (args.length > 2) {
-			if (args.length != 5 || !args[2].matches(coordinatesRegex) || !args[3].matches(coordinatesRegex) || !args[4].matches(coordinatesRegex)) return false;
+			if (
+					args.length != 5
+					|| !args[2].matches(coordinatesRegex)
+					|| !args[3].matches(coordinatesRegex)
+					|| !args[4].matches(coordinatesRegex)
+			) return false;
 			x = Double.parseDouble(args[2]);
 			y = Double.parseDouble(args[3]);
 			z = Double.parseDouble(args[4]);
@@ -141,7 +169,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 				text("Игрок : \"")
 				.append(playerInfo.getGrayIDGreenName())
 				.append(text(" ("))
-				.append(text(args[0]))
+				.append(text(playerInfo.getNickname()))
 				.append(text(")\" был телепортирован :"))
 				.append(text("\n    - Мир : "))
 				.append(text(world.getName()))
@@ -153,5 +181,18 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 				.append(text(z))
 		);
 		return true;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return LiteralArgumentBuilder.literal("worldteleport")
+				.then(
+						RequiredArgumentBuilder.argument("id/никнейм", StringArgumentType.word())
+						.then(
+								RequiredArgumentBuilder.argument("мир", DimensionArgument.dimension())
+								.then(RequiredArgumentBuilder.argument("координаты", Vec3Argument.vec3()))
+						)
+				)
+				.build();
 	}
 }
