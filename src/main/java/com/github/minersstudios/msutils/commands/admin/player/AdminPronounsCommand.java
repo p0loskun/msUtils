@@ -19,6 +19,7 @@ public class AdminPronounsCommand {
 			@NotNull PlayerInfo playerInfo
 	) {
 		PlayerFile playerFile = playerInfo.getPlayerFile();
+
 		if (args.length == 2) {
 			ChatUtils.sendFine(sender,
 					text("Местоимение игрока : ")
@@ -31,6 +32,7 @@ public class AdminPronounsCommand {
 			return true;
 		} else if (args.length == 3) {
 			String pronounsString = args[2];
+
 			Pronouns pronouns;
 			try {
 				pronouns = Pronouns.valueOf(pronounsString.toUpperCase(Locale.ENGLISH));
@@ -38,6 +40,7 @@ public class AdminPronounsCommand {
 				ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    he, she, they");
 				return true;
 			}
+
 			playerFile.setPronouns(pronouns);
 			playerFile.save();
 			ChatUtils.sendFine(sender,

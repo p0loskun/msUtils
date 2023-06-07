@@ -30,6 +30,7 @@ public class InventoryClickListener implements Listener {
 				currentItem = event.getCurrentItem();
 
 		if (clickedInventory == null) return;
+
 		if (player.getWorld() == MSUtils.getWorldDark()) {
 			event.setCancelled(true);
 		}
@@ -48,11 +49,13 @@ public class InventoryClickListener implements Listener {
 
 		if (currentItem != null && currentItem.getType() != Material.AIR) {
 			boolean remove = currentItem.getType() == Material.BEDROCK;
+
 			if (!remove) {
 				for (Enchantment enchantment : currentItem.getEnchantments().keySet()) {
 					remove = currentItem.getEnchantmentLevel(enchantment) > enchantment.getMaxLevel();
 				}
 			}
+
 			if (remove) {
 				clickedInventory.setItem(slot, new ItemStack(Material.AIR));
 				ChatUtils.sendWarning(

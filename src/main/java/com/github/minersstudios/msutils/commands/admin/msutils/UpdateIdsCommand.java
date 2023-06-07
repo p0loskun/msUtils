@@ -19,14 +19,18 @@ public class UpdateIdsCommand {
 	public static void runCommand(@NotNull CommandSender sender) {
 		long time = System.currentTimeMillis();
 		ConfigCache configCache = MSUtils.getConfigCache();
+
 		configCache.idMap.clear();
 		configCache.idsYaml = YamlConfiguration.loadConfiguration(configCache.idsFile);
+
 		for (Map.Entry<String, Object> entry : configCache.idsYaml.getValues(true).entrySet()) {
 			configCache.idMap.put(UUID.fromString(entry.getKey()), (Integer) entry.getValue());
 		}
+
 		for (PlayerInfo playerInfo : MSPlayerUtils.getPlayerMap().values()) {
 			playerInfo.initNames();
 		}
+
 		ChatUtils.sendFine(
 				sender,
 				text("Список айди был успешно перезагружен за ")

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,6 @@ import static com.github.minersstudios.msutils.MSUtils.getInstance;
 public class ResourcePack {
 	private final @NotNull String hash;
 	private final @NotNull String url;
-
 	private static String user;
 	private static String repo;
 	public static String tagName;
@@ -72,31 +72,29 @@ public class ResourcePack {
 		Type.LITE.resourcePack = new ResourcePack(liteHash, liteUrl);
 
 		if (!hasNoUpdates) {
-			getConfigCache().configYaml.set("resource-pack.version", tagName);
-			getConfigCache().configYaml.set("resource-pack.full.hash", fullHash);
-			getConfigCache().configYaml.set("resource-pack.lite.hash", liteHash);
+			YamlConfiguration configYaml = getConfigCache().configYaml;
+
+			configYaml.set("resource-pack.version", tagName);
+			configYaml.set("resource-pack.full.hash", fullHash);
+			configYaml.set("resource-pack.lite.hash", liteHash);
 
 			deleteResourcePackFiles(getConfigCache().fullFileName);
 			deleteResourcePackFiles(getConfigCache().liteFileName);
 
-			try {
-				getConfigCache().configYaml.save(getConfigCache().configFile);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			getConfigCache().save();
 		}
 	}
 
 	private static void deleteResourcePackFiles(@NotNull String fileName) {
 		File[] files = getInstance().getPluginFolder().listFiles();
+
 		if (files != null) {
 			for (File fileFromList : files) {
-				String name = fileFromList.getName();
-				if (name.matches(String.format(fileName, ".*"))) {
-					boolean delete = fileFromList.delete();
-					if (!delete) {
-						throw new SecurityException("File deletion failed");
-					}
+				if (
+						fileFromList.getName().matches(String.format(fileName, ".*"))
+						&& !fileFromList.delete()
+				) {
+					throw new SecurityException("File deletion failed");
 				}
 			}
 		}
@@ -110,6 +108,7 @@ public class ResourcePack {
 		try {
 			ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
 			FileOutputStream out = new FileOutputStream(getInstance().getPluginFolder() + "/" + fileName);
+
 			out.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
 			out.close();
 			readableByteChannel.close();
@@ -124,12 +123,14 @@ public class ResourcePack {
 			MessageDigest digest = MessageDigest.getInstance("SHA-1");
 			int n = 0;
 			byte[] buffer = new byte[1024];
+
 			while (n != -1) {
 				n = fileInputStream.read(buffer);
 				if (n > 0) {
 					digest.update(buffer, 0, n);
 				}
 			}
+
 			fileInputStream.close();
 			return digest.digest();
 		} catch (Exception e) {
@@ -141,9 +142,11 @@ public class ResourcePack {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (byte b : bytes) {
 			int value = b & 0xFF;
+
 			if (value < 16) {
 				stringBuilder.append("0");
 			}
+
 			stringBuilder.append(Integer.toHexString(value));
 		}
 		return stringBuilder.toString();
@@ -151,6 +154,7 @@ public class ResourcePack {
 
 	private static @NotNull Map.Entry<Boolean, String> getLatestTagName() {
 		URI uri = URI.create("https://api.github.com/repos/" + user + "/" + repo + "/tags");
+
 		try {
 			String json = IOUtils.toString(uri, StandardCharsets.UTF_8);
 			JsonArray tags = JsonParser.parseString(json).getAsJsonArray();
@@ -158,9 +162,11 @@ public class ResourcePack {
 			return Map.entry(true, latestTag.get("name").getAsString());
 		} catch (IOException e) {
 			String configTagName = getConfigCache().version;
+
 			if (configTagName == null) {
 				throw new RuntimeException("Apparently the API rate limit has been exceeded\nRequest URL : " + uri, e);
 			}
+
 			Bukkit.getLogger().log(Level.SEVERE, "Apparently the API rate limit has been exceeded. Plugin will use existing version\nRequest URL : " + uri, e);
 			return Map.entry(false, configTagName);
 		}
@@ -173,8 +179,10 @@ public class ResourcePack {
 	 */
 	public static void setResourcePack(@NotNull PlayerInfo playerInfo) {
 		if (playerInfo.getOnlinePlayer() == null) return;
+
 		Player player = playerInfo.getOnlinePlayer();
 		PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+
 		if (
 				Type.FULL.getUrl() == null
 				|| Type.FULL.getHash() == null
@@ -184,6 +192,7 @@ public class ResourcePack {
 			playerInfo.kickPlayer("Вы были кикнуты", "Сервер ещё не запущен");
 			return;
 		}
+
 		if (playerSettings.getResourcePackType() != null) {
 			if (playerSettings.getResourcePackType() == Type.FULL) {
 				player.setResourcePack(Type.FULL.getUrl(), Type.FULL.getHash());
@@ -198,7 +207,7 @@ public class ResourcePack {
 	}
 
 	public enum Type {
-		FULL, LITE, NONE;
+		FULL, LITE, NONE, NULL;
 
 		private @Nullable ResourcePack resourcePack;
 
@@ -213,20 +222,5 @@ public class ResourcePack {
 		public @Nullable String getUrl() {
 			return this.resourcePack == null ? null : this.resourcePack.url;
 		}
-
-		/**
-		 * @param name ResourcePack type name
-		 * @return ResourcePackType by name
-		 */
-		public static @Nullable Type getResourcePackByString(@NotNull String name) {
-			return switch (name) {
-				case "FULL" -> FULL;
-				case "LITE" -> LITE;
-				case "NONE" -> NONE;
-				default -> null;
-			};
-		}
 	}
-
-
 }

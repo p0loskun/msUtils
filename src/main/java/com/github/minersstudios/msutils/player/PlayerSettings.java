@@ -1,8 +1,11 @@
 package com.github.minersstudios.msutils.player;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.logging.Level;
 
 public class PlayerSettings {
 	private final @NotNull PlayerFile playerFile;
@@ -16,10 +19,13 @@ public class PlayerSettings {
 		this.playerFile = playerFile;
 		this.config = playerFile.getYamlConfiguration();
 
-		this.resourcePackType = new Parameter<>(
-				"resource-pack.resource-pack-type",
-				ResourcePack.Type.getResourcePackByString(this.config.getString("resource-pack.resource-pack-type", "NULL"))
-		);
+		ResourcePack.Type resourcePackType = null;
+		try {
+			resourcePackType = ResourcePack.Type.valueOf(this.config.getString("resource-pack.resource-pack-type", "NULL"));
+		} catch (IllegalArgumentException e) {
+			Bukkit.getLogger().log(Level.SEVERE, "Incorrect resource-pack type in : " + playerFile.getFile().getName(), e);
+		}
+		this.resourcePackType = new Parameter<>("resource-pack.resource-pack-type", resourcePackType);
 	}
 
 	public void save() {

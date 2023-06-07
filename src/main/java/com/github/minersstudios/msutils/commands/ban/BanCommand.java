@@ -42,36 +42,46 @@ public class BanCommand implements MSCommandExecutor {
 			@NotNull String label,
 			String @NotNull ... args
 	) {
-		if (args.length < 2 || !args[1].matches("\\d+[smhdMy]")) return false;
+		if (args.length < 2) return false;
+
 		Date date = CommandUtils.getDateFromString(args[1], false);
+
 		if (date == null) {
 			ChatUtils.sendError(sender, "Введите показатель в правильном формате");
 			return true;
 		}
+
 		String reason = args.length > 2
 				? ChatUtils.extractMessage(args, 2)
 				: "неизвестно";
-		if (args[0].matches("-?\\d+")) {
+
+		if (IDUtils.matchesIDRegex(args[0])) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+
 			if (offlinePlayer == null || StringUtils.isBlank(offlinePlayer.getName())) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
+
 			MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
 					.setBanned(true, date, reason, sender);
 			return true;
 		}
+
 		if (args[0].length() > 2) {
 			String name = args[0];
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(name);
+
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+				ChatUtils.sendError(sender, "Данного игрока не существует");
 				return true;
 			}
+
 			MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), name)
 					.setBanned(true, date, reason, sender);
 			return true;
 		}
+
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
@@ -89,11 +99,15 @@ public class BanCommand implements MSCommandExecutor {
 				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
 					String nickname = offlinePlayer.getName();
 					UUID uuid = offlinePlayer.getUniqueId();
+
 					if (StringUtils.isBlank(nickname) || offlinePlayer.isBanned()) continue;
+
 					int id = IDUtils.getID(uuid, false, false);
+
 					if (id != -1) {
 						completions.add(String.valueOf(id));
 					}
+
 					if (offlinePlayer.hasPlayedBefore()) {
 						completions.add(nickname);
 					}

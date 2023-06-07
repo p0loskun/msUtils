@@ -44,22 +44,27 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		if (args.length < 2) return false;
-		if (args[0].matches("-?\\d+")) {
+
+		if (IDUtils.matchesIDRegex(args[0])) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+
 			if (offlinePlayer == null || offlinePlayer.getName() == null) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
 			return runCommand(sender, args, offlinePlayer);
 		}
+
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+				ChatUtils.sendError(sender, "Данного игрока не существует");
 				return true;
 			}
 			return runCommand(sender, args, offlinePlayer);
 		}
+
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
@@ -84,11 +89,12 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 						"game-params",
 						"settings",
 						"ban-info",
-						"mute-info"
+						"mute-info",
+						"name"
 				);
 			}
 			case 3 -> {
-				switch (args[1].toLowerCase(Locale.ENGLISH)) {
+				switch (args[1].toLowerCase(Locale.ROOT)) {
 					case "pronouns" -> {
 						return List.of(
 								"he",
@@ -114,12 +120,20 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 								"time"
 						);
 					}
+					case "name" -> {
+						return List.of(
+								"reset",
+								"first-name",
+								"last-name",
+								"patronymic"
+						);
+					}
 				}
 			}
 			case 4 -> {
-				switch (args[1].toLowerCase(Locale.ENGLISH)) {
+				switch (args[1].toLowerCase(Locale.ROOT)) {
 					case "game-params" -> {
-						switch (args[2].toLowerCase(Locale.ENGLISH)) {
+						switch (args[2].toLowerCase(Locale.ROOT)) {
 							case "game-mode" -> {
 								return List.of(
 										"survival",
@@ -164,6 +178,11 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 							}
 						}
 					}
+					case "first-name", "last-name", "patronymic" -> {
+						return List.of(
+								"reset"
+						);
+					}
 				}
 			}
 		}
@@ -185,6 +204,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 			case "settings" -> AdminSettingsCommand.runCommand(sender, args, playerInfo);
 			case "ban-info" -> AdminBanInfoCommand.runCommand(sender, args, playerInfo);
 			case "mute-info" -> AdminMuteInfoCommand.runCommand(sender, args, playerInfo);
+			case "name" -> AdminPlayerNameCommand.runCommand(sender, args, playerInfo);
 			default -> false;
 		};
 	}
@@ -251,6 +271,25 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 								.then(
 										literal("time")
 										.then(argument("время", DoubleArgumentType.doubleArg()))
+								)
+						)
+						.then(
+								literal("name")
+								.then(literal("reset"))
+								.then(
+										literal("first-name")
+										.then(literal("reset"))
+										.then(argument("имя", StringArgumentType.word()))
+								)
+								.then(
+										literal("last-name")
+										.then(literal("reset"))
+										.then(argument("фамилия", StringArgumentType.word()))
+								)
+								.then(
+										literal("patronymic")
+										.then(literal("reset"))
+										.then(argument("отчество", StringArgumentType.word()))
 								)
 						)
 				).build();

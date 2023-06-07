@@ -47,40 +47,53 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		if (args.length < 2) return false;
+
 		PlayerInfo senderInfo = sender instanceof Player player
 				? MSPlayerUtils.getPlayerInfo(player)
 				: MSUtils.consolePlayerInfo;
+
 		if (senderInfo.isMuted()) {
 			ChatUtils.sendWarning(sender, "Вы замьючены");
 			return true;
 		}
+
 		String message = ChatUtils.extractMessage(args, 1);
-		if (args[0].matches("-?\\d+")) {
+
+		if (IDUtils.matchesIDRegex(args[0])) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+
 			if (!(offlinePlayer instanceof Player player)) {
-				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+				ChatUtils.sendWarning(sender, "Данный игрок не в сети");
 				return true;
 			}
+
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 			if (!playerInfo.isOnline() && !sender.hasPermission("msutils.*")) {
 				ChatUtils.sendWarning(sender, "Данный игрок не в сети");
 				return true;
 			}
+
 			sendPrivateMessage(senderInfo, playerInfo, text(message));
 			return true;
 		}
+
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+
 			if (offlinePlayer instanceof Player player) {
 				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 				if (playerInfo.isOnline() || sender.hasPermission("msutils.*")) {
 					sendPrivateMessage(senderInfo, playerInfo, text(message));
 					return true;
 				}
 			}
+
 			ChatUtils.sendWarning(sender, "Данный игрок не в сети");
 			return true;
 		}
+
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}

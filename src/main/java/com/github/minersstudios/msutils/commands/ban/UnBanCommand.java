@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
@@ -43,27 +42,38 @@ public class UnBanCommand implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		if (args.length == 0) return false;
-		if (args[0].matches("-?\\d+")) {
+
+		if (IDUtils.matchesIDRegex(args[0])) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
-			if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore() || StringUtils.isBlank(offlinePlayer.getName())) {
+
+			if (
+					offlinePlayer == null
+					|| !offlinePlayer.hasPlayedBefore()
+					|| StringUtils.isBlank(offlinePlayer.getName())
+			) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
+
 			MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
 					.setBanned(false, sender);
 			return true;
 		}
+
 		if (args[0].length() > 2) {
 			String name = args[0];
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(name);
+
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+				ChatUtils.sendError(sender, "Данного игрока не существует");
 				return true;
 			}
+
 			MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), name)
 					.setBanned(false, sender);
 			return true;
 		}
+
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
@@ -78,12 +88,14 @@ public class UnBanCommand implements MSCommandExecutor {
 		List<String> completions = new ArrayList<>();
 		if (args.length == 1) {
 			for (OfflinePlayer offlinePlayer : Bukkit.getBannedPlayers()) {
-				if (offlinePlayer != null) {
-					PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
+				if (offlinePlayer != null && !StringUtils.isBlank(offlinePlayer.getName())) {
+					PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 					int id = playerInfo.getID(false, false);
+
 					if (id != -1) {
 						completions.add(String.valueOf(id));
 					}
+
 					completions.add(offlinePlayer.getName());
 				}
 			}

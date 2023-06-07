@@ -25,7 +25,7 @@ public class AdminMuteInfoCommand {
 		boolean muted = playerInfo.isMuted();
 		boolean haveArg = args.length >= 4;
 		String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ENGLISH) : "";
-		String paramArgString = haveArg ? args[3].toLowerCase(Locale.ENGLISH) : "";
+
 		if (args.length == 2) {
 			ChatUtils.sendFine(sender,
 					text("Информация о мьюте игрока : ")
@@ -44,6 +44,7 @@ public class AdminMuteInfoCommand {
 			);
 			return true;
 		}
+
 		if (!muted) {
 			ChatUtils.sendError(sender,
 					text("Данный параметр не может быть изменён/считан, так как игрок : ")
@@ -53,6 +54,7 @@ public class AdminMuteInfoCommand {
 			);
 			return true;
 		}
+
 		switch (paramString) {
 			case "reason" -> {
 				if (!haveArg) {
@@ -66,7 +68,9 @@ public class AdminMuteInfoCommand {
 					);
 					return true;
 				}
+
 				String reason = ChatUtils.extractMessage(args, 3);
+
 				playerFile.setMuteReason(reason);
 				playerFile.save();
 				ChatUtils.sendFine(sender,
@@ -90,16 +94,16 @@ public class AdminMuteInfoCommand {
 					);
 					return true;
 				}
-				if (!paramArgString.matches("\\d+[smhdMy]")) {
-					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
-					return true;
-				}
+
 				Date date = CommandUtils.getDateFromString(args[1], false);
+
 				if (date == null) {
 					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
 					return true;
 				}
+
 				long time = date.getTime();
+
 				playerFile.setMutedTo(time);
 				playerFile.save();
 				MuteFileUtils.addPlayer(playerInfo.getOfflinePlayer(), time);

@@ -43,23 +43,33 @@ public class UnMuteCommand implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		if (args.length == 0) return false;
-		if (args[0].matches("-?\\d+")) {
+
+		if (IDUtils.matchesIDRegex(args[0])) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
-			if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore() || StringUtils.isBlank(offlinePlayer.getName())) {
+
+			if (
+					offlinePlayer == null
+					|| !offlinePlayer.hasPlayedBefore()
+					|| StringUtils.isBlank(offlinePlayer.getName())
+			) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
+
 			MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
 					.setMuted(false, sender);
 			return true;
 		}
+
 		if (args[0].length() > 2) {
 			String name = args[0];
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(name);
+
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+				ChatUtils.sendError(sender, "Данного игрока не существует");
 				return true;
 			}
+
 			MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), name)
 					.setMuted(false, sender);
 			return true;
@@ -81,11 +91,15 @@ public class UnMuteCommand implements MSCommandExecutor {
 				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
 					String nickname = offlinePlayer.getName();
 					UUID uuid = offlinePlayer.getUniqueId();
+
 					if (!MuteFileUtils.isMuted(offlinePlayer)) continue;
+
 					int id = IDUtils.getID(uuid, false, false);
+
 					if (id != -1) {
 						completions.add(String.valueOf(id));
 					}
+
 					if (offlinePlayer.hasPlayedBefore()) {
 						completions.add(nickname);
 					}

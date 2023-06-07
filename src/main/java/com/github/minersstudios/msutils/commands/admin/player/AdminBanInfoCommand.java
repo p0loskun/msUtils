@@ -28,6 +28,7 @@ public class AdminBanInfoCommand {
 		boolean haveArg = args.length >= 4;
 		String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ENGLISH) : "";
 		String paramArgString = haveArg ? args[3].toLowerCase(Locale.ENGLISH) : "";
+
 		if (args.length == 2) {
 			ChatUtils.sendFine(sender,
 					text("Информация о бане игрока : ")
@@ -46,6 +47,7 @@ public class AdminBanInfoCommand {
 			);
 			return true;
 		}
+
 		if (!banned) {
 			ChatUtils.sendError(sender,
 					text("Данный параметр не может быть изменён/считан, так как игрок : ")
@@ -55,6 +57,7 @@ public class AdminBanInfoCommand {
 			);
 			return true;
 		}
+
 		switch (paramString) {
 			case "reason" -> {
 				if (!haveArg) {
@@ -68,7 +71,9 @@ public class AdminBanInfoCommand {
 					);
 					return true;
 				}
+
 				String reason = ChatUtils.extractMessage(args, 3);
+
 				playerFile.setBanReason(reason);
 				playerFile.save();
 				ChatUtils.sendFine(sender,
@@ -92,22 +97,24 @@ public class AdminBanInfoCommand {
 					);
 					return true;
 				}
-				if (!paramArgString.matches("\\d+[smhdMy]")) {
-					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
-					return true;
-				}
-				Date date = CommandUtils.getDateFromString(args[1], false);
+
+				Date date = CommandUtils.getDateFromString(paramArgString, false);
+
 				if (date == null) {
 					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
 					return true;
 				}
+
 				playerFile.setBannedTo(date.getTime());
 				playerFile.save();
+
 				BanEntry banEntry = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(playerInfo.getNickname());
+
 				if (banEntry != null) {
 					banEntry.setExpiration(date);
 					banEntry.save();
 				}
+
 				ChatUtils.sendFine(sender,
 						text("Крайней датой бана игрока : ")
 						.append(playerInfo.getGrayIDGreenName())

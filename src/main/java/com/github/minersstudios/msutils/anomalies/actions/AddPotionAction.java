@@ -32,6 +32,7 @@ public class AddPotionAction extends AnomalyAction {
 				&& System.currentTimeMillis() - actionMap.get(this) >= (this.time * 50)
 		) {
 			this.removeAction(player);
+
 			if (this.isDo()) {
 				if (
 						ignorableItems != null

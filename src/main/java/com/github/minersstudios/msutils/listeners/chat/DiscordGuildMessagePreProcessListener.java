@@ -2,7 +2,7 @@ package com.github.minersstudios.msutils.listeners.chat;
 
 import com.github.minersstudios.mscore.utils.Badges;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.utils.MessageUtils;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.dependencies.google.common.base.Function;
@@ -12,8 +12,6 @@ import github.scarsz.discordsrv.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
@@ -40,11 +38,7 @@ public class DiscordGuildMessagePreProcessListener {
 				.append(text(attachment, TextColor.color(165, 165, 255)))
 				.append(text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
 
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			if (player.getWorld() != MSUtils.getWorldDark()) {
-				player.sendMessage(messageComponent);
-			}
-		}
+		MessageUtils.sendGlobalMessage(messageComponent);
 		ChatUtils.sendInfo(ChatUtils.serializeLegacyComponent(messageComponent).substring(2));
 	}
 

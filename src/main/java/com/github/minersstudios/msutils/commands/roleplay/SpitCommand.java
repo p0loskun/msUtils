@@ -43,23 +43,28 @@ public class SpitCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
+
 		World world = player.getWorld();
 		Location location = player.getLocation();
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 		if (!playerInfo.isOnline()) return true;
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, "Вы замьючены");
 			return true;
 		}
+
 		world.spawnEntity(
 				location.toVector().add(location.getDirection().multiply(0.8d)).toLocation(world).add(0.0d, 1.0d, 0.0d),
 				EntityType.LLAMA_SPIT
 		).setVelocity(player.getEyeLocation().getDirection().multiply(1));
 		world.playSound(location, Sound.ENTITY_LLAMA_SPIT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+
 		if (args.length > 0) {
 			sendRPEventMessage(player, text(ChatUtils.extractMessage(args, 0)), text("плюнув"), TODO);
 			return true;
 		}
+
 		sendRPEventMessage(player, text(playerInfo.getPlayerFile().getPronouns().getSpitMessage()), ME);
 		return true;
 	}

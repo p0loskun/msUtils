@@ -23,6 +23,7 @@ public class PlayerAdvancementDoneListener implements Listener {
 		AdvancementDisplay advancementDisplay = event.getAdvancement().getDisplay();
 		if (advancementDisplay == null || event.message() == null) return;
 		AdvancementDisplay.Frame frame = advancementDisplay.frame();
+		
 		event.message(
 				Component.space()
 				.append(Component.translatable(

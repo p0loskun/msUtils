@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.github.minersstudios.msutils.MSUtils.getInstance;
 
 public final class ConfigCache {
@@ -40,6 +41,8 @@ public final class ConfigCache {
 	public final Map<Player, ArmorStand> seats = new HashMap<>();
 	public final Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();
 	public final Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap = new ConcurrentHashMap<>();
+
+	public final Map<UUID, Queue<String>> chatQueue = new HashMap<>();
 
 	public final List<BukkitTask> bukkitTasks = new ArrayList<>();
 
@@ -108,6 +111,14 @@ public final class ConfigCache {
 				Anomaly anomaly = Anomaly.fromConfig(file, YamlConfiguration.loadConfiguration(file));
 				this.anomalies.put(anomaly.getNamespacedKey(), anomaly);
 			});
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void save() {
+		try {
+			this.configYaml.save(getConfigCache().configFile);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

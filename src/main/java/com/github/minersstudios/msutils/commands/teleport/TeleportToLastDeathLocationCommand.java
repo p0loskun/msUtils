@@ -48,24 +48,31 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		if (args.length == 0) return false;
-		if (args[0].matches("-?\\d+")) {
+
+		if (IDUtils.matchesIDRegex(args[0])) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+
 			if (offlinePlayer == null) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
+
 			teleportToLastDeathLocation(sender, offlinePlayer);
 			return true;
 		}
+
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+				ChatUtils.sendError(sender, "Данного игрока не существует");
 				return true;
 			}
+
 			teleportToLastDeathLocation(sender, offlinePlayer);
 			return true;
 		}
+
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
@@ -88,8 +95,10 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 			ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
 			return;
 		}
+
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 		Location lastDeathLocation = playerInfo.getPlayerFile().getLastDeathLocation();
+
 		if (offlinePlayer.getPlayer() == null) {
 			ChatUtils.sendWarning(sender,
 					text("Игрок : \"")
@@ -100,6 +109,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 			);
 			return;
 		}
+
 		if (lastDeathLocation == null) {
 			ChatUtils.sendWarning(sender,
 					text("Игрок : \"")
@@ -110,6 +120,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
 			);
 			return;
 		}
+
 		offlinePlayer.getPlayer().teleportAsync(lastDeathLocation.add(0.5d, 0.0d, 0.5d), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		ChatUtils.sendFine(sender,
 				text("Игрок : \"")

@@ -22,9 +22,11 @@ public class AsyncChatListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onAsyncChat(@NotNull AsyncChatEvent event) {
 		event.setCancelled(true);
+
 		Player player = event.getPlayer();
-		if (player.getWorld() == MSUtils.getWorldDark() || !MSUtils.getAuthMeApi().isAuthenticated(player)) return;
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
+		if (player.getWorld() == MSUtils.getWorldDark() || !MSUtils.getAuthMeApi().isAuthenticated(player)) return;
 
 		if (playerInfo.isMuted() && playerInfo.getMutedTo() - System.currentTimeMillis() < 0) {
 			playerInfo.setMuted(false, null);
@@ -36,17 +38,22 @@ public class AsyncChatListener implements Listener {
 		}
 
 		String message = serializeLegacyComponent(event.originalMessage());
+
 		if (message.startsWith("!")) {
 			message = message.substring(1).trim();
+
 			if (!message.isEmpty()) {
 				MessageUtils.sendMessageToChat(playerInfo, null, MessageUtils.Chat.GLOBAL, text(message));
 			}
 		} else if (message.startsWith("*")) {
 			message = message.substring(1).trim();
+
 			if (message.startsWith("*")) {
 				message = message.substring(1).trim();
+
 				if (message.startsWith("*")) {
 					message = message.substring(1).trim();
+
 					if (!message.isEmpty()) {
 						MessageUtils.sendRPEventMessage(player, text(message), MessageUtils.RolePlayActionType.IT);
 					}
@@ -56,10 +63,12 @@ public class AsyncChatListener implements Listener {
 			} else if (message.contains("*")) {
 				String action = message.substring(message.indexOf('*') + 1).trim(),
 						speech = message.substring(0 , message.indexOf('*')).trim();
+
 				if (action.length() == 0 || speech.length() == 0) {
 					sendError(player, "Используй: * [речь] * [действие]");
 					return;
 				}
+
 				MessageUtils.sendRPEventMessage(player, text(speech), text(action), MessageUtils.RolePlayActionType.TODO);
 			} else if (!message.isEmpty()) {
 				MessageUtils.sendRPEventMessage(player, text(message), MessageUtils.RolePlayActionType.ME);

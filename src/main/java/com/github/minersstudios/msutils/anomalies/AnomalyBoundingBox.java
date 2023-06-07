@@ -26,6 +26,7 @@ public class AnomalyBoundingBox extends BoundingBox {
 		this.world = world;
 		this.boundingBox = boundingBox;
 		this.radii.addAll(radii);
+
 		for (double radius : radii) {
 			this.radiusBoundingBoxes.put(radius, boundingBox.clone().expand(radius));
 		}

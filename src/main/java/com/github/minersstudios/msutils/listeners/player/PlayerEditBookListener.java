@@ -16,9 +16,11 @@ public class PlayerEditBookListener implements Listener {
 	@EventHandler
 	public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {
 		if (!event.isSigning()) return;
+
 		BookMeta bookMeta = event.getNewBookMeta();
 		String title = bookMeta.getTitle();
 		boolean isAnon = title != null && title.startsWith("*");
+
 		event.setNewBookMeta(bookMeta
 				.author(
 						isAnon ? text("Аноним")

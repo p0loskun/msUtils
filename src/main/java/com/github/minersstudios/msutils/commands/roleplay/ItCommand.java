@@ -37,13 +37,16 @@ public class ItCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
+
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 		if (!playerInfo.isOnline()) return true;
 		if (args.length == 0) return false;
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, "Вы замьючены");
 			return true;
 		}
+
 		sendRPEventMessage(player, text(ChatUtils.extractMessage(args, 0)), IT);
 		return true;
 	}

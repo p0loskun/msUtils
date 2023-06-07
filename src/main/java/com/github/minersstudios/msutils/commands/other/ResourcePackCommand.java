@@ -34,8 +34,8 @@ public class ResourcePackCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
-		boolean resourcePack = ResourcePackMenu.open(player);
-		if (!resourcePack) {
+
+		if (!ResourcePackMenu.open(player)) {
 			ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 		}
 		return true;

@@ -41,23 +41,29 @@ public class WhitelistCommand implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		if (args.length == 0) return false;
+
 		if (args[0].equalsIgnoreCase("reload")) {
 			Bukkit.reloadWhitelist();
 			ChatUtils.sendFine(sender, "Вайт-Лист был перезагружен");
 			return true;
 		}
-		if (args.length > 1 && args[1].matches("-?\\d+")) {
+
+		if (args.length > 1 && IDUtils.matchesIDRegex(args[1])) {
 			if (args[0].equalsIgnoreCase("add")) {
 				ChatUtils.sendWarning(sender, "Для добавления игрока используйте ник!");
 				return true;
 			}
+
 			if (args[0].equalsIgnoreCase("remove")) {
 				OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[1]);
+
 				if (offlinePlayer == null || offlinePlayer.getName() == null) {
 					ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 					return true;
 				}
+
 				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+
 				if (playerInfo.setWhiteListed(false)) {
 					ChatUtils.sendFine(sender,
 							text("Игрок : \"")
@@ -68,6 +74,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 					);
 					return true;
 				}
+
 				ChatUtils.sendWarning(sender,
 						text("Игрок : \"")
 						.append(playerInfo.getGrayIDGoldName())
@@ -81,11 +88,14 @@ public class WhitelistCommand implements MSCommandExecutor {
 		}
 		if (args.length > 1 && args[1].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[1]);
+
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+				ChatUtils.sendError(sender, "Данного игрока не существует");
 				return true;
 			}
+
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
+
 			if (args[0].equalsIgnoreCase("add")) {
 				if (playerInfo.setWhiteListed(true)) {
 					ChatUtils.sendFine(sender,
@@ -97,6 +107,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 					);
 					return true;
 				}
+
 				ChatUtils.sendWarning(sender,
 						text("Игрок : \"")
 						.append(playerInfo.getGrayIDGoldName())
@@ -117,6 +128,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 					);
 					return true;
 				}
+
 				ChatUtils.sendWarning(sender,
 						text("Игрок : \"")
 						.append(playerInfo.getGrayIDGoldName())
@@ -128,6 +140,7 @@ public class WhitelistCommand implements MSCommandExecutor {
 			}
 			return false;
 		}
+
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
@@ -148,9 +161,11 @@ public class WhitelistCommand implements MSCommandExecutor {
 			for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
 				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
 				int id = playerInfo.getID(false, false);
+
 				if (id != -1) {
 					completions.add(String.valueOf(id));
 				}
+
 				completions.add(offlinePlayer.getName());
 			}
 		}

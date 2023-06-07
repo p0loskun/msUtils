@@ -13,7 +13,8 @@ public class EntityDismountListener implements Listener {
 
 	@EventHandler
 	public void onEntityDismount(@NotNull EntityDismountEvent event) {
-		if (!(event.getEntity() instanceof Player player)) return;
-		MSPlayerUtils.getPlayerInfo(player).unsetSitting();
+		if (event.getEntity() instanceof Player player) {
+			MSPlayerUtils.getPlayerInfo(player).unsetSitting();
+		}
 	}
 }

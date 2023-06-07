@@ -37,12 +37,15 @@ public class SitCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
+
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 		if (!playerInfo.isOnline()) return true;
 		if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
 			ChatUtils.sendWarning(player, text("Сидеть в воздухе нельзя!"));
 			return true;
 		}
+
 		playerInfo.setSitting(MSUtils.getConfigCache().seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
 		return true;
 	}

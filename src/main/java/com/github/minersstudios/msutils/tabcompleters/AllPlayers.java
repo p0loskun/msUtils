@@ -23,15 +23,20 @@ public class AllPlayers implements TabCompleter {
 			String @NotNull ... args
 	) {
 		List<String> completions = new ArrayList<>();
+
 		if (args.length == 1) {
 			for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
 				String nickname = offlinePlayer.getName();
-				UUID uuid = offlinePlayer.getUniqueId();
+
 				if (nickname == null) continue;
+
+				UUID uuid = offlinePlayer.getUniqueId();
 				int id = IDUtils.getID(uuid, false, false);
+
 				if (id != -1) {
 					completions.add(String.valueOf(id));
 				}
+
 				if (offlinePlayer.hasPlayedBefore()) {
 					completions.add(nickname);
 				}

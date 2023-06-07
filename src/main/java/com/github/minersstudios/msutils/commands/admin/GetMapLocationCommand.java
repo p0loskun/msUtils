@@ -41,18 +41,23 @@ public class GetMapLocationCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
+
 		if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof MapMeta mapMeta)) {
 			ChatUtils.sendWarning(player, "Возьмите карту в правую руку!");
 			return true;
 		}
+
 		MapView mapView = mapMeta.getMapView();
+
 		if (mapView == null || mapView.getWorld() == null) {
 			ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 			return true;
 		}
+
 		int x = mapView.getCenterX();
 		int z = mapView.getCenterZ();
 		int y = mapView.getWorld().getHighestBlockYAt(x, z) + 1;
+
 		ChatUtils.sendWarning(player,
 				text("Мир карты : ")
 				.append(text(mapView.getWorld().getName(), NamedTextColor.WHITE))

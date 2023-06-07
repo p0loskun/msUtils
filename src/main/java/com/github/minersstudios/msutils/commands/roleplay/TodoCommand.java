@@ -37,17 +37,24 @@ public class TodoCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
+
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 		if (!playerInfo.isOnline()) return true;
+
 		String message = ChatUtils.extractMessage(args, 0);
+
 		if (args.length < 3 || !message.contains("*")) return false;
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, "Вы замьючены");
 			return true;
 		}
+
 		String action = message.substring(message.indexOf('*') + 1).trim(),
 				speech = message.substring(0 , message.indexOf('*')).trim();
+
 		if (action.isEmpty() || speech.isEmpty()) return false;
+
 		sendRPEventMessage(player, text(speech), text(action), TODO);
 		return true;
 	}

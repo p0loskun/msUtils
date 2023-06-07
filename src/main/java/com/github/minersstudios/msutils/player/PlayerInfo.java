@@ -39,11 +39,8 @@ import static net.kyori.adventure.text.Component.text;
 public class PlayerInfo {
 	private final @NotNull UUID uuid;
 	private final @NotNull String nickname;
-
 	private @NotNull PlayerFile playerFile;
-
 	private final @NotNull OfflinePlayer offlinePlayer;
-
 	private Component defaultName;
 	private Component goldenName;
 	private Component grayIDGoldName;
@@ -55,7 +52,6 @@ public class PlayerInfo {
 	) {
 		this.uuid = uuid;
 		this.nickname = nickname;
-
 		this.playerFile = PlayerFile.loadConfig(uuid, nickname);
 		this.offlinePlayer = PlayerUtils.getOfflinePlayer(uuid, nickname);
 
@@ -65,7 +61,6 @@ public class PlayerInfo {
 	public PlayerInfo(@NotNull Player player) {
 		this.uuid = player.getUniqueId();
 		this.nickname = player.getName();
-
 		this.playerFile = PlayerFile.loadConfig(this.uuid, this.nickname);
 		this.offlinePlayer = PlayerUtils.getOfflinePlayer(this.uuid, this.nickname);
 
@@ -101,11 +96,12 @@ public class PlayerInfo {
 			boolean addPlayer,
 			boolean zeroIfNull
 	) {
-		return IDUtils.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
+		return this == MSUtils.consolePlayerInfo
+				? -1
+				: IDUtils.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
 	}
 
 	public int getID() {
-		if (this == MSUtils.consolePlayerInfo) return -1;
 		return this.getID(false, true);
 	}
 
@@ -127,10 +123,6 @@ public class PlayerInfo {
 			@NotNull String reason,
 			CommandSender sender
 	) {
-		if (!this.playerFile.exists()) {
-			this.createPlayerFile();
-		}
-
 		Player player = this.getOnlinePlayer();
 
 		if (value) {
@@ -144,6 +136,7 @@ public class PlayerInfo {
 				);
 				return;
 			}
+
 			MuteFileUtils.addPlayer(this.offlinePlayer, date.getTime());
 			ChatUtils.sendFine(sender,
 					text("Игрок : \"")
@@ -155,6 +148,7 @@ public class PlayerInfo {
 					.append(text("\"\n    - До : "))
 					.append(text(DateUtils.getDate(date, sender)))
 			);
+
 			if (player != null) {
 				ChatUtils.sendWarning(
 						player,
@@ -176,6 +170,7 @@ public class PlayerInfo {
 				);
 				return;
 			}
+
 			MuteFileUtils.removeMutedPlayer(this.offlinePlayer);
 			ChatUtils.sendFine(sender,
 					text("Игрок : \"")
@@ -184,6 +179,7 @@ public class PlayerInfo {
 					.append(text(this.nickname))
 					.append(text(")\" был размучен"))
 			);
+
 			if (player != null) {
 				ChatUtils.sendWarning(player, "Вы были размучены");
 			}
@@ -218,9 +214,6 @@ public class PlayerInfo {
 			@NotNull String reason,
 			@NotNull CommandSender sender
 	) {
-		if (!this.playerFile.exists()) {
-			this.createPlayerFile();
-		}
 		if (value) {
 			if (this.isBanned()) {
 				ChatUtils.sendWarning(sender,
@@ -232,6 +225,7 @@ public class PlayerInfo {
 				);
 				return;
 			}
+
 			Bukkit.getBanList(BanList.Type.NAME).addBan(this.nickname, reason, date, sender.getName());
 			this.kickPlayer("Вы были забанены",
 					reason
@@ -259,6 +253,7 @@ public class PlayerInfo {
 				);
 				return;
 			}
+
 			Bukkit.getBanList(BanList.Type.NAME).pardon(this.nickname);
 			ChatUtils.sendFine(sender,
 					text("Игрок : \"")
@@ -286,12 +281,15 @@ public class PlayerInfo {
 
 	public void teleportToLastLeaveLocation() {
 		Player player = this.getOnlinePlayer();
+
 		if (player == null) return;
+
 		Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> {
 			if (player.getGameMode() == GameMode.SPECTATOR) {
 				player.setSpectatorTarget(null);
 			}
 		});
+
 		player.setGameMode(this.playerFile.getGameMode());
 		player.setHealth(this.playerFile.getHealth());
 		player.setRemainingAir(this.playerFile.getAir());
@@ -309,35 +307,40 @@ public class PlayerInfo {
 		);
 	}
 
-	public void setLastLeaveLocation() {
+	public void setLastLeaveLocation(@Nullable Location location) {
 		Player player = this.getOnlinePlayer();
+
 		if (
 				player == null
 				|| player.getWorld() == MSUtils.getWorldDark()
 		) return;
-		Location leaveLocation = player.getLocation();
+
 		this.playerFile.setLastLeaveLocation(
 				player.isDead()
 				? player.getBedSpawnLocation() != null
 						? player.getBedSpawnLocation()
 						: MSUtils.getOverworld().getSpawnLocation()
-				: leaveLocation);
+				: location);
 		this.playerFile.save();
 	}
 
-	public void setLastDeathLocation() {
+	public void setLastDeathLocation(@Nullable Location location) {
 		Player player = this.getOnlinePlayer();
+
 		if (
 				player == null
 				|| player.getWorld() == MSUtils.getWorldDark()
 		) return;
-		this.playerFile.setLastDeathLocation(player.getLocation());
+
+		this.playerFile.setLastDeathLocation(location);
 		this.playerFile.save();
 	}
 
 	public void createPlayerFile() {
 		if (this.playerFile.exists()) return;
+
 		this.playerFile.getYamlConfiguration().set("name.nickname", this.nickname);
+
 		if (this.getOnlinePlayer() != null) {
 			this.playerFile.addIp(
 					this.getOnlinePlayer().getAddress() == null
@@ -346,6 +349,7 @@ public class PlayerInfo {
 			);
 			this.playerFile.setFirstJoin(System.currentTimeMillis());
 		}
+
 		this.playerFile.save();
 		ChatUtils.sendFine(
 				text("Создан файл с данными игрока : \"")
@@ -401,11 +405,13 @@ public class PlayerInfo {
 			@NotNull String reason
 	) {
 		Player player = this.getOnlinePlayer();
+
 		if (
 				player == null
 				|| !player.isOnline()
 				|| player.getPlayer() == null
 		) return false;
+
 		this.savePlayerDataParams();
 		player.kick(
 				Component.empty()
@@ -425,11 +431,13 @@ public class PlayerInfo {
 			String @Nullable ... args
 	) {
 		Player player = this.getOnlinePlayer();
+
 		if (
 				player == null
 				|| (player.getVehicle() != null
 				&& player.getVehicle().getType() != EntityType.ARMOR_STAND)
 		) return;
+
 		if (
 				!getConfigCache().seats.containsKey(player)
 				&& sitLocation != null
@@ -443,7 +451,8 @@ public class PlayerInfo {
 				armorStand.addScoreboardTag("customDecor");
 				getConfigCache().seats.put(player, armorStand);
 			});
-			if (args == null) {
+
+			if (args == null || args.length == 0) {
 				sendRPEventMessage(player, text(this.playerFile.getPronouns().getSitMessage()), ME);
 			} else {
 				sendRPEventMessage(player, text(extractMessage(args, 0)), text("приседая"), TODO);
@@ -469,11 +478,13 @@ public class PlayerInfo {
 		CraftServer craftServer = (CraftServer) Bukkit.getServer();
 		UserWhiteList userWhiteList = craftServer.getServer().getPlayerList().getWhiteList();
 		GameProfile gameProfile = new GameProfile(this.uuid, this.nickname);
+		boolean contains = Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer);
+
 		if (value) {
-			if (Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer)) return false;
+			if (contains) return false;
 			userWhiteList.add(new UserWhiteListEntry(gameProfile));
 		} else {
-			if (!Bukkit.getWhitelistedPlayers().contains(this.offlinePlayer)) return false;
+			if (!contains) return false;
 			userWhiteList.remove(gameProfile);
 			this.kickPlayer("Вы были кикнуты", "Вас удалили из белого списка");
 		}
@@ -482,14 +493,16 @@ public class PlayerInfo {
 
 	public void savePlayerDataParams() {
 		Player player = this.getOnlinePlayer();
+
 		if (
 				player == null
 				|| player.getWorld() == MSUtils.getWorldDark()
 		) return;
+
 		double health = player.getHealth();
 		int air = player.getRemainingAir();
 
-		this.setLastLeaveLocation();
+		this.setLastLeaveLocation(player.getLocation());
 		this.playerFile.setGameMode(player.getGameMode());
 		this.playerFile.setHealth(health == 0.0d ? 20.0d : health);
 		this.playerFile.setAir(air == 0 && player.isDead() ? 300 : air);

@@ -15,6 +15,7 @@ public class PlayerDeathListener implements Listener {
 	@EventHandler
 	public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
 		Player killedPlayer = event.getEntity();
+
 		event.deathMessage(null);
 		MSPlayerUtils.getPlayerInfo(killedPlayer).unsetSitting();
 		MessageUtils.sendDeathMessage(killedPlayer, killedPlayer.getKiller());

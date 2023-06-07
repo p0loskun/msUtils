@@ -24,23 +24,17 @@ public class PlayerFile {
 	private @NotNull PlayerName playerName;
 	private @NotNull Pronouns pronouns;
 	private final @NotNull List<String> ipList;
-
 	private @NotNull GameMode gameMode;
 	private double health;
 	private int air;
-
 	private final @NotNull PlayerSettings playerSettings;
-
 	private long firstJoin;
-
 	private boolean muted;
 	private @NotNull String muteReason;
 	private long mutedTo;
-
 	private boolean banned;
 	private @NotNull String banReason;
 	private long bannedTo;
-
 	private @Nullable Location lastLeaveLocation;
 	private @Nullable Location lastDeathLocation;
 
@@ -57,28 +51,23 @@ public class PlayerFile {
 				yamlConfiguration.getString("name.last-name", "Иванов"),
 				yamlConfiguration.getString("name.patronymic", "Иваныч")
 		);
-
 		this.pronouns = Pronouns.valueOf(yamlConfiguration.getString("pronouns", "HE"));
 		this.ipList = yamlConfiguration.getStringList("ip-list");
-
 		this.gameMode = GameMode.valueOf(yamlConfiguration.getString("game-params.game-mode", "SURVIVAL"));
 		this.health = yamlConfiguration.getDouble("game-params.health", 20.0d);
 		this.air = yamlConfiguration.getInt("game-params.air", 300);
-
 		this.playerSettings = new PlayerSettings(this);
-
 		this.firstJoin = yamlConfiguration.getLong("first-join", 0);
-
 		this.muted = yamlConfiguration.getBoolean("mute.muted", false);
 		this.muteReason = yamlConfiguration.getString("mute.reason", "неизвестно");
 		this.mutedTo = yamlConfiguration.getInt("mute.to", 0);
-
 		this.banned = yamlConfiguration.getBoolean("ban.banned", false);
 		this.banReason = yamlConfiguration.getString("ban.reason", "неизвестно");
 		this.bannedTo = yamlConfiguration.getLong("ban.to", 0);
 
 		World overworld = MSUtils.getOverworld();
 		Location spawnLocation = overworld.getSpawnLocation();
+
 		ConfigurationSection lastLeaveSection = this.yamlConfiguration.getConfigurationSection("locations.last-leave-location");
 		String lastLeaveWorldName = this.yamlConfiguration.getString("locations.last-leave-location.world", "");
 		World lastLeaveWorld = Bukkit.getWorld(lastLeaveWorldName);
@@ -92,6 +81,7 @@ public class PlayerFile {
 				(float) lastLeaveSection.getDouble("yaw", spawnLocation.getYaw()),
 				(float) lastLeaveSection.getDouble("pitch", spawnLocation.getPitch())
 		);
+
 		ConfigurationSection lastDeathSection = this.yamlConfiguration.getConfigurationSection("locations.last-death-location");
 		String lastDeathWorldName = this.yamlConfiguration.getString("locations.last-death-location.world", "");
 		World lastDeathWorld = Bukkit.getWorld(lastDeathWorldName);
@@ -324,11 +314,13 @@ public class PlayerFile {
 			@Nullable Location location
 	) {
 		boolean isNull = location == null;
+
 		if (!isNull) {
 			if (location.getWorld() == MSUtils.getWorldDark()) {
 				throw new IllegalArgumentException("The world cannot be world_dark");
 			}
 		}
+
 		section.set("world", isNull ? null : location.getWorld().getName());
 		section.set("x", isNull ? null : location.getX());
 		section.set("y", isNull ? null : location.getY());

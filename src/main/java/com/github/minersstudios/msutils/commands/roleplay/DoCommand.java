@@ -37,16 +37,20 @@ public class DoCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
+
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 		if (!playerInfo.isOnline()) return true;
 		if (args.length == 0) return false;
 		if (playerInfo.getPlayerFile().isMuted()) {
 			ChatUtils.sendWarning(player, "Вы замьючены");
 			return true;
 		}
+
 		sendRPEventMessage(player, text(ChatUtils.extractMessage(args, 0)), DO);
 		return true;
 	}
+
 	@Override
 	public @Nullable CommandNode<?> getCommandNode() {
 		return LiteralArgumentBuilder.literal("do")

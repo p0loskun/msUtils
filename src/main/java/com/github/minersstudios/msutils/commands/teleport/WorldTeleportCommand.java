@@ -56,22 +56,27 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		if (args.length < 2) return false;
-		if (args[0].matches("-?\\d+")) {
+
+		if (IDUtils.matchesIDRegex(args[0])) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+
 			if (offlinePlayer == null) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
 			return teleportToWorld(sender, offlinePlayer, args);
 		}
+
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+				ChatUtils.sendError(sender, "Данного игрока не существует");
 				return true;
 			}
 			return teleportToWorld(sender, offlinePlayer, args);
 		}
+
 		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
 		return true;
 	}
@@ -89,9 +94,11 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 					int id = playerInfo.getID(false, false);
+
 					if (id != -1) {
 						completions.add(String.valueOf(id));
 					}
+
 					completions.add(player.getName());
 				}
 			}
@@ -104,9 +111,11 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 			}
 			case 3, 4, 5 -> {
 				Location playerLoc = null;
+
 				if (sender instanceof Player player && args[1].equals(player.getWorld().getName())) {
 					playerLoc = player.getLocation();
 				}
+
 				if (playerLoc != null) {
 					double coordinate = switch (args.length) {
 						case 3 -> playerLoc.x();
@@ -114,6 +123,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
 						default -> playerLoc.z();
 					};
 					double rounded = Math.round(coordinate * 100) / 100.0;
+
 					completions.add(String.valueOf(rounded));
 				}
 			}

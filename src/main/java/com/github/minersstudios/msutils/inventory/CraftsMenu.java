@@ -82,19 +82,24 @@ public class CraftsMenu {
 		List<InventoryButton> elements = new ArrayList<>();
 		for (Recipe recipe : recipes) {
 			ItemStack resultItem = recipe.getResult();
+
 			elements.add(new InventoryButton(resultItem, (clickEvent, inventory, button) -> {
 				Player player = (Player) clickEvent.getWhoClicked();
 				CustomInventory craftInventory = new CustomInventory("뀂ꀨ", 4);
+
 				if (recipe instanceof ShapedRecipe shapedRecipe) {
 					String[] shapes = shapedRecipe.getShape();
 					int i = 0;
+
 					for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
 						for (Character character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
 							ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
+
 							if (ingredient == null) {
 								i++;
 								continue;
 							}
+
 							switch (i) {
 								case 0 -> craftInventory.setItem(2, ingredient);
 								case 1 -> craftInventory.setItem(3, ingredient);
@@ -106,9 +111,11 @@ public class CraftsMenu {
 								case 7 -> craftInventory.setItem(21, ingredient);
 								case 8 -> craftInventory.setItem(22, ingredient);
 							}
+
 							i++;
 						}
 					}
+
 					craftInventory.setItem(RESULT_SLOT, resultItem);
 					craftInventory.setButtonAt(CRAFT_QUIT_BUTTON, new InventoryButton(createQuitButton(), (e, inv, b) -> {
 						player.openInventory(inventory);
@@ -123,18 +130,20 @@ public class CraftsMenu {
 
 		ButtonClickAction previousClick = (event, customInventory, button) -> {
 			if (!(customInventory instanceof ListedInventory listedInventory)) return;
+
 			Player player = (Player) event.getWhoClicked();
 			ListedInventory previousPage = craftsInventory.getPage(listedInventory.getPreviousPageIndex());
+
 			if (previousPage != null) {
 				player.openInventory(previousPage);
 				playClickSound(player);
 			}
 		};
+
 		craftsInventory.setStaticButtonAt(36, inventory -> new InventoryButton(createPreviousPageButton()[inventory.getPreviousPageIndex() == -1 ? 1 : 0], previousClick));
 		craftsInventory.setStaticButtonAt(37, i -> new InventoryButton(createPreviousPageButton()[1], previousClick));
 		craftsInventory.setStaticButtonAt(38, i -> new InventoryButton(createPreviousPageButton()[1], previousClick));
 		craftsInventory.setStaticButtonAt(39, i -> new InventoryButton(createPreviousPageButton()[1], previousClick));
-
 		craftsInventory.setStaticButtonAt(CRAFTS_QUIT_BUTTON, i -> new InventoryButton(createQuitButton(), (event, customInventory, inventoryButton) -> {
 			Player player = (Player) event.getWhoClicked();
 			open(player);
@@ -143,18 +152,20 @@ public class CraftsMenu {
 
 		ButtonClickAction nextClick = (event, customInventory, button) -> {
 			if (!(customInventory instanceof ListedInventory listedInventory)) return;
+
 			Player player = (Player) event.getWhoClicked();
 			ListedInventory nextPage = craftsInventory.getPage(listedInventory.getNextPageIndex());
+
 			if (nextPage != null) {
 				player.openInventory(nextPage);
 				playClickSound(player);
 			}
 		};
+
 		craftsInventory.setStaticButtonAt(41, inventory -> new InventoryButton(createNextPageButton()[inventory.getNextPageIndex() == -1 ? 1 : 0], nextClick));
 		craftsInventory.setStaticButtonAt(42, i -> new InventoryButton(createNextPageButton()[1], nextClick));
 		craftsInventory.setStaticButtonAt(43, i -> new InventoryButton(createNextPageButton()[1], nextClick));
 		craftsInventory.setStaticButtonAt(44, i -> new InventoryButton(createNextPageButton()[1], nextClick));
-
 		craftsInventory.updatePages();
 
 		return Objects.requireNonNull(craftsInventory.getPage(0));

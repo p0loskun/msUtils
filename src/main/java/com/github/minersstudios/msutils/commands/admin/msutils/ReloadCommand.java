@@ -11,8 +11,10 @@ public class ReloadCommand {
 
 	public static void runCommand(@NotNull CommandSender sender) {
 		long time = System.currentTimeMillis();
+
 		MSUtils.getConfigCache().playerAnomalyActionMap.clear();
 		MSUtils.reloadConfigs();
+
 		if (MSUtils.getInstance().isEnabled()) {
 			ChatUtils.sendFine(
 					sender,
@@ -22,6 +24,7 @@ public class ReloadCommand {
 			);
 			return;
 		}
+
 		ChatUtils.sendError(sender, "Плагин был перезагружен неудачно");
 	}
 }

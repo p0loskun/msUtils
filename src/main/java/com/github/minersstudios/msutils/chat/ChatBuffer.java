@@ -14,22 +14,27 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static net.kyori.adventure.text.Component.space;
 import static net.kyori.adventure.text.Component.text;
 
 public class ChatBuffer {
-	private static final Map<String, Queue<String>> CHAT_QUEUE = new HashMap<>();
 
-	public static void receiveMessage(@NotNull Player player, @NotNull String message) {
+	public static void receiveMessage(
+			@NotNull Player player,
+			@NotNull String message
+	) {
 		if (message.length() <= 30) {
 			queueMessage(player, message + "\n");
 			return;
 		}
+
 		StringBuilder stringBuilder = new StringBuilder();
 		int delimPos, lineCount = 0;
 
 		while (message.length() > 0) {
 			delimPos = message.lastIndexOf(' ', 30);
+
 			if (delimPos < 0) {
 				delimPos = message.indexOf(' ', 30);
 			}
@@ -51,29 +56,47 @@ public class ChatBuffer {
 		}
 	}
 
-	private static void queueMessage(@NotNull Player player, @NotNull String message) {
-		String UUID = player.getUniqueId().toString();
-		if (!CHAT_QUEUE.containsKey(UUID)) {
-			CHAT_QUEUE.put(UUID, new LinkedList<>());
-			scheduleMessageUpdate(player, UUID, 0);
+	private static void queueMessage(
+			@NotNull Player player,
+			@NotNull String message
+	) {
+		Map<UUID, Queue<String>> chatQueue = getConfigCache().chatQueue;
+		UUID uuid = player.getUniqueId();
+
+		if (!chatQueue.containsKey(uuid)) {
+			chatQueue.put(uuid, new LinkedList<>());
+			scheduleMessageUpdate(player, uuid, 0);
 		}
-		CHAT_QUEUE.get(UUID).add(message);
+
+		chatQueue.get(uuid).add(message);
 	}
 
-	private static void scheduleMessageUpdate(@NotNull Player player, @NotNull String uuid, int delay) {
+	private static void scheduleMessageUpdate(
+			@NotNull Player player,
+			@NotNull UUID uuid,
+			int delay
+	) {
 		Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
-			if (CHAT_QUEUE.get(uuid).isEmpty() || !player.isOnline()) {
-				CHAT_QUEUE.remove(uuid);
+			Map<UUID, Queue<String>> chatQueue = getConfigCache().chatQueue;
+
+			if (chatQueue.get(uuid).isEmpty() || !player.isOnline()) {
+				chatQueue.remove(uuid);
 			} else {
-				scheduleMessageUpdate(player, uuid, spawnMessage(player, Objects.requireNonNull(CHAT_QUEUE.get(uuid).poll())) + 5);
+				String message = chatQueue.get(uuid).poll();
+				if (message == null) return;
+				scheduleMessageUpdate(player, uuid, spawnMessage(player, message) + 5);
 			}
 		}, delay);
 	}
 
-	public static int spawnMessage(@NotNull Player player, @NotNull String chat) {
-		String[] chatLines = chat.split("\n");
-		int duration = (chat.length() + (17 * chatLines.length)) * 1200 / 800;
+	public static int spawnMessage(
+			@NotNull Player player,
+			@NotNull String message
+	) {
+		String[] chatLines = message.split("\n");
+		int duration = (message.length() + (17 * chatLines.length)) * 1200 / 800;
 		Entity vehicle = player;
+
 		for (int i = chatLines.length - 1; i >= 0; i--) {
 			vehicle = spawnNameTag(vehicle, chatLines[i], player.getLocation().add(0.0d, 1.0d, 0.0d), duration, i == 0);
 		}

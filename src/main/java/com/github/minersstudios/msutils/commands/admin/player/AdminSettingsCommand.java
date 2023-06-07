@@ -22,10 +22,12 @@ public class AdminSettingsCommand {
 			ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    resourcepack-type");
 			return true;
 		}
+
 		PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 		boolean haveArg = args.length >= 4;
 		String paramString = args[2].toLowerCase(Locale.ENGLISH);
 		String paramArgString = haveArg ? args[3].toLowerCase(Locale.ENGLISH) : "";
+
 		switch (paramString) {
 			case "resourcepack-type" -> {
 				if (!haveArg) {
@@ -40,21 +42,27 @@ public class AdminSettingsCommand {
 					);
 					return true;
 				}
+
 				ResourcePack.Type type = switch (paramArgString) {
 					case "full" -> ResourcePack.Type.FULL;
 					case "lite" -> ResourcePack.Type.LITE;
 					case "none" -> ResourcePack.Type.NONE;
+					case "null" -> ResourcePack.Type.NULL;
 					default -> null;
 				};
-				if (type == null && !"null".equals(paramArgString)) {
+
+				if (type == null) {
 					ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    full, lite, none, null");
 					return true;
 				}
+
 				playerSettings.setResourcePackType(type);
 				playerSettings.save();
-				if (type == ResourcePack.Type.NONE || type == null) {
+
+				if (type == ResourcePack.Type.NONE || type == ResourcePack.Type.NULL) {
 					playerInfo.kickPlayer("Вы были кикнуты", "Этот параметр требует повторного захода на сервер");
 				}
+
 				ChatUtils.sendFine(sender,
 						text("Тип ресурс-пака игрока : ")
 						.append(playerInfo.getGrayIDGreenName())

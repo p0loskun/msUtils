@@ -27,8 +27,10 @@ public class PlayerInteractEntityListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
 		Player playerWhoClicked = event.getPlayer();
+
 		if (event.getRightClicked() instanceof Player clickedPlayer) {
 			float pitch = playerWhoClicked.getEyeLocation().getPitch();
+
 			if (
 					(pitch >= 80 && pitch <= 90)
 					&& playerWhoClicked.isSneaking()
@@ -38,13 +40,16 @@ public class PlayerInteractEntityListener implements Listener {
 			}
 
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(clickedPlayer);
+
 			playerWhoClicked.sendActionBar(
 					empty()
 					.append(playerInfo.getGoldenName())
 					.append(space())
 					.append(text(playerInfo.getPlayerFile().getPlayerName().getPatronymic(), MessageUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY))
 			);
+
 			ItemStack helmet = clickedPlayer.getInventory().getHelmet();
+
 			if (
 					!playerWhoClicked.isInsideVehicle()
 					&& helmet != null
@@ -61,6 +66,7 @@ public class PlayerInteractEntityListener implements Listener {
 		} else if (event.getRightClicked() instanceof ItemFrame itemFrame) {
 			Material itemInItemFrameMaterial = itemFrame.getItem().getType(),
 					itemInMainHandMaterial = playerWhoClicked.getInventory().getItemInMainHand().getType();
+
 			if (
 					itemInItemFrameMaterial.isAir()
 					&& !itemInMainHandMaterial.isAir()

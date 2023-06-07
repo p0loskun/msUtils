@@ -31,8 +31,8 @@ public class CraftsCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
-		boolean crafts = CraftsMenu.open(player);
-		if (!crafts) {
+
+		if (!CraftsMenu.open(player)) {
 			ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 		}
 		return true;

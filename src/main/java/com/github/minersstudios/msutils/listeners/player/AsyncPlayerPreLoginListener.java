@@ -40,14 +40,15 @@ public class AsyncPlayerPreLoginListener implements Listener {
 				playerFile.exists()
 				&& !playerFile.getIpList().contains(hostAddress)
 		) {
+			playerFile.addIp(hostAddress);
+			playerFile.save();
+
 			ChatUtils.sendWarning(
 					text("Игроку : \"")
 					.append(playerInfo.getGrayIDGoldName())
 					.append(text("\" был добавлен новый айпи адрес : "))
 					.append(text(hostAddress))
 			);
-			playerFile.addIp(hostAddress);
-			playerFile.save();
 		}
 
 		if (

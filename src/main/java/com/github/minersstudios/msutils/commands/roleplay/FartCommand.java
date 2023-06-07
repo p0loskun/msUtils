@@ -47,25 +47,31 @@ public class FartCommand implements MSCommandExecutor {
 			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
 			return true;
 		}
+
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 		if (!playerInfo.isOnline()) return true;
 		if (playerInfo.isMuted()) {
 			ChatUtils.sendWarning(player, "Вы замьючены");
 			return true;
 		}
+
 		Location location = player.getLocation();
 		boolean withPoop =
 				this.random.nextInt(10) == 0
 				&& location.clone().subtract(0.0d, 0.5d, 0.0d).getBlock().getType().isSolid()
 				&& BlockUtils.REPLACE.contains(location.clone().getBlock().getType());
+
 		for (Entity nearbyEntity : player.getWorld().getNearbyEntities(location.getBlock().getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
 			if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.PLAYER) {
 				withPoop = false;
 				break;
 			}
 		}
+
 		player.getWorld().playSound(location.add(0, 0.4, 0), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 1, 1);
 		player.getWorld().spawnParticle(Particle.REDSTONE, location, 15, 0.0D, 0.0D, 0.0D, 0.5D, new Particle.DustOptions(Color.fromBGR(33, 54, 75), 10));
+
 		if (withPoop) {
 			MSDecorUtils.placeCustomDecor(
 					location.getBlock(),
@@ -76,10 +82,12 @@ public class FartCommand implements MSCommandExecutor {
 					ChatUtils.createDefaultStyledText("Какашка " + ChatUtils.serializeLegacyComponent(playerInfo.getDefaultName()))
 			);
 		}
+
 		if (args.length > 0) {
 			sendRPEventMessage(player, text(ChatUtils.extractMessage(args, 0)), text(withPoop ? "пукнув с подливой" : "пукнув"), TODO);
 			return true;
 		}
+
 		sendRPEventMessage(player, text(playerInfo.getPlayerFile().getPronouns().getFartMessage()).append(text(withPoop ? " с подливой" : "")), ME);
 		return true;
 	}

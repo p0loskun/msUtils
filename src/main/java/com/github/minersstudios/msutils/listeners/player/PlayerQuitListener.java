@@ -19,17 +19,17 @@ public class PlayerQuitListener implements Listener {
 	public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-
-		event.quitMessage(null);
-
 		Entity vehicle = player.getVehicle();
+
 		if (vehicle != null) {
 			vehicle.eject();
 		}
 
+		event.quitMessage(null);
 		playerInfo.unsetSitting();
 		MSUtils.getConfigCache().playerAnomalyActionMap.remove(player);
 		playerInfo.savePlayerDataParams();
+
 		if (player.getWorld() != MSUtils.getWorldDark()) {
 			MessageUtils.sendQuitMessage(playerInfo, player);
 		}

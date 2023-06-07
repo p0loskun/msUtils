@@ -40,16 +40,21 @@ public class KickCommand implements MSCommandExecutor {
 			String @NotNull ... args
 	) {
 		if (args.length == 0) return false;
+
 		String reason = args.length > 1
 				? ChatUtils.extractMessage(args, 1)
 				: "неизвестно";
-		if (args[0].matches("-?\\d+")) {
+
+		if (IDUtils.matchesIDRegex(args[0])) {
 			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+
 			if (offlinePlayer == null || offlinePlayer.getName() == null) {
 				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
 				return true;
 			}
+
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+
 			if (playerInfo.kickPlayer("Вы были кикнуты", reason)) {
 				ChatUtils.sendFine(sender,
 						text("Игрок : \"")
@@ -59,6 +64,7 @@ public class KickCommand implements MSCommandExecutor {
 				);
 				return true;
 			}
+
 			ChatUtils.sendWarning(sender,
 					text("Игрок : \"")
 					.append(playerInfo.getGrayIDGoldName())
@@ -66,13 +72,17 @@ public class KickCommand implements MSCommandExecutor {
 			);
 			return true;
 		}
+
 		if (args[0].length() > 2) {
 			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+
 			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+				ChatUtils.sendError(sender, "Данного игрока не существует");
 				return true;
 			}
+
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
+
 			if (playerInfo.kickPlayer("Вы были кикнуты", reason)) {
 				ChatUtils.sendFine(sender,
 						text("Игрок : \"")
@@ -84,6 +94,7 @@ public class KickCommand implements MSCommandExecutor {
 				);
 				return true;
 			}
+
 			ChatUtils.sendWarning(sender,
 					text("Игрок : \"")
 					.append(playerInfo.getGrayIDGoldName())

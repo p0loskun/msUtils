@@ -44,9 +44,9 @@ public class Anomaly {
 	@Contract("_, _ -> new")
 	public static @NotNull Anomaly fromConfig(@NotNull File file, @NotNull YamlConfiguration config) {
 		String fileName = file.getName();
-
-		World world = Bukkit.getWorld(Objects.requireNonNull(config.getString("bounding-box.location.world-name"), "world in " + fileName + " is null"));
-
+		World world = Bukkit.getWorld(
+				Objects.requireNonNull(config.getString("bounding-box.location.world-name"), "world in " + fileName + " is null")
+		);
 		AnomalyBoundingBox anomalyBoundingBox = new AnomalyBoundingBox(
 				Objects.requireNonNull(world, "Can't find world, anomaly : " + fileName),
 				new BoundingBox(
@@ -59,9 +59,9 @@ public class Anomaly {
 				),
 				config.getDoubleList("bounding-box.radius")
 		);
-
 		List<EquipmentSlot> equipmentSlots = new ArrayList<>();
 		ConfigurationSection slotsSection = config.getConfigurationSection("ignorable-items.slots");
+
 		if (slotsSection != null) {
 			try {
 				for (String string : slotsSection.getValues(false).keySet()) {
@@ -73,6 +73,7 @@ public class Anomaly {
 		}
 
 		Map<EquipmentSlot, ItemStack> items = new HashMap<>();
+
 		for (EquipmentSlot equipmentSlot : equipmentSlots) {
 			String name = equipmentSlot.name().toLowerCase(Locale.ENGLISH);
 			ItemStack itemStack = new ItemStack(Material.valueOf(slotsSection.getString(name + ".material")));
@@ -88,18 +89,26 @@ public class Anomaly {
 		);
 
 		Map<Double, List<AnomalyAction>> anomalyActionMap = new HashMap<>();
+
 		for (Double radius : anomalyBoundingBox.getRadii()) {
 			ConfigurationSection radiusSection = config.getConfigurationSection("on-entering-to-area." + radius);
-			for (String anomalyAction : Objects.requireNonNull(radiusSection, "Anomaly configuration radii not properly configured, anomaly : " + fileName).getValues(false).keySet()) {
+			Set<String> actionStrings =
+					Objects.requireNonNull(radiusSection, "Anomaly configuration radii not properly configured, anomaly : " + fileName)
+					.getValues(false).keySet();
+
+			for (String anomalyAction : actionStrings) {
 				AnomalyAction action = null;
+
 				switch (anomalyAction) {
 					case "add-potion-effect" -> {
 						List<PotionEffect> potionEffects = new ArrayList<>();
 						ConfigurationSection effectsSection = radiusSection.getConfigurationSection("add-potion-effect.effects");
+
 						for (String potionStr : Objects.requireNonNull(effectsSection).getValues(false).keySet()) {
 							ConfigurationSection potionSection = effectsSection.getConfigurationSection(potionStr);
 							assert potionSection != null;
 							PotionEffectType potionEffectType = PotionEffectType.getByName(potionStr);
+
 							potionEffects.add(new PotionEffect(
 									Objects.requireNonNull(potionEffectType, "Invalid effect type name in : " + fileName),
 									potionSection.getInt("time"),
@@ -119,6 +128,7 @@ public class Anomaly {
 					case "spawn-particles" -> {
 						List<ParticleBuilder> particleBuilderList = new ArrayList<>();
 						ConfigurationSection particlesSection = radiusSection.getConfigurationSection("spawn-particles.particles");
+
 						for (String particleStr : Objects.requireNonNull(particlesSection).getValues(false).keySet()) {
 							ConfigurationSection particleSection = particlesSection.getConfigurationSection(particleStr);
 							assert particleSection != null;
@@ -130,6 +140,7 @@ public class Anomaly {
 											particleSection.getDouble("offset.y"),
 											particleSection.getDouble("offset.z")
 									);
+
 							particleBuilderList.add(
 									particleBuilder.particle() == Particle.REDSTONE
 											? particleBuilder.color(
@@ -147,6 +158,7 @@ public class Anomaly {
 						);
 					}
 				}
+
 				if (action != null) {
 					if (anomalyActionMap.containsKey(radius)) {
 						List<AnomalyAction> actions = new ArrayList<>(anomalyActionMap.get(radius));
@@ -160,6 +172,7 @@ public class Anomaly {
 		}
 
 		List<OfflinePlayer> ignorablePlayers = new ArrayList<>();
+
 		for (String uuid : config.getStringList("ignorable-players")) {
 			ignorablePlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
 		}

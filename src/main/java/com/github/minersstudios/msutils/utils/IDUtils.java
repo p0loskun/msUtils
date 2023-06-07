@@ -2,6 +2,7 @@ package com.github.minersstudios.msutils.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +15,7 @@ import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 
 @SuppressWarnings("unused")
 public final class IDUtils {
+	public static final @NotNull String ID_REGEX = "-?\\d+";
 
 	private IDUtils() {
 		throw new IllegalStateException("Utility class");
@@ -32,7 +34,9 @@ public final class IDUtils {
 				? getMap().get(uuid)
 				: addPlayer
 				? addPlayer(uuid)
-				: zeroIfNull ? 0 : -1;
+				: zeroIfNull
+				? 0
+				: -1;
 	}
 
 	public static void setID(
@@ -98,5 +102,10 @@ public final class IDUtils {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Contract(value = "null -> false", pure = true)
+	public static boolean matchesIDRegex(@Nullable String string) {
+		return string != null && string.matches(ID_REGEX);
 	}
 }

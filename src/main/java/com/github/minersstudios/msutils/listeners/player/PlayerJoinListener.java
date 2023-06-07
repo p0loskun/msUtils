@@ -26,9 +26,9 @@ public class PlayerJoinListener implements Listener {
 		PlayerFile playerFile = playerInfo.getPlayerFile();
 
 		event.joinMessage(null);
-
 		playerInfo.hideNameTag();
 		player.displayName(playerInfo.getDefaultName());
+
 		if (player.isDead()) {
 			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
 				player.spigot().respawn();

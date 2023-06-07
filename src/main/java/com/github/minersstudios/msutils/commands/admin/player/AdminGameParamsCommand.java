@@ -26,11 +26,13 @@ public class AdminGameParamsCommand {
 			ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    game-mode, health, air");
 			return true;
 		}
+
 		PlayerFile playerFile = playerInfo.getPlayerFile();
 		boolean haveArg = args.length >= 4;
 		String paramString = args[2].toLowerCase(Locale.ENGLISH);
 		String paramArgString = haveArg ? args[3].toLowerCase(Locale.ENGLISH) : "";
 		Player player = offlinePlayer.getPlayer();
+
 		switch (paramString) {
 			case "game-mode" -> {
 				if (!haveArg) {
@@ -54,6 +56,7 @@ public class AdminGameParamsCommand {
 					);
 					return true;
 				}
+
 				GameMode gameMode;
 				try {
 					gameMode = GameMode.valueOf(paramArgString.toUpperCase(Locale.ENGLISH));
@@ -61,9 +64,11 @@ public class AdminGameParamsCommand {
 					ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    survival, creative, spectator, adventure");
 					return true;
 				}
+
 				if (player != null) {
 					player.setGameMode(gameMode);
 				}
+
 				playerFile.setGameMode(gameMode);
 				playerFile.save();
 				ChatUtils.sendFine(sender,
@@ -96,10 +101,7 @@ public class AdminGameParamsCommand {
 					);
 					return true;
 				}
-				if (!paramArgString.matches("\\d+\\.?\\d+")) {
-					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
-					return true;
-				}
+
 				double health;
 				try {
 					health = Double.parseDouble(paramArgString);
@@ -107,9 +109,11 @@ public class AdminGameParamsCommand {
 					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
 					return true;
 				}
+
 				if (player != null) {
 					player.setHealthScale(health);
 				}
+
 				playerFile.setHealth(health);
 				playerFile.save();
 				ChatUtils.sendFine(sender,
@@ -141,10 +145,6 @@ public class AdminGameParamsCommand {
 					);
 					return true;
 				}
-				if (!paramArgString.matches("\\d+")) {
-					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
-					return true;
-				}
 				int air;
 				try {
 					air = Integer.parseInt(paramArgString);
@@ -152,9 +152,11 @@ public class AdminGameParamsCommand {
 					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
 					return true;
 				}
+
 				if (player != null) {
 					player.setRemainingAir(air);
 				}
+
 				playerFile.setAir(air);
 				playerFile.save();
 				ChatUtils.sendFine(sender,

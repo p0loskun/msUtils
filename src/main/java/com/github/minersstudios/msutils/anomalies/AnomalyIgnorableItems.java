@@ -40,9 +40,7 @@ public class AnomalyIgnorableItems {
 	public boolean hasIgnorableItems(@NotNull PlayerInventory inventory) {
 		for (Map.Entry<EquipmentSlot, ItemStack> playerEquippedItem : getEquippedItems(inventory).entrySet()) {
 			if (!this.includedItems.containsKey(playerEquippedItem.getKey())) continue;
-			if (!this.isIgnorableItem(playerEquippedItem.getKey(), playerEquippedItem.getValue())) {
-				return false;
-			}
+			if (!this.isIgnorableItem(playerEquippedItem.getKey(), playerEquippedItem.getValue())) return false;
 		}
 		return true;
 	}
@@ -51,6 +49,7 @@ public class AnomalyIgnorableItems {
 		for (Map.Entry<EquipmentSlot, ItemStack> playerEquippedItem : getEquippedItems(inventory).entrySet()) {
 			EquipmentSlot equipmentSlot = playerEquippedItem.getKey();
 			ItemStack item = playerEquippedItem.getValue();
+
 			if (
 					this.includedItems.containsKey(equipmentSlot)
 					&& this.isIgnorableItem(equipmentSlot, item)

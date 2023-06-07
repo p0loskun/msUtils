@@ -8,6 +8,7 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.inventory.PronounsMenu;
 import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
+import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
@@ -28,15 +29,12 @@ public class RegistrationProcess {
 	private PlayerInfo playerInfo;
 	private Location playerLocation;
 
-	/**
-	 * Regex supports all <a href="https://jrgraphix.net/r/Unicode/0400-04FF">cyrillic</a> characters
-	 */
-	private static final String REGEX = "[-Ѐ-ӿ]+";
-
 	public void registerPlayer(@NotNull PlayerInfo playerInfo) {
 		this.playerInfo = playerInfo;
 		this.player = playerInfo.getOnlinePlayer();
+
 		if (this.player == null) return;
+
 		this.playerLocation = this.player.getLocation();
 		this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, SoundCategory.MUSIC, 0.15f, 1.25f);
 		playerInfo.createPlayerFile();
@@ -55,10 +53,12 @@ public class RegistrationProcess {
 	private void setFirstname() {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "имя").response((player, strings) -> {
 			String firstname = strings[0].trim();
-			if (!firstname.matches(REGEX)) {
+
+			if (!MSPlayerUtils.matchesNameRegex(firstname)) {
 				this.sendWarningMessage();
 				return false;
 			}
+
 			this.playerInfo.getPlayerFile().getPlayerName().setFirstName(firstname);
 
 			this.sendDialogueMessage("Интересно...", 25L);
@@ -75,10 +75,12 @@ public class RegistrationProcess {
 	private void setLastname() {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите вашу", "фамилию").response((player, strings) -> {
 			String lastname = strings[0].trim();
-			if (!lastname.matches(REGEX)) {
+
+			if (!MSPlayerUtils.matchesNameRegex(lastname)) {
 				this.sendWarningMessage();
 				return false;
 			}
+
 			this.playerInfo.getPlayerFile().getPlayerName().setLastName(lastname);
 			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setPatronymic, 10L);
 			return true;
@@ -89,7 +91,8 @@ public class RegistrationProcess {
 	private void setPatronymic() {
 		SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "отчество").response((player, strings) -> {
 			String patronymic = strings[0].trim();
-			if (!patronymic.matches(REGEX)) {
+
+			if (!MSPlayerUtils.matchesNameRegex(patronymic)) {
 				this.sendWarningMessage();
 				return false;
 			}
@@ -137,6 +140,7 @@ public class RegistrationProcess {
 	private void setOther() {
 		PlayerSettings playerSettings = this.playerInfo.getPlayerFile().getPlayerSettings();
 		this.player.displayName(this.playerInfo.getDefaultName());
+
 		if (playerSettings.getResourcePackType() == null) {
 			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> ResourcePackMenu.open(this.player));
 		} else if (playerSettings.getResourcePackType() == ResourcePack.Type.NONE) {
@@ -150,7 +154,10 @@ public class RegistrationProcess {
 		this.player.sendMessage(text(" Используйте только кириллицу, без пробелов!", NamedTextColor.GOLD));
 	}
 
-	private void sendDialogueMessage(@NotNull String message, long delay) {
+	private void sendDialogueMessage(
+			@NotNull String message,
+			long delay
+	) {
 		Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
 			this.player.sendMessage(
 					Component.space()
@@ -184,6 +191,7 @@ public class RegistrationProcess {
 					if (!menu.response.test(player, event.getPacket().getStringArrays().read(0))) {
 						Bukkit.getScheduler().runTaskLater(this.plugin, () -> menu.open(player), 2L);
 					}
+
 					Bukkit.getScheduler().runTask(this.plugin, () -> {
 						if (player.isOnline()) {
 							player.sendBlockChange(menu.location, menu.location.getBlock().getBlockData());
@@ -199,7 +207,9 @@ public class RegistrationProcess {
 		}
 
 		public void open(@NotNull Player player) {
+			PacketContainer openSign = MSUtils.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
 			this.location = player.getLocation();
+
 			this.location.setY(200);
 
 			player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
@@ -210,9 +220,8 @@ public class RegistrationProcess {
 					text(this.text.get(3)))
 			);
 
-			PacketContainer openSign = MSUtils.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
-			openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));
 			try {
+				openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));
 				MSUtils.getProtocolManager().sendServerPacket(player, openSign);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
