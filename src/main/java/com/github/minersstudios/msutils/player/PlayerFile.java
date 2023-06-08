@@ -137,10 +137,10 @@ public class PlayerFile {
 
 	public void updateName() {
 		ConfigurationSection section = this.yamlConfiguration.createSection("name");
-		section.set("nickname", playerName.getNickname());
-		section.set("first-name", playerName.getFirstName());
-		section.set("last-name", playerName.getLastName());
-		section.set("patronymic", playerName.getPatronymic());
+		section.set("nickname", this.playerName.getNickname());
+		section.set("first-name", this.playerName.getFirstName());
+		section.set("last-name", this.playerName.getLastName());
+		section.set("patronymic", this.playerName.getPatronymic());
 	}
 
 	public boolean isNoName() {

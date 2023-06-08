@@ -25,7 +25,6 @@ import java.security.MessageDigest;
 import java.util.Map;
 import java.util.logging.Level;
 
-import static com.github.minersstudios.mscore.utils.ChatUtils.sendWarning;
 import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.github.minersstudios.msutils.MSUtils.getInstance;
 
@@ -182,6 +181,7 @@ public class ResourcePack {
 
 		Player player = playerInfo.getOnlinePlayer();
 		PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+		ResourcePack.Type type = playerSettings.getResourcePackType();
 
 		if (
 				Type.FULL.getUrl() == null
@@ -193,16 +193,13 @@ public class ResourcePack {
 			return;
 		}
 
-		if (playerSettings.getResourcePackType() != null) {
-			if (playerSettings.getResourcePackType() == Type.FULL) {
-				player.setResourcePack(Type.FULL.getUrl(), Type.FULL.getHash());
-			} else if (playerSettings.getResourcePackType() == Type.LITE) {
-				player.setResourcePack(Type.LITE.getUrl(), Type.LITE.getHash());
-			} else {
-				sendWarning(player, "Вы зашли на сервер без ресурспака");
-			}
-		} else {
+		assert type.getUrl() != null;
+		assert type.getHash() != null;
+
+		if (type == ResourcePack.Type.NULL) {
 			ResourcePackMenu.open(player);
+		} else {
+			player.setResourcePack(type.getUrl(), type.getHash());
 		}
 	}
 

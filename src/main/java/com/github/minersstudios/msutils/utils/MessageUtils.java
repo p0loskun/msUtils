@@ -58,8 +58,10 @@ public final class MessageUtils {
 			@NotNull Location location,
 			double radius
 	) {
-		location.getWorld().getNearbyPlayers(location, radius)
-		.forEach(player -> player.sendMessage(message));
+		Bukkit.getScheduler().runTask(MSUtils.getInstance(), () ->
+				location.getWorld().getNearbyPlayers(location, radius)
+				.forEach(player -> player.sendMessage(message))
+		);
 	}
 
 	/**

@@ -89,16 +89,19 @@ public class ResourcePackMenu {
 			Player player = (Player) event.getWhoClicked();
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 			PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
-			if (playerSettings.getResourcePackType() != null && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
+
+			if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
 				playerInfo.kickPlayer("Вы были кикнуты", "Этот параметр требует повторного захода на сервер");
 			}
+
 			playerSettings.setResourcePackType(ResourcePack.Type.NONE);
 			playerSettings.save();
+			playClickSound(player);
 			player.closeInventory();
+
 			if (player.getWorld() == MSUtils.getWorldDark()) {
 				playerInfo.teleportToLastLeaveLocation();
 			}
-			playClickSound(player);
 		});
 		customInventory.setButtonAt(0, noneButton);
 		customInventory.setButtonAt(1, noneButton);
@@ -107,18 +110,12 @@ public class ResourcePackMenu {
 			Player player = (Player) event.getWhoClicked();
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 			PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
-			if (
-					ResourcePack.Type.FULL.getUrl() == null
-							|| ResourcePack.Type.FULL.getHash() == null
-			) {
-				playerInfo.kickPlayer("Вы были кикнуты", "Сервер ещё не запущен");
-				return;
-			}
-			player.closeInventory();
+
 			playerSettings.setResourcePackType(ResourcePack.Type.FULL);
 			playerSettings.save();
-			player.setResourcePack(ResourcePack.Type.FULL.getUrl(), ResourcePack.Type.FULL.getHash());
 			playClickSound(player);
+			player.closeInventory();
+			ResourcePack.setResourcePack(playerInfo);
 		});
 		customInventory.setButtonAt(2, fullButton);
 		customInventory.setButtonAt(3, fullButton);
@@ -129,18 +126,12 @@ public class ResourcePackMenu {
 			Player player = (Player) event.getWhoClicked();
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 			PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
-			if (
-					ResourcePack.Type.LITE.getUrl() == null
-							|| ResourcePack.Type.LITE.getHash() == null
-			) {
-				playerInfo.kickPlayer("Вы были кикнуты", "Сервер ещё не запущен");
-				return;
-			}
-			player.closeInventory();
+
 			playerSettings.setResourcePackType(ResourcePack.Type.LITE);
 			playerSettings.save();
-			player.setResourcePack(ResourcePack.Type.LITE.getUrl(), ResourcePack.Type.LITE.getHash());
 			playClickSound(player);
+			player.closeInventory();
+			ResourcePack.setResourcePack(playerInfo);
 		});
 		customInventory.setButtonAt(7, liteButton);
 		customInventory.setButtonAt(8, liteButton);
@@ -150,7 +141,9 @@ public class ResourcePackMenu {
 		customInventory.setCloseAction(((event, inventory) -> {
 			Player player = (Player) event.getPlayer();
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-			if (playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType() == null) {
+			ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
+
+			if (type == ResourcePack.Type.NULL) {
 				Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(inventory));
 			}
 		}));

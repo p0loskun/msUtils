@@ -99,9 +99,11 @@ public class RegistrationProcess {
 
 			PlayerFile playerFile = this.playerInfo.getPlayerFile();
 			PlayerName name = playerFile.getPlayerName();
+
 			name.setPatronymic(patronymic);
 			playerFile.updateName();
 			playerFile.save();
+			this.playerInfo.initNames();
 
 			this.sendDialogueMessage(
 					"Ну вот и отлично, "
@@ -141,7 +143,7 @@ public class RegistrationProcess {
 		PlayerSettings playerSettings = this.playerInfo.getPlayerFile().getPlayerSettings();
 		this.player.displayName(this.playerInfo.getDefaultName());
 
-		if (playerSettings.getResourcePackType() == null) {
+		if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) {
 			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> ResourcePackMenu.open(this.player));
 		} else if (playerSettings.getResourcePackType() == ResourcePack.Type.NONE) {
 			Bukkit.getScheduler().runTask(MSUtils.getInstance(), this.playerInfo::teleportToLastLeaveLocation);

@@ -57,11 +57,11 @@ public class PronounsMenu {
 			Player player = (Player) event.getWhoClicked();
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 			PlayerFile playerFile = playerInfo.getPlayerFile();
+
 			playerFile.setPronouns(Pronouns.HE);
 			playerFile.save();
 			playClickSound(player);
 			player.closeInventory();
-			finishSet(playerInfo, player);
 		});
 		customInventory.setButtonAt(0, heButton);
 		customInventory.setButtonAt(1, heButton);
@@ -71,11 +71,11 @@ public class PronounsMenu {
 			Player player = (Player) event.getWhoClicked();
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 			PlayerFile playerFile = playerInfo.getPlayerFile();
+
 			playerFile.setPronouns(Pronouns.SHE);
 			playerFile.save();
 			playClickSound(player);
 			player.closeInventory();
-			finishSet(playerInfo, player);
 		});
 		customInventory.setButtonAt(3, sheButton);
 		customInventory.setButtonAt(4, sheButton);
@@ -85,11 +85,11 @@ public class PronounsMenu {
 			Player player = (Player) event.getWhoClicked();
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 			PlayerFile playerFile = playerInfo.getPlayerFile();
+
 			playerFile.setPronouns(Pronouns.THEY);
 			playerFile.save();
 			playClickSound(player);
 			player.closeInventory();
-			finishSet(playerInfo, player);
 		});
 		customInventory.setButtonAt(6, theyButton);
 		customInventory.setButtonAt(7, theyButton);
@@ -98,8 +98,11 @@ public class PronounsMenu {
 		customInventory.setCloseAction(((event, inventory) -> {
 			Player player = (Player) event.getPlayer();
 			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+
 			if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
 				Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(customInventory));
+			} else {
+				new RegistrationProcess().setPronouns(player, playerInfo);
 			}
 		}));
 
@@ -110,13 +113,5 @@ public class PronounsMenu {
 		CustomInventory customInventory = InventoryUtils.getCustomInventory("pronouns");
 		if (customInventory == null) return;
 		player.openInventory(customInventory);
-	}
-
-	private static void finishSet(@NotNull PlayerInfo playerInfo, @NotNull Player player) {
-		if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") != null) {
-			new RegistrationProcess().setPronouns(player, playerInfo);
-		} else if (playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType() != null) {
-			playerInfo.teleportToLastLeaveLocation();
-		}
 	}
 }

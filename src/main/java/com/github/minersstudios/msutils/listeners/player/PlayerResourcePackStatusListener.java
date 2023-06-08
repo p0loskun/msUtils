@@ -24,7 +24,7 @@ public class PlayerResourcePackStatusListener implements Listener {
 		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 		PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-		if (playerSettings.getResourcePackType() == null) return;
+		if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) return;
 		switch (event.getStatus()) {
 			case ACCEPTED -> ChatUtils.sendFine(text(player.getName()).append(text(" принял ресурспак")));
 			case SUCCESSFULLY_LOADED -> {

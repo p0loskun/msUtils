@@ -178,10 +178,14 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 							}
 						}
 					}
-					case "first-name", "last-name", "patronymic" -> {
-						return List.of(
-								"reset"
-						);
+					case "name" -> {
+						switch (args[2].toLowerCase(Locale.ROOT)) {
+							case "last-name", "patronymic" -> {
+								return List.of(
+										"empty"
+								);
+							}
+						}
 					}
 				}
 			}
@@ -278,18 +282,17 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 								.then(literal("reset"))
 								.then(
 										literal("first-name")
-										.then(literal("reset"))
-										.then(argument("имя", StringArgumentType.word()))
+										.then(argument("имя", StringArgumentType.greedyString()))
 								)
 								.then(
 										literal("last-name")
-										.then(literal("reset"))
-										.then(argument("фамилия", StringArgumentType.word()))
+										.then(literal("empty"))
+										.then(argument("фамилия", StringArgumentType.greedyString()))
 								)
 								.then(
 										literal("patronymic")
-										.then(literal("reset"))
-										.then(argument("отчество", StringArgumentType.word()))
+										.then(literal("empty"))
+										.then(argument("отчество", StringArgumentType.greedyString()))
 								)
 						)
 				).build();
