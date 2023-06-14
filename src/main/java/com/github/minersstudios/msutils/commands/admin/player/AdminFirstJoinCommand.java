@@ -21,7 +21,7 @@ public class AdminFirstJoinCommand {
 				.append(playerInfo.getGrayIDGreenName())
 				.appendNewline()
 				.append(text("    Зашёл на сервер в : "))
-				.append(text(DateUtils.getDate(new Date(playerInfo.getPlayerFile().getFirstJoin()), sender)))
+				.append(text(DateUtils.getSenderDate(new Date(playerInfo.getPlayerFile().getFirstJoin()), sender)))
 		);
 		return true;
 	}

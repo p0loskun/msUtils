@@ -32,7 +32,7 @@ public class CraftsCommand implements MSCommandExecutor {
 			return true;
 		}
 
-		if (!CraftsMenu.open(player)) {
+		if (!CraftsMenu.open(CraftsMenu.Type.MAIN, player)) {
 			ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
 		}
 		return true;

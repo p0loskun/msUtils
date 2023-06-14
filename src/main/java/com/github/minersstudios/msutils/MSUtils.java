@@ -2,17 +2,18 @@ package com.github.minersstudios.msutils;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.MSPlugin;
-import com.github.minersstudios.mscore.utils.InventoryUtils;
+import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import com.github.minersstudios.msutils.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msutils.anomalies.tasks.ParticleTask;
+import com.github.minersstudios.msutils.config.ConfigCache;
 import com.github.minersstudios.msutils.inventory.CraftsMenu;
 import com.github.minersstudios.msutils.inventory.PronounsMenu;
 import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
 import com.github.minersstudios.msutils.listeners.chat.DiscordGuildMessagePreProcessListener;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.ResourcePack;
-import com.github.minersstudios.msutils.config.ConfigCache;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -26,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -38,22 +40,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.github.minersstudios.mscore.utils.InventoryUtils.registerCustomInventory;
+
 public final class MSUtils extends MSPlugin {
 	private static MSUtils instance;
-
-	private static World worldDark;
-	private static Entity darkEntity;
-	private static World overworld;
 
 	private static AuthMeApi authMeApi;
 	private static ProtocolManager protocolManager;
 
-	private static ConfigCache configCache;
-
-	public static PlayerInfo consolePlayerInfo;
-
-	public static Scoreboard scoreboardHideTags;
-	public static Team scoreboardHideTagsTeam;
+	private World worldDark;
+	private Entity darkEntity;
+	private World overworld;
+	private ConfigCache configCache;
+	private PlayerInfo consolePlayerInfo;
+	private Scoreboard scoreboardHideTags;
+	private Team scoreboardHideTagsTeam;
 
 	@Override
 	public void enable() {
@@ -121,7 +122,12 @@ public final class MSUtils extends MSPlugin {
 				.environment(World.Environment.NORMAL)
 				.biomeProvider(new BiomeProvider() {
 					@Override
-					public @NotNull Biome getBiome(@NotNull WorldInfo worldInfo, int x, int y, int z) {
+					public @NotNull Biome getBiome(
+							@NotNull WorldInfo worldInfo,
+							int x,
+							int y,
+							int z
+					) {
 						return Biome.FOREST;
 					}
 
@@ -160,31 +166,48 @@ public final class MSUtils extends MSPlugin {
 		instance.saveDefaultConfig();
 		instance.reloadConfig();
 
-		if (configCache != null) {
-			configCache.bukkitTasks.forEach(BukkitTask::cancel);
+		if (instance.configCache != null) {
+			instance.configCache.bukkitTasks.forEach(BukkitTask::cancel);
 		}
-		configCache = new ConfigCache();
+		instance.configCache = new ConfigCache();
 
 		instance.saveResource("anomalies/example.yml", true);
 		File consoleDataFile = new File(instance.getPluginFolder(), "players/console.yml");
 		if (!consoleDataFile.exists()) {
 			instance.saveResource("players/console.yml", false);
 		}
-		consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
+		instance.consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
 
 		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), ResourcePack::init);
 
-		configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(instance,
-				() -> new MainAnomalyActionsTask().run(), 0L, configCache.anomalyCheckRate
+		instance.configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(instance,
+				() -> new MainAnomalyActionsTask().run(), 0L, instance.configCache.anomalyCheckRate
 		));
 
-		configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(instance,
-				() -> new ParticleTask().run(), 0L, configCache.anomalyParticlesCheckRate
+		instance.configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(instance,
+				() -> new ParticleTask().run(), 0L, instance.configCache.anomalyParticlesCheckRate
 		));
 
-		InventoryUtils.registerCustomInventory("pronouns", PronounsMenu.create());
-		InventoryUtils.registerCustomInventory("resourcepack", ResourcePackMenu.create());
-		InventoryUtils.registerCustomInventory("crafts", CraftsMenu.create());
+		registerCustomInventory("pronouns", PronounsMenu.create());
+		registerCustomInventory("resourcepack", ResourcePackMenu.create());
+		registerCustomInventory("crafts", CraftsMenu.create());
+
+		List<Recipe> customBlockRecipes = MSCore.getConfigCache().customBlockRecipes;
+		List<Recipe> customDecorRecipes = MSCore.getConfigCache().customDecorRecipes;
+		List<Recipe> customItemRecipes = MSCore.getConfigCache().customItemRecipes;
+		Bukkit.getScheduler().runTaskTimer(instance, (task) -> {
+			if (
+					MSPluginUtils.isLoadedCustoms()
+					&& !customBlockRecipes.isEmpty()
+					&& !customDecorRecipes.isEmpty()
+					&& !customItemRecipes.isEmpty()
+			) {
+				registerCustomInventory("crafts_blocks", CraftsMenu.createCraftsInventory(customBlockRecipes));
+				registerCustomInventory("crafts_decors", CraftsMenu.createCraftsInventory(customDecorRecipes));
+				registerCustomInventory("crafts_items", CraftsMenu.createCraftsInventory(customItemRecipes));
+				task.cancel();
+			}
+		}, 0L, 10L);
 	}
 
 	@Contract(pure = true)
@@ -194,17 +217,17 @@ public final class MSUtils extends MSPlugin {
 
 	@Contract(pure = true)
 	public static @NotNull World getWorldDark() {
-		return worldDark;
+		return instance.worldDark;
 	}
 
 	@Contract(pure = true)
 	public static @NotNull Entity getDarkEntity() {
-		return darkEntity;
+		return instance.darkEntity;
 	}
 
 	@Contract(pure = true)
 	public static @NotNull World getOverworld() {
-		return overworld;
+		return instance.overworld;
 	}
 
 	@Contract(pure = true)
@@ -219,6 +242,21 @@ public final class MSUtils extends MSPlugin {
 
 	@Contract(pure = true)
 	public static @NotNull ConfigCache getConfigCache() {
-		return configCache;
+		return instance.configCache;
+	}
+
+	@Contract(pure = true)
+	public static @NotNull PlayerInfo getConsolePlayerInfo() {
+		return instance.consolePlayerInfo;
+	}
+
+	@Contract(pure = true)
+	public static @NotNull Scoreboard getScoreboardHideTags() {
+		return instance.scoreboardHideTags;
+	}
+
+	@Contract(pure = true)
+	public static @NotNull Team getScoreboardHideTagsTeam() {
+		return instance.scoreboardHideTagsTeam;
 	}
 }

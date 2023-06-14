@@ -50,7 +50,7 @@ public class PrivateMessageCommand implements MSCommandExecutor {
 
 		PlayerInfo senderInfo = sender instanceof Player player
 				? MSPlayerUtils.getPlayerInfo(player)
-				: MSUtils.consolePlayerInfo;
+				: MSUtils.getConsolePlayerInfo();
 
 		if (senderInfo.isMuted()) {
 			ChatUtils.sendWarning(sender, "Вы замьючены");

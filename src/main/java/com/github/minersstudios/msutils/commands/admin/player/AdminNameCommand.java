@@ -14,7 +14,7 @@ import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
 
-public class AdminPlayerNameCommand {
+public class AdminNameCommand {
 
 	public static boolean runCommand(
 			@NotNull CommandSender sender,

@@ -3,7 +3,7 @@ package com.github.minersstudios.msutils.commands.admin.player;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.CommandUtils;
+import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
@@ -171,7 +171,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 					case "ban-info", "mute-info" -> {
 						switch (args[2].toLowerCase(Locale.ENGLISH)) {
 							case "time" -> {
-								return CommandUtils.getTimeSuggestions(args[3]);
+								return DateUtils.getTimeSuggestions(args[3]);
 							}
 							case "reason" -> {
 								return List.of("неизвестно");
@@ -208,7 +208,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
 			case "settings" -> AdminSettingsCommand.runCommand(sender, args, playerInfo);
 			case "ban-info" -> AdminBanInfoCommand.runCommand(sender, args, playerInfo);
 			case "mute-info" -> AdminMuteInfoCommand.runCommand(sender, args, playerInfo);
-			case "name" -> AdminPlayerNameCommand.runCommand(sender, args, playerInfo);
+			case "name" -> AdminNameCommand.runCommand(sender, args, playerInfo);
 			default -> false;
 		};
 	}

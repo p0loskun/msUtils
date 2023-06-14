@@ -126,7 +126,7 @@ public final class MessageUtils {
 			@NotNull Component message
 	) {
 		CommandSender commandSender =
-				sender == MSUtils.consolePlayerInfo
+				sender == MSUtils.getConsolePlayerInfo()
 				? Bukkit.getConsoleSender()
 				: sender.getOnlinePlayer();
 		Player receiverPlayer = receiver.getOnlinePlayer();

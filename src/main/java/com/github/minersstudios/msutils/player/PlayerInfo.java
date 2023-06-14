@@ -96,7 +96,7 @@ public class PlayerInfo {
 			boolean addPlayer,
 			boolean zeroIfNull
 	) {
-		return this == MSUtils.consolePlayerInfo
+		return this == MSUtils.getConsolePlayerInfo()
 				? -1
 				: IDUtils.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
 	}
@@ -146,7 +146,7 @@ public class PlayerInfo {
 					.append(text(")\" был замьючен :\n    - Причина : \""))
 					.append(text(reason))
 					.append(text("\"\n    - До : "))
-					.append(text(DateUtils.getDate(date, sender)))
+					.append(text(DateUtils.getSenderDate(date, sender)))
 			);
 
 			if (player != null) {
@@ -156,7 +156,7 @@ public class PlayerInfo {
 						.append(text("\n    - Причина : \""))
 						.append(text(reason))
 						.append(text("\"\n    - До : "))
-						.append(text(DateUtils.getDate(date, player)))
+						.append(text(DateUtils.getSenderDate(date, player)))
 				);
 			}
 		} else {
@@ -230,7 +230,7 @@ public class PlayerInfo {
 			this.kickPlayer("Вы были забанены",
 					reason
 					+ "\"\n До : \n"
-					+ DateUtils.getDate(date, this.getOnlinePlayer())
+					+ DateUtils.getSenderDate(date, this.getOnlinePlayer())
 			);
 			ChatUtils.sendFine(sender,
 					text("Игрок : \"")
@@ -240,7 +240,7 @@ public class PlayerInfo {
 					.append(text(")\" был забанен :\n    - Причина : \""))
 					.append(text(reason))
 					.append(text("\"\n    - До : "))
-					.append(text(DateUtils.getDate(date, sender)))
+					.append(text(DateUtils.getSenderDate(date, sender)))
 			);
 		} else {
 			if (!this.isBanned()) {
@@ -374,7 +374,7 @@ public class PlayerInfo {
 	}
 
 	public @Nullable Player getOnlinePlayer() {
-		return this.offlinePlayer.getPlayer();
+		return Bukkit.getPlayer(this.uuid);
 	}
 
 	/**

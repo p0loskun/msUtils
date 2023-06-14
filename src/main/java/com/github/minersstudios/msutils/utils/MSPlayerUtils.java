@@ -10,8 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
-
 public final class MSPlayerUtils {
 	/**
 	 * Regex supports all <a href="https://jrgraphix.net/r/Unicode/0400-04FF">cyrillic</a> characters
@@ -23,7 +21,7 @@ public final class MSPlayerUtils {
 	}
 
 	public static @NotNull Map<UUID, PlayerInfo> getPlayerMap() {
-		return getConfigCache().playerInfoMap;
+		return MSUtils.getConfigCache().playerInfoMap;
 	}
 	
 	public static @NotNull PlayerInfo getPlayerInfo(
@@ -52,8 +50,8 @@ public final class MSPlayerUtils {
 
 	public static boolean hideNameTag(@Nullable Player player) {
 		if (player == null) return false;
-		MSUtils.scoreboardHideTagsTeam.addEntry(player.getName());
-		player.setScoreboard(MSUtils.scoreboardHideTags);
+		MSUtils.getScoreboardHideTagsTeam().addEntry(player.getName());
+		player.setScoreboard(MSUtils.getScoreboardHideTags());
 		return true;
 	}
 

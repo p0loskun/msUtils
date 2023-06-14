@@ -1,12 +1,10 @@
 package com.github.minersstudios.msutils.inventory;
 
-import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.ElementListedInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.mscore.inventory.ListedInventory;
 import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
-import com.github.minersstudios.mscore.utils.InventoryUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
 import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
+import static com.github.minersstudios.mscore.utils.InventoryUtils.getCustomInventory;
 
 public class CraftsMenu {
 	public static final int
@@ -32,12 +30,13 @@ public class CraftsMenu {
 			CRAFT_QUIT_BUTTON = 31,
 			CRAFTS_QUIT_BUTTON = 40;
 
+	@Contract(" -> new")
 	public static @NotNull CustomInventory create() {
 		CustomInventory customInventory = new CustomInventory("뀂ꀲ", 4);
 
 		InventoryButton blocksButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
 			Player player = (Player) event.getWhoClicked();
-			player.openInventory(createCraftsInventory(MSCore.getConfigCache().customBlockRecipes));
+			open(Type.BLOCKS, player);
 			playClickSound(player);
 		});
 		customInventory.setButtons(
@@ -48,7 +47,7 @@ public class CraftsMenu {
 
 		InventoryButton decorsButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
 			Player player = (Player) event.getWhoClicked();
-			player.openInventory(createCraftsInventory(MSCore.getConfigCache().customDecorRecipes));
+			open(Type.DECORS, player);
 			playClickSound(player);
 		});
 		customInventory.setButtons(
@@ -59,7 +58,7 @@ public class CraftsMenu {
 
 		InventoryButton itemsButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
 			Player player = (Player) event.getWhoClicked();
-			player.openInventory(createCraftsInventory(MSCore.getConfigCache().customItemRecipes));
+			open(Type.ITEMS, player);
 			playClickSound(player);
 		});
 		customInventory.setButtons(
@@ -71,14 +70,20 @@ public class CraftsMenu {
 		return customInventory;
 	}
 
-	public static boolean open(@NotNull Player player) {
-		CustomInventory customInventory = InventoryUtils.getCustomInventory("crafts");
+	public static boolean open(@NotNull Type type, @NotNull Player player) {
+		CustomInventory customInventory = switch (type) {
+			case MAIN -> getCustomInventory("crafts");
+			case BLOCKS -> getCustomInventory("crafts_blocks");
+			case DECORS -> getCustomInventory("crafts_decors");
+			case ITEMS -> getCustomInventory("crafts_items");
+		};
 		if (customInventory == null) return false;
 		player.openInventory(customInventory);
 		return true;
 	}
 
-	private static @NotNull CustomInventory createCraftsInventory(@NotNull List<Recipe> recipes) {
+	@Contract("_ -> new")
+	public static @NotNull CustomInventory createCraftsInventory(@NotNull List<Recipe> recipes) {
 		List<InventoryButton> elements = new ArrayList<>();
 		for (Recipe recipe : recipes) {
 			ItemStack resultItem = recipe.getResult();
@@ -146,7 +151,7 @@ public class CraftsMenu {
 		craftsInventory.setStaticButtonAt(39, i -> new InventoryButton(createPreviousPageButton()[1], previousClick));
 		craftsInventory.setStaticButtonAt(CRAFTS_QUIT_BUTTON, i -> new InventoryButton(createQuitButton(), (event, customInventory, inventoryButton) -> {
 			Player player = (Player) event.getWhoClicked();
-			open(player);
+			open(Type.MAIN, player);
 			playClickSound(player);
 		}));
 
@@ -168,7 +173,7 @@ public class CraftsMenu {
 		craftsInventory.setStaticButtonAt(44, i -> new InventoryButton(createNextPageButton()[1], nextClick));
 		craftsInventory.updatePages();
 
-		return Objects.requireNonNull(craftsInventory.getPage(0));
+		return craftsInventory;
 	}
 
 	@Contract(" -> new")
@@ -209,5 +214,9 @@ public class CraftsMenu {
 		quitMeta.setCustomModelData(1);
 		quit.setItemMeta(quitMeta);
 		return quit;
+	}
+
+	public enum Type {
+		MAIN, BLOCKS, DECORS, ITEMS
 	}
 }

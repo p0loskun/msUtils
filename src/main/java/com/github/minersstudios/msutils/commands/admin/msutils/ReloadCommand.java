@@ -14,17 +14,11 @@ public class ReloadCommand {
 
 		MSUtils.getConfigCache().playerAnomalyActionMap.clear();
 		MSUtils.reloadConfigs();
-
-		if (MSUtils.getInstance().isEnabled()) {
-			ChatUtils.sendFine(
-					sender,
-					text("Плагин был успешно перезагружен за ")
-					.append(text(System.currentTimeMillis() - time))
-					.append(text("ms"))
-			);
-			return;
-		}
-
-		ChatUtils.sendError(sender, "Плагин был перезагружен неудачно");
+		ChatUtils.sendFine(
+				sender,
+				text("Плагин был успешно перезагружен за ")
+				.append(text(System.currentTimeMillis() - time))
+				.append(text("ms"))
+		);
 	}
 }

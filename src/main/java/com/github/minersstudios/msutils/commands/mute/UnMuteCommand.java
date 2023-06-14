@@ -3,7 +3,7 @@ package com.github.minersstudios.msutils.commands.mute;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.CommandUtils;
+import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
@@ -106,7 +106,7 @@ public class UnMuteCommand implements MSCommandExecutor {
 				}
 			}
 			case 2 -> {
-				return CommandUtils.getTimeSuggestions(args[1]);
+				return DateUtils.getTimeSuggestions(args[1]);
 			}
 		}
 		return completions;

@@ -35,7 +35,7 @@ public final class ConfigCache {
 	public final @NotNull File mutedPlayersFile;
 	public final @NotNull YamlConfiguration mutedPlayersYaml;
 
-	public final Map<UUID, PlayerInfo> playerInfoMap = new HashMap<>();
+	public final Map<UUID, PlayerInfo> playerInfoMap = new ConcurrentHashMap<>();
 	public final Map<UUID, Integer> idMap = new HashMap<>();
 	public final Map<OfflinePlayer, Long> mutedPlayers = new HashMap<>();
 	public final Map<Player, ArmorStand> seats = new HashMap<>();

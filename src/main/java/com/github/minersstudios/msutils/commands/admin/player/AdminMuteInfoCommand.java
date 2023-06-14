@@ -1,7 +1,6 @@
 package com.github.minersstudios.msutils.commands.admin.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.CommandUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
@@ -38,7 +37,7 @@ public class AdminMuteInfoCommand {
 							.append(text("\""))
 							.appendNewline()
 							.append(text("    - Замьючен до : "))
-							.append(text(DateUtils.getDate(new Date(playerFile.getMutedTo()), sender)))
+							.append(text(DateUtils.getSenderDate(new Date(playerFile.getMutedTo()), sender)))
 							: text("    - Не замьючен")
 					)
 			);
@@ -90,12 +89,12 @@ public class AdminMuteInfoCommand {
 							.append(playerInfo.getGrayIDGreenName())
 							.appendNewline()
 							.append(text("    Является : "))
-							.append(text(DateUtils.getDate(new Date(playerFile.getMutedTo()), sender)))
+							.append(text(DateUtils.getSenderDate(new Date(playerFile.getMutedTo()), sender)))
 					);
 					return true;
 				}
 
-				Date date = CommandUtils.getDateFromString(args[1], false);
+				Date date = DateUtils.getDateFromString(args[1], false);
 
 				if (date == null) {
 					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
@@ -112,7 +111,7 @@ public class AdminMuteInfoCommand {
 						.append(playerInfo.getGrayIDGreenName())
 						.appendNewline()
 						.append(text("    Стала : "))
-						.append(text(DateUtils.getDate(date, sender)))
+						.append(text(DateUtils.getSenderDate(date, sender)))
 				);
 				return true;
 			}

@@ -1,7 +1,6 @@
 package com.github.minersstudios.msutils.commands.admin.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.CommandUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
@@ -41,7 +40,7 @@ public class AdminBanInfoCommand {
 							.append(text("\""))
 							.appendNewline()
 							.append(text("    - Забанен до : "))
-							.append(text(DateUtils.getDate(new Date(playerFile.getBannedTo()), sender)))
+							.append(text(DateUtils.getSenderDate(new Date(playerFile.getBannedTo()), sender)))
 							: text("    - Не забанен")
 					)
 			);
@@ -93,12 +92,12 @@ public class AdminBanInfoCommand {
 							.append(playerInfo.getGrayIDGreenName())
 							.appendNewline()
 							.append(text("    Является : "))
-							.append(text(DateUtils.getDate(new Date(playerFile.getBannedTo()), sender)))
+							.append(text(DateUtils.getSenderDate(new Date(playerFile.getBannedTo()), sender)))
 					);
 					return true;
 				}
 
-				Date date = CommandUtils.getDateFromString(paramArgString, false);
+				Date date = DateUtils.getDateFromString(paramArgString, false);
 
 				if (date == null) {
 					ChatUtils.sendError(sender, "Введите показатель в правильном формате");
@@ -120,7 +119,7 @@ public class AdminBanInfoCommand {
 						.append(playerInfo.getGrayIDGreenName())
 						.appendNewline()
 						.append(text("    Стала : "))
-						.append(text(DateUtils.getDate(date, sender)))
+						.append(text(DateUtils.getSenderDate(date, sender)))
 				);
 				return true;
 			}
