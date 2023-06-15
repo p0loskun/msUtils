@@ -66,10 +66,9 @@ public class AsyncChatListener implements Listener {
 
 				if (action.length() == 0 || speech.length() == 0) {
 					sendError(player, "Используй: * [речь] * [действие]");
-					return;
+				} else {
+					MessageUtils.sendRPEventMessage(player, text(speech), text(action), MessageUtils.RolePlayActionType.TODO);
 				}
-
-				MessageUtils.sendRPEventMessage(player, text(speech), text(action), MessageUtils.RolePlayActionType.TODO);
 			} else if (!message.isEmpty()) {
 				MessageUtils.sendRPEventMessage(player, text(message), MessageUtils.RolePlayActionType.ME);
 			}

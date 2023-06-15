@@ -90,7 +90,9 @@ public final class MessageUtils {
 			String stringLocalMessage = serializeLegacyComponent(localMessage);
 
 			sendLocalMessage(localMessage, location, getConfigCache().localChatRadius);
-			sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), stringLocalMessage);
+			Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () ->
+					sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), stringLocalMessage)
+			);
 			sendInfo(stringLocalMessage);
 			return;
 		}
@@ -107,8 +109,10 @@ public final class MessageUtils {
 		String stringGlobalMessage = serializeLegacyComponent(globalMessage);
 
 		sendGlobalMessage(globalMessage);
-		sendMessage(getTextChannelById(getConfigCache().discordGlobalChannelId), stringGlobalMessage.replaceFirst("\\[WM]", ""));
-		sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), stringGlobalMessage);
+		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () -> {
+			sendMessage(getTextChannelById(getConfigCache().discordGlobalChannelId), stringGlobalMessage.replaceFirst("\\[WM]", ""));
+			sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), stringGlobalMessage);
+		});
 		sendInfo(stringGlobalMessage);
 	}
 
@@ -159,7 +163,9 @@ public final class MessageUtils {
 					.clickEvent(ClickEvent.suggestCommand("/pm " + sender.getID() + " ")))
 					.append(message.color(CHAT_COLOR_SECONDARY))
 			);
-			sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), privateMessage);
+			Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () ->
+				sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), privateMessage)
+			);
 			sendInfo(privateMessage);
 			return true;
 		}
@@ -210,7 +216,9 @@ public final class MessageUtils {
 		};
 
 		sendLocalMessage(Badges.YELLOW_EXCLAMATION_MARK.append(fullMessage), sender.getLocation(), getConfigCache().localChatRadius);
-		sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), serializeLegacyComponent(fullMessage));
+		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () ->
+				sendMessage(getTextChannelById(getConfigCache().discordLocalChannelId), serializeLegacyComponent(fullMessage))
+		);
 		sendInfo(serializeLegacyComponent(fullMessage));
 	}
 
@@ -252,8 +260,10 @@ public final class MessageUtils {
 		String stringDeathMessage = serializeLegacyComponent(deathMessage);
 
 		sendGlobalMessage(deathMessage);
-		sendActionMessage(killed, getTextChannelById(getConfigCache().discordGlobalChannelId), stringDeathMessage, 16757024);
-		sendActionMessage(killed, getTextChannelById(getConfigCache().discordLocalChannelId), stringDeathMessage, 16757024);
+		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () -> {
+			sendActionMessage(killed, getTextChannelById(getConfigCache().discordGlobalChannelId), stringDeathMessage, 16757024);
+			sendActionMessage(killed, getTextChannelById(getConfigCache().discordLocalChannelId), stringDeathMessage, 16757024);
+		});
 		sendInfo(stringDeathMessage);
 
 		sendInfo(text("Мир и координаты смерти игрока : \"")
@@ -292,8 +302,10 @@ public final class MessageUtils {
 		String stringJoinMessage = serializeLegacyComponent(joinMessage);
 
 		sendGlobalMessage(joinMessage);
-		sendActionMessage(player, getTextChannelById(getConfigCache().discordGlobalChannelId), stringJoinMessage, 65280);
-		sendActionMessage(player, getTextChannelById(getConfigCache().discordLocalChannelId), stringJoinMessage, 65280);
+		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () -> {
+			sendActionMessage(player, getTextChannelById(getConfigCache().discordGlobalChannelId), stringJoinMessage, 65280);
+			sendActionMessage(player, getTextChannelById(getConfigCache().discordLocalChannelId), stringJoinMessage, 65280);
+		});
 		sendInfo(stringJoinMessage);
 	}
 
@@ -316,8 +328,10 @@ public final class MessageUtils {
 		String stringQuitMessage = serializeLegacyComponent(quitMessage);
 
 		sendGlobalMessage(quitMessage);
-		sendActionMessage(player, getTextChannelById(getConfigCache().discordGlobalChannelId), stringQuitMessage, 16711680);
-		sendActionMessage(player, getTextChannelById(getConfigCache().discordLocalChannelId), stringQuitMessage, 16711680);
+		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () -> {
+			sendActionMessage(player, getTextChannelById(getConfigCache().discordGlobalChannelId), stringQuitMessage, 16711680);
+			sendActionMessage(player, getTextChannelById(getConfigCache().discordLocalChannelId), stringQuitMessage, 16711680);
+		});
 		sendInfo(stringQuitMessage);
 	}
 
