@@ -27,109 +27,108 @@ import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
 @MSCommand(
-		command = "ban",
-		usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [время][s/m/h/d/M/y] [причина]",
-		description = "Покажи кто тут главный и забань игрока",
-		permission = "msutils.ban",
-		permissionDefault = PermissionDefault.OP
+        command = "ban",
+        usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [время][s/m/h/d/M/y] [причина]",
+        description = "Покажи кто тут главный и забань игрока",
+        permission = "msutils.ban",
+        permissionDefault = PermissionDefault.OP
 )
 public class BanCommand implements MSCommandExecutor {
 
-	@Override
-	public boolean onCommand(
-			@NotNull CommandSender sender,
-			@NotNull Command command,
-			@NotNull String label,
-			String @NotNull ... args
-	) {
-		if (args.length < 2) return false;
+    @Override
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        if (args.length < 2) return false;
 
-		Date date = DateUtils.getDateFromString(args[1], false);
+        Date date = DateUtils.getDateFromString(args[1], false);
 
-		if (date == null) {
-			ChatUtils.sendError(sender, "Введите показатель в правильном формате");
-			return true;
-		}
+        if (date == null) {
+            ChatUtils.sendError(sender, "Введите показатель в правильном формате");
+            return true;
+        }
 
-		String reason = args.length > 2
-				? ChatUtils.extractMessage(args, 2)
-				: "неизвестно";
+        String reason = args.length > 2
+                ? ChatUtils.extractMessage(args, 2)
+                : "неизвестно";
 
-		if (IDUtils.matchesIDRegex(args[0])) {
-			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+        if (IDUtils.matchesIDRegex(args[0])) {
+            OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
 
-			if (offlinePlayer == null || StringUtils.isBlank(offlinePlayer.getName())) {
-				ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
-				return true;
-			}
+            if (offlinePlayer == null || StringUtils.isBlank(offlinePlayer.getName())) {
+                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                return true;
+            }
 
-			MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
-					.setBanned(true, date, reason, sender);
-			return true;
-		}
+            MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
+                    .setBanned(true, date, reason, sender);
+            return true;
+        }
 
-		if (args[0].length() > 2) {
-			String name = args[0];
-			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(name);
+        if (args[0].length() > 2) {
+            String name = args[0];
+            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(name);
 
-			if (offlinePlayer == null) {
-				ChatUtils.sendError(sender, "Данного игрока не существует");
-				return true;
-			}
+            if (offlinePlayer == null) {
+                ChatUtils.sendError(sender, "Данного игрока не существует");
+                return true;
+            }
 
-			MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), name)
-					.setBanned(true, date, reason, sender);
-			return true;
-		}
+            MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), name)
+                    .setBanned(true, date, reason, sender);
+            return true;
+        }
 
-		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
-		return true;
-	}
+        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        return true;
+    }
 
-	@Override
-	public @Nullable List<String> onTabComplete(
-			@NotNull CommandSender sender,
-			@NotNull Command command,
-			@NotNull String label,
-			String @NotNull ... args
-	) {
-		List<String> completions = new ArrayList<>();
-		switch (args.length) {
-			case 1 -> {
-				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-					String nickname = offlinePlayer.getName();
-					UUID uuid = offlinePlayer.getUniqueId();
+    @Override
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        List<String> completions = new ArrayList<>();
+        switch (args.length) {
+            case 1 -> {
+                for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+                    String nickname = offlinePlayer.getName();
+                    UUID uuid = offlinePlayer.getUniqueId();
 
-					if (StringUtils.isBlank(nickname) || offlinePlayer.isBanned()) continue;
+                    if (StringUtils.isBlank(nickname) || offlinePlayer.isBanned()) continue;
 
-					int id = IDUtils.getID(uuid, false, false);
+                    int id = IDUtils.getID(uuid, false, false);
 
-					if (id != -1) {
-						completions.add(String.valueOf(id));
-					}
+                    if (id != -1) {
+                        completions.add(String.valueOf(id));
+                    }
 
-					if (offlinePlayer.hasPlayedBefore()) {
-						completions.add(nickname);
-					}
-				}
-			}
-			case 2 -> {
-				return DateUtils.getTimeSuggestions(args[1]);
-			}
-		}
-		return completions;
-	}
+                    if (offlinePlayer.hasPlayedBefore()) {
+                        completions.add(nickname);
+                    }
+                }
+            }
+            case 2 -> {
+                return DateUtils.getTimeSuggestions(args[1]);
+            }
+        }
+        return completions;
+    }
 
-	@Override
-	public @Nullable CommandNode<?> getCommandNode() {
-		return literal("ban")
-				.then(
-						argument("id/никнейм", StringArgumentType.word())
-						.then(
-								argument("время", StringArgumentType.word())
-								.then(argument("причина", StringArgumentType.greedyString()))
-						)
-				)
-				.build();
-	}
+    @Override
+    public @Nullable CommandNode<?> getCommandNode() {
+        return literal("ban")
+                .then(
+                        argument("id/никнейм", StringArgumentType.word())
+                        .then(
+                                argument("время", StringArgumentType.word())
+                                .then(argument("причина", StringArgumentType.greedyString()))
+                        )
+                ).build();
+    }
 }

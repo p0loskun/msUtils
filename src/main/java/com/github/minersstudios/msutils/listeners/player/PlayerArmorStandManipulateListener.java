@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerArmorStandManipulateListener implements Listener {
 
-	@EventHandler(ignoreCancelled = true)
-	public void onPlayerArmorStandManipulate(@NotNull PlayerArmorStandManipulateEvent event) {
-		if (MSUtils.getConfigCache().seats.containsValue(event.getRightClicked())) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerArmorStandManipulate(@NotNull PlayerArmorStandManipulateEvent event) {
+        if (MSUtils.getConfigCache().seats.containsValue(event.getRightClicked())) {
+            event.setCancelled(true);
+        }
+    }
 }

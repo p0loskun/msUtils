@@ -24,65 +24,66 @@ import static net.kyori.adventure.text.Component.*;
 @MSListener
 public class PlayerInteractEntityListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
-		Player playerWhoClicked = event.getPlayer();
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerInteractEntity(@NotNull PlayerInteractEntityEvent event) {
+        Player playerWhoClicked = event.getPlayer();
 
-		if (event.getRightClicked() instanceof Player clickedPlayer) {
-			float pitch = playerWhoClicked.getEyeLocation().getPitch();
+        if (event.getRightClicked() instanceof Player clickedPlayer) {
+            float pitch = playerWhoClicked.getEyeLocation().getPitch();
 
-			if (
-					(pitch >= 80 && pitch <= 90)
-					&& playerWhoClicked.isSneaking()
-					&& !playerWhoClicked.getPassengers().isEmpty()
-			) {
-				playerWhoClicked.eject();
-			}
+            if (
+                    (pitch >= 80 && pitch <= 90)
+                    && playerWhoClicked.isSneaking()
+                    && !playerWhoClicked.getPassengers().isEmpty()
+            ) {
+                playerWhoClicked.eject();
+            }
 
-			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(clickedPlayer);
+            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(clickedPlayer);
 
-			playerWhoClicked.sendActionBar(
-					empty()
-					.append(playerInfo.getGoldenName())
-					.append(space())
-					.append(text(playerInfo.getPlayerFile().getPlayerName().getPatronymic(), MessageUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY))
-			);
+            playerWhoClicked.sendActionBar(
+                    empty()
+                    .append(playerInfo.getGoldenName())
+                    .append(space())
+                    .append(text(playerInfo.getPlayerFile().getPlayerName().getPatronymic(), MessageUtils.Colors.JOIN_MESSAGE_COLOR_PRIMARY))
+            );
 
-			ItemStack helmet = clickedPlayer.getInventory().getHelmet();
+            ItemStack helmet = clickedPlayer.getInventory().getHelmet();
 
-			if (
-					!playerWhoClicked.isInsideVehicle()
-					&& helmet != null
-					&& !playerWhoClicked.isSneaking()
-					&& helmet.getType() == Material.SADDLE
-			) {
-				List<Entity> passengers = clickedPlayer.getPassengers();
-				if (passengers.isEmpty()) {
-					clickedPlayer.addPassenger(playerWhoClicked);
-				} else {
-					passengers.get(passengers.size() - 1).addPassenger(playerWhoClicked);
-				}
-			}
-		} else if (event.getRightClicked() instanceof ItemFrame itemFrame) {
-			Material itemInItemFrameMaterial = itemFrame.getItem().getType(),
-					itemInMainHandMaterial = playerWhoClicked.getInventory().getItemInMainHand().getType();
+            if (
+                    !playerWhoClicked.isInsideVehicle()
+                    && helmet != null
+                    && !playerWhoClicked.isSneaking()
+                    && helmet.getType() == Material.SADDLE
+            ) {
+                List<Entity> passengers = clickedPlayer.getPassengers();
+                if (passengers.isEmpty()) {
+                    clickedPlayer.addPassenger(playerWhoClicked);
+                } else {
+                    passengers.get(passengers.size() - 1).addPassenger(playerWhoClicked);
+                }
+            }
+        } else if (event.getRightClicked() instanceof ItemFrame itemFrame) {
+            Material
+                    itemInItemFrameMaterial = itemFrame.getItem().getType(),
+                    itemInMainHandMaterial = playerWhoClicked.getInventory().getItemInMainHand().getType();
 
-			if (
-					itemInItemFrameMaterial.isAir()
-					&& !itemInMainHandMaterial.isAir()
-					&& itemFrame.getScoreboardTags().contains("invisibleItemFrame")
-			) {
-				itemFrame.setVisible(false);
-			} else if (
-					(!itemInItemFrameMaterial.isAir() || playerWhoClicked.isSneaking())
-					&& itemInMainHandMaterial == Material.SHEARS
-					&& !itemFrame.getScoreboardTags().contains("invisibleItemFrame")
-			) {
-				playerWhoClicked.getWorld().playSound(itemFrame.getLocation(), Sound.ENTITY_SHEEP_SHEAR, SoundCategory.PLAYERS, 1.0f, 1.0f);
-				itemFrame.addScoreboardTag("invisibleItemFrame");
-				itemFrame.setVisible(itemInItemFrameMaterial.isAir());
-				event.setCancelled(true);
-			}
-		}
-	}
+            if (
+                    itemInItemFrameMaterial.isAir()
+                    && !itemInMainHandMaterial.isAir()
+                    && itemFrame.getScoreboardTags().contains("invisibleItemFrame")
+            ) {
+                itemFrame.setVisible(false);
+            } else if (
+                    (!itemInItemFrameMaterial.isAir() || playerWhoClicked.isSneaking())
+                    && itemInMainHandMaterial == Material.SHEARS
+                    && !itemFrame.getScoreboardTags().contains("invisibleItemFrame")
+            ) {
+                playerWhoClicked.getWorld().playSound(itemFrame.getLocation(), Sound.ENTITY_SHEEP_SHEAR, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                itemFrame.addScoreboardTag("invisibleItemFrame");
+                itemFrame.setVisible(itemInItemFrameMaterial.isAir());
+                event.setCancelled(true);
+            }
+        }
+    }
 }

@@ -21,52 +21,53 @@ import static net.kyori.adventure.text.Component.text;
 @MSListener
 public class InventoryClickListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onInventoryClick(@NotNull InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
-		Inventory clickedInventory = event.getClickedInventory();
-		int slot = event.getSlot();
-		ItemStack cursorItem = event.getCursor(),
-				currentItem = event.getCurrentItem();
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onInventoryClick(@NotNull InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        Inventory clickedInventory = event.getClickedInventory();
+        int slot = event.getSlot();
+        ItemStack
+                cursorItem = event.getCursor(),
+                currentItem = event.getCurrentItem();
 
-		if (clickedInventory == null) return;
+        if (clickedInventory == null) return;
 
-		if (player.getWorld() == MSUtils.getWorldDark()) {
-			event.setCancelled(true);
-		}
+        if (player.getWorld() == MSUtils.getWorldDark()) {
+            event.setCancelled(true);
+        }
 
-		if (
-				slot == 39
-				&& event.getSlotType() == InventoryType.SlotType.ARMOR
-				&& cursorItem != null
-				&& currentItem != null
-				&& currentItem.getType() == Material.AIR
-				&& cursorItem.getType() != Material.AIR
-		) {
-			player.setItemOnCursor(null);
-			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.getInventory().setHelmet(cursorItem));
-		}
+        if (
+                slot == 39
+                && event.getSlotType() == InventoryType.SlotType.ARMOR
+                && cursorItem != null
+                && currentItem != null
+                && currentItem.getType() == Material.AIR
+                && cursorItem.getType() != Material.AIR
+        ) {
+            player.setItemOnCursor(null);
+            Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.getInventory().setHelmet(cursorItem));
+        }
 
-		if (currentItem != null && currentItem.getType() != Material.AIR) {
-			boolean remove = currentItem.getType() == Material.BEDROCK;
+        if (currentItem != null && currentItem.getType() != Material.AIR) {
+            boolean remove = currentItem.getType() == Material.BEDROCK;
 
-			if (!remove) {
-				for (Enchantment enchantment : currentItem.getEnchantments().keySet()) {
-					remove = currentItem.getEnchantmentLevel(enchantment) > enchantment.getMaxLevel();
-				}
-			}
+            if (!remove) {
+                for (Enchantment enchantment : currentItem.getEnchantments().keySet()) {
+                    remove = currentItem.getEnchantmentLevel(enchantment) > enchantment.getMaxLevel();
+                }
+            }
 
-			if (remove) {
-				clickedInventory.setItem(slot, new ItemStack(Material.AIR));
-				ChatUtils.sendWarning(
-						text(" У игрока : ")
-						.append(text(player.getName()))
-						.append(text(" был убран предмет : \n"))
-						.append(text(currentItem.toString()))
-				);
-				event.setCancelled(true);
-				Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
-			}
-		}
-	}
+            if (remove) {
+                clickedInventory.setItem(slot, new ItemStack(Material.AIR));
+                ChatUtils.sendWarning(
+                        text(" У игрока : ")
+                        .append(text(player.getName()))
+                        .append(text(" был убран предмет : \n"))
+                        .append(text(currentItem.toString()))
+                );
+                event.setCancelled(true);
+                Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
+            }
+        }
+    }
 }

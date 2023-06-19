@@ -10,14 +10,14 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class EntityDamageByEntityListener implements Listener {
 
-	@EventHandler
-	public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
-		if (
-				event.getEntity() instanceof ItemFrame itemFrame
-				&& itemFrame.getScoreboardTags().contains("invisibleItemFrame")
-				&& !itemFrame.isVisible()
-		) {
-			itemFrame.setVisible(true);
-		}
-	}
+    @EventHandler
+    public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
+        if (
+                event.getEntity() instanceof ItemFrame itemFrame
+                && itemFrame.getScoreboardTags().contains("invisibleItemFrame")
+                && !itemFrame.isVisible()
+        ) {
+            itemFrame.setVisible(true);
+        }
+    }
 }

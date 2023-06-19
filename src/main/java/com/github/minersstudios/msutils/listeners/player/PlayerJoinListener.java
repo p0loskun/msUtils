@@ -19,46 +19,53 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerJoinListener implements Listener {
 
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-		PlayerFile playerFile = playerInfo.getPlayerFile();
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerFile playerFile = playerInfo.getPlayerFile();
 
-		event.joinMessage(null);
-		playerInfo.hideNameTag();
-		player.displayName(playerInfo.getDefaultName());
+        event.joinMessage(null);
+        playerInfo.hideNameTag();
+        player.displayName(playerInfo.getDefaultName());
 
-		if (player.isDead()) {
-			Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
-				player.spigot().respawn();
-				player.teleport(new Location(MSUtils.getWorldDark(), 0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
-				player.setGameMode(GameMode.SPECTATOR);
-			}, 8L);
-		} else {
-			player.setGameMode(GameMode.SPECTATOR);
-			Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.setSpectatorTarget(MSUtils.getDarkEntity()));
-		}
+        if (player.isDead()) {
+            Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
+                player.spigot().respawn();
+                player.teleport(new Location(MSUtils.getWorldDark(), 0.0d, 0.0d, 0.0d), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                player.setGameMode(GameMode.SPECTATOR);
+            }, 8L);
+        } else {
+            player.setGameMode(GameMode.SPECTATOR);
+            Bukkit.getScheduler().runTask(
+                    MSUtils.getInstance(),
+                    () -> player.setSpectatorTarget(MSUtils.getDarkEntity())
+            );
+        }
 
-		Bukkit.getScheduler().runTaskTimer(MSUtils.getInstance(), (task) -> {
-			if (!player.isOnline()) task.cancel();
-			if (MSUtils.getAuthMeApi().isAuthenticated(player) && !player.isDead()) {
-				if (!playerFile.exists() || (playerFile.exists() && playerFile.isNoName())) {
-					task.cancel();
-					new RegistrationProcess().registerPlayer(playerInfo);
-				} else {
-					task.cancel();
-					if (playerFile.getYamlConfiguration().getString("pronouns") == null) {
-						PronounsMenu.open(player);
-					} else {
-						if (playerFile.getPlayerSettings().getResourcePackType() == ResourcePack.Type.NONE) {
-							playerInfo.teleportToLastLeaveLocation();
-						} else {
-							ResourcePack.setResourcePack(playerInfo);
-						}
-					}
-				}
-			}
-		}, 1L, 1L);
-	}
+        Bukkit.getScheduler().runTaskTimer(MSUtils.getInstance(), (task) -> {
+            if (!player.isOnline()) task.cancel();
+            if (MSUtils.getAuthMeApi().isAuthenticated(player) && !player.isDead()) {
+                if (
+                        !playerFile.exists()
+                        || (playerFile.exists()
+                        && playerFile.isNoName())
+                ) {
+                    task.cancel();
+                    new RegistrationProcess().registerPlayer(playerInfo);
+                } else {
+                    task.cancel();
+                    if (playerFile.getYamlConfiguration().getString("pronouns") == null) {
+                        PronounsMenu.open(player);
+                    } else {
+                        if (playerFile.getPlayerSettings().getResourcePackType() == ResourcePack.Type.NONE) {
+                            playerInfo.initJoin();
+                        } else {
+                            ResourcePack.setResourcePack(playerInfo);
+                        }
+                    }
+                }
+            }
+        }, 1L, 1L);
+    }
 }

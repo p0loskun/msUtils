@@ -26,94 +26,94 @@ import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
-		command = "privatemessage",
-		aliases = {
-				"pmessage",
-				"pm",
-				"w",
-				"tell",
-				"msg"
-		},
-		usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [сообщение]",
-		description = "Отправь другому игроку приватное сообщение"
+        command = "privatemessage",
+        aliases = {
+                "pmessage",
+                "pm",
+                "w",
+                "tell",
+                "msg"
+        },
+        usage = " ꀑ §cИспользуй: /<command> [id/никнейм] [сообщение]",
+        description = "Отправь другому игроку приватное сообщение"
 )
 public class PrivateMessageCommand implements MSCommandExecutor {
 
-	@Override
-	public boolean onCommand(
-			@NotNull CommandSender sender, 
-			@NotNull Command command, 
-			@NotNull String label, 
-			String @NotNull ... args
-	) {
-		if (args.length < 2) return false;
+    @Override
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        if (args.length < 2) return false;
 
-		PlayerInfo senderInfo = sender instanceof Player player
-				? MSPlayerUtils.getPlayerInfo(player)
-				: MSUtils.getConsolePlayerInfo();
+        PlayerInfo senderInfo = sender instanceof Player player
+                ? MSPlayerUtils.getPlayerInfo(player)
+                : MSUtils.getConsolePlayerInfo();
 
-		if (senderInfo.isMuted()) {
-			ChatUtils.sendWarning(sender, "Вы замьючены");
-			return true;
-		}
+        if (senderInfo.isMuted()) {
+            ChatUtils.sendWarning(sender, "Вы замьючены");
+            return true;
+        }
 
-		String message = ChatUtils.extractMessage(args, 1);
+        String message = ChatUtils.extractMessage(args, 1);
 
-		if (IDUtils.matchesIDRegex(args[0])) {
-			OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+        if (IDUtils.matchesIDRegex(args[0])) {
+            OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
 
-			if (!(offlinePlayer instanceof Player player)) {
-				ChatUtils.sendWarning(sender, "Данный игрок не в сети");
-				return true;
-			}
+            if (!(offlinePlayer instanceof Player player)) {
+                ChatUtils.sendWarning(sender, "Данный игрок не в сети");
+                return true;
+            }
 
-			PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 
-			if (!playerInfo.isOnline() && !sender.hasPermission("msutils.*")) {
-				ChatUtils.sendWarning(sender, "Данный игрок не в сети");
-				return true;
-			}
+            if (!playerInfo.isOnline() && !sender.hasPermission("msutils.*")) {
+                ChatUtils.sendWarning(sender, "Данный игрок не в сети");
+                return true;
+            }
 
-			sendPrivateMessage(senderInfo, playerInfo, text(message));
-			return true;
-		}
+            sendPrivateMessage(senderInfo, playerInfo, text(message));
+            return true;
+        }
 
-		if (args[0].length() > 2) {
-			OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
+        if (args[0].length() > 2) {
+            OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 
-			if (offlinePlayer instanceof Player player) {
-				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            if (offlinePlayer instanceof Player player) {
+                PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 
-				if (playerInfo.isOnline() || sender.hasPermission("msutils.*")) {
-					sendPrivateMessage(senderInfo, playerInfo, text(message));
-					return true;
-				}
-			}
+                if (playerInfo.isOnline() || sender.hasPermission("msutils.*")) {
+                    sendPrivateMessage(senderInfo, playerInfo, text(message));
+                    return true;
+                }
+            }
 
-			ChatUtils.sendWarning(sender, "Данный игрок не в сети");
-			return true;
-		}
+            ChatUtils.sendWarning(sender, "Данный игрок не в сети");
+            return true;
+        }
 
-		ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
-		return true;
-	}
+        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        return true;
+    }
 
-	@Override
-	public @Nullable List<String> onTabComplete(
-			@NotNull CommandSender sender,
-			@NotNull Command command,
-			@NotNull String label,
-			String @NotNull ... args
-	) {
-		return new AllLocalPlayers().onTabComplete(sender, command, label, args);
-	}
+    @Override
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        return new AllLocalPlayers().onTabComplete(sender, command, label, args);
+    }
 
-	@Override
-	public @Nullable CommandNode<?> getCommandNode() {
-		return literal("privatemessage")
-				.then(
-						argument("id/никнейм", StringArgumentType.word())
-						.then(argument("сообщение", StringArgumentType.greedyString()))
-				).build();
-	}
+    @Override
+    public @Nullable CommandNode<?> getCommandNode() {
+        return literal("privatemessage")
+                .then(
+                        argument("id/никнейм", StringArgumentType.word())
+                        .then(argument("сообщение", StringArgumentType.greedyString()))
+                ).build();
+    }
 }

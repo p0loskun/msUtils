@@ -18,37 +18,37 @@ import static net.kyori.adventure.text.Component.text;
 @MSListener
 public class PlayerResourcePackStatusListener implements Listener {
 
-	@EventHandler
-	public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
-		Player player = event.getPlayer();
-		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-		PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+    @EventHandler
+    public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
+        Player player = event.getPlayer();
+        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-		if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) return;
-		switch (event.getStatus()) {
-			case ACCEPTED -> ChatUtils.sendFine(text(player.getName()).append(text(" принял ресурспак")));
-			case SUCCESSFULLY_LOADED -> {
-				ChatUtils.sendFine(text(player.getName()).append(text(" успешно загрузил ресурспак")));
-				if (player.getWorld() == MSUtils.getWorldDark()) {
-					playerInfo.teleportToLastLeaveLocation();
-				}
-			}
-			case FAILED_DOWNLOAD -> {
-				ChatUtils.sendWarning(text(player.getName()).append(text(" не установился ресурспак")));
-				playerSettings.setResourcePackType(ResourcePack.Type.NONE);
-				playerSettings.save();
-				playerInfo.kickPlayer(
-						"Кажется, что-то пошло не так",
-						"Обратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n \"Без текстурпака\""
-				);
-			}
-			case DECLINED -> {
-				ChatUtils.sendWarning(text(player.getName()).append(text(" не принял ресурспак")));
-				playerInfo.kickPlayer(
-						"Кажется, что-то пошло не так",
-						"В настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\""
-				);
-			}
-		}
-	}
+        if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) return;
+        switch (event.getStatus()) {
+            case ACCEPTED -> ChatUtils.sendFine(text(player.getName()).append(text(" принял ресурспак")));
+            case SUCCESSFULLY_LOADED -> {
+                ChatUtils.sendFine(text(player.getName()).append(text(" успешно загрузил ресурспак")));
+                if (player.getWorld() == MSUtils.getWorldDark()) {
+                    playerInfo.initJoin();
+                }
+            }
+            case FAILED_DOWNLOAD -> {
+                ChatUtils.sendWarning(text(player.getName()).append(text(" не установился ресурспак")));
+                playerSettings.setResourcePackType(ResourcePack.Type.NONE);
+                playerSettings.save();
+                playerInfo.kickPlayer(
+                        "Кажется, что-то пошло не так",
+                        "Обратитесь к администрации\nА пока ваш тип ресурспака изменён на :\n \"Без текстурпака\""
+                );
+            }
+            case DECLINED -> {
+                ChatUtils.sendWarning(text(player.getName()).append(text(" не принял ресурспак")));
+                playerInfo.kickPlayer(
+                        "Кажется, что-то пошло не так",
+                        "В настройках сервера поменяйте параметр :\n\"Наборы ресурсов\" на \"Включены\""
+                );
+            }
+        }
+    }
 }

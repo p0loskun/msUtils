@@ -11,10 +11,10 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 @MSListener
 public class PlayerSpawnLocationListener implements Listener {
 
-	@EventHandler
-	public void onPlayerSpawnLocation(@NotNull PlayerSpawnLocationEvent event) {
-		if (!event.getPlayer().isDead()) {
-			event.setSpawnLocation(new Location(MSUtils.getWorldDark(), 0.0d, 0.0d, 0.0d));
-		}
-	}
+    @EventHandler
+    public void onPlayerSpawnLocation(@NotNull PlayerSpawnLocationEvent event) {
+        if (!event.getPlayer().isDead()) {
+            event.setSpawnLocation(new Location(MSUtils.getWorldDark(), 0.0d, 0.0d, 0.0d));
+        }
+    }
 }

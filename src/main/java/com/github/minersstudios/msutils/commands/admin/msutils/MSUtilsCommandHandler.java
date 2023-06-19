@@ -14,60 +14,60 @@ import java.util.Locale;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
 @MSCommand(
-		command = "msutils",
-		usage = " ꀑ §cИспользуй: /<command> [параметры]",
-		description = "Прочие команды",
-		permission = "msutils.*",
-		permissionDefault = PermissionDefault.OP,
-		permissionParentKeys = {
-				"msutils.player.*",
-				"msutils.ban",
-				"msutils.mute",
-				"msutils.kick",
-				"msutils.maplocation",
-				"msutils.whitelist",
-				"msutils.teleporttolastdeathlocation",
-				"msutils.worldteleport"
-		},
-		permissionParentValues = {
-				true,
-				true,
-				true,
-				true,
-				true,
-				true,
-				true,
-				true
-		}
+        command = "msutils",
+        usage = " ꀑ §cИспользуй: /<command> [параметры]",
+        description = "Прочие команды",
+        permission = "msutils.*",
+        permissionDefault = PermissionDefault.OP,
+        permissionParentKeys = {
+                "msutils.player.*",
+                "msutils.ban",
+                "msutils.mute",
+                "msutils.kick",
+                "msutils.maplocation",
+                "msutils.whitelist",
+                "msutils.teleporttolastdeathlocation",
+                "msutils.worldteleport"
+        },
+        permissionParentValues = {
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+        }
 )
 public class MSUtilsCommandHandler implements MSCommandExecutor {
 
-	@Override
-	public boolean onCommand(
-			@NotNull CommandSender sender, 
-			@NotNull Command command, 
-			@NotNull String label, 
-			String @NotNull ... args
-	) {
-		if (args.length > 0) {
-			switch (args[0].toLowerCase(Locale.ENGLISH)) {
-				case "reload" -> ReloadCommand.runCommand(sender);
-				case "updateids" -> UpdateIdsCommand.runCommand(sender);
-				default -> {
-					return false;
-				}
-			}
-		} else {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        if (args.length > 0) {
+            switch (args[0].toLowerCase(Locale.ENGLISH)) {
+                case "reload" -> ReloadCommand.runCommand(sender);
+                case "updateids" -> UpdateIdsCommand.runCommand(sender);
+                default -> {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public @Nullable CommandNode<?> getCommandNode() {
-		return literal("msutils")
-				.then(literal("reload"))
-				.then(literal("updateids"))
-				.build();
-	}
+    @Override
+    public @Nullable CommandNode<?> getCommandNode() {
+        return literal("msutils")
+                .then(literal("reload"))
+                .then(literal("updateids"))
+                .build();
+    }
 }

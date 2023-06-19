@@ -9,16 +9,16 @@ import static net.kyori.adventure.text.Component.text;
 
 public class AdminUpdateCommand {
 
-	public static boolean runCommand(
-			@NotNull CommandSender sender,
-			@NotNull PlayerInfo playerInfo
-	) {
-		playerInfo.update();
-		ChatUtils.sendFine(sender,
-				text("Данные игрока : ")
-				.append(playerInfo.getGrayIDGreenName())
-				.append(text(" были успешно обновлены"))
-		);
-		return true;
-	}
+    public static boolean runCommand(
+            @NotNull CommandSender sender,
+            @NotNull PlayerInfo playerInfo
+    ) {
+        playerInfo.update();
+        ChatUtils.sendFine(sender,
+                text("Данные игрока : ")
+                .append(playerInfo.getGrayIDGreenName())
+                .append(text(" были успешно обновлены"))
+        );
+        return true;
+    }
 }

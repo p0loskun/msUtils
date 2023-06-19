@@ -43,220 +43,222 @@ import java.util.UUID;
 import static com.github.minersstudios.mscore.utils.InventoryUtils.registerCustomInventory;
 
 public final class MSUtils extends MSPlugin {
-	private static MSUtils instance;
+    private static MSUtils instance;
 
-	private static AuthMeApi authMeApi;
-	private static ProtocolManager protocolManager;
+    private static AuthMeApi authMeApi;
+    private static ProtocolManager protocolManager;
 
-	private World worldDark;
-	private Entity darkEntity;
-	private World overworld;
-	private ConfigCache configCache;
-	private PlayerInfo consolePlayerInfo;
-	private Scoreboard scoreboardHideTags;
-	private Team scoreboardHideTagsTeam;
+    private static World worldDark;
+    private static Entity darkEntity;
+    private static World overworld;
+    private static ConfigCache configCache;
+    private static PlayerInfo consolePlayerInfo;
+    private static Scoreboard scoreboardHideTags;
+    private static Team scoreboardHideTagsTeam;
 
-	@Override
-	public void enable() {
-		instance = this;
-		protocolManager = ProtocolLibrary.getProtocolManager();
-		authMeApi = AuthMeApi.getInstance();
+    @Override
+    public void enable() {
+        instance = this;
+        protocolManager = ProtocolLibrary.getProtocolManager();
+        authMeApi = AuthMeApi.getInstance();
 
-		Bukkit.getScheduler().runTask(this, () -> {
-			worldDark = setWorldDark();
-			darkEntity = worldDark.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
-					worldDark.spawn(new Location(worldDark, 0, 13, 0), ItemFrame.class, (entity) -> {
-						entity.setGravity(false);
-						entity.setFixed(true);
-						entity.setVisible(false);
-						entity.setInvulnerable(true);
-					})
-			);
-		});
-		overworld = ((CraftServer) this.getServer()).getServer().overworld().getWorld();
+        Bukkit.getScheduler().runTask(this, () -> {
+            worldDark = setWorldDark();
+            darkEntity = worldDark.getEntitiesByClass(ItemFrame.class).stream().findFirst().orElseGet(() ->
+                    worldDark.spawn(new Location(worldDark, 0, 13, 0), ItemFrame.class, (entity) -> {
+                        entity.setGravity(false);
+                        entity.setFixed(true);
+                        entity.setVisible(false);
+                        entity.setInvulnerable(true);
+                    })
+            );
+        });
+        overworld = ((CraftServer) this.getServer()).getServer().overworld().getWorld();
 
-		scoreboardHideTags = Bukkit.getScoreboardManager().getNewScoreboard();
-		scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("hide_tags");
-		scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-		scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
+        scoreboardHideTags = Bukkit.getScoreboardManager().getNewScoreboard();
+        scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("hide_tags");
+        scoreboardHideTagsTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+        scoreboardHideTagsTeam.setCanSeeFriendlyInvisibles(false);
 
-		reloadConfigs();
+        reloadConfigs();
 
-		DiscordSRV.api.subscribe(new DiscordGuildMessagePreProcessListener());
+        DiscordSRV.api.subscribe(new DiscordGuildMessagePreProcessListener());
 
-		Bukkit.getScheduler().runTaskTimerAsynchronously(this, () ->
-				configCache.seats.forEach((key, value) -> value.setRotation(key.getLocation().getYaw(), 0.0f)),
-				0L, 1L
-		);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(
+                this,
+                () -> configCache.seats.forEach((key, value) -> value.setRotation(key.getLocation().getYaw(), 0.0f)),
+                0L, 1L
+        );
 
-		Bukkit.getScheduler().runTaskTimer(this, () -> {
-			if (configCache.mutedPlayers.isEmpty()) return;
-			configCache.mutedPlayers.keySet().stream()
-					.filter((player) -> configCache.mutedPlayers.get(player) - System.currentTimeMillis() < 0)
-					.forEach((player) -> MSPlayerUtils.getPlayerInfo(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null));
-		}, 0L, 50L);
-	}
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (configCache.mutedPlayers.isEmpty()) return;
+            configCache.mutedPlayers.keySet().stream()
+                    .filter(player -> configCache.mutedPlayers.get(player) - System.currentTimeMillis() < 0)
+                    .forEach(player -> MSPlayerUtils.getPlayerInfo(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null));
+        }, 0L, 50L);
+    }
 
-	@Override
-	public void disable() {
-		for (Player player : configCache.seats.keySet()) {
-			MSPlayerUtils.getPlayerInfo(player).unsetSitting();
-			Entity vehicle = player.getVehicle();
-			if (vehicle != null) {
-				vehicle.eject();
-			}
-		}
-		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			MSPlayerUtils.getPlayerInfo(player).kickPlayer("Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
-		}
+    @Override
+    public void disable() {
+        for (Player player : configCache.seats.keySet()) {
+            MSPlayerUtils.getPlayerInfo(player).unsetSitting();
 
-		configCache.bukkitTasks.forEach(BukkitTask::cancel);
-	}
+            Entity vehicle = player.getVehicle();
+            if (vehicle != null) {
+                vehicle.eject();
+            }
+        }
 
-	private static @NotNull World setWorldDark() {
-		String name = "world_dark";
-		boolean exists = new File(Bukkit.getWorldContainer(), name).exists();
-		World world = new WorldCreator(name)
-				.type(WorldType.FLAT)
-				.environment(World.Environment.NORMAL)
-				.biomeProvider(new BiomeProvider() {
-					@Override
-					public @NotNull Biome getBiome(
-							@NotNull WorldInfo worldInfo,
-							int x,
-							int y,
-							int z
-					) {
-						return Biome.FOREST;
-					}
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            MSPlayerUtils.getPlayerInfo(player).kickPlayer("Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
+        }
 
-					@Override
-					public @NotNull List<Biome> getBiomes(@NotNull WorldInfo worldInfo) {
-						return new ArrayList<>();
-					}
-				})
-				.generator(new ChunkGenerator() {})
-				.generateStructures(false)
-				.hardcore(false)
-				.keepSpawnLoaded(TriState.TRUE)
-				.createWorld();
+        configCache.bukkitTasks.forEach(BukkitTask::cancel);
+    }
 
-		if (world == null) {
-			Bukkit.shutdown();
-			throw new NullPointerException("MSUtils#setWorldDark() " + name + " = null");
-		}
+    private static @NotNull World setWorldDark() {
+        String name = "world_dark";
+        World world = new WorldCreator(name)
+                .type(WorldType.FLAT)
+                .environment(World.Environment.NORMAL)
+                .biomeProvider(new BiomeProvider() {
+                    @Override
+                    public @NotNull Biome getBiome(
+                            @NotNull WorldInfo worldInfo,
+                            int x,
+                            int y,
+                            int z
+                    ) {
+                        return Biome.FOREST;
+                    }
 
-		if (!exists) {
-			world.setTime(18000L);
-			world.setDifficulty(Difficulty.PEACEFUL);
-			world.setGameRule(GameRule.FALL_DAMAGE, false);
-			world.setGameRule(GameRule.FIRE_DAMAGE, false);
-			world.setGameRule(GameRule.DROWNING_DAMAGE, false);
-			world.setGameRule(GameRule.FREEZE_DAMAGE, false);
-			world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-			world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
-			world.setGameRule(GameRule.KEEP_INVENTORY, true);
-			world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-		}
-		return world;
-	}
+                    @Override
+                    public @NotNull List<Biome> getBiomes(@NotNull WorldInfo worldInfo) {
+                        return new ArrayList<>();
+                    }
+                })
+                .generator(new ChunkGenerator() {})
+                .generateStructures(false)
+                .hardcore(false)
+                .keepSpawnLoaded(TriState.TRUE)
+                .createWorld();
 
-	public static void reloadConfigs() {
-		instance.saveDefaultConfig();
-		instance.reloadConfig();
+        assert world != null;
 
-		if (instance.configCache != null) {
-			instance.configCache.bukkitTasks.forEach(BukkitTask::cancel);
-		}
-		instance.configCache = new ConfigCache();
+        world.setTime(18000L);
+        world.setDifficulty(Difficulty.PEACEFUL);
+        world.setGameRule(GameRule.FALL_DAMAGE, false);
+        world.setGameRule(GameRule.FIRE_DAMAGE, false);
+        world.setGameRule(GameRule.DROWNING_DAMAGE, false);
+        world.setGameRule(GameRule.FREEZE_DAMAGE, false);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
+        world.setGameRule(GameRule.KEEP_INVENTORY, true);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        return world;
+    }
 
-		instance.saveResource("anomalies/example.yml", true);
-		File consoleDataFile = new File(instance.getPluginFolder(), "players/console.yml");
-		if (!consoleDataFile.exists()) {
-			instance.saveResource("players/console.yml", false);
-		}
-		instance.consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
+    public static void reloadConfigs() {
+        instance.saveDefaultConfig();
+        instance.reloadConfig();
 
-		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), ResourcePack::init);
+        if (configCache != null) {
+            configCache.bukkitTasks.forEach(BukkitTask::cancel);
+        }
+        configCache = new ConfigCache();
 
-		instance.configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(instance,
-				() -> new MainAnomalyActionsTask().run(), 0L, instance.configCache.anomalyCheckRate
-		));
+        instance.saveResource("anomalies/example.yml", true);
+        File consoleDataFile = new File(instance.getPluginFolder(), "players/console.yml");
+        if (!consoleDataFile.exists()) {
+            instance.saveResource("players/console.yml", false);
+        }
+        consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
 
-		instance.configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(instance,
-				() -> new ParticleTask().run(), 0L, instance.configCache.anomalyParticlesCheckRate
-		));
+        Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), ResourcePack::init);
 
-		registerCustomInventory("pronouns", PronounsMenu.create());
-		registerCustomInventory("resourcepack", ResourcePackMenu.create());
-		registerCustomInventory("crafts", CraftsMenu.create());
+        configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(
+                instance,
+                new MainAnomalyActionsTask(),
+                0L,
+                configCache.anomalyCheckRate
+        ));
 
-		List<Recipe> customBlockRecipes = MSCore.getConfigCache().customBlockRecipes;
-		List<Recipe> customDecorRecipes = MSCore.getConfigCache().customDecorRecipes;
-		List<Recipe> customItemRecipes = MSCore.getConfigCache().customItemRecipes;
-		Bukkit.getScheduler().runTaskTimer(instance, (task) -> {
-			if (
-					MSPluginUtils.isLoadedCustoms()
-					&& !customBlockRecipes.isEmpty()
-					&& !customDecorRecipes.isEmpty()
-					&& !customItemRecipes.isEmpty()
-			) {
-				registerCustomInventory("crafts_blocks", CraftsMenu.createCraftsInventory(customBlockRecipes));
-				registerCustomInventory("crafts_decors", CraftsMenu.createCraftsInventory(customDecorRecipes));
-				registerCustomInventory("crafts_items", CraftsMenu.createCraftsInventory(customItemRecipes));
-				task.cancel();
-			}
-		}, 0L, 10L);
-	}
+        configCache.bukkitTasks.add(Bukkit.getScheduler().runTaskTimer(
+                instance,
+                new ParticleTask(),
+                0L,
+                configCache.anomalyParticlesCheckRate
+        ));
 
-	@Contract(pure = true)
-	public static @NotNull MSUtils getInstance() {
-		return instance;
-	}
+        registerCustomInventory("pronouns", PronounsMenu.create());
+        registerCustomInventory("resourcepack", ResourcePackMenu.create());
+        registerCustomInventory("crafts", CraftsMenu.create());
 
-	@Contract(pure = true)
-	public static @NotNull World getWorldDark() {
-		return instance.worldDark;
-	}
+        List<Recipe> customBlockRecipes = MSCore.getConfigCache().customBlockRecipes;
+        List<Recipe> customDecorRecipes = MSCore.getConfigCache().customDecorRecipes;
+        List<Recipe> customItemRecipes = MSCore.getConfigCache().customItemRecipes;
+        Bukkit.getScheduler().runTaskTimer(instance, task -> {
+            if (
+                    MSPluginUtils.isLoadedCustoms()
+                    && !customBlockRecipes.isEmpty()
+                    && !customDecorRecipes.isEmpty()
+                    && !customItemRecipes.isEmpty()
+            ) {
+                registerCustomInventory("crafts_blocks", CraftsMenu.createCraftsInventory(customBlockRecipes));
+                registerCustomInventory("crafts_decors", CraftsMenu.createCraftsInventory(customDecorRecipes));
+                registerCustomInventory("crafts_items", CraftsMenu.createCraftsInventory(customItemRecipes));
+                task.cancel();
+            }
+        }, 0L, 10L);
+    }
 
-	@Contract(pure = true)
-	public static @NotNull Entity getDarkEntity() {
-		return instance.darkEntity;
-	}
+    @Contract(pure = true)
+    public static @NotNull MSUtils getInstance() {
+        return instance;
+    }
 
-	@Contract(pure = true)
-	public static @NotNull World getOverworld() {
-		return instance.overworld;
-	}
+    @Contract(pure = true)
+    public static @NotNull World getWorldDark() {
+        return worldDark;
+    }
 
-	@Contract(pure = true)
-	public static @NotNull AuthMeApi getAuthMeApi() {
-		return authMeApi;
-	}
+    @Contract(pure = true)
+    public static @NotNull Entity getDarkEntity() {
+        return darkEntity;
+    }
 
-	@Contract(pure = true)
-	public static @NotNull ProtocolManager getProtocolManager() {
-		return protocolManager;
-	}
+    @Contract(pure = true)
+    public static @NotNull World getOverworld() {
+        return overworld;
+    }
 
-	@Contract(pure = true)
-	public static @NotNull ConfigCache getConfigCache() {
-		return instance.configCache;
-	}
+    @Contract(pure = true)
+    public static @NotNull AuthMeApi getAuthMeApi() {
+        return authMeApi;
+    }
 
-	@Contract(pure = true)
-	public static @NotNull PlayerInfo getConsolePlayerInfo() {
-		return instance.consolePlayerInfo;
-	}
+    @Contract(pure = true)
+    public static @NotNull ProtocolManager getProtocolManager() {
+        return protocolManager;
+    }
 
-	@Contract(pure = true)
-	public static @NotNull Scoreboard getScoreboardHideTags() {
-		return instance.scoreboardHideTags;
-	}
+    @Contract(pure = true)
+    public static @NotNull ConfigCache getConfigCache() {
+        return configCache;
+    }
 
-	@Contract(pure = true)
-	public static @NotNull Team getScoreboardHideTagsTeam() {
-		return instance.scoreboardHideTagsTeam;
-	}
+    @Contract(pure = true)
+    public static @NotNull PlayerInfo getConsolePlayerInfo() {
+        return consolePlayerInfo;
+    }
+
+    @Contract(pure = true)
+    public static @NotNull Scoreboard getScoreboardHideTags() {
+        return scoreboardHideTags;
+    }
+
+    @Contract(pure = true)
+    public static @NotNull Team getScoreboardHideTagsTeam() {
+        return scoreboardHideTagsTeam;
+    }
 }

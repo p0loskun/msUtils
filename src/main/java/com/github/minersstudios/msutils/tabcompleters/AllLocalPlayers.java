@@ -15,30 +15,30 @@ import java.util.List;
 
 public class AllLocalPlayers implements TabCompleter {
 
-	@Override
-	public @Nullable List<String> onTabComplete(
-			@NotNull CommandSender sender,
-			@NotNull Command command,
-			@NotNull String label,
-			String @NotNull ... args
-	) {
-		List<String> completions = new ArrayList<>();
+    @Override
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        List<String> completions = new ArrayList<>();
 
-		if (args.length == 1) {
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        if (args.length == 1) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 
-				if (playerInfo.isOnline()) {
-					int id = playerInfo.getID(false, false);
+                if (playerInfo.isOnline()) {
+                    int id = playerInfo.getID(false, false);
 
-					if (id != -1) {
-						completions.add(String.valueOf(id));
-					}
+                    if (id != -1) {
+                        completions.add(String.valueOf(id));
+                    }
 
-					completions.add(player.getName());
-				}
-			}
-		}
-		return completions;
-	}
+                    completions.add(player.getName());
+                }
+            }
+        }
+        return completions;
+    }
 }

@@ -15,23 +15,23 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerQuitListener implements Listener {
 
-	@EventHandler
-	public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
-		Player player = event.getPlayer();
-		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
-		Entity vehicle = player.getVehicle();
+    @EventHandler
+    public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        Entity vehicle = player.getVehicle();
 
-		if (vehicle != null) {
-			vehicle.eject();
-		}
+        if (vehicle != null) {
+            vehicle.eject();
+        }
 
-		event.quitMessage(null);
-		playerInfo.unsetSitting();
-		MSUtils.getConfigCache().playerAnomalyActionMap.remove(player);
-		playerInfo.savePlayerDataParams();
+        event.quitMessage(null);
+        playerInfo.unsetSitting();
+        MSUtils.getConfigCache().playerAnomalyActionMap.remove(player);
+        playerInfo.savePlayerDataParams();
 
-		if (player.getWorld() != MSUtils.getWorldDark()) {
-			MessageUtils.sendQuitMessage(playerInfo, player);
-		}
-	}
+        if (player.getWorld() != MSUtils.getWorldDark()) {
+            MessageUtils.sendQuitMessage(playerInfo, player);
+        }
+    }
 }

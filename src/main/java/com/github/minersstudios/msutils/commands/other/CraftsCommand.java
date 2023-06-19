@@ -13,33 +13,33 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @MSCommand(
-		command = "crafts",
-		aliases = {"recipes"},
-		usage = " ꀑ §cИспользуй: /<command>",
-		description = "Открывает меню с крафтами кастомных предметов/декора/блоков"
+        command = "crafts",
+        aliases = {"recipes"},
+        usage = " ꀑ §cИспользуй: /<command>",
+        description = "Открывает меню с крафтами кастомных предметов/декора/блоков"
 )
 public class CraftsCommand implements MSCommandExecutor {
 
-	@Override
-	public boolean onCommand(
-			@NotNull CommandSender sender, 
-			@NotNull Command command, 
-			@NotNull String label, 
-			String @NotNull ... args
-	) {
-		if (!(sender instanceof Player player)) {
-			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
-			return true;
-		}
+    @Override
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        if (!(sender instanceof Player player)) {
+            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+            return true;
+        }
 
-		if (!CraftsMenu.open(CraftsMenu.Type.MAIN, player)) {
-			ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
-		}
-		return true;
-	}
+        if (!CraftsMenu.open(CraftsMenu.Type.MAIN, player)) {
+            ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+        }
+        return true;
+    }
 
-	@Override
-	public @Nullable CommandNode<?> getCommandNode() {
-		return LiteralArgumentBuilder.literal("crafts").build();
-	}
+    @Override
+    public @Nullable CommandNode<?> getCommandNode() {
+        return LiteralArgumentBuilder.literal("crafts").build();
+    }
 }

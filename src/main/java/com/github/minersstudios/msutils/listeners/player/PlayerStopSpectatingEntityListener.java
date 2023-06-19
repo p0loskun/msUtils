@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerStopSpectatingEntityListener implements Listener {
 
-	@EventHandler
-	public void onPlayerStopSpectatingEntity(@NotNull PlayerStopSpectatingEntityEvent event) {
-		if (event.getPlayer().getWorld() == MSUtils.getWorldDark()) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler
+    public void onPlayerStopSpectatingEntity(@NotNull PlayerStopSpectatingEntityEvent event) {
+        if (event.getPlayer().getWorld() == MSUtils.getWorldDark()) {
+            event.setCancelled(true);
+        }
+    }
 }

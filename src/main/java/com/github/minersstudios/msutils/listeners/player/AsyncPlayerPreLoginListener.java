@@ -28,68 +28,68 @@ import static net.kyori.adventure.text.Component.text;
 @MSListener
 public class AsyncPlayerPreLoginListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
-		String hostAddress = event.getAddress().getHostAddress();
-		String nickname = event.getName();
-		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(event.getUniqueId(), nickname);
-		PlayerFile playerFile = playerInfo.getPlayerFile();
-		OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
+        String hostAddress = event.getAddress().getHostAddress();
+        String nickname = event.getName();
+        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(event.getUniqueId(), nickname);
+        PlayerFile playerFile = playerInfo.getPlayerFile();
+        OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
 
-		if (
-				playerFile.exists()
-				&& !playerFile.getIpList().contains(hostAddress)
-		) {
-			playerFile.addIp(hostAddress);
-			playerFile.save();
+        if (
+                playerFile.exists()
+                && !playerFile.getIpList().contains(hostAddress)
+        ) {
+            playerFile.addIp(hostAddress);
+            playerFile.save();
 
-			ChatUtils.sendWarning(
-					text("Игроку : \"")
-					.append(playerInfo.getGrayIDGoldName())
-					.append(text("\" был добавлен новый айпи адрес : "))
-					.append(text(hostAddress))
-			);
-		}
+            ChatUtils.sendWarning(
+                    text("Игроку : \"")
+                    .append(playerInfo.getGrayIDGoldName())
+                    .append(text("\" был добавлен новый айпи адрес : "))
+                    .append(text(hostAddress))
+            );
+        }
 
-		if (
-				(playerInfo.getPlayerFile().isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
-				|| (playerInfo.getPlayerFile().isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(nickname))
-		) {
-			playerInfo.setBanned(false);
-		}
+        if (
+                (playerInfo.getPlayerFile().isBanned() && playerInfo.getBannedTo() - System.currentTimeMillis() < 0)
+                || (playerInfo.getPlayerFile().isBanned() && !Bukkit.getBanList(BanList.Type.NAME).isBanned(nickname))
+        ) {
+            playerInfo.setBanned(false);
+        }
 
-		if (MSUtils.getConfigCache().developerMode && !offlinePlayer.isOp()) {
-			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-					Component.empty()
-					.append(text("Вы были кикнуты", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
-					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-					.append(text("\n\nПроводятся тех-работы\nВ скором времени вы сможете зайти\n\nhttps:\\\\whomine.net\\discord\n", NamedTextColor.GRAY))
-					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-			);
-		}
+        if (MSUtils.getConfigCache().developerMode && !offlinePlayer.isOp()) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                    Component.empty()
+                    .append(text("Вы были кикнуты", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
+                    .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+                    .append(text("\n\nПроводятся тех-работы\nВ скором времени вы сможете зайти\n\nhttps:\\\\whomine.net\\discord\n", NamedTextColor.GRAY))
+                    .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+            );
+        }
 
-		if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
-			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
-					Component.empty()
-					.append(text("Вас нету в вайт-листе!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
-					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-					.append(text("\n\nПохоже, вы ещё нам неизвестны\nПожалуйста, обратитесь к администрации\n\nhttps:\\\\whomine.net\\discord\n", NamedTextColor.GRAY))
-					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-			);
-		}
+        if (!Bukkit.getWhitelistedPlayers().contains(offlinePlayer)) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST,
+                    Component.empty()
+                    .append(text("Вас нету в вайт-листе!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
+                    .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+                    .append(text("\n\nПохоже, вы ещё нам неизвестны\nПожалуйста, обратитесь к администрации\n\nhttps:\\\\whomine.net\\discord\n", NamedTextColor.GRAY))
+                    .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+            );
+        }
 
-		if (Bukkit.getBannedPlayers().contains(offlinePlayer)) {
-			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
-					Component.empty()
-					.append(text("Вы всё ещё забанены!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
-					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-					.append(text("\nПричина :\n\""))
-					.append(text(playerInfo.getBanReason()))
-					.append(text("\"\nДо :\n"))
-					.append(text(DateUtils.getDate(Date.from(Instant.ofEpochMilli(playerInfo.getBannedTo())), event.getAddress())))
-					.color(NamedTextColor.GRAY)
-					.append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-			);
-		}
-	}
+        if (Bukkit.getBannedPlayers().contains(offlinePlayer)) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
+                    Component.empty()
+                    .append(text("Вы всё ещё забанены!", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
+                    .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+                    .append(text("\nПричина :\n\""))
+                    .append(text(playerInfo.getBanReason()))
+                    .append(text("\"\nДо :\n"))
+                    .append(text(DateUtils.getDate(Date.from(Instant.ofEpochMilli(playerInfo.getBannedTo())), event.getAddress())))
+                    .color(NamedTextColor.GRAY)
+                    .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+            );
+        }
+    }
 }

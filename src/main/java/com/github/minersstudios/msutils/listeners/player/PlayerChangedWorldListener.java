@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerChangedWorldListener implements Listener {
 
-	@EventHandler
-	public void onPlayerChangedWorld(@NotNull PlayerChangedWorldEvent event) {
-		MSPlayerUtils.hideNameTag(event.getPlayer());
-	}
+    @EventHandler
+    public void onPlayerChangedWorld(@NotNull PlayerChangedWorldEvent event) {
+        MSPlayerUtils.hideNameTag(event.getPlayer());
+    }
 }

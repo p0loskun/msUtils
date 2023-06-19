@@ -10,14 +10,14 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class HangingBreakByEntityListener implements Listener {
 
-	@EventHandler
-	public void onHangingBreakByEntity(@NotNull HangingBreakByEntityEvent event) {
-		if (
-				event.getEntity() instanceof ItemFrame itemFrame
-				&& itemFrame.getScoreboardTags().contains("invisibleItemFrame")
-				&& itemFrame.isVisible()
-		) {
-			itemFrame.removeScoreboardTag("invisibleItemFrame");
-		}
-	}
+    @EventHandler
+    public void onHangingBreakByEntity(@NotNull HangingBreakByEntityEvent event) {
+        if (
+                event.getEntity() instanceof ItemFrame itemFrame
+                && itemFrame.getScoreboardTags().contains("invisibleItemFrame")
+                && itemFrame.isVisible()
+        ) {
+            itemFrame.removeScoreboardTag("invisibleItemFrame");
+        }
+    }
 }

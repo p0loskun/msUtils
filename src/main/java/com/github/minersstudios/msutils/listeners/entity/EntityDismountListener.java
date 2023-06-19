@@ -11,10 +11,10 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 @MSListener
 public class EntityDismountListener implements Listener {
 
-	@EventHandler
-	public void onEntityDismount(@NotNull EntityDismountEvent event) {
-		if (event.getEntity() instanceof Player player) {
-			MSPlayerUtils.getPlayerInfo(player).unsetSitting();
-		}
-	}
+    @EventHandler
+    public void onEntityDismount(@NotNull EntityDismountEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            MSPlayerUtils.getPlayerInfo(player).unsetSitting();
+        }
+    }
 }

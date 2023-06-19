@@ -15,97 +15,97 @@ import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 
 @SuppressWarnings("unused")
 public final class IDUtils {
-	public static final @NotNull String ID_REGEX = "-?\\d+";
+    public static final @NotNull String ID_REGEX = "-?\\d+";
 
-	private IDUtils() {
-		throw new IllegalStateException("Utility class");
-	}
+    private IDUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 
-	public static @NotNull Map<UUID, Integer> getMap() {
-		return getConfigCache().idMap;
-	}
+    public static @NotNull Map<UUID, Integer> getMap() {
+        return getConfigCache().idMap;
+    }
 
-	public static int getID(
-			@NotNull UUID uuid,
-			boolean addPlayer,
-			boolean zeroIfNull
-	) {
-		return getMap().containsKey(uuid)
-				? getMap().get(uuid)
-				: addPlayer
-				? addPlayer(uuid)
-				: zeroIfNull
-				? 0
-				: -1;
-	}
+    public static int getID(
+            @NotNull UUID uuid,
+            boolean addPlayer,
+            boolean zeroIfNull
+    ) {
+        return getMap().containsKey(uuid)
+                ? getMap().get(uuid)
+                : addPlayer
+                ? addPlayer(uuid)
+                : zeroIfNull
+                ? 0
+                : -1;
+    }
 
-	public static void setID(
-			@NotNull UUID uuid,
-			int id
-	) {
-		getMap().put(uuid, id);
-		getConfigCache().idsYaml.set(uuid.toString(), id);
-		saveFile();
-	}
+    public static void setID(
+            @NotNull UUID uuid,
+            int id
+    ) {
+        getMap().put(uuid, id);
+        getConfigCache().idsYaml.set(uuid.toString(), id);
+        saveFile();
+    }
 
-	public static int nextID() {
-		Collection<Integer> ids = getMap().values();
-		return nextID(ids, ids.size());
-	}
+    public static int nextID() {
+        Collection<Integer> ids = getMap().values();
+        return nextID(ids, ids.size());
+    }
 
-	private static int nextID(
-			@NotNull Collection<Integer> ids,
-			int id
-	) {
-		return ids.contains(id) ? nextID(ids, id + 1) : id;
-	}
+    private static int nextID(
+            @NotNull Collection<Integer> ids,
+            int id
+    ) {
+        return ids.contains(id) ? nextID(ids, id + 1) : id;
+    }
 
-	public static @Nullable UUID getUUIDByID(int id) {
-		return getMap().entrySet()
-				.stream()
-				.filter(entry -> entry.getValue().equals(id))
-				.map(Map.Entry::getKey)
-				.findFirst()
-				.orElse(null);
-	}
+    public static @Nullable UUID getUUIDByID(int id) {
+        return getMap().entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().equals(id))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+    }
 
-	public static @Nullable UUID getUUIDByID(@NotNull String stringId) {
-		return getUUIDByID(parseID(stringId));
-	}
+    public static @Nullable UUID getUUIDByID(@NotNull String stringId) {
+        return getUUIDByID(parseID(stringId));
+    }
 
-	public static @Nullable OfflinePlayer getPlayerByID(int id) {
-		UUID uuid = getUUIDByID(id);
-		return uuid == null ? null : Bukkit.getOfflinePlayer(uuid);
-	}
+    public static @Nullable OfflinePlayer getPlayerByID(int id) {
+        UUID uuid = getUUIDByID(id);
+        return uuid == null ? null : Bukkit.getOfflinePlayer(uuid);
+    }
 
-	public static @Nullable OfflinePlayer getPlayerByID(@NotNull String stringId) {
-		return getPlayerByID(parseID(stringId));
-	}
+    public static @Nullable OfflinePlayer getPlayerByID(@NotNull String stringId) {
+        return getPlayerByID(parseID(stringId));
+    }
 
-	public static int parseID(@NotNull String stringId) {
-		try {
-			return Integer.parseInt(stringId);
-		} catch (NumberFormatException ignored) {
-			return -1;
-		}
-	}
+    public static int parseID(@NotNull String stringId) {
+        try {
+            return Integer.parseInt(stringId);
+        } catch (NumberFormatException ignored) {
+            return -1;
+        }
+    }
 
-	public static int addPlayer(@NotNull UUID uuid) {
-		int id = nextID();
-		setID(uuid, id);
-		return id;
-	}
+    public static int addPlayer(@NotNull UUID uuid) {
+        int id = nextID();
+        setID(uuid, id);
+        return id;
+    }
 
-	public static void saveFile() {
-		try {
-			getConfigCache().idsYaml.save(getConfigCache().idsFile);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public static void saveFile() {
+        try {
+            getConfigCache().idsYaml.save(getConfigCache().idsFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Contract(value = "null -> false", pure = true)
-	public static boolean matchesIDRegex(@Nullable String string) {
-		return string != null && string.matches(ID_REGEX);
-	}
+    @Contract(value = "null -> false", pure = true)
+    public static boolean matchesIDRegex(@Nullable String string) {
+        return string != null && string.matches(ID_REGEX);
+    }
 }

@@ -20,55 +20,55 @@ import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMes
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
-		command = "todo",
-		usage = " ꀑ §cИспользуй: /<command> [речь] * [действие]",
-		description = "Описывает действие и речь в чате"
+        command = "todo",
+        usage = " ꀑ §cИспользуй: /<command> [речь] * [действие]",
+        description = "Описывает действие и речь в чате"
 )
 public class TodoCommand implements MSCommandExecutor {
 
-	@Override
-	public boolean onCommand(
-			@NotNull CommandSender sender, 
-			@NotNull Command command, 
-			@NotNull String label, 
-			String @NotNull ... args
-	) {
-		if (!(sender instanceof Player player)) {
-			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
-			return true;
-		}
+    @Override
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        if (!(sender instanceof Player player)) {
+            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+            return true;
+        }
 
-		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 
-		if (!playerInfo.isOnline()) return true;
+        if (!playerInfo.isOnline()) return true;
 
-		String message = ChatUtils.extractMessage(args, 0);
+        String message = ChatUtils.extractMessage(args, 0);
 
-		if (args.length < 3 || !message.contains("*")) return false;
-		if (playerInfo.isMuted()) {
-			ChatUtils.sendWarning(player, "Вы замьючены");
-			return true;
-		}
+        if (args.length < 3 || !message.contains("*")) return false;
+        if (playerInfo.isMuted()) {
+            ChatUtils.sendWarning(player, "Вы замьючены");
+            return true;
+        }
 
-		String action = message.substring(message.indexOf('*') + 1).trim(),
-				speech = message.substring(0 , message.indexOf('*')).trim();
+        String
+                action = message.substring(message.indexOf('*') + 1).trim(),
+                speech = message.substring(0, message.indexOf('*')).trim();
 
-		if (action.isEmpty() || speech.isEmpty()) return false;
+        if (action.isEmpty() || speech.isEmpty()) return false;
 
-		sendRPEventMessage(player, text(speech), text(action), TODO);
-		return true;
-	}
+        sendRPEventMessage(player, text(speech), text(action), TODO);
+        return true;
+    }
 
-	@Override
-	public @Nullable CommandNode<?> getCommandNode() {
-		return LiteralArgumentBuilder.literal("todo")
-				.then(
-						RequiredArgumentBuilder.argument("речь", StringArgumentType.greedyString())
-						.then(
-								LiteralArgumentBuilder.literal("*")
-								.then(RequiredArgumentBuilder.argument("действие", StringArgumentType.greedyString()))
-						)
-				)
-				.build();
-	}
+    @Override
+    public @Nullable CommandNode<?> getCommandNode() {
+        return LiteralArgumentBuilder.literal("todo")
+                .then(
+                        RequiredArgumentBuilder.argument("речь", StringArgumentType.greedyString())
+                        .then(
+                                LiteralArgumentBuilder.literal("*")
+                                .then(RequiredArgumentBuilder.argument("действие", StringArgumentType.greedyString()))
+                        )
+                ).build();
+    }
 }

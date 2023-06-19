@@ -13,40 +13,43 @@ import java.util.List;
 import java.util.Map;
 
 public class AddPotionAction extends AnomalyAction {
-	private final @NotNull List<PotionEffect> potionEffects;
+    private final @NotNull List<PotionEffect> potionEffects;
 
-	public AddPotionAction(
-			long time,
-			int percentage,
-			@NotNull List<PotionEffect> potionEffects
-	) {
-		super(time, percentage);
-		this.potionEffects = potionEffects;
-	}
+    public AddPotionAction(
+            long time,
+            int percentage,
+            @NotNull List<PotionEffect> potionEffects
+    ) {
+        super(time, percentage);
+        this.potionEffects = potionEffects;
+    }
 
-	@Override
-	public void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems) {
-		Map<AnomalyAction, Long> actionMap = MSUtils.getConfigCache().playerAnomalyActionMap.get(player);
-		if (
-				actionMap.containsKey(this)
-				&& System.currentTimeMillis() - actionMap.get(this) >= (this.time * 50)
-		) {
-			this.removeAction(player);
+    @Override
+    public void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems) {
+        Map<AnomalyAction, Long> actionMap = MSUtils.getConfigCache().playerAnomalyActionMap.get(player);
+        if (
+                actionMap.containsKey(this)
+                && System.currentTimeMillis() - actionMap.get(this) >= (this.time * 50)
+        ) {
+            this.removeAction(player);
 
-			if (this.isDo()) {
-				if (
-						ignorableItems != null
-						&& ignorableItems.hasIgnorableItems(player.getInventory())
-				) {
-					ignorableItems.damageIgnorableItems(player.getInventory());
-				} else {
-					Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.addPotionEffects(this.potionEffects));
-				}
-			}
-		}
-	}
+            if (this.isDo()) {
+                if (
+                        ignorableItems != null
+                        && ignorableItems.hasIgnorableItems(player.getInventory())
+                ) {
+                    ignorableItems.damageIgnorableItems(player.getInventory());
+                } else {
+                    Bukkit.getScheduler().runTask(
+                            MSUtils.getInstance(),
+                            () -> player.addPotionEffects(this.potionEffects)
+                    );
+                }
+            }
+        }
+    }
 
-	public @NotNull List<PotionEffect> getPotionEffects() {
-		return this.potionEffects;
-	}
+    public @NotNull List<PotionEffect> getPotionEffects() {
+        return this.potionEffects;
+    }
 }

@@ -20,41 +20,41 @@ import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMes
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
-		command = "it",
-		usage = " ꀑ §cИспользуй: /<command> [действие]",
-		description = "Описывает действие, от третьего лица"
+        command = "it",
+        usage = " ꀑ §cИспользуй: /<command> [действие]",
+        description = "Описывает действие, от третьего лица"
 )
 public class ItCommand implements MSCommandExecutor {
 
-	@Override
-	public boolean onCommand(
-			@NotNull CommandSender sender, 
-			@NotNull Command command, 
-			@NotNull String label, 
-			String @NotNull ... args
-	) {
-		if (!(sender instanceof Player player)) {
-			ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
-			return true;
-		}
+    @Override
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        if (!(sender instanceof Player player)) {
+            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+            return true;
+        }
 
-		PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
 
-		if (!playerInfo.isOnline()) return true;
-		if (args.length == 0) return false;
-		if (playerInfo.isMuted()) {
-			ChatUtils.sendWarning(player, "Вы замьючены");
-			return true;
-		}
+        if (!playerInfo.isOnline()) return true;
+        if (args.length == 0) return false;
+        if (playerInfo.isMuted()) {
+            ChatUtils.sendWarning(player, "Вы замьючены");
+            return true;
+        }
 
-		sendRPEventMessage(player, text(ChatUtils.extractMessage(args, 0)), IT);
-		return true;
-	}
+        sendRPEventMessage(player, text(ChatUtils.extractMessage(args, 0)), IT);
+        return true;
+    }
 
-	@Override
-	public @Nullable CommandNode<?> getCommandNode() {
-		return LiteralArgumentBuilder.literal("it")
-				.then(RequiredArgumentBuilder.argument("действие", StringArgumentType.greedyString()))
-				.build();
-	}
+    @Override
+    public @Nullable CommandNode<?> getCommandNode() {
+        return LiteralArgumentBuilder.literal("it")
+                .then(RequiredArgumentBuilder.argument("действие", StringArgumentType.greedyString()))
+                .build();
+    }
 }

@@ -14,51 +14,52 @@ import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 
 public class MainAnomalyActionsTask implements Runnable {
 
-	@Override
-	public void run() {
-		Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+    @Override
+    public void run() {
+        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
 
-		if (onlinePlayers.isEmpty()) return;
+        if (onlinePlayers.isEmpty()) return;
 
-		Map<Player, Map<AnomalyAction, Long>> playerActionMap = MSUtils.getConfigCache().playerAnomalyActionMap;
+        Map<Player, Map<AnomalyAction, Long>> playerActionMap = MSUtils.getConfigCache().playerAnomalyActionMap;
 
-		Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), () ->
-				onlinePlayers
-				.forEach(player -> {
-					for (Anomaly anomaly : getConfigCache().anomalies.values()) {
-						Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
-						boolean isIgnorable = anomaly.getIgnorablePlayers().contains(player);
+        Bukkit.getScheduler().runTaskAsynchronously(
+                MSUtils.getInstance(),
+                () -> onlinePlayers
+                        .forEach(player -> {
+                            for (Anomaly anomaly : getConfigCache().anomalies.values()) {
+                                Double radiusInside = anomaly.getBoundingBox().getRadiusInside(player);
+                                boolean isIgnorable = anomaly.getIgnorablePlayers().contains(player);
 
-						if (radiusInside == null) continue;
+                                if (radiusInside == null) continue;
 
-						Map<AnomalyAction, Long> actionMap = playerActionMap.get(player);
+                                Map<AnomalyAction, Long> actionMap = playerActionMap.get(player);
 
-						for (AnomalyAction action : anomaly.getAnomalyActionMap().get(radiusInside)) {
-							if (actionMap == null || !actionMap.containsKey(action)) {
-								if (isIgnorable && action instanceof SpawnParticlesAction) {
-									action.putAction(player);
-									return;
-								} else if (!isIgnorable) {
-									actionMap = action.putAction(player);
-								}
-							}
-						}
+                                for (AnomalyAction action : anomaly.getAnomalyActionMap().get(radiusInside)) {
+                                    if (actionMap == null || !actionMap.containsKey(action)) {
+                                        if (isIgnorable && action instanceof SpawnParticlesAction) {
+                                            action.putAction(player);
+                                            return;
+                                        } else if (!isIgnorable) {
+                                            actionMap = action.putAction(player);
+                                        }
+                                    }
+                                }
 
-						if (actionMap == null) return;
+                                if (actionMap == null) return;
 
-						for (AnomalyAction action : actionMap.keySet()) {
-							if (anomaly.isAnomalyActionRadius(action, radiusInside)) {
-								if (!(action instanceof SpawnParticlesAction)) {
-									action.doAction(player, anomaly.getIgnorableItems());
-								}
-							} else {
-								action.removeAction(player);
-							}
-						}
-						return;
-					}
-					playerActionMap.remove(player);
-				})
-		);
-	}
+                                for (AnomalyAction action : actionMap.keySet()) {
+                                    if (anomaly.isAnomalyActionRadius(action, radiusInside)) {
+                                        if (!(action instanceof SpawnParticlesAction)) {
+                                            action.doAction(player, anomaly.getIgnorableItems());
+                                        }
+                                    } else {
+                                        action.removeAction(player);
+                                    }
+                                }
+                                return;
+                            }
+                            playerActionMap.remove(player);
+                        })
+        );
+    }
 }

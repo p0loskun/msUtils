@@ -13,22 +13,22 @@ import static net.kyori.adventure.text.Component.text;
 @MSListener
 public class PlayerEditBookListener implements Listener {
 
-	@EventHandler
-	public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {
-		if (!event.isSigning()) return;
+    @EventHandler
+    public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {
+        if (!event.isSigning()) return;
 
-		BookMeta bookMeta = event.getNewBookMeta();
-		String title = bookMeta.getTitle();
-		boolean isAnon = title != null && title.startsWith("*");
+        BookMeta bookMeta = event.getNewBookMeta();
+        String title = bookMeta.getTitle();
+        boolean isAnon = title != null && title.startsWith("*");
 
-		event.setNewBookMeta(bookMeta
-				.author(
-						isAnon ? text("Аноним")
-						: MSPlayerUtils.getPlayerInfo(event.getPlayer()).getDefaultName()
-				).title(
-						isAnon ? text(title.substring(1))
-						: bookMeta.title()
-				)
-		);
-	}
+        event.setNewBookMeta(bookMeta
+                .author(isAnon
+                        ? text("Аноним")
+                        : MSPlayerUtils.getPlayerInfo(event.getPlayer()).getDefaultName()
+                ).title(isAnon
+                        ? text(title.substring(1))
+                        : bookMeta.title()
+                )
+        );
+    }
 }

@@ -9,16 +9,15 @@ import static net.kyori.adventure.text.Component.text;
 
 public class ReloadCommand {
 
-	public static void runCommand(@NotNull CommandSender sender) {
-		long time = System.currentTimeMillis();
+    public static void runCommand(@NotNull CommandSender sender) {
+        long time = System.currentTimeMillis();
 
-		MSUtils.getConfigCache().playerAnomalyActionMap.clear();
-		MSUtils.reloadConfigs();
-		ChatUtils.sendFine(
-				sender,
-				text("Плагин был успешно перезагружен за ")
-				.append(text(System.currentTimeMillis() - time))
-				.append(text("ms"))
-		);
-	}
+        MSUtils.getConfigCache().playerAnomalyActionMap.clear();
+        MSUtils.reloadConfigs();
+        ChatUtils.sendFine(sender,
+                text("Плагин был успешно перезагружен за ")
+                .append(text(System.currentTimeMillis() - time))
+                .append(text("ms"))
+        );
+    }
 }

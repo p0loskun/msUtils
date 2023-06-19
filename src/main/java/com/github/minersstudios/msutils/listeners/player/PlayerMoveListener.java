@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class PlayerMoveListener implements Listener {
 
-	@EventHandler(ignoreCancelled = true)
-	public void onPlayerMove(@NotNull PlayerMoveEvent event) {
-		if (event.getPlayer().getWorld() == MSUtils.getWorldDark()) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMove(@NotNull PlayerMoveEvent event) {
+        if (event.getPlayer().getWorld() == MSUtils.getWorldDark()) {
+            event.setCancelled(true);
+        }
+    }
 }

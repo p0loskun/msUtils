@@ -12,17 +12,17 @@ import static net.kyori.adventure.text.Component.text;
 
 public class AdminFirstJoinCommand {
 
-	public static boolean runCommand(
-			@NotNull CommandSender sender,
-			@NotNull PlayerInfo playerInfo
-	) {
-		ChatUtils.sendFine(sender,
-				text("Впервые игрок : ")
-				.append(playerInfo.getGrayIDGreenName())
-				.appendNewline()
-				.append(text("    Зашёл на сервер в : "))
-				.append(text(DateUtils.getSenderDate(new Date(playerInfo.getPlayerFile().getFirstJoin()), sender)))
-		);
-		return true;
-	}
+    public static boolean runCommand(
+            @NotNull CommandSender sender,
+            @NotNull PlayerInfo playerInfo
+    ) {
+        ChatUtils.sendFine(sender,
+                text("Впервые игрок : ")
+                .append(playerInfo.getGrayIDGreenName())
+                .appendNewline()
+                .append(text("    Зашёл на сервер в : "))
+                .append(text(DateUtils.getSenderDate(new Date(playerInfo.getPlayerFile().getFirstJoin()), sender)))
+        );
+        return true;
+    }
 }

@@ -10,25 +10,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SpawnParticlesAction extends AnomalyAction {
-	private final @NotNull List<ParticleBuilder> particleBuilderList;
+    private final @NotNull List<ParticleBuilder> particleBuilderList;
 
-	public SpawnParticlesAction(
-			long time,
-			int percentage,
-			@NotNull List<ParticleBuilder> particleBuilderList
-	) {
-		super(time, percentage);
-		this.particleBuilderList = particleBuilderList;
-	}
+    public SpawnParticlesAction(
+            long time,
+            int percentage,
+            @NotNull List<ParticleBuilder> particleBuilderList
+    ) {
+        super(time, percentage);
+        this.particleBuilderList = particleBuilderList;
+    }
 
-	@Override
-	public void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems) {
-		for (ParticleBuilder particleBuilder : this.particleBuilderList) {
-			particleBuilder.location(player.getLocation()).spawn();
-		}
-	}
+    @Override
+    public void doAction(@NotNull Player player, @Nullable AnomalyIgnorableItems ignorableItems) {
+        for (ParticleBuilder particleBuilder : this.particleBuilderList) {
+            particleBuilder.location(player.getLocation()).spawn();
+        }
+    }
 
-	public @NotNull List<ParticleBuilder> getParticles() {
-		return this.particleBuilderList;
-	}
+    public @NotNull List<ParticleBuilder> getParticles() {
+        return this.particleBuilderList;
+    }
 }
