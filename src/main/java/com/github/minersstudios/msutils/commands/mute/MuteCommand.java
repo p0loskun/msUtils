@@ -5,9 +5,8 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.utils.IDUtils;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import com.github.minersstudios.msutils.utils.MuteFileUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -57,7 +57,7 @@ public class MuteCommand implements MSCommandExecutor {
                 : "неизвестно";
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
 
             if (
                     offlinePlayer == null
@@ -67,7 +67,7 @@ public class MuteCommand implements MSCommandExecutor {
                 return true;
             }
 
-            MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
+            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
                     .setMuted(true, date, reason, sender);
             return true;
         }
@@ -83,7 +83,7 @@ public class MuteCommand implements MSCommandExecutor {
                 return true;
             }
 
-            MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), name)
+            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
                     .setMuted(true, date, reason, sender);
             return true;
         }
@@ -106,9 +106,9 @@ public class MuteCommand implements MSCommandExecutor {
                     String nickname = offlinePlayer.getName();
                     UUID uuid = offlinePlayer.getUniqueId();
 
-                    if (StringUtils.isBlank(nickname) || MuteFileUtils.isMuted(offlinePlayer)) continue;
+                    if (StringUtils.isBlank(nickname) || getConfigCache().muteMap.isMuted(offlinePlayer)) continue;
 
-                    int id = IDUtils.getID(uuid, false, false);
+                    int id = getConfigCache().idMap.getID(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

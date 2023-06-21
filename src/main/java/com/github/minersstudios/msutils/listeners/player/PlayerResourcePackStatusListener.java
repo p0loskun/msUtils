@@ -6,7 +6,6 @@ import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerSettings;
 import com.github.minersstudios.msutils.player.ResourcePack;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +20,7 @@ public class PlayerResourcePackStatusListener implements Listener {
     @EventHandler
     public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
         PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
         if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) return;

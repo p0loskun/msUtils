@@ -12,9 +12,9 @@ import com.github.minersstudios.msutils.inventory.CraftsMenu;
 import com.github.minersstudios.msutils.inventory.PronounsMenu;
 import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
 import com.github.minersstudios.msutils.listeners.chat.DiscordGuildMessagePreProcessListener;
+import com.github.minersstudios.msutils.player.MuteMap;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.ResourcePack;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.util.TriState;
@@ -35,10 +35,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static com.github.minersstudios.mscore.utils.InventoryUtils.registerCustomInventory;
 
@@ -90,18 +87,19 @@ public final class MSUtils extends MSPlugin {
                 0L, 1L
         );
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            if (configCache.mutedPlayers.isEmpty()) return;
-            configCache.mutedPlayers.keySet().stream()
-                    .filter(player -> configCache.mutedPlayers.get(player) - System.currentTimeMillis() < 0)
-                    .forEach(player -> MSPlayerUtils.getPlayerInfo(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null));
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            Map<OfflinePlayer, MuteMap.Params> map = configCache.muteMap.getMap();
+            if (map.isEmpty()) return;
+            map.keySet().stream()
+                    .filter(player -> map.get(player).getTime() - System.currentTimeMillis() < 0)
+                    .forEach(player -> configCache.playerInfoMap.getPlayerInfo(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null));
         }, 0L, 50L);
     }
 
     @Override
     public void disable() {
         for (Player player : configCache.seats.keySet()) {
-            MSPlayerUtils.getPlayerInfo(player).unsetSitting();
+            configCache.playerInfoMap.getPlayerInfo(player).unsetSitting();
 
             Entity vehicle = player.getVehicle();
             if (vehicle != null) {
@@ -110,7 +108,7 @@ public final class MSUtils extends MSPlugin {
         }
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            MSPlayerUtils.getPlayerInfo(player).kickPlayer("Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
+            configCache.playerInfoMap.getPlayerInfo(player).kickPlayer("Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
         }
 
         configCache.bukkitTasks.forEach(BukkitTask::cancel);

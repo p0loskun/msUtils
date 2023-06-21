@@ -5,8 +5,8 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.BlockUtils;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -48,7 +48,7 @@ public class FartCommand implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
 
         if (!playerInfo.isOnline()) return true;
         if (playerInfo.isMuted()) {

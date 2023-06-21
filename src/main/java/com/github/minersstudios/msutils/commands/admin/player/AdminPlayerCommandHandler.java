@@ -5,10 +5,10 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -46,7 +47,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
         if (args.length < 2) return false;
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || offlinePlayer.getName() == null) {
                 ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
@@ -157,7 +158,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                         }
                     }
                     case "settings" -> {
-                        switch (args[2].toLowerCase(Locale.ENGLISH)) {
+                        switch (args[2].toLowerCase(Locale.ROOT)) {
                             case "resourcepack-type" -> {
                                 return List.of(
                                         "full",
@@ -169,7 +170,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                         }
                     }
                     case "ban-info", "mute-info" -> {
-                        switch (args[2].toLowerCase(Locale.ENGLISH)) {
+                        switch (args[2].toLowerCase(Locale.ROOT)) {
                             case "time" -> {
                                 return DateUtils.getTimeSuggestions(args[3]);
                             }
@@ -198,8 +199,8 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             String @NotNull [] args,
             @NotNull OfflinePlayer offlinePlayer
     ) {
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
-        return switch (args[1].toLowerCase(Locale.ENGLISH)) {
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
+        return switch (args[1].toLowerCase(Locale.ROOT)) {
             case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);
             case "info" -> AdminInfoCommand.runCommand(sender, playerInfo);
             case "pronouns" -> AdminPronounsCommand.runCommand(sender, args, playerInfo);
@@ -263,7 +264,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                                 )
                                 .then(
                                         literal("time")
-                                        .then(argument("время", DoubleArgumentType.doubleArg()))
+                                        .then(argument("время", StringArgumentType.greedyString()))
                                 )
                         )
                         .then(
@@ -274,7 +275,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                                 )
                                 .then(
                                         literal("time")
-                                        .then(argument("время", DoubleArgumentType.doubleArg()))
+                                        .then(argument("время", StringArgumentType.greedyString()))
                                 )
                         )
                         .then(

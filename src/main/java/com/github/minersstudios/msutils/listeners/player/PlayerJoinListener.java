@@ -3,8 +3,10 @@ package com.github.minersstudios.msutils.listeners.player;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.inventory.PronounsMenu;
-import com.github.minersstudios.msutils.player.*;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.github.minersstudios.msutils.player.PlayerFile;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.RegistrationProcess;
+import com.github.minersstudios.msutils.player.ResourcePack;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -22,7 +24,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
         PlayerFile playerFile = playerInfo.getPlayerFile();
 
         event.joinMessage(null);

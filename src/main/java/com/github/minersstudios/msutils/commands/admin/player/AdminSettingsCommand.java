@@ -25,8 +25,8 @@ public class AdminSettingsCommand {
 
         PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
         boolean haveArg = args.length >= 4;
-        String paramString = args[2].toLowerCase(Locale.ENGLISH);
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ENGLISH) : "";
+        String paramString = args[2].toLowerCase(Locale.ROOT);
+        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         switch (paramString) {
             case "resourcepack-type" -> {
@@ -37,7 +37,7 @@ public class AdminSettingsCommand {
                             .append(playerInfo.getGrayIDGreenName())
                             .appendNewline()
                             .append(text("    Равен : \""))
-                            .append(text(type.name().toLowerCase(Locale.ENGLISH)))
+                            .append(text(type.name().toLowerCase(Locale.ROOT)))
                             .append(text("\""))
                     );
                     return true;

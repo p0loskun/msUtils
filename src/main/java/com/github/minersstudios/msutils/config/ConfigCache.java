@@ -3,10 +3,10 @@ package com.github.minersstudios.msutils.config;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.anomalies.Anomaly;
 import com.github.minersstudios.msutils.anomalies.AnomalyAction;
-import com.github.minersstudios.msutils.player.PlayerInfo;
-import org.bukkit.Bukkit;
+import com.github.minersstudios.msutils.player.IDMap;
+import com.github.minersstudios.msutils.player.MuteMap;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -29,15 +29,10 @@ public final class ConfigCache {
     public final @NotNull File configFile;
     public final @NotNull YamlConfiguration configYaml;
 
-    public final @NotNull File idsFile;
-    public @NotNull YamlConfiguration idsYaml;
+    public final PlayerInfoMap playerInfoMap;
+    public final MuteMap muteMap;
+    public final IDMap idMap;
 
-    public final @NotNull File mutedPlayersFile;
-    public final @NotNull YamlConfiguration mutedPlayersYaml;
-
-    public final Map<UUID, PlayerInfo> playerInfoMap = new ConcurrentHashMap<>();
-    public final Map<UUID, Integer> idMap = new HashMap<>();
-    public final Map<OfflinePlayer, Long> mutedPlayers = new HashMap<>();
     public final Map<Player, ArmorStand> seats = new HashMap<>();
     public final Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();
     public final Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap = new ConcurrentHashMap<>();
@@ -85,18 +80,9 @@ public final class ConfigCache {
         this.liteFileName = this.configYaml.getString("resource-pack.lite.file-name");
         this.liteHash = this.configYaml.getString("resource-pack.lite.hash");
 
-        this.mutedPlayersFile = new File(getInstance().getPluginFolder(), "muted_players.yml");
-        this.mutedPlayersYaml = YamlConfiguration.loadConfiguration(this.mutedPlayersFile);
-
-        for (Map.Entry<String, Object> uuid : this.mutedPlayersYaml.getValues(true).entrySet()) {
-            this.mutedPlayers.put(Bukkit.getOfflinePlayer(UUID.fromString(uuid.getKey())), (Long) uuid.getValue());
-        }
-
-        this.idsFile = new File(getInstance().getPluginFolder(), "ids.yml");
-        this.idsYaml = YamlConfiguration.loadConfiguration(this.idsFile);
-        for (Map.Entry<String, Object> entry : this.idsYaml.getValues(true).entrySet()) {
-            this.idMap.put(UUID.fromString(entry.getKey()), (Integer) entry.getValue());
-        }
+        this.playerInfoMap = new PlayerInfoMap();
+        this.muteMap = new MuteMap();
+        this.idMap = new IDMap();
 
         this.loadAnomalies();
     }

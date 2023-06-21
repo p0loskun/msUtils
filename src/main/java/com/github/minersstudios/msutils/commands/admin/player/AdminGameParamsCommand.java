@@ -29,8 +29,8 @@ public class AdminGameParamsCommand {
 
         PlayerFile playerFile = playerInfo.getPlayerFile();
         boolean haveArg = args.length >= 4;
-        String paramString = args[2].toLowerCase(Locale.ENGLISH);
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ENGLISH) : "";
+        String paramString = args[2].toLowerCase(Locale.ROOT);
+        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
         Player player = offlinePlayer.getPlayer();
 
         switch (paramString) {
@@ -43,14 +43,14 @@ public class AdminGameParamsCommand {
                             .append(text("    Равен : "))
                             .appendNewline()
                             .append(text("      - (В файле) \""))
-                            .append(text(playerFile.getGameMode().name().toLowerCase(Locale.ENGLISH)))
+                            .append(text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT)))
                             .append(text("\""))
                             .append(
                                     player == null
                                             ? text()
                                             : Component.newline()
                                             .append(text("      - (В игре) \""))
-                                            .append(text(player.getGameMode().name().toLowerCase(Locale.ENGLISH)))
+                                            .append(text(player.getGameMode().name().toLowerCase(Locale.ROOT)))
                                             .append(text("\""))
                             )
                     );
@@ -59,7 +59,7 @@ public class AdminGameParamsCommand {
 
                 GameMode gameMode;
                 try {
-                    gameMode = GameMode.valueOf(paramArgString.toUpperCase(Locale.ENGLISH));
+                    gameMode = GameMode.valueOf(paramArgString.toUpperCase(Locale.ROOT));
                 } catch (IllegalArgumentException ignore) {
                     ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    survival, creative, spectator, adventure");
                     return true;

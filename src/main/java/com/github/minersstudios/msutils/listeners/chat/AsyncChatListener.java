@@ -4,7 +4,6 @@ import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.chat.ChatBuffer;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.entity.Player;
@@ -24,7 +23,7 @@ public class AsyncChatListener implements Listener {
         event.setCancelled(true);
 
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
 
         if (player.getWorld() == MSUtils.getWorldDark() || !MSUtils.getAuthMeApi().isAuthenticated(player)) return;
 

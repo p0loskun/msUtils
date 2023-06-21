@@ -1,8 +1,8 @@
 package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import io.papermc.paper.advancement.AdvancementDisplay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -24,12 +24,12 @@ public class PlayerAdvancementDoneListener implements Listener {
         AdvancementDisplay advancementDisplay = event.getAdvancement().getDisplay();
         if (advancementDisplay == null || event.message() == null) return;
         AdvancementDisplay.Frame frame = advancementDisplay.frame();
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(event.getPlayer());
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(event.getPlayer());
 
         event.message(
                 Component.space()
                 .append(Component.translatable(
-                "chat.type.advancement." + frame.name().toLowerCase(Locale.ENGLISH),
+                "chat.type.advancement." + frame.name().toLowerCase(Locale.ROOT),
                 playerInfo.getDefaultName(),
                 text("[")
                 .append(advancementDisplay.title())

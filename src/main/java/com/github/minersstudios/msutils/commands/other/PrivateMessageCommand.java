@@ -8,7 +8,6 @@ import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.OfflinePlayer;
@@ -20,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.github.minersstudios.msutils.utils.MessageUtils.sendPrivateMessage;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
@@ -49,7 +49,7 @@ public class PrivateMessageCommand implements MSCommandExecutor {
         if (args.length < 2) return false;
 
         PlayerInfo senderInfo = sender instanceof Player player
-                ? MSPlayerUtils.getPlayerInfo(player)
+                ? MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player)
                 : MSUtils.getConsolePlayerInfo();
 
         if (senderInfo.isMuted()) {
@@ -60,14 +60,14 @@ public class PrivateMessageCommand implements MSCommandExecutor {
         String message = ChatUtils.extractMessage(args, 1);
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
 
             if (!(offlinePlayer instanceof Player player)) {
                 ChatUtils.sendWarning(sender, "Данный игрок не в сети");
                 return true;
             }
 
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
 
             if (!playerInfo.isOnline() && !sender.hasPermission("msutils.*")) {
                 ChatUtils.sendWarning(sender, "Данный игрок не в сети");
@@ -82,7 +82,7 @@ public class PrivateMessageCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 
             if (offlinePlayer instanceof Player player) {
-                PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+                PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
 
                 if (playerInfo.isOnline() || sender.hasPermission("msutils.*")) {
                     sendPrivateMessage(senderInfo, playerInfo, text(message));

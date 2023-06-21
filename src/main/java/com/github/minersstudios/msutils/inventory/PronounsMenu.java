@@ -8,7 +8,6 @@ import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.Pronouns;
 import com.github.minersstudios.msutils.player.RegistrationProcess;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -55,7 +54,7 @@ public class PronounsMenu {
 
         InventoryButton heButton = new InventoryButton(he, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
             PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.HE);
@@ -69,7 +68,7 @@ public class PronounsMenu {
 
         InventoryButton sheButton = new InventoryButton(she, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
             PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.SHE);
@@ -83,7 +82,7 @@ public class PronounsMenu {
 
         InventoryButton theyButton = new InventoryButton(they, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
             PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.THEY);
@@ -97,7 +96,7 @@ public class PronounsMenu {
 
         customInventory.setCloseAction(((event, inventory) -> {
             Player player = (Player) event.getPlayer();
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
 
             if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
                 Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(customInventory));

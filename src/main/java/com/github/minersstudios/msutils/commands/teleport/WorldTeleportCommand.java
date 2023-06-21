@@ -7,7 +7,6 @@ import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.IDUtils;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -29,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -58,7 +58,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         if (args.length < 2) return false;
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null) {
                 ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
@@ -92,7 +92,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         switch (args.length) {
             case 1 -> {
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+                    PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
                     int id = playerInfo.getID(false, false);
 
                     if (id != -1) {
@@ -140,7 +140,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
             return true;
         }
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
         if (offlinePlayer.getPlayer() == null) {
             ChatUtils.sendWarning(sender,
                     text("Игрок : \"")

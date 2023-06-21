@@ -1,8 +1,8 @@
 package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -39,7 +39,7 @@ public class PlayerInteractEntityListener implements Listener {
                 playerWhoClicked.eject();
             }
 
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(clickedPlayer);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(clickedPlayer);
 
             playerWhoClicked.sendActionBar(
                     empty()

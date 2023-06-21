@@ -1,7 +1,7 @@
 package com.github.minersstudios.msutils.listeners.entity;
 
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +14,7 @@ public class EntityDismountListener implements Listener {
     @EventHandler
     public void onEntityDismount(@NotNull EntityDismountEvent event) {
         if (event.getEntity() instanceof Player player) {
-            MSPlayerUtils.getPlayerInfo(player).unsetSitting();
+            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player).unsetSitting();
         }
     }
 }

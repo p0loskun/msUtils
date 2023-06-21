@@ -1,15 +1,12 @@
 package com.github.minersstudios.msutils.utils;
 
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.player.PlayerInfo;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.UUID;
-
+@SuppressWarnings("unused")
 public final class MSPlayerUtils {
     /**
      * Regex supports all <a href="https://jrgraphix.net/r/Unicode/0400-04FF">cyrillic</a> characters
@@ -20,39 +17,9 @@ public final class MSPlayerUtils {
         throw new IllegalStateException("Utility class");
     }
 
-    public static @NotNull Map<UUID, PlayerInfo> getPlayerMap() {
-        return MSUtils.getConfigCache().playerInfoMap;
-    }
-
-    public static @NotNull PlayerInfo getPlayerInfo(
-            @NotNull UUID uuid,
-            @NotNull String nickname
-    ) {
-        PlayerInfo playerInfo = getPlayerMap().get(uuid);
-
-        if (playerInfo == null) {
-            playerInfo = new PlayerInfo(uuid, nickname);
-            getPlayerMap().put(uuid, playerInfo);
-        }
-        return playerInfo;
-    }
-
-    public static @NotNull PlayerInfo getPlayerInfo(@NotNull Player player) {
-        UUID uuid = player.getUniqueId();
-        PlayerInfo playerInfo = getPlayerMap().get(uuid);
-
-        if (playerInfo == null) {
-            playerInfo = new PlayerInfo(player);
-            getPlayerMap().put(uuid, playerInfo);
-        }
-        return playerInfo;
-    }
-
-    public static boolean hideNameTag(@Nullable Player player) {
-        if (player == null) return false;
+    public static void hideNameTag(@NotNull Player player) {
         MSUtils.getScoreboardHideTagsTeam().addEntry(player.getName());
         player.setScoreboard(MSUtils.getScoreboardHideTags());
-        return true;
     }
 
     @Contract(value = "null -> false", pure = true)

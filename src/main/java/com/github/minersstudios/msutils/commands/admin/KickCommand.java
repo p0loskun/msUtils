@@ -4,10 +4,10 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -46,14 +47,14 @@ public class KickCommand implements MSCommandExecutor {
                 : "неизвестно";
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[0]);
+            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || offlinePlayer.getName() == null) {
                 ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
                 return true;
             }
 
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 
             if (playerInfo.kickPlayer("Вы были кикнуты", reason)) {
                 ChatUtils.sendFine(sender,
@@ -81,7 +82,7 @@ public class KickCommand implements MSCommandExecutor {
                 return true;
             }
 
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 
             if (playerInfo.kickPlayer("Вы были кикнуты", reason)) {
                 ChatUtils.sendFine(sender,

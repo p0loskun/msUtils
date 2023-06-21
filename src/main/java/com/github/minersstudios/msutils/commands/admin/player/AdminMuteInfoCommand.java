@@ -2,9 +2,8 @@ package com.github.minersstudios.msutils.commands.admin.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
-import com.github.minersstudios.msutils.player.PlayerFile;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.MuteFileUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,10 +19,10 @@ public class AdminMuteInfoCommand {
             String @NotNull [] args,
             @NotNull PlayerInfo playerInfo
     ) {
-        PlayerFile playerFile = playerInfo.getPlayerFile();
         boolean muted = playerInfo.isMuted();
         boolean haveArg = args.length >= 4;
-        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ENGLISH) : "";
+        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
+        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
             ChatUtils.sendFine(sender,
@@ -33,11 +32,11 @@ public class AdminMuteInfoCommand {
                     .append(
                             muted
                                     ? text("    - Причина : \"")
-                                    .append(text(playerFile.getMuteReason()))
+                                    .append(text(playerInfo.getMuteReason()))
                                     .append(text("\""))
                                     .appendNewline()
                                     .append(text("    - Замьючен до : "))
-                                    .append(text(DateUtils.getSenderDate(new Date(playerFile.getMutedTo()), sender)))
+                                    .append(text(DateUtils.getSenderDate(new Date(playerInfo.getMutedTo()), sender)))
                                     : text("    - Не замьючен")
                     )
             );
@@ -47,7 +46,7 @@ public class AdminMuteInfoCommand {
         if (!muted) {
             ChatUtils.sendError(sender,
                     text("Данный параметр не может быть изменён/считан, так как игрок : ")
-                    .append(playerInfo.getGrayIDGreenName())
+                    .append(playerInfo.getDefaultName())
                     .appendNewline()
                     .append(text("    - Не замьючен"))
             );
@@ -62,7 +61,7 @@ public class AdminMuteInfoCommand {
                             .append(playerInfo.getGrayIDGreenName())
                             .appendNewline()
                             .append(text("    Является : \""))
-                            .append(text(playerFile.getMuteReason()))
+                            .append(text(playerInfo.getMuteReason()))
                             .append(text("\""))
                     );
                     return true;
@@ -70,8 +69,7 @@ public class AdminMuteInfoCommand {
 
                 String reason = ChatUtils.extractMessage(args, 3);
 
-                playerFile.setMuteReason(reason);
-                playerFile.save();
+                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason);
                 ChatUtils.sendFine(sender,
                         text("Причина мьюта игрока : ")
                         .append(playerInfo.getGrayIDGreenName())
@@ -89,23 +87,19 @@ public class AdminMuteInfoCommand {
                             .append(playerInfo.getGrayIDGreenName())
                             .appendNewline()
                             .append(text("    Является : "))
-                            .append(text(DateUtils.getSenderDate(new Date(playerFile.getMutedTo()), sender)))
+                            .append(text(DateUtils.getSenderDate(new Date(playerInfo.getMutedTo()), sender)))
                     );
                     return true;
                 }
 
-                Date date = DateUtils.getDateFromString(args[1], false);
+                Date date = DateUtils.getDateFromString(paramArgString, false);
 
                 if (date == null) {
                     ChatUtils.sendError(sender, "Введите показатель в правильном формате");
                     return true;
                 }
 
-                long time = date.getTime();
-
-                playerFile.setMutedTo(time);
-                playerFile.save();
-                MuteFileUtils.addPlayer(playerInfo.getOfflinePlayer(), time);
+                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), date.getTime(), playerInfo.getMuteReason());
                 ChatUtils.sendFine(sender,
                         text("Крайней датой мьюта игрока : ")
                         .append(playerInfo.getGrayIDGreenName())

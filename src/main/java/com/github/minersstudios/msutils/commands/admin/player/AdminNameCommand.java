@@ -25,8 +25,8 @@ public class AdminNameCommand {
         YamlConfiguration yamlConfiguration = playerFile.getYamlConfiguration();
         PlayerName playerName = playerFile.getPlayerName();
         boolean haveArg = args.length >= 4;
-        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ENGLISH) : "";
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ENGLISH) : "";
+        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
+        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
             ChatUtils.sendFine(sender,

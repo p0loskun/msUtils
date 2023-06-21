@@ -3,8 +3,8 @@ package com.github.minersstudios.msutils.commands.roleplay;
 import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -38,11 +38,11 @@ public class DoCommand implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
 
         if (!playerInfo.isOnline()) return true;
         if (args.length == 0) return false;
-        if (playerInfo.getPlayerFile().isMuted()) {
+        if (playerInfo.isMuted()) {
             ChatUtils.sendWarning(player, "Вы замьючены");
             return true;
         }

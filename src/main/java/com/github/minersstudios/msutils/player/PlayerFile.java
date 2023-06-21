@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static com.github.minersstudios.msutils.MSUtils.getInstance;
 
+@SuppressWarnings("unused")
 public class PlayerFile {
     private final @NotNull File dataFile;
     private final @NotNull YamlConfiguration yamlConfiguration;
@@ -29,9 +30,6 @@ public class PlayerFile {
     private int air;
     private final @NotNull PlayerSettings playerSettings;
     private long firstJoin;
-    private boolean muted;
-    private @NotNull String muteReason;
-    private long mutedTo;
     private boolean banned;
     private @NotNull String banReason;
     private long bannedTo;
@@ -58,9 +56,6 @@ public class PlayerFile {
         this.air = yamlConfiguration.getInt("game-params.air", 300);
         this.playerSettings = new PlayerSettings(this);
         this.firstJoin = yamlConfiguration.getLong("first-join", 0);
-        this.muted = yamlConfiguration.getBoolean("mute.muted", false);
-        this.muteReason = yamlConfiguration.getString("mute.reason", "неизвестно");
-        this.mutedTo = yamlConfiguration.getInt("mute.to", 0);
         this.banned = yamlConfiguration.getBoolean("ban.banned", false);
         this.banReason = yamlConfiguration.getString("ban.reason", "неизвестно");
         this.bannedTo = yamlConfiguration.getLong("ban.to", 0);
@@ -209,43 +204,6 @@ public class PlayerFile {
     public void setFirstJoin(long firstJoin) {
         this.firstJoin = firstJoin;
         this.yamlConfiguration.set("first-join", firstJoin);
-    }
-
-    public boolean isMuted() {
-        return this.muted;
-    }
-
-    public void setMuted(boolean muted) {
-        this.muted = muted;
-        this.yamlConfiguration.set("mute.muted", muted);
-    }
-
-    public @NotNull String getMuteReason() {
-        return this.muteReason;
-    }
-
-    public void setMuteReason(@NotNull String muteReason) {
-        this.muteReason = muteReason;
-        this.yamlConfiguration.set("mute.reason", muteReason);
-    }
-
-    public long getMutedTo() {
-        return this.mutedTo;
-    }
-
-    public void setMutedTo(long mutedTo) {
-        this.mutedTo = mutedTo;
-        this.yamlConfiguration.set("mute.to", mutedTo);
-    }
-
-    public void setMute(
-            boolean muted,
-            @NotNull String muteReason,
-            long mutedTo
-    ) {
-        this.setMuted(muted);
-        this.setMuteReason(muteReason);
-        this.setMutedTo(mutedTo);
     }
 
     public boolean isBanned() {

@@ -4,9 +4,9 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.utils.IDUtils;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.Bukkit;
@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static net.kyori.adventure.text.Component.text;
@@ -55,14 +56,14 @@ public class WhitelistCommand implements MSCommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("remove")) {
-                OfflinePlayer offlinePlayer = IDUtils.getPlayerByID(args[1]);
+                OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[1]);
 
                 if (offlinePlayer == null || offlinePlayer.getName() == null) {
                     ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
                     return true;
                 }
 
-                PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+                PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 
                 if (playerInfo.setWhiteListed(false)) {
                     ChatUtils.sendFine(sender,
@@ -94,7 +95,7 @@ public class WhitelistCommand implements MSCommandExecutor {
                 return true;
             }
 
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
 
             if (args[0].equalsIgnoreCase("add")) {
                 if (playerInfo.setWhiteListed(true)) {
@@ -159,7 +160,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             completions.add("reload");
         } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
-                PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
+                PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), args[1]);
                 int id = playerInfo.getID(false, false);
 
                 if (id != -1) {

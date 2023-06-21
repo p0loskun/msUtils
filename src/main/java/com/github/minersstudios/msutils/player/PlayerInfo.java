@@ -4,9 +4,7 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.utils.IDUtils;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
-import com.github.minersstudios.msutils.utils.MuteFileUtils;
 import com.mojang.authlib.GameProfile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -98,7 +96,7 @@ public class PlayerInfo {
     ) {
         return this == MSUtils.getConsolePlayerInfo()
                 ? -1
-                : IDUtils.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
+                : getConfigCache().idMap.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
     }
 
     public int getID() {
@@ -106,15 +104,17 @@ public class PlayerInfo {
     }
 
     public boolean isMuted() {
-        return this.playerFile.isMuted();
+        return getConfigCache().muteMap.isMuted(this.offlinePlayer);
     }
 
     public @NotNull String getMuteReason() {
-        return this.playerFile.getMuteReason();
+        MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
+        return params == null ? "неизвестно" : params.getReason();
     }
 
     public long getMutedTo() {
-        return this.playerFile.getMutedTo();
+        MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
+        return params == null ? -1 : params.getTime();
     }
 
     public void setMuted(
@@ -126,7 +126,7 @@ public class PlayerInfo {
         Player player = this.getOnlinePlayer();
 
         if (value) {
-            if (this.playerFile.isMuted()) {
+            if (this.isMuted()) {
                 ChatUtils.sendWarning(sender,
                         text("Игрок : \"")
                         .append(this.getGrayIDGoldName())
@@ -137,7 +137,7 @@ public class PlayerInfo {
                 return;
             }
 
-            MuteFileUtils.addPlayer(this.offlinePlayer, date.getTime());
+            getConfigCache().muteMap.put(this.offlinePlayer, date.getTime(), reason);
             ChatUtils.sendFine(sender,
                     text("Игрок : \"")
                     .append(this.getGrayIDGreenName())
@@ -160,7 +160,7 @@ public class PlayerInfo {
                 );
             }
         } else {
-            if (!this.playerFile.isMuted()) {
+            if (!this.isMuted()) {
                 ChatUtils.sendWarning(sender,
                         text("Игрок : \"")
                         .append(this.getGrayIDGoldName())
@@ -171,7 +171,7 @@ public class PlayerInfo {
                 return;
             }
 
-            MuteFileUtils.removeMutedPlayer(this.offlinePlayer);
+            getConfigCache().muteMap.remove(this.offlinePlayer);
             ChatUtils.sendFine(sender,
                     text("Игрок : \"")
                     .append(this.getGrayIDGreenName())
@@ -185,7 +185,6 @@ public class PlayerInfo {
             }
         }
 
-        this.playerFile.setMute(value, reason, date.getTime());
         this.playerFile.save();
     }
 
@@ -536,8 +535,10 @@ public class PlayerInfo {
         this.playerFile.save();
     }
 
-    public boolean hideNameTag() {
-        return MSPlayerUtils.hideNameTag(this.getOnlinePlayer());
+    public void hideNameTag() {
+        Player player = this.getOnlinePlayer();
+        if (player == null) return;
+        MSPlayerUtils.hideNameTag(player);
     }
 
     public @Nullable Player loadPlayerData() {

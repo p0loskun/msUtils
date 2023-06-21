@@ -25,8 +25,8 @@ public class AdminBanInfoCommand {
         PlayerFile playerFile = playerInfo.getPlayerFile();
         boolean banned = playerInfo.isBanned();
         boolean haveArg = args.length >= 4;
-        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ENGLISH) : "";
-        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ENGLISH) : "";
+        String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
+        String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
             ChatUtils.sendFine(sender,
@@ -50,7 +50,7 @@ public class AdminBanInfoCommand {
         if (!banned) {
             ChatUtils.sendError(sender,
                     text("Данный параметр не может быть изменён/считан, так как игрок : ")
-                    .append(playerInfo.getGrayIDGreenName())
+                    .append(playerInfo.getDefaultName())
                     .appendNewline()
                     .append(text("    - Не забанен"))
             );

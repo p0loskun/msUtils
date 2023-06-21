@@ -188,7 +188,7 @@ public final class MessageUtils {
             @NotNull Component action,
             @NotNull RolePlayActionType rolePlayActionType
     ) {
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(sender);
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(sender);
         Component fullMessage = switch (rolePlayActionType) {
             case DO ->
                     text("* ", RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
@@ -248,8 +248,8 @@ public final class MessageUtils {
             @Nullable Player killer
     ) {
         Location deathLocation = killed.getLocation();
-        PlayerInfo killedInfo = MSPlayerUtils.getPlayerInfo(killed), killerInfo = killer != null
-                ? MSPlayerUtils.getPlayerInfo(killer)
+        PlayerInfo killedInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(killed), killerInfo = killer != null
+                ? MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(killer)
                 : null;
         Component deathMessage = killerInfo != null
                 ? space()

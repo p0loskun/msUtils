@@ -1,7 +1,7 @@
 package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +17,7 @@ public class PlayerDeathListener implements Listener {
         Player killedPlayer = event.getEntity();
 
         event.deathMessage(null);
-        MSPlayerUtils.getPlayerInfo(killedPlayer).unsetSitting();
+        MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(killedPlayer).unsetSitting();
         MessageUtils.sendDeathMessage(killedPlayer, killedPlayer.getKiller());
     }
 }

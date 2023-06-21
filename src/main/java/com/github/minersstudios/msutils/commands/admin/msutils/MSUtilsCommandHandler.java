@@ -50,9 +50,10 @@ public class MSUtilsCommandHandler implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (args.length > 0) {
-            switch (args[0].toLowerCase(Locale.ENGLISH)) {
+            switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "reload" -> ReloadCommand.runCommand(sender);
                 case "updateids" -> UpdateIdsCommand.runCommand(sender);
+                case "updatemutes" -> UpdateMutesCommand.runCommand(sender);
                 default -> {
                     return false;
                 }
@@ -68,6 +69,7 @@ public class MSUtilsCommandHandler implements MSCommandExecutor {
         return literal("msutils")
                 .then(literal("reload"))
                 .then(literal("updateids"))
+                .then(literal("updatemutes"))
                 .build();
     }
 }

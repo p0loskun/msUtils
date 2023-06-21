@@ -6,7 +6,6 @@ import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -32,7 +31,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
     public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
         String hostAddress = event.getAddress().getHostAddress();
         String nickname = event.getName();
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(event.getUniqueId(), nickname);
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(event.getUniqueId(), nickname);
         PlayerFile playerFile = playerInfo.getPlayerFile();
         OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
 

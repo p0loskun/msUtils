@@ -26,7 +26,7 @@ public class AdminPronounsCommand {
                     .append(playerInfo.getGrayIDGreenName())
                     .appendNewline()
                     .append(text("    Равно : \""))
-                    .append(text(playerFile.getPronouns().name().toLowerCase(Locale.ENGLISH)))
+                    .append(text(playerFile.getPronouns().name().toLowerCase(Locale.ROOT)))
                     .append(text("\""))
             );
             return true;
@@ -35,7 +35,7 @@ public class AdminPronounsCommand {
 
             Pronouns pronouns;
             try {
-                pronouns = Pronouns.valueOf(pronounsString.toUpperCase(Locale.ENGLISH));
+                pronouns = Pronouns.valueOf(pronounsString.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ignore) {
                 ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    he, she, they");
                 return true;
@@ -48,7 +48,7 @@ public class AdminPronounsCommand {
                     .append(playerInfo.getGrayIDGreenName())
                     .appendNewline()
                     .append(text("    Было успешно изменено на : \""))
-                    .append(text(pronounsString.toLowerCase(Locale.ENGLISH)))
+                    .append(text(pronounsString.toLowerCase(Locale.ROOT)))
                     .append(text("\""))
             );
             return true;

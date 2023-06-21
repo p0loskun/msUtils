@@ -3,7 +3,6 @@ package com.github.minersstudios.msutils.listeners.player;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,7 +17,7 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
         Entity vehicle = player.getVehicle();
 
         if (vehicle != null) {

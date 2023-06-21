@@ -7,7 +7,6 @@ import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerSettings;
 import com.github.minersstudios.msutils.player.ResourcePack;
-import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -86,7 +85,7 @@ public class ResourcePackMenu {
 
         InventoryButton noneButton = new InventoryButton(none, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
             PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
@@ -107,7 +106,7 @@ public class ResourcePackMenu {
 
         InventoryButton fullButton = new InventoryButton(full, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
             PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             playerSettings.setResourcePackType(ResourcePack.Type.FULL);
@@ -123,7 +122,7 @@ public class ResourcePackMenu {
 
         InventoryButton liteButton = new InventoryButton(lite, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
             PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             playerSettings.setResourcePackType(ResourcePack.Type.LITE);
@@ -139,7 +138,7 @@ public class ResourcePackMenu {
 
         customInventory.setCloseAction(((event, inventory) -> {
             Player player = (Player) event.getPlayer();
-            PlayerInfo playerInfo = MSPlayerUtils.getPlayerInfo(player);
+            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
             ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
             if (type == ResourcePack.Type.NULL) {
