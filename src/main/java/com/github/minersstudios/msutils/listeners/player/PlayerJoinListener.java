@@ -7,11 +7,9 @@ import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.RegistrationProcess;
 import com.github.minersstudios.msutils.player.ResourcePack;
-import net.minecraft.core.SectionPos;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,9 +30,6 @@ public class PlayerJoinListener implements Listener {
         event.joinMessage(null);
         playerInfo.hideNameTag();
         player.displayName(playerInfo.getDefaultName());
-
-        SectionPos lastPos = ((CraftPlayer) player).getHandle().getLastSectionPos();
-        System.out.println(lastPos);
 
         if (player.isDead()) {
             Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {

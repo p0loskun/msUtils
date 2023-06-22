@@ -2,6 +2,8 @@ package com.github.minersstudios.msutils.utils;
 
 import com.github.minersstudios.msutils.MSUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +19,11 @@ public final class MSPlayerUtils {
         throw new IllegalStateException("Utility class");
     }
 
+    /**
+     * Adds player to the "hide_tags" {@link Team} and sets the {@link Scoreboard} for player
+     *
+     * @param player the player
+     */
     public static void hideNameTag(@NotNull Player player) {
         MSUtils.getScoreboardHideTagsTeam().addEntry(player.getName());
         player.setScoreboard(MSUtils.getScoreboardHideTags());

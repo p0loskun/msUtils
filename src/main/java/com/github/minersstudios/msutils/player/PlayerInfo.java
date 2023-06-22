@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -97,7 +98,7 @@ public class PlayerInfo {
     ) {
         return this == MSUtils.getConsolePlayerInfo()
                 ? -1
-                : getConfigCache().idMap.getID(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
+                : getConfigCache().idMap.get(this.offlinePlayer.getUniqueId(), addPlayer, zeroIfNull);
     }
 
     public int getID() {
@@ -125,14 +126,14 @@ public class PlayerInfo {
     }
 
     public @NotNull String getMutedFrom(@NotNull CommandSender sender) throws IllegalStateException {
-        return DateUtils.getSenderDate(this.getMutedFrom(), sender);
+        return DateUtils.getSenderDate(Date.from(this.getMutedFrom()), sender);
     }
 
     public @NotNull String getMutedFrom(@NotNull InetAddress address) throws IllegalStateException {
-        return DateUtils.getDate(this.getMutedFrom(), address);
+        return DateUtils.getDate(Date.from(this.getMutedFrom()), address);
     }
 
-    public @NotNull Date getMutedFrom() throws IllegalStateException {
+    public @NotNull Instant getMutedFrom() throws IllegalStateException {
         MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
         if (params == null) {
             throw new IllegalStateException("Player is not muted");
@@ -141,14 +142,14 @@ public class PlayerInfo {
     }
 
     public @NotNull String getMutedTo(@NotNull CommandSender sender) throws IllegalStateException {
-        return DateUtils.getSenderDate(this.getMutedTo(), sender);
+        return DateUtils.getSenderDate(Date.from(this.getMutedTo()), sender);
     }
 
     public @NotNull String getMutedTo(@NotNull InetAddress address) throws IllegalStateException {
-        return DateUtils.getDate(this.getMutedTo(), address);
+        return DateUtils.getDate(Date.from(this.getMutedTo()), address);
     }
 
-    public @NotNull Date getMutedTo() throws IllegalStateException {
+    public @NotNull Instant getMutedTo() throws IllegalStateException {
         MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
         if (params == null) {
             throw new IllegalStateException("Player is not muted");
@@ -176,7 +177,7 @@ public class PlayerInfo {
                 return;
             }
 
-            getConfigCache().muteMap.put(this.offlinePlayer, date, reason, sender.getName());
+            getConfigCache().muteMap.put(this.offlinePlayer, date.toInstant(), reason, sender.getName());
             ChatUtils.sendFine(sender,
                     text("Игрок : \"")
                     .append(this.getGrayIDGreenName())

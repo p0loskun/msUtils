@@ -12,7 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Date;
+import java.time.Instant;
 
 import static com.github.minersstudios.mscore.utils.ChatUtils.*;
 import static net.kyori.adventure.text.Component.text;
@@ -29,7 +29,7 @@ public class AsyncChatListener implements Listener {
 
         if (player.getWorld() == MSUtils.getWorldDark() || !MSUtils.getAuthMeApi().isAuthenticated(player)) return;
 
-        if (playerInfo.isMuted() && playerInfo.getMutedTo().before(new Date())) {
+        if (playerInfo.isMuted() && playerInfo.getMutedTo().isBefore(Instant.now())) {
             playerInfo.setMuted(false, null);
         }
 

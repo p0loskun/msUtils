@@ -106,10 +106,9 @@ public class MuteCommand implements MSCommandExecutor {
                     String nickname = offlinePlayer.getName();
                     UUID uuid = offlinePlayer.getUniqueId();
 
-                    System.out.println(getConfigCache().muteMap.getMap().keySet());
                     if (StringUtils.isBlank(nickname) || getConfigCache().muteMap.isMuted(offlinePlayer)) continue;
 
-                    int id = getConfigCache().idMap.getID(uuid, false, false);
+                    int id = getConfigCache().idMap.get(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

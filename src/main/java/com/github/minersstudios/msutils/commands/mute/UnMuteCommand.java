@@ -6,10 +6,12 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.player.MuteMap;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,6 +19,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -87,17 +90,19 @@ public class UnMuteCommand implements MSCommandExecutor {
         List<String> completions = new ArrayList<>();
         switch (args.length) {
             case 1 -> {
-                for (OfflinePlayer offlinePlayer : getConfigCache().muteMap.getMap().keySet()) {
+                for (UUID uuid : getConfigCache().muteMap.getMap().keySet()) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
                     String nickname = offlinePlayer.getName();
-                    UUID uuid = offlinePlayer.getUniqueId();
 
-                    int id = getConfigCache().idMap.getID(uuid, false, false);
+                    MuteMap.Params params = getConfigCache().muteMap.getParams(offlinePlayer);
+                    if (params != null && params.getExpiration().isBefore(Instant.now())) continue;
 
+                    int id = getConfigCache().idMap.get(uuid, false, false);
                     if (id != -1) {
                         completions.add(String.valueOf(id));
                     }
 
-                    if (offlinePlayer.hasPlayedBefore()) {
+                    if (nickname != null) {
                         completions.add(nickname);
                     }
                 }

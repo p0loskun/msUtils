@@ -99,7 +99,7 @@ public class AdminMuteInfoCommand {
                     return true;
                 }
 
-                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), date, playerInfo.getMuteReason(), sender.getName());
+                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), date.toInstant(), playerInfo.getMuteReason(), sender.getName());
                 ChatUtils.sendFine(sender,
                         text("Крайней датой мьюта игрока : ")
                         .append(playerInfo.getGrayIDGreenName())

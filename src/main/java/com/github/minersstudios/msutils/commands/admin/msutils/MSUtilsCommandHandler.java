@@ -9,6 +9,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Locale;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
@@ -62,6 +63,16 @@ public class MSUtilsCommandHandler implements MSCommandExecutor {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull ... args
+    ) {
+        return List.of("reload", "updateids", "updatemutes");
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.*;
 
 public final class MSUtils extends MSPlugin {
@@ -87,11 +88,15 @@ public final class MSUtils extends MSPlugin {
         );
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-            Map<OfflinePlayer, MuteMap.Params> map = configCache.muteMap.getMap();
+            Map<UUID, MuteMap.Params> map = configCache.muteMap.getMap();
             if (map.isEmpty()) return;
-            map.keySet().stream()
-                    .filter(player -> map.get(player).getExpiration().before(new Date()))
-                    .forEach(player -> configCache.playerInfoMap.getPlayerInfo(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null));
+            Instant currentInstant = Instant.now();
+            map.entrySet().stream()
+                    .filter(entry -> entry.getValue().getExpiration().isBefore(currentInstant))
+                    .forEach(entry -> {
+                        OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
+                        configCache.playerInfoMap.getPlayerInfo(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null);
+                    });
         }, 0L, 50L);
     }
 
