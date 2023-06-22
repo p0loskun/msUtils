@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class MuteMap {
     }
 
     public @NotNull Map<OfflinePlayer, Params> getMap() {
-        return new HashMap<>(this.map);
+        return this.map;
     }
 
     public @Nullable Params getParams(@NotNull OfflinePlayer player) {
@@ -42,16 +43,21 @@ public class MuteMap {
 
     public void put(
             @NotNull OfflinePlayer player,
-            long time,
-            @NotNull String reason
+            @NotNull Date expiration,
+            @NotNull String reason,
+            @NotNull String source
     ) {
+        Date created = new Date();
+        String uuidStr = player.getUniqueId().toString();
+
         Bukkit.getScheduler().runTaskAsynchronously(
                 MSUtils.getInstance(),
-                () -> this.map.put(player, new Params(time, reason))
+                () -> this.map.put(player, new Params(created, expiration, reason, source))
         );
-        String uuidStr = player.getUniqueId().toString();
-        this.configuration.set(uuidStr + ".time", time);
+        this.configuration.set(uuidStr + ".created", created.getTime());
+        this.configuration.set(uuidStr + ".expiration", expiration.getTime());
         this.configuration.set(uuidStr + ".reason", reason);
+        this.configuration.set(uuidStr + ".source", source);
         this.saveFile();
     }
 
@@ -72,7 +78,12 @@ public class MuteMap {
             ConfigurationSection section = this.configuration.getConfigurationSection(key);
             assert section != null;
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(key));
-            Params params = new Params(section.getLong("time"), section.getString("reason", "неизвестно"));
+            Params params = new Params(
+                    new Date(section.getLong("created")),
+                    new Date(section.getLong("expiration")),
+                    section.getString("reason", "неизвестно"),
+                    section.getString("source", "CONSOLE")
+            );
             Bukkit.getScheduler().runTaskAsynchronously(
                     MSUtils.getInstance(),
                     () -> this.map.put(player, params)
@@ -88,5 +99,10 @@ public class MuteMap {
         }
     }
 
-    public record Params(long getTime, @NotNull String getReason) {}
+    public record Params(
+            @NotNull Date getCreated,
+            @NotNull Date getExpiration,
+            @NotNull String getReason,
+            @NotNull String getSource
+    ) {}
 }

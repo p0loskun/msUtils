@@ -14,7 +14,7 @@ public class PlayerInfoMap {
     private final Map<UUID, PlayerInfo> map = new HashMap<>();
 
     public @NotNull Map<UUID, PlayerInfo> getMap() {
-        return new HashMap<>(this.map);
+        return this.map;
     }
 
     public void put(@NotNull PlayerInfo playerInfo) {

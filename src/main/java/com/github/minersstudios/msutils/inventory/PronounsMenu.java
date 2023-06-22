@@ -1,8 +1,8 @@
 package com.github.minersstudios.msutils.inventory;
 
+import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
-import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
@@ -109,7 +109,7 @@ public class PronounsMenu {
     }
 
     public static void open(@NotNull Player player) {
-        CustomInventory customInventory = InventoryUtils.getCustomInventory("pronouns");
+        CustomInventory customInventory = MSCore.getConfigCache().customInventoryMap.get("pronouns");
         if (customInventory == null) return;
         player.openInventory(customInventory);
     }

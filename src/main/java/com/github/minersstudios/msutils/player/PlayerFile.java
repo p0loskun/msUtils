@@ -30,9 +30,6 @@ public class PlayerFile {
     private int air;
     private final @NotNull PlayerSettings playerSettings;
     private long firstJoin;
-    private boolean banned;
-    private @NotNull String banReason;
-    private long bannedTo;
     private @Nullable Location lastLeaveLocation;
     private @Nullable Location lastDeathLocation;
 
@@ -56,9 +53,6 @@ public class PlayerFile {
         this.air = yamlConfiguration.getInt("game-params.air", 300);
         this.playerSettings = new PlayerSettings(this);
         this.firstJoin = yamlConfiguration.getLong("first-join", 0);
-        this.banned = yamlConfiguration.getBoolean("ban.banned", false);
-        this.banReason = yamlConfiguration.getString("ban.reason", "неизвестно");
-        this.bannedTo = yamlConfiguration.getLong("ban.to", 0);
 
         World overworld = MSUtils.getOverworld();
         Location spawnLocation = overworld.getSpawnLocation();
@@ -204,43 +198,6 @@ public class PlayerFile {
     public void setFirstJoin(long firstJoin) {
         this.firstJoin = firstJoin;
         this.yamlConfiguration.set("first-join", firstJoin);
-    }
-
-    public boolean isBanned() {
-        return this.banned;
-    }
-
-    public void setBanned(boolean banned) {
-        this.banned = banned;
-        this.yamlConfiguration.set("ban.banned", banned);
-    }
-
-    public @NotNull String getBanReason() {
-        return this.banReason;
-    }
-
-    public void setBanReason(@NotNull String banReason) {
-        this.banReason = banReason;
-        this.yamlConfiguration.set("ban.reason", banReason);
-    }
-
-    public long getBannedTo() {
-        return this.bannedTo;
-    }
-
-    public void setBannedTo(long bannedTo) {
-        this.bannedTo = bannedTo;
-        this.yamlConfiguration.set("ban.to", bannedTo);
-    }
-
-    public void setBan(
-            boolean banned,
-            @NotNull String banReason,
-            long bannedTo
-    ) {
-        this.setBanned(banned);
-        this.setBanReason(banReason);
-        this.setBannedTo(bannedTo);
     }
 
     public @Nullable Location getLastLeaveLocation() {

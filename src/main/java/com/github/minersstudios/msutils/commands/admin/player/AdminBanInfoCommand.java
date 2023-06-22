@@ -2,7 +2,6 @@ package com.github.minersstudios.msutils.commands.admin.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
-import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
@@ -22,7 +21,6 @@ public class AdminBanInfoCommand {
             String @NotNull [] args,
             @NotNull PlayerInfo playerInfo
     ) {
-        PlayerFile playerFile = playerInfo.getPlayerFile();
         boolean banned = playerInfo.isBanned();
         boolean haveArg = args.length >= 4;
         String paramString = args.length >= 3 ? args[2].toLowerCase(Locale.ROOT) : "";
@@ -36,11 +34,11 @@ public class AdminBanInfoCommand {
                     .append(
                             banned
                                     ? text("    - Причина : \"")
-                                    .append(text(playerFile.getBanReason()))
+                                    .append(text(playerInfo.getBanReason()))
                                     .append(text("\""))
                                     .appendNewline()
                                     .append(text("    - Забанен до : "))
-                                    .append(text(DateUtils.getSenderDate(new Date(playerFile.getBannedTo()), sender)))
+                                    .append(text(playerInfo.getBannedTo(sender)))
                                     : text("    - Не забанен")
                     )
             );
@@ -65,7 +63,7 @@ public class AdminBanInfoCommand {
                             .append(playerInfo.getGrayIDGreenName())
                             .appendNewline()
                             .append(text("    Является : \""))
-                            .append(text(playerFile.getBanReason()))
+                            .append(text(playerInfo.getBanReason()))
                             .append(text("\""))
                     );
                     return true;
@@ -73,8 +71,7 @@ public class AdminBanInfoCommand {
 
                 String reason = ChatUtils.extractMessage(args, 3);
 
-                playerFile.setBanReason(reason);
-                playerFile.save();
+                playerInfo.setBanReason(reason);
                 ChatUtils.sendFine(sender,
                         text("Причина бана игрока : ")
                         .append(playerInfo.getGrayIDGreenName())
@@ -92,7 +89,7 @@ public class AdminBanInfoCommand {
                             .append(playerInfo.getGrayIDGreenName())
                             .appendNewline()
                             .append(text("    Является : "))
-                            .append(text(DateUtils.getSenderDate(new Date(playerFile.getBannedTo()), sender)))
+                            .append(text(playerInfo.getBannedTo(sender)))
                     );
                     return true;
                 }
@@ -104,8 +101,7 @@ public class AdminBanInfoCommand {
                     return true;
                 }
 
-                playerFile.setBannedTo(date.getTime());
-                playerFile.save();
+                playerInfo.setBannedTo(date);
 
                 BanEntry banEntry = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(playerInfo.getNickname());
 

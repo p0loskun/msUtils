@@ -36,7 +36,7 @@ public class AdminMuteInfoCommand {
                                     .append(text("\""))
                                     .appendNewline()
                                     .append(text("    - Замьючен до : "))
-                                    .append(text(DateUtils.getSenderDate(new Date(playerInfo.getMutedTo()), sender)))
+                                    .append(text(playerInfo.getMutedTo(sender)))
                                     : text("    - Не замьючен")
                     )
             );
@@ -69,7 +69,7 @@ public class AdminMuteInfoCommand {
 
                 String reason = ChatUtils.extractMessage(args, 3);
 
-                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason);
+                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason, sender.getName());
                 ChatUtils.sendFine(sender,
                         text("Причина мьюта игрока : ")
                         .append(playerInfo.getGrayIDGreenName())
@@ -87,7 +87,7 @@ public class AdminMuteInfoCommand {
                             .append(playerInfo.getGrayIDGreenName())
                             .appendNewline()
                             .append(text("    Является : "))
-                            .append(text(DateUtils.getSenderDate(new Date(playerInfo.getMutedTo()), sender)))
+                            .append(text(playerInfo.getMutedTo(sender)))
                     );
                     return true;
                 }
@@ -99,7 +99,7 @@ public class AdminMuteInfoCommand {
                     return true;
                 }
 
-                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), date.getTime(), playerInfo.getMuteReason());
+                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), date, playerInfo.getMuteReason(), sender.getName());
                 ChatUtils.sendFine(sender,
                         text("Крайней датой мьюта игрока : ")
                         .append(playerInfo.getGrayIDGreenName())

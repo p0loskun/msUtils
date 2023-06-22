@@ -10,7 +10,6 @@ import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -88,11 +87,9 @@ public class UnMuteCommand implements MSCommandExecutor {
         List<String> completions = new ArrayList<>();
         switch (args.length) {
             case 1 -> {
-                for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+                for (OfflinePlayer offlinePlayer : getConfigCache().muteMap.getMap().keySet()) {
                     String nickname = offlinePlayer.getName();
                     UUID uuid = offlinePlayer.getUniqueId();
-
-                    if (!getConfigCache().muteMap.isMuted(offlinePlayer)) continue;
 
                     int id = getConfigCache().idMap.getID(uuid, false, false);
 

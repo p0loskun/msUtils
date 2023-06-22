@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.MSPlugin;
+import com.github.minersstudios.mscore.inventory.CustomInventoryMap;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import com.github.minersstudios.msutils.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msutils.anomalies.tasks.ParticleTask;
@@ -36,8 +37,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
-
-import static com.github.minersstudios.mscore.utils.InventoryUtils.registerCustomInventory;
 
 public final class MSUtils extends MSPlugin {
     private static MSUtils instance;
@@ -91,7 +90,7 @@ public final class MSUtils extends MSPlugin {
             Map<OfflinePlayer, MuteMap.Params> map = configCache.muteMap.getMap();
             if (map.isEmpty()) return;
             map.keySet().stream()
-                    .filter(player -> map.get(player).getTime() - System.currentTimeMillis() < 0)
+                    .filter(player -> map.get(player).getExpiration().before(new Date()))
                     .forEach(player -> configCache.playerInfoMap.getPlayerInfo(player.getUniqueId(), Objects.requireNonNull(player.getName())).setMuted(false, null));
         }, 0L, 50L);
     }
@@ -188,9 +187,10 @@ public final class MSUtils extends MSPlugin {
                 configCache.anomalyParticlesCheckRate
         ));
 
-        registerCustomInventory("pronouns", PronounsMenu.create());
-        registerCustomInventory("resourcepack", ResourcePackMenu.create());
-        registerCustomInventory("crafts", CraftsMenu.create());
+        CustomInventoryMap customInventoryMap = MSCore.getConfigCache().customInventoryMap;
+        customInventoryMap.put("pronouns", PronounsMenu.create());
+        customInventoryMap.put("resourcepack", ResourcePackMenu.create());
+        customInventoryMap.put("crafts", CraftsMenu.create());
 
         List<Recipe> customBlockRecipes = MSCore.getConfigCache().customBlockRecipes;
         List<Recipe> customDecorRecipes = MSCore.getConfigCache().customDecorRecipes;
@@ -202,9 +202,9 @@ public final class MSUtils extends MSPlugin {
                     && !customDecorRecipes.isEmpty()
                     && !customItemRecipes.isEmpty()
             ) {
-                registerCustomInventory("crafts_blocks", CraftsMenu.createCraftsInventory(customBlockRecipes));
-                registerCustomInventory("crafts_decors", CraftsMenu.createCraftsInventory(customDecorRecipes));
-                registerCustomInventory("crafts_items", CraftsMenu.createCraftsInventory(customItemRecipes));
+                customInventoryMap.put("crafts_blocks", CraftsMenu.createCraftsInventory(customBlockRecipes));
+                customInventoryMap.put("crafts_decors", CraftsMenu.createCraftsInventory(customDecorRecipes));
+                customInventoryMap.put("crafts_items", CraftsMenu.createCraftsInventory(customItemRecipes));
                 task.cancel();
             }
         }, 0L, 10L);

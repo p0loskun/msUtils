@@ -163,7 +163,7 @@
         <dependency>
             <groupId>com.github.MinersStudios</groupId>
             <artifactId>msCore</artifactId>
-            <version>release-3b9a44c77e-1</version>
+            <version>release-8a41181fdf-1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -1,8 +1,8 @@
 package com.github.minersstudios.msutils.inventory;
 
+import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
-import com.github.minersstudios.mscore.utils.InventoryUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerSettings;
@@ -150,7 +150,7 @@ public class ResourcePackMenu {
     }
 
     public static boolean open(@NotNull Player player) {
-        CustomInventory customInventory = InventoryUtils.getCustomInventory("resourcepack");
+        CustomInventory customInventory = MSCore.getConfigCache().customInventoryMap.get("resourcepack");
         if (customInventory == null) return false;
         player.openInventory(customInventory);
         return true;

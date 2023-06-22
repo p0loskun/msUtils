@@ -22,6 +22,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.UUID;
 
@@ -107,14 +108,52 @@ public class PlayerInfo {
         return getConfigCache().muteMap.isMuted(this.offlinePlayer);
     }
 
-    public @NotNull String getMuteReason() {
+    public @NotNull String getMuteReason() throws IllegalStateException {
         MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
-        return params == null ? "неизвестно" : params.getReason();
+        if (params == null) {
+            throw new IllegalStateException("Player is not muted");
+        }
+        return params.getReason();
     }
 
-    public long getMutedTo() {
+    public @NotNull String getMutedBy() throws IllegalStateException {
         MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
-        return params == null ? -1 : params.getTime();
+        if (params == null) {
+            throw new IllegalStateException("Player is not muted");
+        }
+        return params.getSource();
+    }
+
+    public @NotNull String getMutedFrom(@NotNull CommandSender sender) throws IllegalStateException {
+        return DateUtils.getSenderDate(this.getMutedFrom(), sender);
+    }
+
+    public @NotNull String getMutedFrom(@NotNull InetAddress address) throws IllegalStateException {
+        return DateUtils.getDate(this.getMutedFrom(), address);
+    }
+
+    public @NotNull Date getMutedFrom() throws IllegalStateException {
+        MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
+        if (params == null) {
+            throw new IllegalStateException("Player is not muted");
+        }
+        return params.getCreated();
+    }
+
+    public @NotNull String getMutedTo(@NotNull CommandSender sender) throws IllegalStateException {
+        return DateUtils.getSenderDate(this.getMutedTo(), sender);
+    }
+
+    public @NotNull String getMutedTo(@NotNull InetAddress address) throws IllegalStateException {
+        return DateUtils.getDate(this.getMutedTo(), address);
+    }
+
+    public @NotNull Date getMutedTo() throws IllegalStateException {
+        MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
+        if (params == null) {
+            throw new IllegalStateException("Player is not muted");
+        }
+        return params.getExpiration();
     }
 
     public void setMuted(
@@ -137,7 +176,7 @@ public class PlayerInfo {
                 return;
             }
 
-            getConfigCache().muteMap.put(this.offlinePlayer, date.getTime(), reason);
+            getConfigCache().muteMap.put(this.offlinePlayer, date, reason, sender.getName());
             ChatUtils.sendFine(sender,
                     text("Игрок : \"")
                     .append(this.getGrayIDGreenName())
@@ -184,8 +223,6 @@ public class PlayerInfo {
                 ChatUtils.sendWarning(player, "Вы были размучены");
             }
         }
-
-        this.playerFile.save();
     }
 
     public void setMuted(
@@ -195,16 +232,98 @@ public class PlayerInfo {
         this.setMuted(value, new Date(0), "", commandSender);
     }
 
+    public @Nullable BanEntry getBanEntry() {
+        return Bukkit.getBanList(BanList.Type.NAME).getBanEntry(this.nickname);
+    }
+
     public boolean isBanned() {
-        return this.playerFile.isBanned() || this.offlinePlayer.isBanned();
+        return this.getBanEntry() != null;
     }
 
-    public @NotNull String getBanReason() {
-        return this.playerFile.getBanReason();
+    public @NotNull String getBanReason() throws IllegalStateException {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        String reason = banEntry.getReason();
+        return reason == null ? "неизвестно" : reason;
     }
 
-    public long getBannedTo() {
-        return this.playerFile.getBannedTo();
+    public void setBanReason(@NotNull String reason) {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        banEntry.setReason(reason);
+        banEntry.save();
+    }
+
+    public @NotNull String getBannedBy() throws IllegalStateException {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        return banEntry.getSource();
+    }
+
+    public void setBannedBy(@NotNull String source) {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        banEntry.setSource(source);
+        banEntry.save();
+    }
+
+    public @NotNull String getBannedFrom(@NotNull CommandSender sender) throws IllegalStateException {
+        return DateUtils.getSenderDate(this.getBannedFrom(), sender);
+    }
+
+    public @NotNull String getBannedFrom(@NotNull InetAddress address) throws IllegalStateException {
+        return DateUtils.getDate(this.getBannedFrom(), address);
+    }
+
+    public @NotNull Date getBannedFrom() throws IllegalStateException {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        return banEntry.getCreated();
+    }
+
+    public @NotNull String getBannedTo(@NotNull CommandSender sender) throws IllegalStateException {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        Date expiration = banEntry.getExpiration();
+        return expiration == null ? "навсегда" : DateUtils.getSenderDate(expiration, sender);
+    }
+
+    public @NotNull String getBannedTo(@NotNull InetAddress address) throws IllegalStateException {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        Date expiration = banEntry.getExpiration();
+        return expiration == null ? "навсегда" : DateUtils.getDate(expiration, address);
+    }
+
+    public @Nullable Date getBannedTo() throws IllegalStateException {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        return banEntry.getExpiration();
+    }
+
+    public void setBannedTo(@NotNull Date expiration) {
+        BanEntry banEntry = this.getBanEntry();
+        if (banEntry == null) {
+            throw new IllegalStateException("Player is not banned");
+        }
+        banEntry.setExpiration(expiration);
+        banEntry.save();
     }
 
     public void setBanned(
@@ -263,9 +382,6 @@ public class PlayerInfo {
                     .append(text(")\" был разбанен"))
             );
         }
-
-        this.playerFile.setBan(value, reason, date.getTime());
-        this.playerFile.save();
     }
 
     public void setBanned(

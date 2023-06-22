@@ -1,9 +1,7 @@
 package com.github.minersstudios.msutils.inventory;
 
-import com.github.minersstudios.mscore.inventory.CustomInventory;
-import com.github.minersstudios.mscore.inventory.ElementListedInventory;
-import com.github.minersstudios.mscore.inventory.InventoryButton;
-import com.github.minersstudios.mscore.inventory.ListedInventory;
+import com.github.minersstudios.mscore.MSCore;
+import com.github.minersstudios.mscore.inventory.*;
 import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +20,6 @@ import java.util.stream.IntStream;
 
 import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
 import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
-import static com.github.minersstudios.mscore.utils.InventoryUtils.getCustomInventory;
 
 public class CraftsMenu {
     public static final int
@@ -71,11 +68,12 @@ public class CraftsMenu {
     }
 
     public static boolean open(@NotNull Type type, @NotNull Player player) {
+        CustomInventoryMap customInventoryMap = MSCore.getConfigCache().customInventoryMap;
         CustomInventory customInventory = switch (type) {
-            case MAIN -> getCustomInventory("crafts");
-            case BLOCKS -> getCustomInventory("crafts_blocks");
-            case DECORS -> getCustomInventory("crafts_decors");
-            case ITEMS -> getCustomInventory("crafts_items");
+            case MAIN -> customInventoryMap.get("crafts");
+            case BLOCKS -> customInventoryMap.get("crafts_blocks");
+            case DECORS -> customInventoryMap.get("crafts_decors");
+            case ITEMS -> customInventoryMap.get("crafts_items");
         };
         if (customInventory == null) return false;
         player.openInventory(customInventory);
