@@ -95,7 +95,7 @@ public class MuteMap {
     }
 
     /**
-     * Reloads muted_players.yml
+     * Reloads muted_players.json
      */
     public void reloadMutes() {
         this.map.clear();
