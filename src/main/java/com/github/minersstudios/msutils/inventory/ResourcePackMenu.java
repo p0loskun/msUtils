@@ -2,9 +2,11 @@ package com.github.minersstudios.msutils.inventory;
 
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
+import com.github.minersstudios.mscore.inventory.CustomInventoryMap;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.player.PlayerSettings;
 import com.github.minersstudios.msutils.player.ResourcePack;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -81,11 +83,12 @@ public class ResourcePackMenu {
         ));
         full.setItemMeta(fullMeta);
 
+        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
         CustomInventory customInventory = new CustomInventory("§8Выберите нужный текстурпак", 1);
 
         InventoryButton noneButton = new InventoryButton(none, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
             PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
@@ -97,7 +100,7 @@ public class ResourcePackMenu {
             playClickSound(player);
             player.closeInventory();
 
-            if (player.getWorld() == MSUtils.getWorldDark()) {
+            if (playerInfo.isInWorldDark()) {
                 playerInfo.initJoin();
             }
         });
@@ -106,7 +109,7 @@ public class ResourcePackMenu {
 
         InventoryButton fullButton = new InventoryButton(full, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
             PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             playerSettings.setResourcePackType(ResourcePack.Type.FULL);
@@ -122,7 +125,7 @@ public class ResourcePackMenu {
 
         InventoryButton liteButton = new InventoryButton(lite, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
             PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
             playerSettings.setResourcePackType(ResourcePack.Type.LITE);
@@ -138,7 +141,7 @@ public class ResourcePackMenu {
 
         customInventory.setCloseAction(((event, inventory) -> {
             Player player = (Player) event.getPlayer();
-            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
             ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
             if (type == ResourcePack.Type.NULL) {
@@ -150,7 +153,8 @@ public class ResourcePackMenu {
     }
 
     public static boolean open(@NotNull Player player) {
-        CustomInventory customInventory = MSCore.getConfigCache().customInventoryMap.get("resourcepack");
+        CustomInventoryMap customInventoryMap = MSCore.getConfigCache().customInventoryMap;
+        CustomInventory customInventory = customInventoryMap.get("resourcepack");
         if (customInventory == null) return false;
         player.openInventory(customInventory);
         return true;

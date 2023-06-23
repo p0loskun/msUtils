@@ -12,7 +12,7 @@ public class PlayerStopSpectatingEntityListener implements Listener {
 
     @EventHandler
     public void onPlayerStopSpectatingEntity(@NotNull PlayerStopSpectatingEntityEvent event) {
-        if (event.getPlayer().getWorld() == MSUtils.getWorldDark()) {
+        if (event.getPlayer().getWorld().equals(MSUtils.getWorldDark())) {
             event.setCancelled(true);
         }
     }

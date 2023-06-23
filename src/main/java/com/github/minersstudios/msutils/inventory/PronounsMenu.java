@@ -4,10 +4,7 @@ import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.player.PlayerFile;
-import com.github.minersstudios.msutils.player.PlayerInfo;
-import com.github.minersstudios.msutils.player.Pronouns;
-import com.github.minersstudios.msutils.player.RegistrationProcess;
+import com.github.minersstudios.msutils.player.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -50,11 +47,12 @@ public class PronounsMenu {
         theyMeta.lore(loreThey);
         they.setItemMeta(theyMeta);
 
+        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
         CustomInventory customInventory = new CustomInventory("§8Выберите форму обращения", 1);
 
         InventoryButton heButton = new InventoryButton(he, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
             PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.HE);
@@ -68,7 +66,7 @@ public class PronounsMenu {
 
         InventoryButton sheButton = new InventoryButton(she, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
             PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.SHE);
@@ -82,7 +80,7 @@ public class PronounsMenu {
 
         InventoryButton theyButton = new InventoryButton(they, (event, inventory, button) -> {
             Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
             PlayerFile playerFile = playerInfo.getPlayerFile();
 
             playerFile.setPronouns(Pronouns.THEY);
@@ -96,10 +94,13 @@ public class PronounsMenu {
 
         customInventory.setCloseAction(((event, inventory) -> {
             Player player = (Player) event.getPlayer();
-            PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
             if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
-                Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(customInventory));
+                Bukkit.getScheduler().runTask(
+                        MSUtils.getInstance(),
+                        () -> player.openInventory(customInventory)
+                );
             } else {
                 new RegistrationProcess().setPronouns(player, playerInfo);
             }

@@ -109,8 +109,12 @@ public class PlayerInfo {
         return getConfigCache().muteMap.isMuted(this.offlinePlayer);
     }
 
+    public @Nullable MuteMap.Params getMuteParams() {
+        return getConfigCache().muteMap.getParams(this.offlinePlayer);
+    }
+
     public @NotNull String getMuteReason() throws IllegalStateException {
-        MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
+        MuteMap.Params params = this.getMuteParams();
         if (params == null) {
             throw new IllegalStateException("Player is not muted");
         }
@@ -118,7 +122,7 @@ public class PlayerInfo {
     }
 
     public @NotNull String getMutedBy() throws IllegalStateException {
-        MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
+        MuteMap.Params params = this.getMuteParams();
         if (params == null) {
             throw new IllegalStateException("Player is not muted");
         }
@@ -134,7 +138,7 @@ public class PlayerInfo {
     }
 
     public @NotNull Instant getMutedFrom() throws IllegalStateException {
-        MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
+        MuteMap.Params params = this.getMuteParams();
         if (params == null) {
             throw new IllegalStateException("Player is not muted");
         }
@@ -150,7 +154,7 @@ public class PlayerInfo {
     }
 
     public @NotNull Instant getMutedTo() throws IllegalStateException {
-        MuteMap.Params params = getConfigCache().muteMap.getParams(this.offlinePlayer);
+        MuteMap.Params params = this.getMuteParams();
         if (params == null) {
             throw new IllegalStateException("Player is not muted");
         }
@@ -164,6 +168,7 @@ public class PlayerInfo {
             CommandSender sender
     ) {
         Player player = this.getOnlinePlayer();
+        MuteMap muteMap = getConfigCache().muteMap;
 
         if (value) {
             if (this.isMuted()) {
@@ -177,7 +182,7 @@ public class PlayerInfo {
                 return;
             }
 
-            getConfigCache().muteMap.put(this.offlinePlayer, date.toInstant(), reason, sender.getName());
+            muteMap.put(this.offlinePlayer, date.toInstant(), reason, sender.getName());
             ChatUtils.sendFine(sender,
                     text("Игрок : \"")
                     .append(this.getGrayIDGreenName())
@@ -211,7 +216,7 @@ public class PlayerInfo {
                 return;
             }
 
-            getConfigCache().muteMap.remove(this.offlinePlayer);
+            muteMap.remove(this.offlinePlayer);
             ChatUtils.sendFine(sender,
                     text("Игрок : \"")
                     .append(this.getGrayIDGreenName())
@@ -333,6 +338,8 @@ public class PlayerInfo {
             @NotNull String reason,
             @NotNull CommandSender sender
     ) {
+        BanList banList = Bukkit.getBanList(BanList.Type.NAME);
+
         if (value) {
             if (this.isBanned()) {
                 ChatUtils.sendWarning(sender,
@@ -345,7 +352,7 @@ public class PlayerInfo {
                 return;
             }
 
-            Bukkit.getBanList(BanList.Type.NAME).addBan(this.nickname, reason, date, sender.getName());
+            banList.addBan(this.nickname, reason, date, sender.getName());
             this.kickPlayer(
                     "Вы были забанены",
                     reason
@@ -374,7 +381,7 @@ public class PlayerInfo {
                 return;
             }
 
-            Bukkit.getBanList(BanList.Type.NAME).pardon(this.nickname);
+            banList.pardon(this.nickname);
             ChatUtils.sendFine(sender,
                     text("Игрок : \"")
                     .append(this.getGrayIDGreenName())
@@ -436,7 +443,7 @@ public class PlayerInfo {
 
         if (
                 player == null
-                || player.getWorld() == MSUtils.getWorldDark()
+                || this.isInWorldDark()
         ) return;
 
         this.playerFile.setLastLeaveLocation(
@@ -472,7 +479,7 @@ public class PlayerInfo {
 
         if (
                 player == null
-                || player.getWorld() == MSUtils.getWorldDark()
+                || this.isInWorldDark()
         ) return;
 
         this.playerFile.setLastDeathLocation(location);
@@ -534,7 +541,7 @@ public class PlayerInfo {
     public boolean isOnline(boolean ignoreWorld) {
         Player player = this.offlinePlayer.getPlayer();
         return player != null
-                && (ignoreWorld || player.getWorld() != MSUtils.getWorldDark())
+                && (ignoreWorld || !this.isInWorldDark())
                 && !this.isVanished();
     }
 
@@ -634,12 +641,17 @@ public class PlayerInfo {
         return true;
     }
 
+    public boolean isInWorldDark() {
+        Player player = this.getOnlinePlayer();
+        return player != null && player.getWorld().equals(MSUtils.getWorldDark());
+    }
+
     public void savePlayerDataParams() {
         Player player = this.getOnlinePlayer();
 
         if (
                 player == null
-                || player.getWorld() == MSUtils.getWorldDark()
+                || this.isInWorldDark()
         ) return;
 
         double health = player.getHealth();

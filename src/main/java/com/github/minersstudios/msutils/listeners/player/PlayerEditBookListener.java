@@ -2,6 +2,8 @@ package com.github.minersstudios.msutils.listeners.player;
 
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEditBookEvent;
@@ -17,6 +19,8 @@ public class PlayerEditBookListener implements Listener {
     public void onPlayerEditBook(@NotNull PlayerEditBookEvent event) {
         if (!event.isSigning()) return;
 
+        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(event.getPlayer());
         BookMeta bookMeta = event.getNewBookMeta();
         String title = bookMeta.getTitle();
         boolean isAnon = title != null && title.startsWith("*");
@@ -24,7 +28,7 @@ public class PlayerEditBookListener implements Listener {
         event.setNewBookMeta(bookMeta
                 .author(isAnon
                         ? text("Аноним")
-                        : MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(event.getPlayer()).getDefaultName()
+                        : playerInfo.getDefaultName()
                 ).title(isAnon
                         ? text(title.substring(1))
                         : bookMeta.title()

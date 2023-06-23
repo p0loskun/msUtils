@@ -14,7 +14,7 @@ public class EntityDamageListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(@NotNull EntityDamageEvent event) {
         if (
-                event.getEntity().getWorld() == MSUtils.getWorldDark()
+                event.getEntity().getWorld().equals(MSUtils.getWorldDark())
                 && event.getEntity().getType() == EntityType.PLAYER
         ) {
             event.setCancelled(true);

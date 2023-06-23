@@ -12,7 +12,7 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
-        if (event.getPlayer().getWorld() == MSUtils.getWorldDark()) {
+        if (event.getPlayer().getWorld().equals(MSUtils.getWorldDark())) {
             event.setCancelled(true);
         }
     }

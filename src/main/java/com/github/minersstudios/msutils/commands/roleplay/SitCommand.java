@@ -4,7 +4,9 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.config.ConfigCache;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -37,7 +39,9 @@ public class SitCommand implements MSCommandExecutor {
             return true;
         }
 
-        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+        ConfigCache configCache = MSUtils.getConfigCache();
+        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
         if (!playerInfo.isOnline()) return true;
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
@@ -45,7 +49,7 @@ public class SitCommand implements MSCommandExecutor {
             return true;
         }
 
-        playerInfo.setSitting(MSUtils.getConfigCache().seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
+        playerInfo.setSitting(configCache.seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
         return true;
     }
 

@@ -3,8 +3,10 @@ package com.github.minersstudios.msutils.listeners.player;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.config.ConfigCache;
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -26,7 +28,9 @@ public class AsyncPlayerPreLoginListener implements Listener {
     public void onAsyncPlayerPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
         String hostAddress = event.getAddress().getHostAddress();
         String nickname = event.getName();
-        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(event.getUniqueId(), nickname);
+        ConfigCache configCache = MSUtils.getConfigCache();
+        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(event.getUniqueId(), nickname);
         PlayerFile playerFile = playerInfo.getPlayerFile();
         OfflinePlayer offlinePlayer = playerInfo.getOfflinePlayer();
 
@@ -45,7 +49,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
             );
         }
 
-        if (MSUtils.getConfigCache().developerMode && !offlinePlayer.isOp()) {
+        if (configCache.developerMode && !offlinePlayer.isOp()) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                     Component.empty()
                     .append(text("Вы были кикнуты", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))

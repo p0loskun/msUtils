@@ -5,7 +5,10 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.config.ConfigCache;
+import com.github.minersstudios.msutils.player.IDMap;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -21,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -44,8 +46,12 @@ public class UnBanCommand implements MSCommandExecutor {
     ) {
         if (args.length == 0) return false;
 
+        ConfigCache configCache = MSUtils.getConfigCache();
+        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
+            IDMap idMap = configCache.idMap;
+            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (
                     offlinePlayer == null
@@ -56,7 +62,7 @@ public class UnBanCommand implements MSCommandExecutor {
                 return true;
             }
 
-            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
+            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
                     .setBanned(false, sender);
             return true;
         }
@@ -70,7 +76,7 @@ public class UnBanCommand implements MSCommandExecutor {
                 return true;
             }
 
-            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
+            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
                     .setBanned(false, sender);
             return true;
         }
@@ -88,9 +94,11 @@ public class UnBanCommand implements MSCommandExecutor {
     ) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
+            PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+
             for (OfflinePlayer offlinePlayer : Bukkit.getBannedPlayers()) {
                 if (offlinePlayer != null && !StringUtils.isBlank(offlinePlayer.getName())) {
-                    PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
                     int id = playerInfo.getID(false, false);
 
                     if (id != -1) {

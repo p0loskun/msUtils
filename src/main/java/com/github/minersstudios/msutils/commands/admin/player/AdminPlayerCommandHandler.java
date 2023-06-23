@@ -6,7 +6,9 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.player.IDMap;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.tabcompleters.AllPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -25,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -47,7 +48,8 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
         if (args.length < 2) return false;
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
+            IDMap idMap = MSUtils.getConfigCache().idMap;
+            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || offlinePlayer.getName() == null) {
                 ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
@@ -199,7 +201,8 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             String @NotNull [] args,
             @NotNull OfflinePlayer offlinePlayer
     ) {
-        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
+        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
         return switch (args[1].toLowerCase(Locale.ROOT)) {
             case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);
             case "info" -> AdminInfoCommand.runCommand(sender, playerInfo);

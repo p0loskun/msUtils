@@ -22,9 +22,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
-import static com.github.minersstudios.msutils.MSUtils.getInstance;
-
 public final class ConfigCache {
     public final @NotNull File configFile;
     public final @NotNull YamlConfiguration configYaml;
@@ -60,7 +57,7 @@ public final class ConfigCache {
     public final double localChatRadius;
 
     public ConfigCache() {
-        this.configFile = getInstance().getConfigFile();
+        this.configFile = MSUtils.getInstance().getConfigFile();
         this.configYaml = YamlConfiguration.loadConfiguration(this.configFile);
 
         this.developerMode = this.configYaml.getBoolean("developer-mode");
@@ -104,7 +101,7 @@ public final class ConfigCache {
 
     public void save() {
         try {
-            this.configYaml.save(getConfigCache().configFile);
+            this.configYaml.save(MSUtils.getConfigCache().configFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

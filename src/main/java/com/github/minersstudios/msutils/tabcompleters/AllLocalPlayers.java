@@ -2,6 +2,7 @@ package com.github.minersstudios.msutils.tabcompleters;
 
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,8 +26,10 @@ public class AllLocalPlayers implements TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
+            PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+
             for (Player player : Bukkit.getOnlinePlayers()) {
-                PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+                PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
                 if (playerInfo.isOnline()) {
                     int id = playerInfo.getID(false, false);

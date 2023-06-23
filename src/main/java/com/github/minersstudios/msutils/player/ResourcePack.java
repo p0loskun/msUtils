@@ -1,5 +1,7 @@
 package com.github.minersstudios.msutils.player;
 
+import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.config.ConfigCache;
 import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -25,12 +27,9 @@ import java.security.MessageDigest;
 import java.util.Map;
 import java.util.logging.Level;
 
-import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
-import static com.github.minersstudios.msutils.MSUtils.getInstance;
-
 public class ResourcePack {
-    private final @NotNull String hash;
-    private final @NotNull String url;
+    private final String hash;
+    private final String url;
     private static String user;
     private static String repo;
     public static String tagName;
@@ -44,48 +43,49 @@ public class ResourcePack {
     }
 
     public static void init() {
-        user = getConfigCache().user;
-        repo = getConfigCache().repo;
+        ConfigCache configCache = MSUtils.getConfigCache();
+        user = configCache.user;
+        repo = configCache.repo;
         Map.Entry<Boolean, String> latestTagName = getLatestTagName();
         tagName = latestTagName.getValue();
         boolean hasNoUpdates =
-                tagName.equals(getConfigCache().version)
+                tagName.equals(configCache.version)
                 && latestTagName.getKey()
-                && getConfigCache().fullHash != null
-                && getConfigCache().liteHash != null;
+                && configCache.fullHash != null
+                && configCache.liteHash != null;
 
-        String fullFileName = String.format(getConfigCache().fullFileName, tagName);
-        String liteFileName = String.format(getConfigCache().liteFileName, tagName);
+        String fullFileName = String.format(configCache.fullFileName, tagName);
+        String liteFileName = String.format(configCache.liteFileName, tagName);
 
         String fullUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + fullFileName;
         String liteUrl = "https://github.com/" + user + "/" + repo + "/releases/download/" + tagName + "/" + liteFileName;
 
         String fullHash = hasNoUpdates
-                ? getConfigCache().fullHash
+                ? configCache.fullHash
                 : generateHash(fullUrl, fullFileName);
         String liteHash = hasNoUpdates
-                ? getConfigCache().liteHash
+                ? configCache.liteHash
                 : generateHash(liteUrl, liteFileName);
 
         Type.FULL.resourcePack = new ResourcePack(fullHash, fullUrl);
         Type.LITE.resourcePack = new ResourcePack(liteHash, liteUrl);
 
         if (!hasNoUpdates) {
-            YamlConfiguration configYaml = getConfigCache().configYaml;
+            YamlConfiguration configYaml = configCache.configYaml;
 
             configYaml.set("resource-pack.version", tagName);
             configYaml.set("resource-pack.full.hash", fullHash);
             configYaml.set("resource-pack.lite.hash", liteHash);
 
-            deleteResourcePackFiles(getConfigCache().fullFileName);
-            deleteResourcePackFiles(getConfigCache().liteFileName);
+            deleteResourcePackFiles(configCache.fullFileName);
+            deleteResourcePackFiles(configCache.liteFileName);
 
-            getConfigCache().save();
+            configCache.save();
         }
     }
 
     private static void deleteResourcePackFiles(@NotNull String fileName) throws SecurityException {
-        File[] files = getInstance().getPluginFolder().listFiles();
+        File[] files = MSUtils.getInstance().getPluginFolder().listFiles();
 
         if (files != null) {
             for (File fileFromList : files) {
@@ -104,16 +104,17 @@ public class ResourcePack {
             @NotNull String url,
             @NotNull String fileName
     ) throws RuntimeException {
+        File pluginFolder = MSUtils.getInstance().getPluginFolder();
         try {
             ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
-            FileOutputStream out = new FileOutputStream(getInstance().getPluginFolder() + "/" + fileName);
+            FileOutputStream out = new FileOutputStream(pluginFolder + "/" + fileName);
 
             out.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             out.close();
             readableByteChannel.close();
-            return bytesToHexString(createSha1(new File(getInstance().getPluginFolder(), fileName)));
+            return bytesToHexString(createSha1(new File(pluginFolder, fileName)));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to generate resource pack hash", e);
         }
     }
 
@@ -160,7 +161,7 @@ public class ResourcePack {
             JsonObject latestTag = tags.get(0).getAsJsonObject();
             return Map.entry(true, latestTag.get("name").getAsString());
         } catch (IOException e) {
-            String configTagName = getConfigCache().version;
+            String configTagName = MSUtils.getConfigCache().version;
 
             if (configTagName == null) {
                 throw new RuntimeException("Apparently the API rate limit has been exceeded\nRequest URL : " + uri, e);

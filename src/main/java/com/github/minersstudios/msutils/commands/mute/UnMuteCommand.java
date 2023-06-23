@@ -6,7 +6,10 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.config.ConfigCache;
+import com.github.minersstudios.msutils.player.IDMap;
 import com.github.minersstudios.msutils.player.MuteMap;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -24,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -46,8 +48,12 @@ public class UnMuteCommand implements MSCommandExecutor {
     ) {
         if (args.length == 0) return false;
 
+        ConfigCache configCache = MSUtils.getConfigCache();
+        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
+            IDMap idMap = configCache.idMap;
+            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (
                     offlinePlayer == null
@@ -58,7 +64,7 @@ public class UnMuteCommand implements MSCommandExecutor {
                 return true;
             }
 
-            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
+            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
                     .setMuted(false, sender);
             return true;
         }
@@ -72,7 +78,7 @@ public class UnMuteCommand implements MSCommandExecutor {
                 return true;
             }
 
-            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
+            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
                     .setMuted(false, sender);
             return true;
         }
@@ -90,14 +96,18 @@ public class UnMuteCommand implements MSCommandExecutor {
         List<String> completions = new ArrayList<>();
         switch (args.length) {
             case 1 -> {
-                for (UUID uuid : getConfigCache().muteMap.getMap().keySet()) {
+                ConfigCache configCache = MSUtils.getConfigCache();
+                MuteMap muteMap = configCache.muteMap;
+                IDMap idMap = configCache.idMap;
+
+                for (UUID uuid : muteMap.getMap().keySet()) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
                     String nickname = offlinePlayer.getName();
 
-                    MuteMap.Params params = getConfigCache().muteMap.getParams(offlinePlayer);
+                    MuteMap.Params params = muteMap.getParams(offlinePlayer);
                     if (params != null && params.getExpiration().isBefore(Instant.now())) continue;
 
-                    int id = getConfigCache().idMap.get(uuid, false, false);
+                    int id = idMap.get(uuid, false, false);
                     if (id != -1) {
                         completions.add(String.valueOf(id));
                     }

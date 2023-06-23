@@ -42,7 +42,10 @@ public class Anomaly {
     }
 
     @Contract("_, _ -> new")
-    public static @NotNull Anomaly fromConfig(@NotNull File file, @NotNull YamlConfiguration config) {
+    public static @NotNull Anomaly fromConfig(
+            @NotNull File file,
+            @NotNull YamlConfiguration config
+    ) {
         String fileName = file.getName();
         World world = Bukkit.getWorld(
                 Objects.requireNonNull(config.getString("bounding-box.location.world-name"), "world in " + fileName + " is null")
@@ -97,7 +100,7 @@ public class Anomaly {
                     .getValues(false).keySet();
 
             for (String anomalyAction : actionStrings) {
-                AnomalyAction action = null;
+                AnomalyAction action;
 
                 switch (anomalyAction) {
                     case "add-potion-effect" -> {
@@ -156,6 +159,7 @@ public class Anomaly {
                                 particleBuilderList
                         );
                     }
+                    default -> action = null;
                 }
 
                 if (action != null) {

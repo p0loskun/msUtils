@@ -32,7 +32,7 @@ public class InventoryClickListener implements Listener {
 
         if (clickedInventory == null) return;
 
-        if (player.getWorld() == MSUtils.getWorldDark()) {
+        if (player.getWorld().equals(MSUtils.getWorldDark())) {
             event.setCancelled(true);
         }
 

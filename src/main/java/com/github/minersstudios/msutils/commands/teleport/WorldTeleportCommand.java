@@ -5,7 +5,9 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.player.IDMap;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -28,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static net.kyori.adventure.text.Component.text;
 
 @MSCommand(
@@ -58,7 +59,8 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         if (args.length < 2) return false;
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
+            IDMap idMap = MSUtils.getConfigCache().idMap;
+            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null) {
                 ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
@@ -91,8 +93,10 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         List<String> completions = new ArrayList<>();
         switch (args.length) {
             case 1 -> {
+                PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
                     int id = playerInfo.getID(false, false);
 
                     if (id != -1) {
@@ -104,9 +108,8 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             }
             case 2 -> {
                 for (World world : Bukkit.getWorlds()) {
-                    if (world != MSUtils.getWorldDark()) {
-                        completions.add(world.getName());
-                    }
+                    if (world.equals(MSUtils.getWorldDark())) continue;
+                    completions.add(world.getName());
                 }
             }
             case 3, 4, 5 -> {
@@ -140,7 +143,10 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
             return true;
         }
-        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+
+        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+
         if (offlinePlayer.getPlayer() == null) {
             ChatUtils.sendWarning(sender,
                     text("Игрок : \"")
@@ -149,16 +155,19 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             );
             return true;
         }
+
         World world = Bukkit.getWorld(args[1]);
         if (world == null) {
             ChatUtils.sendWarning(sender, "Такого мира не существует!");
             return true;
         }
+
         Location spawnLoc = world.getSpawnLocation();
         double
                 x = spawnLoc.getX(),
                 y = spawnLoc.getY(),
                 z = spawnLoc.getZ();
+
         if (args.length > 2) {
             if (
                     args.length != 5
@@ -166,14 +175,17 @@ public class WorldTeleportCommand implements MSCommandExecutor {
                     || !args[3].matches(coordinatesRegex)
                     || !args[4].matches(coordinatesRegex)
             ) return false;
+
             x = Double.parseDouble(args[2]);
             y = Double.parseDouble(args[3]);
             z = Double.parseDouble(args[4]);
+
             if (x > 29999984 || z > 29999984) {
                 ChatUtils.sendWarning(sender, "Указаны слишком большие координаты!");
                 return true;
             }
         }
+
         offlinePlayer.getPlayer().teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
         ChatUtils.sendFine(sender,
                 text("Игрок : \"")

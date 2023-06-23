@@ -3,6 +3,7 @@ package com.github.minersstudios.msutils.listeners.player;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import io.papermc.paper.advancement.AdvancementDisplay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -22,9 +23,12 @@ public class PlayerAdvancementDoneListener implements Listener {
     @EventHandler
     public void onPlayerAdvancementDone(@NotNull PlayerAdvancementDoneEvent event) {
         AdvancementDisplay advancementDisplay = event.getAdvancement().getDisplay();
+
         if (advancementDisplay == null || event.message() == null) return;
+
         AdvancementDisplay.Frame frame = advancementDisplay.frame();
-        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(event.getPlayer());
+        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(event.getPlayer());
 
         event.message(
                 Component.space()

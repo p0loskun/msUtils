@@ -157,6 +157,7 @@ public class CraftsMenu {
                         playClickSound(player);
                     }));
                     player.openInventory(craftInventory);
+                    playClickSound(player);
                 }
             }));
         }

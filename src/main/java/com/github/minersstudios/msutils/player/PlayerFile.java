@@ -231,7 +231,7 @@ public class PlayerFile {
         boolean isNull = location == null;
 
         if (!isNull) {
-            if (location.getWorld() == MSUtils.getWorldDark()) {
+            if (location.getWorld().equals(MSUtils.getWorldDark())) {
                 throw new IllegalArgumentException("The world cannot be world_dark");
             }
         }

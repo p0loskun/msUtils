@@ -4,6 +4,7 @@ import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.player.PlayerSettings;
 import com.github.minersstudios.msutils.player.ResourcePack;
 import org.bukkit.entity.Player;
@@ -20,7 +21,8 @@ public class PlayerResourcePackStatusListener implements Listener {
     @EventHandler
     public void onPlayerResourcePackStatus(@NotNull PlayerResourcePackStatusEvent event) {
         Player player = event.getPlayer();
-        PlayerInfo playerInfo = MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(player);
+        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
         PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
         if (playerSettings.getResourcePackType() == ResourcePack.Type.NULL) return;
@@ -28,7 +30,7 @@ public class PlayerResourcePackStatusListener implements Listener {
             case ACCEPTED -> ChatUtils.sendFine(text(player.getName()).append(text(" принял ресурспак")));
             case SUCCESSFULLY_LOADED -> {
                 ChatUtils.sendFine(text(player.getName()).append(text(" успешно загрузил ресурспак")));
-                if (player.getWorld() == MSUtils.getWorldDark()) {
+                if (playerInfo.isInWorldDark()) {
                     playerInfo.initJoin();
                 }
             }

@@ -79,7 +79,10 @@ public class ChatBuffer {
         Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
             Map<UUID, Queue<String>> chatQueue = getConfigCache().chatQueue;
 
-            if (chatQueue.get(uuid).isEmpty() || !player.isOnline()) {
+            if (
+                    !player.isOnline()
+                    || chatQueue.get(uuid).isEmpty()
+            ) {
                 chatQueue.remove(uuid);
             } else {
                 String message = chatQueue.get(uuid).poll();

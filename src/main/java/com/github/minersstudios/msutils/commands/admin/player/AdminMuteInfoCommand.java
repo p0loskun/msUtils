@@ -3,6 +3,7 @@ package com.github.minersstudios.msutils.commands.admin.player;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.player.MuteMap;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +54,8 @@ public class AdminMuteInfoCommand {
             return true;
         }
 
+        MuteMap muteMap = MSUtils.getConfigCache().muteMap;
+
         switch (paramString) {
             case "reason" -> {
                 if (!haveArg) {
@@ -69,7 +72,7 @@ public class AdminMuteInfoCommand {
 
                 String reason = ChatUtils.extractMessage(args, 3);
 
-                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason, sender.getName());
+                muteMap.put(playerInfo.getOfflinePlayer(), playerInfo.getMutedTo(), reason, sender.getName());
                 ChatUtils.sendFine(sender,
                         text("Причина мьюта игрока : ")
                         .append(playerInfo.getGrayIDGreenName())
@@ -99,7 +102,7 @@ public class AdminMuteInfoCommand {
                     return true;
                 }
 
-                MSUtils.getConfigCache().muteMap.put(playerInfo.getOfflinePlayer(), date.toInstant(), playerInfo.getMuteReason(), sender.getName());
+                muteMap.put(playerInfo.getOfflinePlayer(), date.toInstant(), playerInfo.getMuteReason(), sender.getName());
                 ChatUtils.sendFine(sender,
                         text("Крайней датой мьюта игрока : ")
                         .append(playerInfo.getGrayIDGreenName())

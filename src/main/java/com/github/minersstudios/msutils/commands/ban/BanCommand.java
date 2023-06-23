@@ -6,6 +6,9 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.mscore.utils.PlayerUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import com.github.minersstudios.msutils.config.ConfigCache;
+import com.github.minersstudios.msutils.player.IDMap;
+import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
@@ -23,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
@@ -52,19 +54,22 @@ public class BanCommand implements MSCommandExecutor {
             return true;
         }
 
+        ConfigCache configCache = MSUtils.getConfigCache();
+        PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
         String reason = args.length > 2
                 ? ChatUtils.extractMessage(args, 2)
                 : "неизвестно";
 
         if (IDUtils.matchesIDRegex(args[0])) {
-            OfflinePlayer offlinePlayer = getConfigCache().idMap.getPlayerByID(args[0]);
+            IDMap idMap = configCache.idMap;
+            OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || StringUtils.isBlank(offlinePlayer.getName())) {
                 ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
                 return true;
             }
 
-            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
+            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName())
                     .setBanned(true, date, reason, sender);
             return true;
         }
@@ -78,7 +83,7 @@ public class BanCommand implements MSCommandExecutor {
                 return true;
             }
 
-            MSUtils.getConfigCache().playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
+            playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), name)
                     .setBanned(true, date, reason, sender);
             return true;
         }
@@ -95,6 +100,8 @@ public class BanCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         List<String> completions = new ArrayList<>();
+        IDMap idMap = MSUtils.getConfigCache().idMap;
+
         switch (args.length) {
             case 1 -> {
                 for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
@@ -103,7 +110,7 @@ public class BanCommand implements MSCommandExecutor {
 
                     if (StringUtils.isBlank(nickname) || offlinePlayer.isBanned()) continue;
 
-                    int id = getConfigCache().idMap.get(uuid, false, false);
+                    int id = idMap.get(uuid, false, false);
 
                     if (id != -1) {
                         completions.add(String.valueOf(id));

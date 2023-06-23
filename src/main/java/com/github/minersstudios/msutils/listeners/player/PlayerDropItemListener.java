@@ -15,7 +15,7 @@ public class PlayerDropItemListener implements Listener {
     public void onPlayerDropItem(@NotNull PlayerDropItemEvent event) {
         Player player = event.getPlayer();
 
-        if (player.getWorld() == MSUtils.getWorldDark()) {
+        if (player.getWorld().equals(MSUtils.getWorldDark())) {
             event.setCancelled(true);
             player.updateInventory();
         }
