@@ -86,54 +86,60 @@ public class ResourcePackMenu {
         PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
         CustomInventory customInventory = new CustomInventory("§8Выберите нужный текстурпак", 1);
 
-        InventoryButton noneButton = new InventoryButton(none, (event, inventory, button) -> {
-            Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
-            PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+        InventoryButton noneButton = InventoryButton.create()
+                .item(none)
+                .clickAction((event, inventory, button) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-            if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
-                playerInfo.kickPlayer("Вы были кикнуты", "Этот параметр требует повторного захода на сервер");
-            }
+                    if (playerSettings.getResourcePackType() != ResourcePack.Type.NULL && playerSettings.getResourcePackType() != ResourcePack.Type.NONE) {
+                        playerInfo.kickPlayer("Вы были кикнуты", "Этот параметр требует повторного захода на сервер");
+                    }
 
-            playerSettings.setResourcePackType(ResourcePack.Type.NONE);
-            playerSettings.save();
-            playClickSound(player);
-            player.closeInventory();
+                    playerSettings.setResourcePackType(ResourcePack.Type.NONE);
+                    playerSettings.save();
+                    playClickSound(player);
+                    player.closeInventory();
 
-            if (playerInfo.isInWorldDark()) {
-                playerInfo.initJoin();
-            }
-        });
+                    if (playerInfo.isInWorldDark()) {
+                        playerInfo.initJoin();
+                    }
+                });
         customInventory.setButtonAt(0, noneButton);
         customInventory.setButtonAt(1, noneButton);
 
-        InventoryButton fullButton = new InventoryButton(full, (event, inventory, button) -> {
-            Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
-            PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+        InventoryButton fullButton = InventoryButton.create()
+                .item(full)
+                .clickAction((event, inventory, button) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-            playerSettings.setResourcePackType(ResourcePack.Type.FULL);
-            playerSettings.save();
-            playClickSound(player);
-            player.closeInventory();
-            ResourcePack.setResourcePack(playerInfo);
-        });
+                    playerSettings.setResourcePackType(ResourcePack.Type.FULL);
+                    playerSettings.save();
+                    playClickSound(player);
+                    player.closeInventory();
+                    ResourcePack.setResourcePack(playerInfo);
+                });
         customInventory.setButtonAt(2, fullButton);
         customInventory.setButtonAt(3, fullButton);
         customInventory.setButtonAt(5, fullButton);
         customInventory.setButtonAt(6, fullButton);
 
-        InventoryButton liteButton = new InventoryButton(lite, (event, inventory, button) -> {
-            Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
-            PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
+        InventoryButton liteButton = InventoryButton.create()
+                .item(lite)
+                .clickAction((event, inventory, button) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerSettings playerSettings = playerInfo.getPlayerFile().getPlayerSettings();
 
-            playerSettings.setResourcePackType(ResourcePack.Type.LITE);
-            playerSettings.save();
-            playClickSound(player);
-            player.closeInventory();
-            ResourcePack.setResourcePack(playerInfo);
-        });
+                    playerSettings.setResourcePackType(ResourcePack.Type.LITE);
+                    playerSettings.save();
+                    playClickSound(player);
+                    player.closeInventory();
+                    ResourcePack.setResourcePack(playerInfo);
+                });
         customInventory.setButtonAt(7, liteButton);
         customInventory.setButtonAt(8, liteButton);
 

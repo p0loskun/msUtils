@@ -50,44 +50,50 @@ public class PronounsMenu {
         PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
         CustomInventory customInventory = new CustomInventory("§8Выберите форму обращения", 1);
 
-        InventoryButton heButton = new InventoryButton(he, (event, inventory, button) -> {
-            Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
-            PlayerFile playerFile = playerInfo.getPlayerFile();
+        InventoryButton heButton = InventoryButton.create()
+                .item(he)
+                .clickAction((event, inventory, button) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerFile playerFile = playerInfo.getPlayerFile();
 
-            playerFile.setPronouns(Pronouns.HE);
-            playerFile.save();
-            playClickSound(player);
-            player.closeInventory();
-        });
+                    playerFile.setPronouns(Pronouns.HE);
+                    playerFile.save();
+                    playClickSound(player);
+                    player.closeInventory();
+                });
         customInventory.setButtonAt(0, heButton);
         customInventory.setButtonAt(1, heButton);
         customInventory.setButtonAt(2, heButton);
 
-        InventoryButton sheButton = new InventoryButton(she, (event, inventory, button) -> {
-            Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
-            PlayerFile playerFile = playerInfo.getPlayerFile();
+        InventoryButton sheButton = InventoryButton.create()
+                .item(she)
+                .clickAction((event, inventory, button) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerFile playerFile = playerInfo.getPlayerFile();
 
-            playerFile.setPronouns(Pronouns.SHE);
-            playerFile.save();
-            playClickSound(player);
-            player.closeInventory();
-        });
+                    playerFile.setPronouns(Pronouns.SHE);
+                    playerFile.save();
+                    playClickSound(player);
+                    player.closeInventory();
+                });
         customInventory.setButtonAt(3, sheButton);
         customInventory.setButtonAt(4, sheButton);
         customInventory.setButtonAt(5, sheButton);
 
-        InventoryButton theyButton = new InventoryButton(they, (event, inventory, button) -> {
-            Player player = (Player) event.getWhoClicked();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
-            PlayerFile playerFile = playerInfo.getPlayerFile();
+        InventoryButton theyButton = InventoryButton.create()
+                .item(they)
+                .clickAction((event, inventory, button) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    PlayerFile playerFile = playerInfo.getPlayerFile();
 
-            playerFile.setPronouns(Pronouns.THEY);
-            playerFile.save();
-            playClickSound(player);
-            player.closeInventory();
-        });
+                    playerFile.setPronouns(Pronouns.THEY);
+                    playerFile.save();
+                    playClickSound(player);
+                    player.closeInventory();
+                });
         customInventory.setButtonAt(6, theyButton);
         customInventory.setButtonAt(7, theyButton);
         customInventory.setButtonAt(8, theyButton);

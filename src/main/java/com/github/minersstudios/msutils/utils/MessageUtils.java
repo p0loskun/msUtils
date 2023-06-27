@@ -98,7 +98,7 @@ public final class MessageUtils {
                     MSUtils.getInstance(),
                     () -> sendMessage(getTextChannelById(configCache.discordLocalChannelId), stringLocalMessage)
             );
-            sendInfo(stringLocalMessage);
+            sendInfo(localMessage);
             return;
         }
 
@@ -118,7 +118,7 @@ public final class MessageUtils {
             sendMessage(getTextChannelById(configCache.discordGlobalChannelId), stringGlobalMessage.replaceFirst("\\[WM]", ""));
             sendMessage(getTextChannelById(configCache.discordLocalChannelId), stringGlobalMessage);
         });
-        sendInfo(stringGlobalMessage);
+        sendInfo(globalMessage);
     }
 
     /**
@@ -140,15 +140,14 @@ public final class MessageUtils {
         Player receiverPlayer = receiver.getOnlinePlayer();
 
         if (commandSender != null && receiverPlayer != null) {
-            String privateMessage = serializeLegacyComponent(
-                    space()
+            Component privateMessage = space()
                     .append(sender.getDefaultName()
                     .append(text(" -> ")
                     .append(receiver.getDefaultName()
                     .append(text(" : ")))))
                     .color(CHAT_COLOR_PRIMARY)
-                    .append(message.color(CHAT_COLOR_SECONDARY))
-            );
+                    .append(message.color(CHAT_COLOR_SECONDARY));
+            String privateMessageString = serializeLegacyComponent(privateMessage);
 
             commandSender.sendMessage(
                     Badges.SPEECH.append(text()
@@ -169,7 +168,7 @@ public final class MessageUtils {
             );
             Bukkit.getScheduler().runTaskAsynchronously(
                     DiscordSRV.getPlugin(),
-                    () -> sendMessage(getTextChannelById(MSUtils.getConfigCache().discordLocalChannelId), privateMessage)
+                    () -> sendMessage(getTextChannelById(MSUtils.getConfigCache().discordLocalChannelId), privateMessageString)
             );
             sendInfo(privateMessage);
             return true;
@@ -231,7 +230,7 @@ public final class MessageUtils {
                 DiscordSRV.getPlugin(),
                 () -> sendMessage(getTextChannelById(configCache.discordLocalChannelId), serializeLegacyComponent(fullMessage))
         );
-        sendInfo(serializeLegacyComponent(fullMessage));
+        sendInfo(fullMessage);
     }
 
     public static void sendRPEventMessage(
@@ -280,7 +279,7 @@ public final class MessageUtils {
             sendActionMessage(killed, getTextChannelById(configCache.discordGlobalChannelId), stringDeathMessage, 16757024);
             sendActionMessage(killed, getTextChannelById(configCache.discordLocalChannelId), stringDeathMessage, 16757024);
         });
-        sendInfo(stringDeathMessage);
+        sendInfo(deathMessage);
 
         sendInfo(text("Мир и координаты смерти игрока : \"")
                 .append(killedInfo.getDefaultName())
@@ -323,7 +322,7 @@ public final class MessageUtils {
             sendActionMessage(player, getTextChannelById(configCache.discordGlobalChannelId), stringJoinMessage, 65280);
             sendActionMessage(player, getTextChannelById(configCache.discordLocalChannelId), stringJoinMessage, 65280);
         });
-        sendInfo(stringJoinMessage);
+        sendInfo(joinMessage);
     }
 
     /**
@@ -350,7 +349,7 @@ public final class MessageUtils {
            sendActionMessage(player, getTextChannelById(configCache.discordGlobalChannelId), stringQuitMessage, 16711680);
            sendActionMessage(player, getTextChannelById(configCache.discordLocalChannelId), stringQuitMessage, 16711680);
         });
-        sendInfo(stringQuitMessage);
+        sendInfo(quitMessage);
     }
 
     private static void sendActionMessage(

@@ -31,33 +31,39 @@ public class CraftsMenu {
     public static @NotNull CustomInventory create() {
         CustomInventory customInventory = new CustomInventory("뀂ꀲ", 4);
 
-        InventoryButton blocksButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
-            Player player = (Player) event.getWhoClicked();
-            open(Type.BLOCKS, player);
-            playClickSound(player);
-        });
+        InventoryButton blocksButton = InventoryButton.create()
+                .item(new ItemStack(Material.AIR))
+                .clickAction((event, i, b) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    open(Type.BLOCKS, player);
+                    playClickSound(player);
+                });
         customInventory.setButtons(
                 IntStream.of(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29)
                         .boxed()
                         .collect(Collectors.toMap(Function.identity(), slot -> blocksButton))
         );
 
-        InventoryButton decorsButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
-            Player player = (Player) event.getWhoClicked();
-            open(Type.DECORS, player);
-            playClickSound(player);
-        });
+        InventoryButton decorsButton = InventoryButton.create()
+                .item(new ItemStack(Material.AIR))
+                .clickAction((event, i, b) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    open(Type.DECORS, player);
+                    playClickSound(player);
+                });
         customInventory.setButtons(
                 IntStream.of(3, 4, 5, 12, 13, 14, 21, 22, 23, 30, 31, 32)
                         .boxed()
                         .collect(Collectors.toMap(Function.identity(), slot -> decorsButton))
         );
 
-        InventoryButton itemsButton = new InventoryButton(new ItemStack(Material.AIR), (event, i, b) -> {
-            Player player = (Player) event.getWhoClicked();
-            open(Type.ITEMS, player);
-            playClickSound(player);
-        });
+        InventoryButton itemsButton = InventoryButton.create()
+                .item(new ItemStack(Material.AIR))
+                .clickAction((event, i, b) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    open(Type.ITEMS, player);
+                    playClickSound(player);
+                });
         customInventory.setButtons(
                 IntStream.of(6, 7, 8, 15, 16, 17, 24, 25, 26, 33, 34, 35)
                         .boxed()
@@ -118,48 +124,57 @@ public class CraftsMenu {
         for (Recipe recipe : recipes) {
             ItemStack resultItem = recipe.getResult();
 
-            elements.add(new InventoryButton(resultItem, (clickEvent, inventory, button) -> {
-                Player player = (Player) clickEvent.getWhoClicked();
-                CustomInventory craftInventory = new CustomInventory("뀂ꀨ", 4);
+            elements.add(
+                    InventoryButton.create()
+                    .item(resultItem)
+                    .clickAction((clickEvent, inventory, button) -> {
+                        Player player = (Player) clickEvent.getWhoClicked();
+                        CustomInventory craftInventory = new CustomInventory("뀂ꀨ", 4);
 
-                if (recipe instanceof ShapedRecipe shapedRecipe) {
-                    String[] shapes = shapedRecipe.getShape();
-                    int i = 0;
+                        if (recipe instanceof ShapedRecipe shapedRecipe) {
+                            String[] shapes = shapedRecipe.getShape();
+                            int i = 0;
 
-                    for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
-                        for (Character character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
-                            ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
+                            for (String shape : shapes.length == 1 ? new String[]{"   ", shapes[0], "   "} : shapes) {
+                                for (Character character : (shape.length() == 1 ? " " + shape + " " : shape.length() == 2 ? shape + " " : shape).toCharArray()) {
+                                    ItemStack ingredient = shapedRecipe.getIngredientMap().get(character);
 
-                            if (ingredient == null) {
-                                i++;
-                                continue;
+                                    if (ingredient == null) {
+                                        i++;
+                                        continue;
+                                    }
+
+                                    switch (i) {
+                                        case 0 -> craftInventory.setItem(2, ingredient);
+                                        case 1 -> craftInventory.setItem(3, ingredient);
+                                        case 2 -> craftInventory.setItem(4, ingredient);
+                                        case 3 -> craftInventory.setItem(11, ingredient);
+                                        case 4 -> craftInventory.setItem(12, ingredient);
+                                        case 5 -> craftInventory.setItem(13, ingredient);
+                                        case 6 -> craftInventory.setItem(20, ingredient);
+                                        case 7 -> craftInventory.setItem(21, ingredient);
+                                        case 8 -> craftInventory.setItem(22, ingredient);
+                                    }
+
+                                    i++;
+                                }
                             }
 
-                            switch (i) {
-                                case 0 -> craftInventory.setItem(2, ingredient);
-                                case 1 -> craftInventory.setItem(3, ingredient);
-                                case 2 -> craftInventory.setItem(4, ingredient);
-                                case 3 -> craftInventory.setItem(11, ingredient);
-                                case 4 -> craftInventory.setItem(12, ingredient);
-                                case 5 -> craftInventory.setItem(13, ingredient);
-                                case 6 -> craftInventory.setItem(20, ingredient);
-                                case 7 -> craftInventory.setItem(21, ingredient);
-                                case 8 -> craftInventory.setItem(22, ingredient);
-                            }
-
-                            i++;
+                            craftInventory.setItem(RESULT_SLOT, resultItem);
+                            craftInventory.setButtonAt(
+                                    CRAFT_QUIT_BUTTON,
+                                    InventoryButton.create()
+                                    .item(quitItem)
+                                    .clickAction((e, inv, b) -> {
+                                        player.openInventory(inventory);
+                                        playClickSound(player);
+                                    })
+                            );
+                            player.openInventory(craftInventory);
+                            playClickSound(player);
                         }
-                    }
-
-                    craftInventory.setItem(RESULT_SLOT, resultItem);
-                    craftInventory.setButtonAt(CRAFT_QUIT_BUTTON, new InventoryButton(quitItem, (e, inv, b) -> {
-                        player.openInventory(inventory);
-                        playClickSound(player);
-                    }));
-                    player.openInventory(craftInventory);
-                    playClickSound(player);
-                }
-            }));
+                    })
+            );
         }
 
         ElementListedInventory craftsInventory = new ElementListedInventory("뀂ꀧ", 5, elements, IntStream.range(0, 36).toArray());
@@ -176,15 +191,26 @@ public class CraftsMenu {
             }
         };
 
-        craftsInventory.setStaticButtonAt(36, inventory -> new InventoryButton(inventory.getPreviousPageIndex() == -1 ? previousPageNoCMD : previousPageItem, previousClick));
-        craftsInventory.setStaticButtonAt(37, i -> new InventoryButton(previousPageNoCMD, previousClick));
-        craftsInventory.setStaticButtonAt(38, i -> new InventoryButton(previousPageNoCMD, previousClick));
-        craftsInventory.setStaticButtonAt(39, i -> new InventoryButton(previousPageNoCMD, previousClick));
-        craftsInventory.setStaticButtonAt(CRAFTS_QUIT_BUTTON, i -> new InventoryButton(quitItem, (event, customInventory, inventoryButton) -> {
-            Player player = (Player) event.getWhoClicked();
-            open(Type.MAIN, player);
-            playClickSound(player);
-        }));
+        InventoryButton previousPageButton = InventoryButton.create().item(previousPageNoCMD).clickAction(previousClick);
+        craftsInventory.setStaticButtonAt(
+                36,
+                inventory -> InventoryButton.create()
+                .item(inventory.getPreviousPageIndex() == -1 ? previousPageNoCMD : previousPageItem)
+                .clickAction(previousClick)
+        );
+        craftsInventory.setStaticButtonAt(37, i -> previousPageButton);
+        craftsInventory.setStaticButtonAt(38, i -> previousPageButton);
+        craftsInventory.setStaticButtonAt(39, i -> previousPageButton);
+        craftsInventory.setStaticButtonAt(
+                CRAFTS_QUIT_BUTTON,
+                i -> InventoryButton.create()
+                .item(quitItem)
+                .clickAction((event, customInventory, inventoryButton) -> {
+                    Player player = (Player) event.getWhoClicked();
+                    open(Type.MAIN, player);
+                    playClickSound(player);
+                })
+        );
 
         ButtonClickAction nextClick = (event, customInventory, button) -> {
             if (!(customInventory instanceof ListedInventory listedInventory)) return;
@@ -198,10 +224,16 @@ public class CraftsMenu {
             }
         };
 
-        craftsInventory.setStaticButtonAt(41, inventory -> new InventoryButton(inventory.getNextPageIndex() == -1 ? nextPageNoCMDItem : nextPageItem, nextClick));
-        craftsInventory.setStaticButtonAt(42, i -> new InventoryButton(nextPageNoCMDItem, nextClick));
-        craftsInventory.setStaticButtonAt(43, i -> new InventoryButton(nextPageNoCMDItem, nextClick));
-        craftsInventory.setStaticButtonAt(44, i -> new InventoryButton(nextPageNoCMDItem, nextClick));
+        InventoryButton nextPageButton = InventoryButton.create().item(nextPageNoCMDItem).clickAction(nextClick);
+        craftsInventory.setStaticButtonAt(
+                41,
+                inventory -> InventoryButton.create()
+                .item(inventory.getNextPageIndex() == -1 ? nextPageNoCMDItem : nextPageItem)
+                .clickAction(nextClick)
+        );
+        craftsInventory.setStaticButtonAt(42, i -> nextPageButton);
+        craftsInventory.setStaticButtonAt(43, i -> nextPageButton);
+        craftsInventory.setStaticButtonAt(44, i -> nextPageButton);
         craftsInventory.updatePages();
 
         return craftsInventory;
