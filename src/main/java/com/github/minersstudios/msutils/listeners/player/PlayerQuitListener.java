@@ -15,13 +15,13 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(@NotNull PlayerQuitEvent event) {
+        event.quitMessage(null);
         if (event.getReason() == PlayerQuitEvent.QuitReason.KICKED) return;
 
         Player player = event.getPlayer();
         PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
         PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
-        event.quitMessage(null);
         playerInfo.initQuit();
     }
 }

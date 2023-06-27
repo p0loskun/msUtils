@@ -48,7 +48,6 @@ public class PronounsMenu {
         they.setItemMeta(theyMeta);
 
         PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
-        CustomInventory customInventory = new CustomInventory("§8Выберите форму обращения", 1);
 
         InventoryButton heButton = InventoryButton.create()
                 .item(he)
@@ -62,9 +61,6 @@ public class PronounsMenu {
                     playClickSound(player);
                     player.closeInventory();
                 });
-        customInventory.setButtonAt(0, heButton);
-        customInventory.setButtonAt(1, heButton);
-        customInventory.setButtonAt(2, heButton);
 
         InventoryButton sheButton = InventoryButton.create()
                 .item(she)
@@ -78,9 +74,6 @@ public class PronounsMenu {
                     playClickSound(player);
                     player.closeInventory();
                 });
-        customInventory.setButtonAt(3, sheButton);
-        customInventory.setButtonAt(4, sheButton);
-        customInventory.setButtonAt(5, sheButton);
 
         InventoryButton theyButton = InventoryButton.create()
                 .item(they)
@@ -94,25 +87,30 @@ public class PronounsMenu {
                     playClickSound(player);
                     player.closeInventory();
                 });
-        customInventory.setButtonAt(6, theyButton);
-        customInventory.setButtonAt(7, theyButton);
-        customInventory.setButtonAt(8, theyButton);
 
-        customInventory.setCloseAction(((event, inventory) -> {
-            Player player = (Player) event.getPlayer();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+        return CustomInventory.create("§8Выберите форму обращения", 1)
+                .buttonAt(0, heButton)
+                .buttonAt(1, heButton)
+                .buttonAt(2, heButton)
+                .buttonAt(3, sheButton)
+                .buttonAt(4, sheButton)
+                .buttonAt(5, sheButton)
+                .buttonAt(6, theyButton)
+                .buttonAt(7, theyButton)
+                .buttonAt(8, theyButton)
+                .closeAction((event, inventory) -> {
+                    Player player = (Player) event.getPlayer();
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
-            if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
-                Bukkit.getScheduler().runTask(
-                        MSUtils.getInstance(),
-                        () -> player.openInventory(customInventory)
-                );
-            } else {
-                new RegistrationProcess().setPronouns(player, playerInfo);
-            }
-        }));
-
-        return customInventory;
+                    if (playerInfo.getPlayerFile().getYamlConfiguration().getString("pronouns") == null) {
+                        Bukkit.getScheduler().runTask(
+                                MSUtils.getInstance(),
+                                () -> player.openInventory(inventory)
+                        );
+                    } else {
+                        new RegistrationProcess().setPronouns(player, playerInfo);
+                    }
+                });
     }
 
     public static void open(@NotNull Player player) {

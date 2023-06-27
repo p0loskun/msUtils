@@ -29,8 +29,6 @@ public class CraftsMenu {
 
     @Contract(" -> new")
     public static @NotNull CustomInventory create() {
-        CustomInventory customInventory = new CustomInventory("뀂ꀲ", 4);
-
         InventoryButton blocksButton = InventoryButton.create()
                 .item(new ItemStack(Material.AIR))
                 .clickAction((event, i, b) -> {
@@ -38,11 +36,6 @@ public class CraftsMenu {
                     open(Type.BLOCKS, player);
                     playClickSound(player);
                 });
-        customInventory.setButtons(
-                IntStream.of(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29)
-                        .boxed()
-                        .collect(Collectors.toMap(Function.identity(), slot -> blocksButton))
-        );
 
         InventoryButton decorsButton = InventoryButton.create()
                 .item(new ItemStack(Material.AIR))
@@ -51,11 +44,6 @@ public class CraftsMenu {
                     open(Type.DECORS, player);
                     playClickSound(player);
                 });
-        customInventory.setButtons(
-                IntStream.of(3, 4, 5, 12, 13, 14, 21, 22, 23, 30, 31, 32)
-                        .boxed()
-                        .collect(Collectors.toMap(Function.identity(), slot -> decorsButton))
-        );
 
         InventoryButton itemsButton = InventoryButton.create()
                 .item(new ItemStack(Material.AIR))
@@ -64,13 +52,23 @@ public class CraftsMenu {
                     open(Type.ITEMS, player);
                     playClickSound(player);
                 });
-        customInventory.setButtons(
-                IntStream.of(6, 7, 8, 15, 16, 17, 24, 25, 26, 33, 34, 35)
+
+        return CustomInventory.create("뀂ꀲ", 4)
+                .buttons(
+                        IntStream.of(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29)
+                        .boxed()
+                        .collect(Collectors.toMap(Function.identity(), slot -> blocksButton))
+                )
+                .buttons(
+                        IntStream.of(3, 4, 5, 12, 13, 14, 21, 22, 23, 30, 31, 32)
+                        .boxed()
+                        .collect(Collectors.toMap(Function.identity(), slot -> decorsButton))
+                )
+                .buttons(
+                        IntStream.of(6, 7, 8, 15, 16, 17, 24, 25, 26, 33, 34, 35)
                         .boxed()
                         .collect(Collectors.toMap(Function.identity(), slot -> itemsButton))
-        );
-
-        return customInventory;
+                );
     }
 
     public static boolean open(@NotNull Type type, @NotNull Player player) {
@@ -129,7 +127,7 @@ public class CraftsMenu {
                     .item(resultItem)
                     .clickAction((clickEvent, inventory, button) -> {
                         Player player = (Player) clickEvent.getWhoClicked();
-                        CustomInventory craftInventory = new CustomInventory("뀂ꀨ", 4);
+                        CustomInventory craftInventory = CustomInventory.create("뀂ꀨ", 4);
 
                         if (recipe instanceof ShapedRecipe shapedRecipe) {
                             String[] shapes = shapedRecipe.getShape();
@@ -161,7 +159,7 @@ public class CraftsMenu {
                             }
 
                             craftInventory.setItem(RESULT_SLOT, resultItem);
-                            craftInventory.setButtonAt(
+                            craftInventory.buttonAt(
                                     CRAFT_QUIT_BUTTON,
                                     InventoryButton.create()
                                     .item(quitItem)
@@ -177,7 +175,9 @@ public class CraftsMenu {
             );
         }
 
-        ElementListedInventory craftsInventory = new ElementListedInventory("뀂ꀧ", 5, elements, IntStream.range(0, 36).toArray());
+        ElementListedInventory craftsInventory =
+                ElementListedInventory.create("뀂ꀧ", 5, IntStream.range(0, 36).toArray())
+                .elements(elements);
 
         ButtonClickAction previousClick = (event, customInventory, button) -> {
             if (!(customInventory instanceof ListedInventory listedInventory)) return;
@@ -192,25 +192,6 @@ public class CraftsMenu {
         };
 
         InventoryButton previousPageButton = InventoryButton.create().item(previousPageNoCMD).clickAction(previousClick);
-        craftsInventory.setStaticButtonAt(
-                36,
-                inventory -> InventoryButton.create()
-                .item(inventory.getPreviousPageIndex() == -1 ? previousPageNoCMD : previousPageItem)
-                .clickAction(previousClick)
-        );
-        craftsInventory.setStaticButtonAt(37, i -> previousPageButton);
-        craftsInventory.setStaticButtonAt(38, i -> previousPageButton);
-        craftsInventory.setStaticButtonAt(39, i -> previousPageButton);
-        craftsInventory.setStaticButtonAt(
-                CRAFTS_QUIT_BUTTON,
-                i -> InventoryButton.create()
-                .item(quitItem)
-                .clickAction((event, customInventory, inventoryButton) -> {
-                    Player player = (Player) event.getWhoClicked();
-                    open(Type.MAIN, player);
-                    playClickSound(player);
-                })
-        );
 
         ButtonClickAction nextClick = (event, customInventory, button) -> {
             if (!(customInventory instanceof ListedInventory listedInventory)) return;
@@ -225,18 +206,37 @@ public class CraftsMenu {
         };
 
         InventoryButton nextPageButton = InventoryButton.create().item(nextPageNoCMDItem).clickAction(nextClick);
-        craftsInventory.setStaticButtonAt(
-                41,
-                inventory -> InventoryButton.create()
-                .item(inventory.getNextPageIndex() == -1 ? nextPageNoCMDItem : nextPageItem)
-                .clickAction(nextClick)
-        );
-        craftsInventory.setStaticButtonAt(42, i -> nextPageButton);
-        craftsInventory.setStaticButtonAt(43, i -> nextPageButton);
-        craftsInventory.setStaticButtonAt(44, i -> nextPageButton);
-        craftsInventory.updatePages();
 
-        return craftsInventory;
+        return craftsInventory
+                .staticButtonAt(
+                        36,
+                        inventory -> InventoryButton.create()
+                                .item(inventory.getPreviousPageIndex() == -1 ? previousPageNoCMD : previousPageItem)
+                                .clickAction(previousClick)
+                )
+                .staticButtonAt(37, i -> previousPageButton)
+                .staticButtonAt(38, i -> previousPageButton)
+                .staticButtonAt(39, i -> previousPageButton)
+                .staticButtonAt(
+                        CRAFTS_QUIT_BUTTON,
+                        i -> InventoryButton.create()
+                                .item(quitItem)
+                                .clickAction((event, customInventory, inventoryButton) -> {
+                                    Player player = (Player) event.getWhoClicked();
+                                    open(Type.MAIN, player);
+                                    playClickSound(player);
+                                })
+                )
+                .staticButtonAt(
+                        41,
+                        inventory -> InventoryButton.create()
+                                .item(inventory.getNextPageIndex() == -1 ? nextPageNoCMDItem : nextPageItem)
+                                .clickAction(nextClick)
+                )
+                .staticButtonAt(42, i -> nextPageButton)
+                .staticButtonAt(43, i -> nextPageButton)
+                .staticButtonAt(44, i -> nextPageButton)
+                .build();
     }
 
     public enum Type {

@@ -84,7 +84,6 @@ public class ResourcePackMenu {
         full.setItemMeta(fullMeta);
 
         PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
-        CustomInventory customInventory = new CustomInventory("§8Выберите нужный текстурпак", 1);
 
         InventoryButton noneButton = InventoryButton.create()
                 .item(none)
@@ -106,8 +105,6 @@ public class ResourcePackMenu {
                         playerInfo.initJoin();
                     }
                 });
-        customInventory.setButtonAt(0, noneButton);
-        customInventory.setButtonAt(1, noneButton);
 
         InventoryButton fullButton = InventoryButton.create()
                 .item(full)
@@ -122,10 +119,6 @@ public class ResourcePackMenu {
                     player.closeInventory();
                     ResourcePack.setResourcePack(playerInfo);
                 });
-        customInventory.setButtonAt(2, fullButton);
-        customInventory.setButtonAt(3, fullButton);
-        customInventory.setButtonAt(5, fullButton);
-        customInventory.setButtonAt(6, fullButton);
 
         InventoryButton liteButton = InventoryButton.create()
                 .item(lite)
@@ -140,22 +133,26 @@ public class ResourcePackMenu {
                     player.closeInventory();
                     ResourcePack.setResourcePack(playerInfo);
                 });
-        customInventory.setButtonAt(7, liteButton);
-        customInventory.setButtonAt(8, liteButton);
 
-        customInventory.setItem(4, pick);
+        return CustomInventory.create("§8Выберите нужный текстурпак", 1)
+                .buttonAt(0, noneButton)
+                .buttonAt(1, noneButton)
+                .buttonAt(2, fullButton)
+                .buttonAt(3, fullButton)
+                .buttonAt(4, InventoryButton.create().item(pick))
+                .buttonAt(5, fullButton)
+                .buttonAt(6, fullButton)
+                .buttonAt(7, liteButton)
+                .buttonAt(8, liteButton)
+                .closeAction(((event, inventory) -> {
+                    Player player = (Player) event.getPlayer();
+                    PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
+                    ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
 
-        customInventory.setCloseAction(((event, inventory) -> {
-            Player player = (Player) event.getPlayer();
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
-            ResourcePack.Type type = playerInfo.getPlayerFile().getPlayerSettings().getResourcePackType();
-
-            if (type == ResourcePack.Type.NULL) {
-                Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(inventory));
-            }
-        }));
-
-        return customInventory;
+                    if (type == ResourcePack.Type.NULL) {
+                        Bukkit.getScheduler().runTask(MSUtils.getInstance(), () -> player.openInventory(inventory));
+                    }
+                }));
     }
 
     public static boolean open(@NotNull Player player) {

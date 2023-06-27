@@ -40,7 +40,7 @@ public class DiscordGuildMessagePreProcessListener {
                 .append(text(message.getContentDisplay(), TextColor.color(202, 202, 255)));
 
         MessageUtils.sendGlobalMessage(messageComponent);
-        ChatUtils.sendInfo(ChatUtils.serializeLegacyComponent(messageComponent).substring(2));
+        ChatUtils.sendInfo(messageComponent);
     }
 
     private static @NotNull String replaceReplyPlaceholders(
