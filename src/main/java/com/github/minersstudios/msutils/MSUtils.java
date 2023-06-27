@@ -165,13 +165,14 @@ public final class MSUtils extends MSPlugin {
         if (configCache != null) {
             configCache.bukkitTasks.forEach(BukkitTask::cancel);
         }
-        configCache = new ConfigCache();
 
         instance.saveResource("anomalies/example.yml", true);
         File consoleDataFile = new File(instance.getPluginFolder(), "players/console.yml");
         if (!consoleDataFile.exists()) {
             instance.saveResource("players/console.yml", false);
         }
+
+        configCache = new ConfigCache();
         consolePlayerInfo = new PlayerInfo(UUID.randomUUID(), "$Console");
 
         Bukkit.getScheduler().runTaskAsynchronously(MSUtils.getInstance(), ResourcePack::init);

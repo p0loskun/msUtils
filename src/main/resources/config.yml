@@ -1,3 +1,4 @@
+language: ru_ru
 developer-mode: false
 anomaly-check-rate: 100
 anomaly-particles-check-rate: 10

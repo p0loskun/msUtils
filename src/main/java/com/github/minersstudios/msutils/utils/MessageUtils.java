@@ -1,5 +1,6 @@
 package com.github.minersstudios.msutils.utils;
 
+import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.utils.Badges;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.config.ConfigCache;
@@ -114,7 +115,7 @@ public final class MessageUtils {
         String stringGlobalMessage = serializeLegacyComponent(globalMessage);
 
         sendGlobalMessage(globalMessage);
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(MSCore.getInstance(), () -> {
             sendMessage(getTextChannelById(configCache.discordGlobalChannelId), stringGlobalMessage.replaceFirst("\\[WM]", ""));
             sendMessage(getTextChannelById(configCache.discordLocalChannelId), stringGlobalMessage);
         });
@@ -167,7 +168,7 @@ public final class MessageUtils {
                     .append(message.color(CHAT_COLOR_SECONDARY))
             );
             Bukkit.getScheduler().runTaskAsynchronously(
-                    DiscordSRV.getPlugin(),
+                    MSCore.getInstance(),
                     () -> sendMessage(getTextChannelById(MSUtils.getConfigCache().discordLocalChannelId), privateMessageString)
             );
             sendInfo(privateMessage);
@@ -227,7 +228,7 @@ public final class MessageUtils {
 
         sendLocalMessage(Badges.YELLOW_EXCLAMATION_MARK.append(fullMessage), sender.getLocation(), configCache.localChatRadius);
         Bukkit.getScheduler().runTaskAsynchronously(
-                DiscordSRV.getPlugin(),
+                MSCore.getInstance(),
                 () -> sendMessage(getTextChannelById(configCache.discordLocalChannelId), serializeLegacyComponent(fullMessage))
         );
         sendInfo(fullMessage);
@@ -275,7 +276,7 @@ public final class MessageUtils {
 
         killedInfo.setLastDeathLocation(deathLocation);
         sendGlobalMessage(deathMessage);
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(MSCore.getInstance(), () -> {
             sendActionMessage(killed, getTextChannelById(configCache.discordGlobalChannelId), stringDeathMessage, 16757024);
             sendActionMessage(killed, getTextChannelById(configCache.discordLocalChannelId), stringDeathMessage, 16757024);
         });
@@ -318,7 +319,7 @@ public final class MessageUtils {
         String stringJoinMessage = serializeLegacyComponent(joinMessage);
 
         sendGlobalMessage(joinMessage);
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(MSCore.getInstance(), () -> {
             sendActionMessage(player, getTextChannelById(configCache.discordGlobalChannelId), stringJoinMessage, 65280);
             sendActionMessage(player, getTextChannelById(configCache.discordLocalChannelId), stringJoinMessage, 65280);
         });
@@ -345,7 +346,7 @@ public final class MessageUtils {
         String stringQuitMessage = serializeLegacyComponent(quitMessage);
 
         sendGlobalMessage(quitMessage);
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(MSCore.getInstance(), () -> {
            sendActionMessage(player, getTextChannelById(configCache.discordGlobalChannelId), stringQuitMessage, 16711680);
            sendActionMessage(player, getTextChannelById(configCache.discordLocalChannelId), stringQuitMessage, 16711680);
         });
