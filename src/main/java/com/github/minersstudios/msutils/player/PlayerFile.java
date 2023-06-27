@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class PlayerFile {
     private double health;
     private int air;
     private final @NotNull PlayerSettings playerSettings;
-    private long firstJoin;
+    private @NotNull Instant firstJoin;
     private @Nullable Location lastLeaveLocation;
     private @Nullable Location lastDeathLocation;
 
@@ -52,7 +53,7 @@ public class PlayerFile {
         this.health = yamlConfiguration.getDouble("game-params.health", 20.0d);
         this.air = yamlConfiguration.getInt("game-params.air", 300);
         this.playerSettings = new PlayerSettings(this);
-        this.firstJoin = yamlConfiguration.getLong("first-join", 0);
+        this.firstJoin = Instant.ofEpochMilli(yamlConfiguration.getLong("first-join", System.currentTimeMillis()));
 
         World overworld = MSUtils.getOverworld();
         Location spawnLocation = overworld.getSpawnLocation();
@@ -191,13 +192,13 @@ public class PlayerFile {
         return this.playerSettings;
     }
 
-    public long getFirstJoin() {
+    public @NotNull Instant getFirstJoin() {
         return this.firstJoin;
     }
 
-    public void setFirstJoin(long firstJoin) {
+    public void setFirstJoin(@NotNull Instant firstJoin) {
         this.firstJoin = firstJoin;
-        this.yamlConfiguration.set("first-join", firstJoin);
+        this.yamlConfiguration.set("first-join", firstJoin.toEpochMilli());
     }
 
     public @Nullable Location getLastLeaveLocation() {

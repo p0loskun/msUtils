@@ -13,8 +13,9 @@ import net.minecraft.server.players.UserWhiteList;
 import net.minecraft.server.players.UserWhiteListEntry;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -27,12 +28,10 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.github.minersstudios.mscore.utils.ChatUtils.extractMessage;
 import static com.github.minersstudios.msutils.MSUtils.getConfigCache;
 import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.ME;
 import static com.github.minersstudios.msutils.utils.MessageUtils.RolePlayActionType.TODO;
-import static com.github.minersstudios.msutils.utils.MessageUtils.sendJoinMessage;
-import static com.github.minersstudios.msutils.utils.MessageUtils.sendRPEventMessage;
+import static com.github.minersstudios.msutils.utils.MessageUtils.*;
 import static net.kyori.adventure.text.Component.text;
 
 @SuppressWarnings("unused")
@@ -130,11 +129,11 @@ public class PlayerInfo {
     }
 
     public @NotNull String getMutedFrom(@NotNull CommandSender sender) throws IllegalStateException {
-        return DateUtils.getSenderDate(Date.from(this.getMutedFrom()), sender);
+        return DateUtils.getSenderDate(this.getMutedFrom(), sender);
     }
 
     public @NotNull String getMutedFrom(@NotNull InetAddress address) throws IllegalStateException {
-        return DateUtils.getDate(Date.from(this.getMutedFrom()), address);
+        return DateUtils.getDate(this.getMutedFrom(), address);
     }
 
     public @NotNull Instant getMutedFrom() throws IllegalStateException {
@@ -146,11 +145,11 @@ public class PlayerInfo {
     }
 
     public @NotNull String getMutedTo(@NotNull CommandSender sender) throws IllegalStateException {
-        return DateUtils.getSenderDate(Date.from(this.getMutedTo()), sender);
+        return DateUtils.getSenderDate(this.getMutedTo(), sender);
     }
 
     public @NotNull String getMutedTo(@NotNull InetAddress address) throws IllegalStateException {
-        return DateUtils.getDate(Date.from(this.getMutedTo()), address);
+        return DateUtils.getDate(this.getMutedTo(), address);
     }
 
     public @NotNull Instant getMutedTo() throws IllegalStateException {
@@ -163,7 +162,7 @@ public class PlayerInfo {
 
     public void setMuted(
             boolean value,
-            @NotNull Date date,
+            @NotNull Instant date,
             @NotNull String reason,
             CommandSender sender
     ) {
@@ -182,7 +181,7 @@ public class PlayerInfo {
                 return;
             }
 
-            muteMap.put(this.offlinePlayer, date.toInstant(), reason, sender.getName());
+            muteMap.put(this.offlinePlayer, date, reason, sender.getName());
             ChatUtils.sendFine(sender,
                     text("Игрок : \"")
                     .append(this.getGrayIDGreenName())
@@ -235,7 +234,7 @@ public class PlayerInfo {
             boolean value,
             CommandSender commandSender
     ) {
-        this.setMuted(value, new Date(0), "", commandSender);
+        this.setMuted(value, Instant.EPOCH, "", commandSender);
     }
 
     public @Nullable BanEntry getBanEntry() {
@@ -289,12 +288,12 @@ public class PlayerInfo {
         return DateUtils.getDate(this.getBannedFrom(), address);
     }
 
-    public @NotNull Date getBannedFrom() throws IllegalStateException {
+    public @NotNull Instant getBannedFrom() throws IllegalStateException {
         BanEntry banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
-        return banEntry.getCreated();
+        return banEntry.getCreated().toInstant();
     }
 
     public @NotNull String getBannedTo(@NotNull CommandSender sender) throws IllegalStateException {
@@ -303,7 +302,7 @@ public class PlayerInfo {
             throw new IllegalStateException("Player is not banned");
         }
         Date expiration = banEntry.getExpiration();
-        return expiration == null ? "навсегда" : DateUtils.getSenderDate(expiration, sender);
+        return expiration == null ? "навсегда" : DateUtils.getSenderDate(expiration.toInstant(), sender);
     }
 
     public @NotNull String getBannedTo(@NotNull InetAddress address) throws IllegalStateException {
@@ -312,7 +311,7 @@ public class PlayerInfo {
             throw new IllegalStateException("Player is not banned");
         }
         Date expiration = banEntry.getExpiration();
-        return expiration == null ? "навсегда" : DateUtils.getDate(expiration, address);
+        return expiration == null ? "навсегда" : DateUtils.getDate(expiration.toInstant(), address);
     }
 
     public @Nullable Date getBannedTo() throws IllegalStateException {
@@ -334,7 +333,7 @@ public class PlayerInfo {
 
     public void setBanned(
             boolean value,
-            @NotNull Date date,
+            @NotNull Instant date,
             @NotNull String reason,
             @NotNull CommandSender sender
     ) {
@@ -352,7 +351,7 @@ public class PlayerInfo {
                 return;
             }
 
-            banList.addBan(this.nickname, reason, date, sender.getName());
+            banList.addBan(this.nickname, reason, Date.from(date), sender.getName());
             this.kickPlayer(
                     "Вы были забанены",
                     reason
@@ -396,11 +395,11 @@ public class PlayerInfo {
             boolean value,
             @NotNull CommandSender commandSender
     ) {
-        this.setBanned(value, new Date(0), "", commandSender);
+        this.setBanned(value, Instant.EPOCH, "", commandSender);
     }
 
     public void setBanned(boolean value) {
-        this.setBanned(value, new Date(0), "", Bukkit.getConsoleSender());
+        this.setBanned(value, Instant.EPOCH, "", Bukkit.getConsoleSender());
     }
 
     public void initJoin() {
@@ -410,8 +409,6 @@ public class PlayerInfo {
         player.setGameMode(this.playerFile.getGameMode());
         player.setHealth(this.playerFile.getHealth());
         player.setRemainingAir(this.playerFile.getAir());
-        player.setFlying(false);
-        player.setAllowFlight(false);
 
         this.teleportToLastLeaveLocation();
 
@@ -419,6 +416,25 @@ public class PlayerInfo {
                 MSUtils.getInstance(),
                 () -> sendJoinMessage(this)
         );
+    }
+
+    public void initQuit() {
+        Player player = this.getOnlinePlayer();
+        if (player == null) return;
+
+        this.unsetSitting();
+
+        Entity vehicle = player.getVehicle();
+        if (vehicle != null) {
+            vehicle.eject();
+        }
+
+        MSUtils.getConfigCache().playerAnomalyActionMap.remove(player);
+        this.savePlayerDataParams();
+
+        if (!this.isInWorldDark()) {
+            sendQuitMessage(this, player);
+        }
     }
 
     public void teleportToLastLeaveLocation() {
@@ -497,7 +513,7 @@ public class PlayerInfo {
                             ? null
                             : this.getOnlinePlayer().getAddress().getAddress().getHostAddress()
             );
-            this.playerFile.setFirstJoin(System.currentTimeMillis());
+            this.playerFile.setFirstJoin(Instant.now());
         }
 
         this.playerFile.save();
@@ -562,7 +578,7 @@ public class PlayerInfo {
                 || player.getPlayer() == null
         ) return false;
 
-        this.savePlayerDataParams();
+        this.initQuit();
         player.kick(
                 Component.empty()
                 .append(text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
@@ -576,9 +592,14 @@ public class PlayerInfo {
         return true;
     }
 
+    public boolean isSitting() {
+        Player player = this.getOnlinePlayer();
+        return player != null && getConfigCache().seats.containsKey(player);
+    }
+
     public void setSitting(
-            @Nullable Location sitLocation,
-            String @Nullable ... args
+            @NotNull Location sitLocation,
+            @Nullable Component message
     ) {
         Player player = this.getOnlinePlayer();
 
@@ -586,42 +607,61 @@ public class PlayerInfo {
                 player == null
                 || (player.getVehicle() != null
                 && player.getVehicle().getType() != EntityType.ARMOR_STAND)
+                || this.isSitting()
         ) return;
 
-        if (
-                !getConfigCache().seats.containsKey(player)
-                && sitLocation != null
-        ) {
-            player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.95d, 0.0d), ArmorStand.class, (armorStand) -> {
-                armorStand.setGravity(false);
-                armorStand.setVisible(false);
-                armorStand.setCollidable(false);
-                armorStand.setSmall(true);
-                armorStand.addPassenger(player);
-                armorStand.addScoreboardTag("customDecor");
-                getConfigCache().seats.put(player, armorStand);
-            });
+        player.getWorld().spawn(sitLocation.clone().subtract(0.0d, 0.2d, 0.0d), ArmorStand.class, (armorStand) -> {
+            armorStand.setMarker(true);
+            armorStand.setCanTick(false);
+            armorStand.setBasePlate(false);
+            armorStand.setGravity(false);
+            armorStand.setVisible(false);
+            armorStand.setCollidable(false);
+            armorStand.setSmall(true);
+            armorStand.addPassenger(player);
+            armorStand.addScoreboardTag("customDecor");
+            getConfigCache().seats.put(player, armorStand);
+        });
 
-            if (args == null || args.length == 0) {
-                sendRPEventMessage(player, text(this.playerFile.getPronouns().getSitMessage()), ME);
-            } else {
-                sendRPEventMessage(player, text(extractMessage(args, 0)), text("приседая"), TODO);
-            }
-        } else if (sitLocation == null && getConfigCache().seats.containsKey(player)) {
-            ArmorStand armorStand = getConfigCache().seats.remove(player);
-            Location playerLoc = player.getLocation();
-            Location getUpLocation = armorStand.getLocation().add(0.0d, 1.7d, 0.0d);
-
-            getUpLocation.setYaw(playerLoc.getYaw());
-            getUpLocation.setPitch(playerLoc.getPitch());
-            armorStand.remove();
-            player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
-            sendRPEventMessage(player, text(this.playerFile.getPronouns().getUnSitMessage()), ME);
+        if (message == null) {
+            sendRPEventMessage(player, text(this.playerFile.getPronouns().getSitMessage()), ME);
+        } else {
+            sendRPEventMessage(player, message, text("приседая"), TODO);
         }
     }
 
-    public void unsetSitting(String @Nullable ... args) {
-        this.setSitting(null, args);
+    public void setSitting(@NotNull Location sitLocation) {
+        this.setSitting(sitLocation, null);
+    }
+
+    public void unsetSitting(@Nullable Component message) {
+        Player player = this.getOnlinePlayer();
+
+        if (
+                player == null
+                || (player.getVehicle() != null
+                && player.getVehicle().getType() != EntityType.ARMOR_STAND)
+                || !isSitting()
+        ) return;
+
+        ArmorStand armorStand = getConfigCache().seats.remove(player);
+        Location playerLoc = player.getLocation();
+        Location getUpLocation = armorStand.getLocation().add(0.0d, 0.5d, 0.0d);
+
+        getUpLocation.setYaw(playerLoc.getYaw());
+        getUpLocation.setPitch(playerLoc.getPitch());
+        armorStand.remove();
+        player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
+
+        if (message == null) {
+            sendRPEventMessage(player, text(this.playerFile.getPronouns().getUnSitMessage()), ME);
+        } else {
+            sendRPEventMessage(player, message, text("вставая"), TODO);
+        }
+    }
+
+    public void unsetSitting() {
+        this.unsetSitting(null);
     }
 
     public boolean setWhiteListed(boolean value) {

@@ -21,10 +21,9 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
@@ -47,6 +46,7 @@ public final class MSUtils extends MSPlugin {
 
     private static World worldDark;
     private static Entity darkEntity;
+    private static Location darkSpawnLocation;
     private static World overworld;
     private static ConfigCache configCache;
     private static PlayerInfo consolePlayerInfo;
@@ -71,6 +71,7 @@ public final class MSUtils extends MSPlugin {
             );
         });
         overworld = ((CraftServer) this.getServer()).getServer().overworld().getWorld();
+        darkSpawnLocation = new Location(overworld, 0.0d, 0.0d, 0.0d);
 
         scoreboardHideTags = Bukkit.getScoreboardManager().getNewScoreboard();
         scoreboardHideTagsTeam = scoreboardHideTags.registerNewTeam("hide_tags");
@@ -102,20 +103,17 @@ public final class MSUtils extends MSPlugin {
 
     @Override
     public void disable() {
-        for (Player player : configCache.seats.keySet()) {
-            configCache.playerInfoMap.getPlayerInfo(player).unsetSitting();
-
-            Entity vehicle = player.getVehicle();
-            if (vehicle != null) {
-                vehicle.eject();
-            }
+        if (configCache != null) {
+            Bukkit.getOnlinePlayers().stream().parallel().forEach(
+                    player ->
+                            configCache.playerInfoMap.getPlayerInfo(player)
+                            .kickPlayer(
+                                    "Выключение сервера",
+                                    "Ну шо грифер, запустил свою лаг машину?"
+                            )
+            );
+            configCache.bukkitTasks.forEach(BukkitTask::cancel);
         }
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            configCache.playerInfoMap.getPlayerInfo(player).kickPlayer("Выключение сервера", "Ну шо грифер, запустил свою лаг машину?");
-        }
-
-        configCache.bukkitTasks.forEach(BukkitTask::cancel);
     }
 
     private static @NotNull World setWorldDark() {
@@ -228,6 +226,11 @@ public final class MSUtils extends MSPlugin {
     @Contract(pure = true)
     public static @NotNull Entity getDarkEntity() {
         return darkEntity;
+    }
+
+    @Contract(pure = true)
+    public static @NotNull Location getDarkSpawnLocation() {
+        return darkSpawnLocation;
     }
 
     @Contract(pure = true)

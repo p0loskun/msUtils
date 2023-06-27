@@ -22,8 +22,8 @@ import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +48,7 @@ public class MuteCommand implements MSCommandExecutor {
     ) {
         if (args.length < 2) return false;
 
-        Date date = DateUtils.getDateFromString(args[1], false);
+        Instant date = DateUtils.getDateFromString(args[1], false);
 
         if (date == null) {
             ChatUtils.sendError(sender, "Введите показатель в правильном формате");

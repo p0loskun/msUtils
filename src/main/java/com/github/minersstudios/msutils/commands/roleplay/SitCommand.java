@@ -11,6 +11,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -49,7 +50,13 @@ public class SitCommand implements MSCommandExecutor {
             return true;
         }
 
-        playerInfo.setSitting(configCache.seats.containsKey(player) ? null : player.getLocation(), args.length > 0 ? args : null);
+        String messageString = ChatUtils.extractMessage(args, 0);
+        Component message = messageString.isEmpty() ? null : text(messageString);
+        if (playerInfo.isSitting()) {
+            playerInfo.unsetSitting(message);
+        } else {
+            playerInfo.setSitting(player.getLocation(), message);
+        }
         return true;
     }
 

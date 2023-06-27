@@ -26,9 +26,8 @@ public class InventoryClickListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         Inventory clickedInventory = event.getClickedInventory();
         int slot = event.getSlot();
-        ItemStack
-                cursorItem = event.getCursor(),
-                currentItem = event.getCurrentItem();
+        ItemStack cursorItem = event.getCursor();
+        ItemStack currentItem = event.getCurrentItem();
 
         if (clickedInventory == null) return;
 
@@ -66,7 +65,6 @@ public class InventoryClickListener implements Listener {
                         .append(text(currentItem.toString()))
                 );
                 event.setCancelled(true);
-                Bukkit.getScheduler().runTask(MSUtils.getInstance(), player::updateInventory);
             }
         }
     }

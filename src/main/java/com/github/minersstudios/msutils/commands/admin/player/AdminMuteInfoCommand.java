@@ -8,7 +8,7 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
@@ -95,14 +95,14 @@ public class AdminMuteInfoCommand {
                     return true;
                 }
 
-                Date date = DateUtils.getDateFromString(paramArgString, false);
+                Instant date = DateUtils.getDateFromString(paramArgString, false);
 
                 if (date == null) {
                     ChatUtils.sendError(sender, "Введите показатель в правильном формате");
                     return true;
                 }
 
-                muteMap.put(playerInfo.getOfflinePlayer(), date.toInstant(), playerInfo.getMuteReason(), sender.getName());
+                muteMap.put(playerInfo.getOfflinePlayer(), date, playerInfo.getMuteReason(), sender.getName());
                 ChatUtils.sendFine(sender,
                         text("Крайней датой мьюта игрока : ")
                         .append(playerInfo.getGrayIDGreenName())

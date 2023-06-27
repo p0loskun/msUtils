@@ -12,7 +12,7 @@ public class PlayerMoveListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(@NotNull PlayerMoveEvent event) {
-        if (event.getPlayer().getWorld().equals(MSUtils.getWorldDark())) {
+        if (event.getFrom().getWorld().equals(MSUtils.getWorldDark())) {
             event.setCancelled(true);
         }
     }

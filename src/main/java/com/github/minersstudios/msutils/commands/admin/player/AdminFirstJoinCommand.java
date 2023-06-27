@@ -6,8 +6,6 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Date;
-
 import static net.kyori.adventure.text.Component.text;
 
 public class AdminFirstJoinCommand {
@@ -21,7 +19,7 @@ public class AdminFirstJoinCommand {
                 .append(playerInfo.getGrayIDGreenName())
                 .appendNewline()
                 .append(text("    Зашёл на сервер в : "))
-                .append(text(DateUtils.getSenderDate(new Date(playerInfo.getPlayerFile().getFirstJoin()), sender)))
+                .append(text(DateUtils.getSenderDate(playerInfo.getPlayerFile().getFirstJoin(), sender)))
         );
         return true;
     }

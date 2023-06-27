@@ -49,7 +49,10 @@ public class AsyncPlayerPreLoginListener implements Listener {
             );
         }
 
-        if (configCache.developerMode && !offlinePlayer.isOp()) {
+        if (
+                configCache.developerMode
+                && !offlinePlayer.isOp()
+        ) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                     Component.empty()
                     .append(text("Вы были кикнуты", Style.style(NamedTextColor.RED, TextDecoration.BOLD)))
@@ -68,7 +71,6 @@ public class AsyncPlayerPreLoginListener implements Listener {
                     .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
             );
         }
-
 
         if (playerInfo.isBanned()) {
             event.disallow(

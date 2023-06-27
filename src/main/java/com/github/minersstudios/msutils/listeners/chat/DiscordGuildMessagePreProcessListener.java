@@ -20,14 +20,12 @@ public class DiscordGuildMessagePreProcessListener {
 
     @Subscribe
     public void onDiscordGuildMessagePreProcess(@NotNull DiscordGuildMessagePreProcessEvent event) {
-        Message
-                message = event.getMessage(),
-                referencedMessage = message.getReferencedMessage();
-        String
-                reply = referencedMessage != null
+        Message message = event.getMessage();
+        Message referencedMessage = message.getReferencedMessage();
+        String reply = referencedMessage != null
                 ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), referencedMessage)
-                : "",
-                attachment = message.getAttachments().isEmpty()
+                : "";
+        String attachment = message.getAttachments().isEmpty()
                         ? ""
                         : message.getAttachments().size() > 1
                         ? "(вложения) "

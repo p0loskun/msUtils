@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 
@@ -94,16 +95,17 @@ public class AdminBanInfoCommand {
                     return true;
                 }
 
-                Date date = DateUtils.getDateFromString(paramArgString, false);
+                Instant instant = DateUtils.getDateFromString(paramArgString, false);
 
-                if (date == null) {
+                if (instant == null) {
                     ChatUtils.sendError(sender, "Введите показатель в правильном формате");
                     return true;
                 }
 
-                playerInfo.setBannedTo(date);
-
+                Date date = Date.from(instant);
                 BanEntry banEntry = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(playerInfo.getNickname());
+
+                playerInfo.setBannedTo(date);
 
                 if (banEntry != null) {
                     banEntry.setExpiration(date);
@@ -115,7 +117,7 @@ public class AdminBanInfoCommand {
                         .append(playerInfo.getGrayIDGreenName())
                         .appendNewline()
                         .append(text("    Стала : "))
-                        .append(text(DateUtils.getSenderDate(date, sender)))
+                        .append(text(DateUtils.getSenderDate(instant, sender)))
                 );
                 return true;
             }
