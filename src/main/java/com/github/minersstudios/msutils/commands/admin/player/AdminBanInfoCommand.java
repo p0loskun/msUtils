@@ -3,6 +3,7 @@ package com.github.minersstudios.msutils.commands.admin.player;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.mscore.utils.DateUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import net.kyori.adventure.text.Component;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminBanInfoCommand {
 
@@ -28,30 +30,35 @@ public class AdminBanInfoCommand {
         String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
-            ChatUtils.sendFine(sender,
-                    text("Информация о бане игрока : ")
-                    .append(playerInfo.getGrayIDGreenName())
-                    .appendNewline()
-                    .append(
-                            banned
-                                    ? text("    - Причина : \"")
-                                    .append(text(playerInfo.getBanReason()))
-                                    .append(text("\""))
-                                    .appendNewline()
-                                    .append(text("    - Забанен до : "))
-                                    .append(text(playerInfo.getBannedTo(sender)))
-                                    : text("    - Не забанен")
+            ChatUtils.sendFine(
+                    sender,
+                    banned
+                    ? translatable(
+                            "ms.command.player.ban_info.info",
+                            playerInfo.getGrayIDGreenName(),
+                            text(playerInfo.getNickname()),
+                            text(playerInfo.getBannedBy()),
+                            playerInfo.getBanReason(),
+                            playerInfo.getBannedFrom(sender),
+                            playerInfo.getBannedTo(sender)
+                    )
+                    : translatable(
+                            "ms.command.player.ban_info.info_not_banned",
+                            playerInfo.getGrayIDGreenName(),
+                            text(playerInfo.getNickname())
                     )
             );
             return true;
         }
 
         if (!banned) {
-            ChatUtils.sendError(sender,
-                    text("Данный параметр не может быть изменён/считан, так как игрок : ")
-                    .append(playerInfo.getDefaultName())
-                    .appendNewline()
-                    .append(text("    - Не забанен"))
+            ChatUtils.sendError(
+                    sender,
+                    translatable(
+                            "ms.command.player.ban_info.not_banned",
+                            playerInfo.getDefaultName(),
+                            text(playerInfo.getNickname())
+                    )
             );
             return true;
         }
@@ -59,13 +66,14 @@ public class AdminBanInfoCommand {
         switch (paramString) {
             case "reason" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(sender,
-                            text("Причиной бана игрока : ")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .appendNewline()
-                            .append(text("    Является : \""))
-                            .append(text(playerInfo.getBanReason()))
-                            .append(text("\""))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable(
+                                    "ms.command.player.ban_info.get.reason",
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    playerInfo.getBanReason()
+                            )
                     );
                     return true;
                 }
@@ -73,24 +81,27 @@ public class AdminBanInfoCommand {
                 String reason = ChatUtils.extractMessage(args, 3);
 
                 playerInfo.setBanReason(reason);
-                ChatUtils.sendFine(sender,
-                        text("Причина бана игрока : ")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .appendNewline()
-                        .append(text("    Была успешно изменена на : \""))
-                        .append(text(reason))
-                        .append(text("\""))
+                ChatUtils.sendFine(
+                        sender,
+                        translatable(
+                                "ms.command.player.ban_info.set.reason",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname()),
+                                text(reason)
+                        )
                 );
                 return true;
             }
             case "time" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(sender,
-                            text("Крайней датой бана игрока : ")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .appendNewline()
-                            .append(text("    Является : "))
-                            .append(text(playerInfo.getBannedTo(sender)))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable(
+                                    "ms.command.player.ban_info.get.time_to",
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    playerInfo.getBannedTo(sender)
+                            )
                     );
                     return true;
                 }
@@ -98,7 +109,7 @@ public class AdminBanInfoCommand {
                 Instant instant = DateUtils.getDateFromString(paramArgString, false);
 
                 if (instant == null) {
-                    ChatUtils.sendError(sender, "Введите показатель в правильном формате");
+                    ChatUtils.sendError(sender, Component.translatable("ms.error.wrong_format"));
                     return true;
                 }
 
@@ -112,12 +123,14 @@ public class AdminBanInfoCommand {
                     banEntry.save();
                 }
 
-                ChatUtils.sendFine(sender,
-                        text("Крайней датой бана игрока : ")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .appendNewline()
-                        .append(text("    Стала : "))
-                        .append(text(DateUtils.getSenderDate(instant, sender)))
+                ChatUtils.sendFine(
+                        sender,
+                        translatable(
+                                "ms.command.player.ban_info.set.time_to",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname()),
+                                text(DateUtils.getSenderDate(instant, sender))
+                        )
                 );
                 return true;
             }

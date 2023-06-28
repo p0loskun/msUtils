@@ -1,6 +1,8 @@
 package com.github.minersstudios.msutils.player;
 
+import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -42,10 +44,10 @@ public class PlayerFile {
         this.yamlConfiguration = yamlConfiguration;
 
         this.playerName = PlayerName.create(
-                yamlConfiguration.getString("name.nickname", "Steve"),
-                yamlConfiguration.getString("name.first-name", "Иван"),
-                yamlConfiguration.getString("name.last-name", "Иванов"),
-                yamlConfiguration.getString("name.patronymic", "Иваныч")
+                yamlConfiguration.getString("name.nickname", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.nickname"))),
+                yamlConfiguration.getString("name.first-name", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.first_name"))),
+                yamlConfiguration.getString("name.last-name", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.last_name"))),
+                yamlConfiguration.getString("name.patronymic", ChatUtils.serializeLegacyComponent(Component.translatable("ms.player.name.patronymic")))
         );
         this.pronouns = Pronouns.valueOf(yamlConfiguration.getString("pronouns", "HE"));
         this.ipList = yamlConfiguration.getStringList("ip-list");

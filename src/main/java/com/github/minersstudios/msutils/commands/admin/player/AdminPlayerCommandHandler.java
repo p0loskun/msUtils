@@ -15,6 +15,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -52,7 +53,7 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || offlinePlayer.getName() == null) {
-                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
                 return true;
             }
             return runCommand(sender, args, offlinePlayer);
@@ -62,13 +63,13 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, "Данного игрока не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
                 return true;
             }
             return runCommand(sender, args, offlinePlayer);
         }
 
-        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 
@@ -196,27 +197,6 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
         return new ArrayList<>();
     }
 
-    private static boolean runCommand(
-            @NotNull CommandSender sender,
-            String @NotNull [] args,
-            @NotNull OfflinePlayer offlinePlayer
-    ) {
-        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
-        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
-        return switch (args[1].toLowerCase(Locale.ROOT)) {
-            case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);
-            case "info" -> AdminInfoCommand.runCommand(sender, playerInfo);
-            case "pronouns" -> AdminPronounsCommand.runCommand(sender, args, playerInfo);
-            case "game-params" -> AdminGameParamsCommand.runCommand(sender, args, offlinePlayer, playerInfo);
-            case "first-join" -> AdminFirstJoinCommand.runCommand(sender, playerInfo);
-            case "settings" -> AdminSettingsCommand.runCommand(sender, args, playerInfo);
-            case "ban-info" -> AdminBanInfoCommand.runCommand(sender, args, playerInfo);
-            case "mute-info" -> AdminMuteInfoCommand.runCommand(sender, args, playerInfo);
-            case "name" -> AdminNameCommand.runCommand(sender, args, playerInfo);
-            default -> false;
-        };
-    }
-
     @Override
     public @Nullable CommandNode<?> getCommandNode() {
         return literal("player")
@@ -300,5 +280,27 @@ public class AdminPlayerCommandHandler implements MSCommandExecutor {
                                 )
                         )
                 ).build();
+    }
+
+    private static boolean runCommand(
+            @NotNull CommandSender sender,
+            String @NotNull [] args,
+            @NotNull OfflinePlayer offlinePlayer
+    ) {
+        PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
+        PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), Objects.requireNonNull(offlinePlayer.getName()));
+
+        return switch (args[1].toLowerCase(Locale.ROOT)) {
+            case "update" -> AdminUpdateCommand.runCommand(sender, playerInfo);
+            case "info" -> AdminInfoCommand.runCommand(sender, playerInfo);
+            case "pronouns" -> AdminPronounsCommand.runCommand(sender, args, playerInfo);
+            case "game-params" -> AdminGameParamsCommand.runCommand(sender, args, offlinePlayer, playerInfo);
+            case "first-join" -> AdminFirstJoinCommand.runCommand(sender, playerInfo);
+            case "settings" -> AdminSettingsCommand.runCommand(sender, args, playerInfo);
+            case "ban-info" -> AdminBanInfoCommand.runCommand(sender, args, playerInfo);
+            case "mute-info" -> AdminMuteInfoCommand.runCommand(sender, args, playerInfo);
+            case "name" -> AdminNameCommand.runCommand(sender, args, playerInfo);
+            default -> false;
+        };
     }
 }

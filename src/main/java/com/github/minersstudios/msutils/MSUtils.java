@@ -2,6 +2,7 @@ package com.github.minersstudios.msutils;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.github.minersstudios.mscore.Cache;
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.MSPlugin;
 import com.github.minersstudios.mscore.inventory.CustomInventoryMap;
@@ -9,15 +10,16 @@ import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import com.github.minersstudios.msutils.anomalies.tasks.MainAnomalyActionsTask;
 import com.github.minersstudios.msutils.anomalies.tasks.ParticleTask;
 import com.github.minersstudios.msutils.config.ConfigCache;
-import com.github.minersstudios.msutils.inventory.CraftsMenu;
-import com.github.minersstudios.msutils.inventory.PronounsMenu;
-import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
 import com.github.minersstudios.msutils.listeners.chat.DiscordGuildMessagePreProcessListener;
+import com.github.minersstudios.msutils.menu.CraftsMenu;
+import com.github.minersstudios.msutils.menu.PronounsMenu;
+import com.github.minersstudios.msutils.menu.ResourcePackMenu;
 import com.github.minersstudios.msutils.player.MuteMap;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.ResourcePack;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -108,8 +110,8 @@ public final class MSUtils extends MSPlugin {
                     player ->
                             configCache.playerInfoMap.getPlayerInfo(player)
                             .kickPlayer(
-                                    "Выключение сервера",
-                                    "Ну шо грифер, запустил свою лаг машину?"
+                                    Component.translatable("ms.on_disable.message.title"),
+                                    Component.translatable("ms.on_disable.message.subtitle")
                             )
             );
             configCache.bukkitTasks.forEach(BukkitTask::cancel);
@@ -191,14 +193,15 @@ public final class MSUtils extends MSPlugin {
                 configCache.anomalyParticlesCheckRate
         ));
 
-        CustomInventoryMap customInventoryMap = MSCore.getConfigCache().customInventoryMap;
+        Cache cache = MSCore.getCache();
+        CustomInventoryMap customInventoryMap = cache.customInventoryMap;
         customInventoryMap.put("pronouns", PronounsMenu.create());
         customInventoryMap.put("resourcepack", ResourcePackMenu.create());
         customInventoryMap.put("crafts", CraftsMenu.create());
 
-        List<Recipe> customBlockRecipes = MSCore.getConfigCache().customBlockRecipes;
-        List<Recipe> customDecorRecipes = MSCore.getConfigCache().customDecorRecipes;
-        List<Recipe> customItemRecipes = MSCore.getConfigCache().customItemRecipes;
+        List<Recipe> customBlockRecipes = cache.customBlockRecipes;
+        List<Recipe> customDecorRecipes = cache.customDecorRecipes;
+        List<Recipe> customItemRecipes = cache.customItemRecipes;
         Bukkit.getScheduler().runTaskTimer(instance, task -> {
             if (
                     MSPluginUtils.isLoadedCustoms()

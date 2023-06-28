@@ -12,6 +12,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
@@ -45,7 +46,7 @@ public class FartCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
@@ -54,7 +55,7 @@ public class FartCommand implements MSCommandExecutor {
 
         if (!playerInfo.isOnline()) return true;
         if (playerInfo.isMuted()) {
-            ChatUtils.sendWarning(player, "Вы замьючены");
+            ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
             return true;
         }
 
@@ -90,7 +91,7 @@ public class FartCommand implements MSCommandExecutor {
             return true;
         }
 
-        sendRPEventMessage(player, text(playerInfo.getPlayerFile().getPronouns().getFartMessage()).append(text(withPoop ? " с подливой" : "")), ME);
+        sendRPEventMessage(player, playerInfo.getPlayerFile().getPronouns().getFartMessage().append(text(withPoop ? " с подливой" : "")), ME);
         return true;
     }
 

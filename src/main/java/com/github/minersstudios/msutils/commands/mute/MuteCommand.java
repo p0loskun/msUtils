@@ -13,6 +13,7 @@ import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -51,7 +52,7 @@ public class MuteCommand implements MSCommandExecutor {
         Instant date = DateUtils.getDateFromString(args[1], false);
 
         if (date == null) {
-            ChatUtils.sendError(sender, "Введите показатель в правильном формате");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.format"));
             return true;
         }
 
@@ -69,7 +70,7 @@ public class MuteCommand implements MSCommandExecutor {
                     offlinePlayer == null
                     || StringUtils.isBlank(offlinePlayer.getName())
             ) {
-                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
                 return true;
             }
 
@@ -85,7 +86,7 @@ public class MuteCommand implements MSCommandExecutor {
                     offlinePlayer == null
                     || !offlinePlayer.hasPlayedBefore()
             ) {
-                ChatUtils.sendError(sender, "Этот игрок ещё ни разу не играл на сервере");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
                 return true;
             }
 
@@ -94,7 +95,7 @@ public class MuteCommand implements MSCommandExecutor {
             return true;
         }
 
-        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 

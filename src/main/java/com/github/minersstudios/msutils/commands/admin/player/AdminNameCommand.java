@@ -5,6 +5,7 @@ import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerName;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminNameCommand {
 
@@ -29,12 +31,16 @@ public class AdminNameCommand {
         String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
 
         if (args.length == 2) {
-            ChatUtils.sendFine(sender,
-                    text("Полное имя игрока :\n")
-                    .append(text("    "))
-                    .append(playerInfo.getGrayIDGreenName())
-                    .appendSpace()
-                    .append(text(playerName.getPatronymic(), NamedTextColor.GREEN))
+            ChatUtils.sendFine(
+                    sender,
+                    translatable(
+                            "ms.command.player.name.about",
+                            playerInfo.getGrayIDGreenName()
+                            .appendSpace()
+                            .append(text(playerName.getPatronymic(), NamedTextColor.GREEN)),
+                            text(playerInfo.getNickname()),
+                            text(playerInfo.getUuid().toString())
+                    )
             );
             return true;
         }
@@ -44,7 +50,7 @@ public class AdminNameCommand {
                 && !"empty".equals(paramArgString)
                 && !MSPlayerUtils.matchesNameRegex(paramArgString)
         ) {
-            ChatUtils.sendError(sender, "Введите показатель в правильном формате");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.format"));
             return true;
         }
 
@@ -52,11 +58,13 @@ public class AdminNameCommand {
             case "reset" -> {
                 if (haveArg) return false;
 
-                ChatUtils.sendFine(sender,
-                        text("Полное имя игрока : ")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .appendNewline()
-                        .append(text("    Было успешно сброшено"))
+                ChatUtils.sendFine(
+                        sender,
+                        translatable(
+                                "ms.command.player.name.full_reset.sender",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname())
+                        )
                 );
 
                 yamlConfiguration.set("name.first-name", null);
@@ -66,16 +74,16 @@ public class AdminNameCommand {
                 playerFile.save();
                 playerInfo.initNames();
                 playerInfo.kickPlayer(
-                        "Вы были кикнуты!",
-                        "Ваше полное имя было сброшено"
+                        translatable("ms.command.player.name.full_reset.receiver.title"),
+                        translatable("ms.command.player.name.full_reset.receiver.subtitle")
                 );
                 return true;
             }
             case "first-name" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(sender,
-                            text("Имя игрока равно : ")
-                            .append(text(playerName.getFirstName()))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable("ms.command.player.name.get.first_name", text(playerName.getFirstName()))
                     );
                     return true;
                 }
@@ -84,9 +92,9 @@ public class AdminNameCommand {
             }
             case "last-name" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(sender,
-                            text("Фамилия игрока равна : ")
-                            .append(text(playerName.getLastName()))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable("ms.command.player.name.get.last_name", text(playerName.getLastName()))
                     );
                     return true;
                 }
@@ -95,9 +103,9 @@ public class AdminNameCommand {
             }
             case "patronymic" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(sender,
-                            text("Отчество игрока равно : ")
-                            .append(text(playerName.getPatronymic()))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable("ms.command.player.name.get.patronymic", text(playerName.getPatronymic()))
                     );
                     return true;
                 }
@@ -109,12 +117,14 @@ public class AdminNameCommand {
         playerFile.updateName();
         playerFile.save();
         playerInfo.initNames();
-        ChatUtils.sendFine(sender,
-                text("Теперь, полное имя игрока выглядит так :\n")
-                .append(text("    "))
-                .append(playerInfo.getGrayIDGreenName())
-                .appendSpace()
-                .append(text(playerName.getPatronymic(), NamedTextColor.GREEN))
+        ChatUtils.sendFine(
+                sender,
+                translatable(
+                        "ms.command.player.name.now_full",
+                        playerInfo.getGrayIDGreenName()
+                        .appendSpace()
+                        .append(text(playerName.getPatronymic(), NamedTextColor.GREEN))
+                )
         );
         return true;
     }

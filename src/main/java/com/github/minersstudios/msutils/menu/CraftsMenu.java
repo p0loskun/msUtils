@@ -1,8 +1,11 @@
-package com.github.minersstudios.msutils.inventory;
+package com.github.minersstudios.msutils.menu;
 
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.*;
 import com.github.minersstudios.mscore.inventory.actions.ButtonClickAction;
+import com.github.minersstudios.mscore.utils.ChatUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,8 +21,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslationComponent;
 import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
-import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
 
 public class CraftsMenu {
     public static final int
@@ -53,7 +56,7 @@ public class CraftsMenu {
                     playClickSound(player);
                 });
 
-        return CustomInventory.create("뀂ꀲ", 4)
+        return CustomInventory.create(Component.translatable("ms.menu.crafts.categories.title", NamedTextColor.WHITE), 4)
                 .buttons(
                         IntStream.of(0, 1, 2, 9, 10, 11, 18, 19, 20, 27, 28, 29)
                         .boxed()
@@ -72,7 +75,7 @@ public class CraftsMenu {
     }
 
     public static boolean open(@NotNull Type type, @NotNull Player player) {
-        CustomInventoryMap customInventoryMap = MSCore.getConfigCache().customInventoryMap;
+        CustomInventoryMap customInventoryMap = MSCore.getCache().customInventoryMap;
         CustomInventory customInventory = switch (type) {
             case MAIN -> customInventoryMap.get("crafts");
             case BLOCKS -> customInventoryMap.get("crafts_blocks");
@@ -92,8 +95,9 @@ public class CraftsMenu {
         ItemMeta
                 previousPageMeta = previousPageItem.getItemMeta(),
                 previousPageMetaNoCMD = previousPageNoCMD.getItemMeta();
-        previousPageMetaNoCMD.displayName(createDefaultStyledText("Предыдущая страница"));
-        previousPageMeta.displayName(createDefaultStyledText("Предыдущая страница"));
+        Component previousButton = renderTranslationComponent("ms.menu.crafts.button.previous_page").style(ChatUtils.DEFAULT_STYLE);
+        previousPageMetaNoCMD.displayName(previousButton);
+        previousPageMeta.displayName(previousButton);
         previousPageMeta.setCustomModelData(5001);
         previousPageMetaNoCMD.setCustomModelData(1);
         previousPageNoCMD.setItemMeta(previousPageMetaNoCMD);
@@ -105,8 +109,9 @@ public class CraftsMenu {
         ItemMeta
                 nextPageMeta = nextPageItem.getItemMeta(),
                 nextPageMetaNoCMD = nextPageNoCMDItem.getItemMeta();
-        nextPageMetaNoCMD.displayName(createDefaultStyledText("Следующая страница"));
-        nextPageMeta.displayName(createDefaultStyledText("Следующая страница"));
+        Component nextButton = renderTranslationComponent("ms.menu.crafts.button.next_page").style(ChatUtils.DEFAULT_STYLE);
+        nextPageMetaNoCMD.displayName(nextButton);
+        nextPageMeta.displayName(nextButton);
         nextPageMeta.setCustomModelData(5002);
         nextPageMetaNoCMD.setCustomModelData(1);
         nextPageNoCMDItem.setItemMeta(nextPageMetaNoCMD);
@@ -114,7 +119,7 @@ public class CraftsMenu {
 
         ItemStack quitItem = new ItemStack(Material.PAPER);
         ItemMeta quitMeta = quitItem.getItemMeta();
-        quitMeta.displayName(createDefaultStyledText("Вернуться"));
+        quitMeta.displayName(renderTranslationComponent("ms.menu.crafts.button.back").style(ChatUtils.DEFAULT_STYLE));
         quitMeta.setCustomModelData(1);
         quitItem.setItemMeta(quitMeta);
 
@@ -127,7 +132,7 @@ public class CraftsMenu {
                     .item(resultItem)
                     .clickAction((clickEvent, inventory, button) -> {
                         Player player = (Player) clickEvent.getWhoClicked();
-                        CustomInventory craftInventory = CustomInventory.create("뀂ꀨ", 4);
+                        CustomInventory craftInventory = CustomInventory.create(Component.translatable("ms.menu.crafts.craft.title", ChatUtils.DEFAULT_STYLE), 4);
 
                         if (recipe instanceof ShapedRecipe shapedRecipe) {
                             String[] shapes = shapedRecipe.getShape();
@@ -176,7 +181,7 @@ public class CraftsMenu {
         }
 
         ElementListedInventory craftsInventory =
-                ElementListedInventory.create("뀂ꀧ", 5, IntStream.range(0, 36).toArray())
+                ElementListedInventory.create(Component.translatable("ms.menu.crafts.category.title", ChatUtils.DEFAULT_STYLE), 5, IntStream.range(0, 36).toArray())
                 .elements(elements);
 
         ButtonClickAction previousClick = (event, customInventory, button) -> {

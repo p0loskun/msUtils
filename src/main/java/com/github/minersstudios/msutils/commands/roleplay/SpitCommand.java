@@ -10,6 +10,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -41,7 +42,7 @@ public class SpitCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
@@ -52,7 +53,7 @@ public class SpitCommand implements MSCommandExecutor {
 
         if (!playerInfo.isOnline()) return true;
         if (playerInfo.isMuted()) {
-            ChatUtils.sendWarning(player, "Вы замьючены");
+            ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
             return true;
         }
 
@@ -67,7 +68,7 @@ public class SpitCommand implements MSCommandExecutor {
             return true;
         }
 
-        sendRPEventMessage(player, text(playerInfo.getPlayerFile().getPronouns().getSpitMessage()), ME);
+        sendRPEventMessage(player, playerInfo.getPlayerFile().getPronouns().getSpitMessage(), ME);
         return true;
     }
 

@@ -1,8 +1,9 @@
-package com.github.minersstudios.msutils.inventory;
+package com.github.minersstudios.msutils.menu;
 
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.inventory.CustomInventory;
 import com.github.minersstudios.mscore.inventory.InventoryButton;
+import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.player.*;
 import net.kyori.adventure.text.Component;
@@ -16,34 +17,33 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import static com.github.minersstudios.mscore.config.LanguageFile.renderTranslationComponent;
 import static com.github.minersstudios.mscore.inventory.InventoryButton.playClickSound;
-import static com.github.minersstudios.mscore.utils.ChatUtils.createDefaultStyledText;
-import static net.kyori.adventure.text.Component.text;
 
 public class PronounsMenu {
 
     public static @NotNull CustomInventory create() {
         ItemStack he = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         ItemMeta heMeta = he.getItemMeta();
-        heMeta.displayName(createDefaultStyledText("Он"));
+        heMeta.displayName(renderTranslationComponent("ms.menu.pronouns.button.he.title").style(ChatUtils.DEFAULT_STYLE));
         ArrayList<Component> loreHe = new ArrayList<>();
-        loreHe.add(text("К вам будут обращаться как к нему").color(NamedTextColor.GRAY));
+        loreHe.add(renderTranslationComponent("ms.menu.pronouns.button.he.lore").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         heMeta.lore(loreHe);
         he.setItemMeta(heMeta);
 
         ItemStack she = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta sheMeta = she.getItemMeta();
-        sheMeta.displayName(createDefaultStyledText("Она"));
+        sheMeta.displayName(renderTranslationComponent("ms.menu.pronouns.button.she.title").style(ChatUtils.DEFAULT_STYLE));
         ArrayList<Component> loreShe = new ArrayList<>();
-        loreShe.add(text("К вам будут обращаться как к ней").color(NamedTextColor.GRAY));
+        loreShe.add(renderTranslationComponent("ms.menu.pronouns.button.she.lore").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         sheMeta.lore(loreShe);
         she.setItemMeta(sheMeta);
 
         ItemStack they = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta theyMeta = they.getItemMeta();
-        theyMeta.displayName(createDefaultStyledText("Они"));
+        theyMeta.displayName(renderTranslationComponent("ms.menu.pronouns.button.they.title").style(ChatUtils.DEFAULT_STYLE));
         ArrayList<Component> loreThey = new ArrayList<>();
-        loreThey.add(text("К вам будут обращаться как к ним").color(NamedTextColor.GRAY));
+        loreThey.add(renderTranslationComponent("ms.menu.pronouns.button.they.lore").style(ChatUtils.COLORLESS_DEFAULT_STYLE).color(NamedTextColor.GRAY));
         theyMeta.lore(loreThey);
         they.setItemMeta(theyMeta);
 
@@ -88,7 +88,7 @@ public class PronounsMenu {
                     player.closeInventory();
                 });
 
-        return CustomInventory.create("§8Выберите форму обращения", 1)
+        return CustomInventory.create(Component.translatable("ms.menu.pronouns.title"), 1)
                 .buttonAt(0, heButton)
                 .buttonAt(1, heButton)
                 .buttonAt(2, heButton)
@@ -114,7 +114,7 @@ public class PronounsMenu {
     }
 
     public static void open(@NotNull Player player) {
-        CustomInventory customInventory = MSCore.getConfigCache().customInventoryMap.get("pronouns");
+        CustomInventory customInventory = MSCore.getCache().customInventoryMap.get("pronouns");
         if (customInventory == null) return;
         player.openInventory(customInventory);
     }

@@ -7,9 +7,11 @@ import com.github.minersstudios.msutils.player.Pronouns;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminPronounsCommand {
 
@@ -21,13 +23,14 @@ public class AdminPronounsCommand {
         PlayerFile playerFile = playerInfo.getPlayerFile();
 
         if (args.length == 2) {
-            ChatUtils.sendFine(sender,
-                    text("Местоимение игрока : ")
-                    .append(playerInfo.getGrayIDGreenName())
-                    .appendNewline()
-                    .append(text("    Равно : \""))
-                    .append(text(playerFile.getPronouns().name().toLowerCase(Locale.ROOT)))
-                    .append(text("\""))
+            ChatUtils.sendFine(
+                    sender,
+                    translatable(
+                            "ms.command.player.pronouns.get",
+                            playerInfo.getGrayIDGreenName(),
+                            text(playerInfo.getNickname()),
+                            text(playerFile.getPronouns().name().toLowerCase(Locale.ROOT))
+                    )
             );
             return true;
         } else if (args.length == 3) {
@@ -37,19 +40,26 @@ public class AdminPronounsCommand {
             try {
                 pronouns = Pronouns.valueOf(pronounsString.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ignore) {
-                ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    he, she, they");
+                ChatUtils.sendError(
+                        sender,
+                        translatable(
+                                "ms.command.player.pronouns.use_one_of",
+                                text(Arrays.toString(Pronouns.values()).toLowerCase().replaceAll("[\\[\\]]", ""))
+                        )
+                );
                 return true;
             }
 
             playerFile.setPronouns(pronouns);
             playerFile.save();
-            ChatUtils.sendFine(sender,
-                    text("Местоимение игрока : ")
-                    .append(playerInfo.getGrayIDGreenName())
-                    .appendNewline()
-                    .append(text("    Было успешно изменено на : \""))
-                    .append(text(pronounsString.toLowerCase(Locale.ROOT)))
-                    .append(text("\""))
+            ChatUtils.sendFine(
+                    sender,
+                    translatable(
+                            "ms.command.player.pronouns.set",
+                            playerInfo.getGrayIDGreenName(),
+                            text(playerInfo.getNickname()),
+                            text(pronouns.name().toLowerCase(Locale.ROOT))
+                    )
             );
             return true;
         }

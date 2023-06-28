@@ -7,6 +7,7 @@ import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,7 +37,7 @@ public class AsyncChatListener implements Listener {
         }
 
         if (playerInfo.isMuted()) {
-            sendWarning(player, "Вы замьючены");
+            sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
             return;
         }
 

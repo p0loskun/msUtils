@@ -4,6 +4,7 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
+
 import com.github.minersstudios.msutils.config.ConfigCache;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerInfoMap;
@@ -36,7 +37,7 @@ public class SitCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
@@ -46,7 +47,7 @@ public class SitCommand implements MSCommandExecutor {
 
         if (!playerInfo.isOnline()) return true;
         if (!player.getLocation().subtract(0.0d, 0.2d, 0.0d).getBlock().getType().isSolid()) {
-            ChatUtils.sendWarning(player, text("Сидеть в воздухе нельзя!"));
+            ChatUtils.sendWarning(player, Component.translatable("ms.command.sit.in_air"));
             return true;
         }
 

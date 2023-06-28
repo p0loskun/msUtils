@@ -3,7 +3,6 @@ package com.github.minersstudios.msutils.config;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.anomalies.Anomaly;
 import com.github.minersstudios.msutils.anomalies.AnomalyAction;
-import com.github.minersstudios.msutils.chat.TranslatableMap;
 import com.github.minersstudios.msutils.player.IDMap;
 import com.github.minersstudios.msutils.player.MuteMap;
 import com.github.minersstudios.msutils.player.PlayerInfoMap;
@@ -31,8 +30,6 @@ public final class ConfigCache {
     public final MuteMap muteMap;
     public final IDMap idMap;
 
-    public final TranslatableMap translatableMap;
-
     public final Map<Player, ArmorStand> seats = new HashMap<>();
     public final Map<NamespacedKey, Anomaly> anomalies = new HashMap<>();
     public final Map<Player, Map<AnomalyAction, Long>> playerAnomalyActionMap = new ConcurrentHashMap<>();
@@ -40,8 +37,6 @@ public final class ConfigCache {
     public final Map<UUID, Queue<String>> chatQueue = new HashMap<>();
 
     public final List<BukkitTask> bukkitTasks = new ArrayList<>();
-
-    public final String language;
 
     public final long anomalyCheckRate;
     public final long anomalyParticlesCheckRate;
@@ -65,8 +60,6 @@ public final class ConfigCache {
         this.configFile = MSUtils.getInstance().getConfigFile();
         this.configYaml = YamlConfiguration.loadConfiguration(this.configFile);
 
-        this.language = this.configYaml.getString("language", "ru_ru");
-
         this.developerMode = this.configYaml.getBoolean("developer-mode");
 
         this.anomalyCheckRate = this.configYaml.getLong("anomaly-check-rate");
@@ -87,7 +80,6 @@ public final class ConfigCache {
         this.playerInfoMap = new PlayerInfoMap();
         this.muteMap = new MuteMap();
         this.idMap = new IDMap();
-        this.translatableMap = new TranslatableMap(this.language);
 
         this.loadAnomalies();
     }

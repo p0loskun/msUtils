@@ -13,6 +13,8 @@ import com.github.minersstudios.msutils.tabcompleters.AllLocalPlayers;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -55,9 +57,10 @@ public class PrivateMessageCommand implements MSCommandExecutor {
         PlayerInfo senderInfo = sender instanceof Player player
                 ? playerInfoMap.getPlayerInfo(player)
                 : MSUtils.getConsolePlayerInfo();
+        TranslatableComponent playerNotOnline = Component.translatable("ms.warning.player_not_online");
 
         if (senderInfo.isMuted()) {
-            ChatUtils.sendWarning(sender, "Вы замьючены");
+            ChatUtils.sendWarning(sender, Component.translatable("ms.command.mute.already.receiver"));
             return true;
         }
 
@@ -68,14 +71,14 @@ public class PrivateMessageCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (!(offlinePlayer instanceof Player player)) {
-                ChatUtils.sendWarning(sender, "Данный игрок не в сети");
+                ChatUtils.sendWarning(sender, playerNotOnline);
                 return true;
             }
 
             PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(player);
 
             if (!playerInfo.isOnline() && !sender.hasPermission("msutils.*")) {
-                ChatUtils.sendWarning(sender, "Данный игрок не в сети");
+                ChatUtils.sendWarning(sender, playerNotOnline);
                 return true;
             }
 
@@ -95,11 +98,11 @@ public class PrivateMessageCommand implements MSCommandExecutor {
                 }
             }
 
-            ChatUtils.sendWarning(sender, "Данный игрок не в сети");
+            ChatUtils.sendWarning(sender, playerNotOnline);
             return true;
         }
 
-        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 

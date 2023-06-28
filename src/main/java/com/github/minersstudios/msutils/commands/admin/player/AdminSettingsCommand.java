@@ -4,12 +4,15 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerSettings;
 import com.github.minersstudios.msutils.player.ResourcePack;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminSettingsCommand {
 
@@ -19,7 +22,7 @@ public class AdminSettingsCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
-            ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    resourcepack-type");
+            ChatUtils.sendError(sender, translatable("ms.command.player.settings.use_one_of"));
             return true;
         }
 
@@ -32,13 +35,14 @@ public class AdminSettingsCommand {
             case "resourcepack-type" -> {
                 if (!haveArg) {
                     ResourcePack.Type type = playerSettings.getResourcePackType();
-                    ChatUtils.sendFine(sender,
-                            text("Тип ресурс-пака игрока : ")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .appendNewline()
-                            .append(text("    Равен : \""))
-                            .append(text(type.name().toLowerCase(Locale.ROOT)))
-                            .append(text("\""))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable(
+                                    "ms.command.player.settings.get.resourcepack_type",
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    text(type.name().toLowerCase(Locale.ROOT))
+                            )
                     );
                     return true;
                 }
@@ -52,7 +56,13 @@ public class AdminSettingsCommand {
                 };
 
                 if (type == null) {
-                    ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    full, lite, none, null");
+                    ChatUtils.sendError(
+                            sender,
+                            translatable(
+                                    "ms.command.player.settings.resourcepack_type_use_one_of",
+                                    text(Arrays.toString(ResourcePack.Type.values()).toLowerCase().replaceAll("[\\[\\]]", ""))
+                            )
+                    );
                     return true;
                 }
 
@@ -60,16 +70,20 @@ public class AdminSettingsCommand {
                 playerSettings.save();
 
                 if (type == ResourcePack.Type.NONE || type == ResourcePack.Type.NULL) {
-                    playerInfo.kickPlayer("Вы были кикнуты", "Этот параметр требует повторного захода на сервер");
+                    playerInfo.kickPlayer(
+                            Component.translatable("ms.menu.resource_pack.button.none.kick.title"),
+                            Component.translatable("ms.menu.resource_pack.button.none.kick.subtitle")
+                    );
                 }
 
-                ChatUtils.sendFine(sender,
-                        text("Тип ресурс-пака игрока : ")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .appendNewline()
-                        .append(text("    Был успешно изменён на : \""))
-                        .append(text(paramArgString))
-                        .append(text("\""))
+                ChatUtils.sendFine(
+                        sender,
+                        translatable(
+                                "ms.command.player.settings.set.resourcepack_type",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname()),
+                                text(paramArgString)
+                        )
                 );
                 return true;
             }

@@ -15,6 +15,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -46,36 +48,39 @@ public class KickCommand implements MSCommandExecutor {
 
         ConfigCache configCache = MSUtils.getConfigCache();
         PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
-        String reason = args.length > 1
-                ? ChatUtils.extractMessage(args, 1)
-                : "неизвестно";
+        Component reason = args.length > 1
+                ? text(ChatUtils.extractMessage(args, 1))
+                : text("неизвестно");
+        TranslatableComponent playerNotOnline = Component.translatable("ms.warning.player_not_online");
+        TranslatableComponent kickTitle = Component.translatable("ms.command.kick.message.receiver.title");
+        TranslatableComponent kickSubtitle = Component.translatable("ms.command.kick.message.receiver.subtitle", reason);
+        TranslatableComponent kickMessageFormat = Component.translatable("ms.command.kick.message.sender");
 
         if (IDUtils.matchesIDRegex(args[0])) {
             IDMap idMap = configCache.idMap;
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null || offlinePlayer.getName() == null) {
-                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
                 return true;
             }
 
-            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+            String nickname = offlinePlayer.getName();
+            PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), nickname);
 
-            if (playerInfo.kickPlayer("Вы были кикнуты", reason)) {
-                ChatUtils.sendFine(sender,
-                        text("Игрок : \"")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .append(text("\" был кикнут :\n    - Причина : \""))
-                        .append(text(reason))
+            if (playerInfo.kickPlayer(kickTitle, kickSubtitle)) {
+                ChatUtils.sendFine(
+                        sender,
+                        kickMessageFormat.args(
+                                playerInfo.getGrayIDGreenName(),
+                                text(nickname),
+                                reason
+                        )
                 );
                 return true;
             }
 
-            ChatUtils.sendWarning(sender,
-                    text("Игрок : \"")
-                    .append(playerInfo.getGrayIDGoldName())
-                    .append(text("\" не в сети!"))
-            );
+            ChatUtils.sendWarning(sender, playerNotOnline);
             return true;
         }
 
@@ -83,34 +88,28 @@ public class KickCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, "Данного игрока не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
                 return true;
             }
 
             PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), args[0]);
 
-            if (playerInfo.kickPlayer("Вы были кикнуты", reason)) {
-                ChatUtils.sendFine(sender,
-                        text("Игрок : \"")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .append(text(" ("))
-                        .append(text(args[0]))
-                        .append(text(")\" был кикнут :\n    - Причина : \""))
-                        .append(text(reason))
+            if (playerInfo.kickPlayer(kickTitle, kickSubtitle)) {
+                ChatUtils.sendFine(
+                        sender,
+                        kickMessageFormat.args(
+                                playerInfo.getGrayIDGreenName(),
+                                text(args[0]),
+                                reason
+                        )
                 );
                 return true;
             }
 
-            ChatUtils.sendWarning(sender,
-                    text("Игрок : \"")
-                    .append(playerInfo.getGrayIDGoldName())
-                    .append(text(" ("))
-                    .append(text(args[0]))
-                    .append(text(")\" не в сети!"))
-            );
+            ChatUtils.sendWarning(sender, playerNotOnline);
             return true;
         }
-        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 

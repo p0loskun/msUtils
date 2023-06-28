@@ -5,9 +5,9 @@ import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -38,19 +38,19 @@ public class GetMapLocationCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
         if (!(player.getInventory().getItemInMainHand().getItemMeta() instanceof MapMeta mapMeta)) {
-            ChatUtils.sendWarning(player, "Возьмите карту в правую руку!");
+            ChatUtils.sendWarning(player, Component.translatable("ms.command.get_map_location.no_map_in_right_hand"));
             return true;
         }
 
         MapView mapView = mapMeta.getMapView();
 
         if (mapView == null || mapView.getWorld() == null) {
-            ChatUtils.sendError(sender, "Кажется, что-то пошло не так...");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.something_went_wrong"));
             return true;
         }
 
@@ -58,21 +58,18 @@ public class GetMapLocationCommand implements MSCommandExecutor {
         int z = mapView.getCenterZ();
         int y = mapView.getWorld().getHighestBlockYAt(x, z) + 1;
 
-        ChatUtils.sendWarning(player,
-                text("Мир карты : ")
-                .append(text(mapView.getWorld().getName(), NamedTextColor.WHITE))
-                .append(text("\n ꀓ ", NamedTextColor.WHITE))
-                .append(text("Координаты точки центра карты : ", NamedTextColor.GOLD))
-                .append(text("\n   - X : ", NamedTextColor.GREEN))
-                .append(text(x, NamedTextColor.WHITE))
-                .append(text("\n   - Y : ", NamedTextColor.GREEN))
-                .append(text(y, NamedTextColor.WHITE))
-                .append(text("\n   - Z : ", NamedTextColor.GREEN))
-                .append(text(z, NamedTextColor.WHITE))
-                .append(text("\n\n  Телепортироваться - ЖМЯК\n", Style.style(TextDecoration.BOLD))
-                .clickEvent(ClickEvent.runCommand(
-                 "/tp " + x + " " + y + " " + z
-                )))
+        ChatUtils.sendWarning(
+                player,
+                Component.translatable(
+                        "ms.command.get_map_location.format",
+                        text(mapView.getWorld().getName(), NamedTextColor.WHITE),
+                        text(x, NamedTextColor.WHITE),
+                        text(y, NamedTextColor.WHITE),
+                        text(z, NamedTextColor.WHITE),
+                        Component.translatable("ms.command.get_map_location.command_button_text")
+                        .decorate(TextDecoration.BOLD)
+                        .clickEvent(ClickEvent.runCommand("/tp " + x + " " + y + " " + z))
+                )
         );
         return true;
     }

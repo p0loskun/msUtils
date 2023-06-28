@@ -3,6 +3,7 @@ package com.github.minersstudios.msutils.listeners.inventory;
 import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -59,10 +60,11 @@ public class InventoryClickListener implements Listener {
             if (remove) {
                 clickedInventory.setItem(slot, new ItemStack(Material.AIR));
                 ChatUtils.sendWarning(
-                        text(" У игрока : ")
-                        .append(text(player.getName()))
-                        .append(text(" был убран предмет : \n"))
-                        .append(text(currentItem.toString()))
+                        Component.translatable(
+                                "ms.info.player_item_removed",
+                                text(player.getName()),
+                                text(currentItem.toString())
+                        )
                 );
                 event.setCancelled(true);
             }

@@ -128,12 +128,12 @@ public class PlayerInfo {
         return params.getSource();
     }
 
-    public @NotNull String getMutedFrom(@NotNull CommandSender sender) throws IllegalStateException {
-        return DateUtils.getSenderDate(this.getMutedFrom(), sender);
+    public @NotNull Component getMutedFrom(@NotNull CommandSender sender) throws IllegalStateException {
+        return text(DateUtils.getSenderDate(this.getMutedFrom(), sender));
     }
 
-    public @NotNull String getMutedFrom(@NotNull InetAddress address) throws IllegalStateException {
-        return DateUtils.getDate(this.getMutedFrom(), address);
+    public @NotNull Component getMutedFrom(@NotNull InetAddress address) throws IllegalStateException {
+        return text(DateUtils.getDate(this.getMutedFrom(), address));
     }
 
     public @NotNull Instant getMutedFrom() throws IllegalStateException {
@@ -144,12 +144,12 @@ public class PlayerInfo {
         return params.getCreated();
     }
 
-    public @NotNull String getMutedTo(@NotNull CommandSender sender) throws IllegalStateException {
-        return DateUtils.getSenderDate(this.getMutedTo(), sender);
+    public @NotNull Component getMutedTo(@NotNull CommandSender sender) throws IllegalStateException {
+        return text(DateUtils.getSenderDate(this.getMutedTo(), sender));
     }
 
-    public @NotNull String getMutedTo(@NotNull InetAddress address) throws IllegalStateException {
-        return DateUtils.getDate(this.getMutedTo(), address);
+    public @NotNull Component getMutedTo(@NotNull InetAddress address) throws IllegalStateException {
+        return text(DateUtils.getDate(this.getMutedTo(), address));
     }
 
     public @NotNull Instant getMutedTo() throws IllegalStateException {
@@ -171,61 +171,64 @@ public class PlayerInfo {
 
         if (value) {
             if (this.isMuted()) {
-                ChatUtils.sendWarning(sender,
-                        text("Игрок : \"")
-                        .append(this.getGrayIDGoldName())
-                        .append(text(" ("))
-                        .append(text(this.nickname))
-                        .append(text(")\" уже замьючен"))
+                ChatUtils.sendWarning(
+                        sender,
+                        Component.translatable(
+                                "ms.command.mute.already.sender",
+                                this.getGrayIDGoldName(),
+                                text(this.nickname)
+                        )
                 );
                 return;
             }
 
             muteMap.put(this.offlinePlayer, date, reason, sender.getName());
-            ChatUtils.sendFine(sender,
-                    text("Игрок : \"")
-                    .append(this.getGrayIDGreenName())
-                    .append(text(" ("))
-                    .append(text(this.nickname))
-                    .append(text(")\" был замьючен :\n    - Причина : \""))
-                    .append(text(reason))
-                    .append(text("\"\n    - До : "))
-                    .append(text(DateUtils.getSenderDate(date, sender)))
+            ChatUtils.sendFine(
+                    sender,
+                    Component.translatable(
+                            "ms.command.mute.message.sender",
+                            this.getGrayIDGreenName(),
+                            text(this.nickname),
+                            text(reason),
+                            text(DateUtils.getSenderDate(date, sender))
+                    )
             );
 
             if (player != null) {
                 ChatUtils.sendWarning(
                         player,
-                        text("Вы были замьючены : ")
-                        .append(text("\n    - Причина : \""))
-                        .append(text(reason))
-                        .append(text("\"\n    - До : "))
-                        .append(text(DateUtils.getSenderDate(date, player)))
+                        Component.translatable(
+                                "ms.command.mute.message.receiver",
+                                text(reason),
+                                text(DateUtils.getSenderDate(date, sender))
+                        )
                 );
             }
         } else {
             if (!this.isMuted()) {
-                ChatUtils.sendWarning(sender,
-                        text("Игрок : \"")
-                        .append(this.getGrayIDGoldName())
-                        .append(text(" ("))
-                        .append(text(this.nickname))
-                        .append(text(")\" не замьючен"))
+                ChatUtils.sendWarning(
+                        sender,
+                        Component.translatable(
+                                "ms.command.unmute.not_muted",
+                                this.getGrayIDGoldName(),
+                                text(this.nickname)
+                        )
                 );
                 return;
             }
 
             muteMap.remove(this.offlinePlayer);
-            ChatUtils.sendFine(sender,
-                    text("Игрок : \"")
-                    .append(this.getGrayIDGreenName())
-                    .append(text(" ("))
-                    .append(text(this.nickname))
-                    .append(text(")\" был размучен"))
+            ChatUtils.sendFine(
+                    sender,
+                    Component.translatable(
+                            "ms.command.unmute.sender.message",
+                            this.getGrayIDGreenName(),
+                            text(this.nickname)
+                    )
             );
 
             if (player != null) {
-                ChatUtils.sendWarning(player, "Вы были размучены");
+                ChatUtils.sendWarning(player, Component.translatable("ms.command.unmute.receiver.message"));
             }
         }
     }
@@ -245,13 +248,13 @@ public class PlayerInfo {
         return this.getBanEntry() != null;
     }
 
-    public @NotNull String getBanReason() throws IllegalStateException {
+    public @NotNull Component getBanReason() throws IllegalStateException {
         BanEntry banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
         String reason = banEntry.getReason();
-        return reason == null ? "неизвестно" : reason;
+        return reason == null ? text("неизвестно") : text(reason);
     }
 
     public void setBanReason(@NotNull String reason) {
@@ -280,12 +283,12 @@ public class PlayerInfo {
         banEntry.save();
     }
 
-    public @NotNull String getBannedFrom(@NotNull CommandSender sender) throws IllegalStateException {
-        return DateUtils.getSenderDate(this.getBannedFrom(), sender);
+    public @NotNull Component getBannedFrom(@NotNull CommandSender sender) throws IllegalStateException {
+        return text(DateUtils.getSenderDate(this.getBannedFrom(), sender));
     }
 
-    public @NotNull String getBannedFrom(@NotNull InetAddress address) throws IllegalStateException {
-        return DateUtils.getDate(this.getBannedFrom(), address);
+    public @NotNull Component getBannedFrom(@NotNull InetAddress address) throws IllegalStateException {
+        return text(DateUtils.getDate(this.getBannedFrom(), address));
     }
 
     public @NotNull Instant getBannedFrom() throws IllegalStateException {
@@ -296,22 +299,26 @@ public class PlayerInfo {
         return banEntry.getCreated().toInstant();
     }
 
-    public @NotNull String getBannedTo(@NotNull CommandSender sender) throws IllegalStateException {
+    public @NotNull Component getBannedTo(@NotNull CommandSender sender) throws IllegalStateException {
         BanEntry banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
         Date expiration = banEntry.getExpiration();
-        return expiration == null ? "навсегда" : DateUtils.getSenderDate(expiration.toInstant(), sender);
+        return expiration == null
+                ? Component.translatable("ms.command.ban.time.forever")
+                : text(DateUtils.getSenderDate(expiration.toInstant(), sender));
     }
 
-    public @NotNull String getBannedTo(@NotNull InetAddress address) throws IllegalStateException {
+    public @NotNull Component getBannedTo(@NotNull InetAddress address) throws IllegalStateException {
         BanEntry banEntry = this.getBanEntry();
         if (banEntry == null) {
             throw new IllegalStateException("Player is not banned");
         }
         Date expiration = banEntry.getExpiration();
-        return expiration == null ? "навсегда" : DateUtils.getDate(expiration.toInstant(), address);
+        return expiration == null
+                ? Component.translatable("ms.command.ban.time.forever")
+                : text(DateUtils.getDate(expiration.toInstant(), address));
     }
 
     public @Nullable Date getBannedTo() throws IllegalStateException {
@@ -341,52 +348,57 @@ public class PlayerInfo {
 
         if (value) {
             if (this.isBanned()) {
-                ChatUtils.sendWarning(sender,
-                        text("Игрок : \"")
-                        .append(this.getGrayIDGoldName())
-                        .append(text(" ("))
-                        .append(text(this.nickname))
-                        .append(text(")\" уже забанен"))
+                ChatUtils.sendWarning(
+                        sender,
+                        Component.translatable(
+                                "ms.command.ban.already.sender",
+                                this.getGrayIDGoldName(),
+                                text(this.nickname)
+                        )
                 );
                 return;
             }
 
             banList.addBan(this.nickname, reason, Date.from(date), sender.getName());
             this.kickPlayer(
-                    "Вы были забанены",
-                    reason
-                    + "\"\n До : \n"
-                    + DateUtils.getSenderDate(date, this.getOnlinePlayer())
+                    Component.translatable("ms.command.ban.message.receiver.title"),
+                    Component.translatable(
+                            "ms.command.ban.message.receiver.subtitle",
+                            text(reason),
+                            text(DateUtils.getSenderDate(date, this.getOnlinePlayer()))
+                    )
             );
-            ChatUtils.sendFine(sender,
-                    text("Игрок : \"")
-                    .append(this.getGrayIDGreenName())
-                    .append(text(" ("))
-                    .append(text(this.nickname))
-                    .append(text(")\" был забанен :\n    - Причина : \""))
-                    .append(text(reason))
-                    .append(text("\"\n    - До : "))
-                    .append(text(DateUtils.getSenderDate(date, sender)))
+            ChatUtils.sendFine(
+                    sender,
+                    Component.translatable(
+                            "ms.command.ban.message.sender",
+                            this.getGrayIDGreenName(),
+                            text(this.nickname),
+                            text(reason),
+                            text(DateUtils.getSenderDate(date, sender))
+                    )
             );
         } else {
             if (!this.isBanned()) {
-                ChatUtils.sendWarning(sender,
-                        text("Игрок : \"")
-                        .append(this.getGrayIDGoldName())
-                        .append(text(" ("))
-                        .append(text(this.nickname))
-                        .append(text(")\" не забанен"))
+                ChatUtils.sendWarning(
+                        sender,
+                        Component.translatable(
+                                "ms.command.unban.not_banned",
+                                this.getGrayIDGoldName(),
+                                text(this.nickname)
+                        )
                 );
                 return;
             }
 
             banList.pardon(this.nickname);
-            ChatUtils.sendFine(sender,
-                    text("Игрок : \"")
-                    .append(this.getGrayIDGreenName())
-                    .append(text(" ("))
-                    .append(text(this.nickname))
-                    .append(text(")\" был разбанен"))
+            ChatUtils.sendFine(
+                    sender,
+                    Component.translatable(
+                            "ms.command.unban.message.sender",
+                            this.getGrayIDGreenName(),
+                            text(this.nickname)
+                    )
             );
         }
     }
@@ -518,11 +530,11 @@ public class PlayerInfo {
 
         this.playerFile.save();
         ChatUtils.sendFine(
-                text("Создан файл с данными игрока : \"")
-                .append(text(this.nickname))
-                .append(text("\" с названием : \""))
-                .append(text(this.offlinePlayer.getUniqueId().toString()))
-                .append(text(".yml\""))
+                Component.translatable(
+                        "ms.info.player_file_created",
+                        text(this.nickname),
+                        text(this.offlinePlayer.getUniqueId().toString())
+                )
         );
     }
 
@@ -567,8 +579,8 @@ public class PlayerInfo {
     }
 
     public boolean kickPlayer(
-            @NotNull String title,
-            @NotNull String reason
+            @NotNull Component title,
+            @NotNull Component reason
     ) {
         Player player = this.getOnlinePlayer();
 
@@ -580,14 +592,11 @@ public class PlayerInfo {
 
         this.initQuit();
         player.kick(
-                Component.empty()
-                .append(text(title).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
-                .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
-                .append(text("\nПричина :\n\"")
-                .append(text(reason)
-                .append(text("\"")))
-                .color(NamedTextColor.GRAY))
-                .append(text("\n\n<---====+====--->\n", NamedTextColor.DARK_GRAY))
+                Component.translatable(
+                        "ms.format.leave.message",
+                        title.color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
+                        reason.color(NamedTextColor.GRAY)
+                ).color(NamedTextColor.DARK_GRAY)
         );
         return true;
     }
@@ -624,7 +633,7 @@ public class PlayerInfo {
         });
 
         if (message == null) {
-            sendRPEventMessage(player, text(this.playerFile.getPronouns().getSitMessage()), ME);
+            sendRPEventMessage(player, this.playerFile.getPronouns().getSitMessage(), ME);
         } else {
             sendRPEventMessage(player, message, text("приседая"), TODO);
         }
@@ -654,7 +663,7 @@ public class PlayerInfo {
         player.teleport(getUpLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
         if (message == null) {
-            sendRPEventMessage(player, text(this.playerFile.getPronouns().getUnSitMessage()), ME);
+            sendRPEventMessage(player, this.playerFile.getPronouns().getUnSitMessage(), ME);
         } else {
             sendRPEventMessage(player, message, text("вставая"), TODO);
         }
@@ -676,7 +685,10 @@ public class PlayerInfo {
         } else {
             if (!contains) return false;
             userWhiteList.remove(gameProfile);
-            this.kickPlayer("Вы были кикнуты", "Вас удалили из белого списка");
+            this.kickPlayer(
+                    Component.translatable("ms.command.white_list.remove.receiver.message.title"),
+                    Component.translatable("ms.command.white_list.remove.receiver.message.subtitle")
+            );
         }
         return true;
     }

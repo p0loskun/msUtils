@@ -13,6 +13,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import org.bukkit.Bukkit;
@@ -63,7 +64,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
                 return true;
             }
             return teleportToWorld(sender, offlinePlayer, args);
@@ -73,13 +74,13 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, "Данного игрока не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
                 return true;
             }
             return teleportToWorld(sender, offlinePlayer, args);
         }
 
-        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 
@@ -140,7 +141,7 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
-            ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
             return true;
         }
 
@@ -148,17 +149,13 @@ public class WorldTeleportCommand implements MSCommandExecutor {
         PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 
         if (offlinePlayer.getPlayer() == null) {
-            ChatUtils.sendWarning(sender,
-                    text("Игрок : \"")
-                    .append(playerInfo.getGrayIDGoldName())
-                    .append(text("\" не в сети!"))
-            );
+            ChatUtils.sendWarning(sender, Component.translatable("ms.warning.player_not_online"));
             return true;
         }
 
         World world = Bukkit.getWorld(args[1]);
         if (world == null) {
-            ChatUtils.sendWarning(sender, "Такого мира не существует!");
+            ChatUtils.sendWarning(sender, Component.translatable("ms.command.world_teleport.world_not_found"));
             return true;
         }
 
@@ -181,26 +178,23 @@ public class WorldTeleportCommand implements MSCommandExecutor {
             z = Double.parseDouble(args[4]);
 
             if (x > 29999984 || z > 29999984) {
-                ChatUtils.sendWarning(sender, "Указаны слишком большие координаты!");
+                ChatUtils.sendWarning(sender, Component.translatable("ms.command.world_teleport.too_big_coordinates"));
                 return true;
             }
         }
 
         offlinePlayer.getPlayer().teleportAsync(new Location(world, x, y, z), PlayerTeleportEvent.TeleportCause.PLUGIN);
-        ChatUtils.sendFine(sender,
-                text("Игрок : \"")
-                .append(playerInfo.getGrayIDGreenName())
-                .append(text(" ("))
-                .append(text(playerInfo.getNickname()))
-                .append(text(")\" был телепортирован :"))
-                .append(text("\n    - Мир : "))
-                .append(text(world.getName()))
-                .append(text("\n    - X : "))
-                .append(text(x))
-                .append(text("\n    - Y : "))
-                .append(text(y))
-                .append(text("\n    - Z : "))
-                .append(text(z))
+        ChatUtils.sendFine(
+                sender,
+                Component.translatable(
+                        "ms.command.world_teleport.sender.message",
+                        playerInfo.getGrayIDGreenName(),
+                        text(playerInfo.getNickname()),
+                        text(world.getName()),
+                        text(x),
+                        text(y),
+                        text(z)
+                )
         );
         return true;
     }

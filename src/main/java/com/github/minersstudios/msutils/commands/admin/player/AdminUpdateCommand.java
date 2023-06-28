@@ -2,10 +2,9 @@ package com.github.minersstudios.msutils.commands.admin.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class AdminUpdateCommand {
 
@@ -14,10 +13,13 @@ public class AdminUpdateCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         playerInfo.update();
-        ChatUtils.sendFine(sender,
-                text("Данные игрока : ")
-                .append(playerInfo.getGrayIDGreenName())
-                .append(text(" были успешно обновлены"))
+        ChatUtils.sendFine(
+                sender,
+                Component.translatable(
+                        "ms.command.player.update.success",
+                        playerInfo.getGrayIDGreenName(),
+                        Component.text(playerInfo.getNickname())
+                )
         );
         return true;
     }

@@ -2,10 +2,11 @@ package com.github.minersstudios.msutils.player;
 
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.config.ConfigCache;
-import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
+import com.github.minersstudios.msutils.menu.ResourcePackMenu;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -190,7 +191,10 @@ public class ResourcePack {
                 || Type.LITE.getUrl() == null
                 || Type.LITE.getHash() == null
         ) {
-            playerInfo.kickPlayer("Вы были кикнуты", "Сервер ещё не запущен");
+            playerInfo.kickPlayer(
+                    Component.translatable("ms.resource_pack.not_initialized.title"),
+                    Component.translatable("ms.resource_pack.not_initialized.subtitle")
+            );
             return;
         }
 

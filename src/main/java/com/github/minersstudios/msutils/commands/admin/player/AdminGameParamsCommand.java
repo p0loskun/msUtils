@@ -1,9 +1,11 @@
 package com.github.minersstudios.msutils.commands.admin.player;
 
 import com.github.minersstudios.mscore.utils.ChatUtils;
+
 import com.github.minersstudios.msutils.player.PlayerFile;
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 public class AdminGameParamsCommand {
 
@@ -23,7 +26,7 @@ public class AdminGameParamsCommand {
             @NotNull PlayerInfo playerInfo
     ) {
         if (args.length < 3) {
-            ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    game-mode, health, air");
+            ChatUtils.sendError(sender, translatable("ms.command.player.game_params.use_one_of"));
             return true;
         }
 
@@ -32,26 +35,19 @@ public class AdminGameParamsCommand {
         String paramString = args[2].toLowerCase(Locale.ROOT);
         String paramArgString = haveArg ? args[3].toLowerCase(Locale.ROOT) : "";
         Player player = offlinePlayer.getPlayer();
+        TranslatableComponent wrongFormat = Component.translatable("ms.error.wrong_format");
 
         switch (paramString) {
             case "game-mode" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(sender,
-                            text("Режим игры игрока : ")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .appendNewline()
-                            .append(text("    Равен : "))
-                            .appendNewline()
-                            .append(text("      - (В файле) \""))
-                            .append(text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT)))
-                            .append(text("\""))
-                            .append(
-                                    player == null
-                                            ? text()
-                                            : Component.newline()
-                                            .append(text("      - (В игре) \""))
-                                            .append(text(player.getGameMode().name().toLowerCase(Locale.ROOT)))
-                                            .append(text("\""))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable(
+                                    player == null ? "ms.command.player.game_params.get.game_mode" : "ms.command.player.game_params.get.game_mode_full",
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    text(playerFile.getGameMode().name().toLowerCase(Locale.ROOT)),
+                                    player == null ? text() : text(player.getGameMode().name().toLowerCase(Locale.ROOT))
                             )
                     );
                     return true;
@@ -61,7 +57,7 @@ public class AdminGameParamsCommand {
                 try {
                     gameMode = GameMode.valueOf(paramArgString.toUpperCase(Locale.ROOT));
                 } catch (IllegalArgumentException ignore) {
-                    ChatUtils.sendError(sender, "Используйте один из доступных вариантов :\n    survival, creative, spectator, adventure");
+                    ChatUtils.sendError(sender, translatable("ms.command.player.game_params.game_mode_use_one_of"));
                     return true;
                 }
 
@@ -71,32 +67,27 @@ public class AdminGameParamsCommand {
 
                 playerFile.setGameMode(gameMode);
                 playerFile.save();
-                ChatUtils.sendFine(sender,
-                        text("Режим игры игрока : ")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .appendNewline()
-                        .append(text("    Был успешно изменён на : \""))
-                        .append(text(paramArgString))
-                        .append(text("\""))
+                ChatUtils.sendFine(
+                        sender,
+                        translatable(
+                                "ms.command.player.game_params.set.game_mode",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname()),
+                                text(paramArgString)
+                        )
                 );
                 return true;
             }
             case "health" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(sender,
-                            text("Уровень здоровья игрока : ")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .appendNewline()
-                            .append(text("    Равен : "))
-                            .appendNewline()
-                            .append(text("      - (В файле) "))
-                            .append(text(Double.toString(playerFile.getHealth())))
-                            .append(
-                                    player == null
-                                            ? text()
-                                            : Component.newline()
-                                            .append(text("      - (В игре) "))
-                                            .append(text(Double.toString(player.getHealth())))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable(
+                                    player == null ? "ms.command.player.game_params.get.health" : "ms.command.player.game_params.get.health_full",
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    text(Double.toString(playerFile.getHealth())),
+                                    player == null ? text() : text(Double.toString(player.getHealth()))
                             )
                     );
                     return true;
@@ -106,7 +97,7 @@ public class AdminGameParamsCommand {
                 try {
                     health = Double.parseDouble(paramArgString);
                 } catch (NumberFormatException ignore) {
-                    ChatUtils.sendError(sender, "Введите показатель в правильном формате");
+                    ChatUtils.sendError(sender, wrongFormat);
                     return true;
                 }
 
@@ -116,31 +107,27 @@ public class AdminGameParamsCommand {
 
                 playerFile.setHealth(health);
                 playerFile.save();
-                ChatUtils.sendFine(sender,
-                        text("Уровень здоровья игрока : ")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .appendNewline()
-                        .append(text("    Был успешно изменён на : "))
-                        .append(text(Double.toString(health)))
+                ChatUtils.sendFine(
+                        sender,
+                        translatable(
+                                "ms.command.player.game_params.set.health",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname()),
+                                text(paramArgString)
+                        )
                 );
                 return true;
             }
             case "air" -> {
                 if (!haveArg) {
-                    ChatUtils.sendFine(sender,
-                            text("Уровень воздуха игрока : ")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .appendNewline()
-                            .append(text("    Равен : "))
-                            .appendNewline()
-                            .append(text("      - (В файле) "))
-                            .append(text(playerFile.getAir()))
-                            .append(
-                                    player == null
-                                            ? text()
-                                            : Component.newline()
-                                            .append(text("      - (В игре) "))
-                                            .append(text(player.getRemainingAir()))
+                    ChatUtils.sendFine(
+                            sender,
+                            translatable(
+                                    player == null ? "ms.command.player.game_params.get.air" : "ms.command.player.game_params.get.air_full",
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(playerInfo.getNickname()),
+                                    text(playerFile.getAir()),
+                                    player == null ? text() : text(player.getRemainingAir())
                             )
                     );
                     return true;
@@ -149,7 +136,7 @@ public class AdminGameParamsCommand {
                 try {
                     air = Integer.parseInt(paramArgString);
                 } catch (NumberFormatException ignore) {
-                    ChatUtils.sendError(sender, "Введите показатель в правильном формате");
+                    ChatUtils.sendError(sender, wrongFormat);
                     return true;
                 }
 
@@ -159,12 +146,14 @@ public class AdminGameParamsCommand {
 
                 playerFile.setAir(air);
                 playerFile.save();
-                ChatUtils.sendFine(sender,
-                        text("Уровень воздуха игрока : ")
-                        .append(playerInfo.getGrayIDGreenName())
-                        .appendNewline()
-                        .append(text("    Был успешно изменён на : "))
-                        .append(text(air))
+                ChatUtils.sendFine(
+                        sender,
+                        translatable(
+                                "ms.command.player.game_params.set.air",
+                                playerInfo.getGrayIDGreenName(),
+                                text(playerInfo.getNickname()),
+                                text(paramArgString)
+                        )
                 );
                 return true;
             }

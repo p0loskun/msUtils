@@ -13,6 +13,7 @@ import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -60,7 +61,7 @@ public class UnMuteCommand implements MSCommandExecutor {
                     || !offlinePlayer.hasPlayedBefore()
                     || StringUtils.isBlank(offlinePlayer.getName())
             ) {
-                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
                 return true;
             }
 
@@ -74,7 +75,7 @@ public class UnMuteCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(name);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, "Данного игрока не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
                 return true;
             }
 
@@ -82,7 +83,7 @@ public class UnMuteCommand implements MSCommandExecutor {
                     .setMuted(false, sender);
             return true;
         }
-        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 

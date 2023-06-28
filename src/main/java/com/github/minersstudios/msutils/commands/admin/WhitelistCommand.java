@@ -12,6 +12,8 @@ import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.github.minersstudios.msutils.utils.IDUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -47,16 +49,18 @@ public class WhitelistCommand implements MSCommandExecutor {
 
         if (args[0].equalsIgnoreCase("reload")) {
             Bukkit.reloadWhitelist();
-            ChatUtils.sendFine(sender, "Вайт-Лист был перезагружен");
+            ChatUtils.sendFine(sender, Component.translatable("ms.command.white_list.reload"));
             return true;
         }
 
         ConfigCache configCache = MSUtils.getConfigCache();
         PlayerInfoMap playerInfoMap = configCache.playerInfoMap;
+        TranslatableComponent removedFormat = Component.translatable("ms.command.white_list.remove.sender.message");
+        TranslatableComponent alreadyFormat = Component.translatable("ms.command.white_list.add.already");
 
         if (args.length > 1 && IDUtils.matchesIDRegex(args[1])) {
             if (args[0].equalsIgnoreCase("add")) {
-                ChatUtils.sendWarning(sender, "Для добавления игрока используйте ник!");
+                ChatUtils.sendWarning(sender, Component.translatable("ms.command.white_list.add.nickname_warning"));
                 return true;
             }
 
@@ -65,29 +69,29 @@ public class WhitelistCommand implements MSCommandExecutor {
                 OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[1]);
 
                 if (offlinePlayer == null || offlinePlayer.getName() == null) {
-                    ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                    ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
                     return true;
                 }
 
                 PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
 
                 if (playerInfo.setWhiteListed(false)) {
-                    ChatUtils.sendFine(sender,
-                            text("Игрок : \"")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .append(text(" ("))
-                            .append(text(offlinePlayer.getName()))
-                            .append(text(")\" был удалён из белого списка"))
+                    ChatUtils.sendFine(
+                            sender,
+                            removedFormat.args(
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(offlinePlayer.getName())
+                            )
                     );
                     return true;
                 }
 
-                ChatUtils.sendWarning(sender,
-                        text("Игрок : \"")
-                        .append(playerInfo.getGrayIDGoldName())
-                        .append(text(" ("))
-                        .append(text(offlinePlayer.getName()))
-                        .append(text(")\" не состоит в белом списке"))
+                ChatUtils.sendWarning(
+                        sender,
+                        alreadyFormat.args(
+                                playerInfo.getGrayIDGoldName(),
+                                text(offlinePlayer.getName())
+                        )
                 );
                 return true;
             }
@@ -97,7 +101,7 @@ public class WhitelistCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[1]);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, "Данного игрока не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
                 return true;
             }
 
@@ -105,50 +109,52 @@ public class WhitelistCommand implements MSCommandExecutor {
 
             if (args[0].equalsIgnoreCase("add")) {
                 if (playerInfo.setWhiteListed(true)) {
-                    ChatUtils.sendFine(sender,
-                            text("Игрок : \"")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .append(text(" ("))
-                            .append(text(args[1]))
-                            .append(text(")\" был добавлен в белый список"))
+                    ChatUtils.sendFine(
+                            sender,
+                            Component.translatable(
+                                    "ms.command.white_list.add.sender.message",
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(args[1])
+                            )
                     );
                     return true;
                 }
 
-                ChatUtils.sendWarning(sender,
-                        text("Игрок : \"")
-                        .append(playerInfo.getGrayIDGoldName())
-                        .append(text(" ("))
-                        .append(text(args[1]))
-                        .append(text(")\" уже состоит в белом списке"))
+                ChatUtils.sendWarning(
+                        sender,
+                        alreadyFormat.args(
+                                playerInfo.getGrayIDGoldName(),
+                                text(args[1])
+                        )
                 );
                 return true;
             }
             if (args[0].equalsIgnoreCase("remove")) {
                 if (playerInfo.setWhiteListed(false)) {
-                    ChatUtils.sendFine(sender,
-                            text("Игрок : \"")
-                            .append(playerInfo.getGrayIDGreenName())
-                            .append(text(" ("))
-                            .append(text(args[1]))
-                            .append(text(")\" был удалён из белого списка"))
+                    ChatUtils.sendFine(
+                            sender,
+                            removedFormat.args(
+                                    playerInfo.getGrayIDGreenName(),
+                                    text(args[1])
+                            )
                     );
                     return true;
                 }
 
-                ChatUtils.sendWarning(sender,
-                        text("Игрок : \"")
-                        .append(playerInfo.getGrayIDGoldName())
-                        .append(text(" ("))
-                        .append(text(args[1]))
-                        .append(text(")\" не состоит в белом списке"))
+                ChatUtils.sendWarning(
+                        sender,
+                        Component.translatable(
+                                "ms.command.white_list.remove.not_found",
+                                playerInfo.getGrayIDGoldName(),
+                                text(args[1])
+                        )
                 );
                 return true;
             }
             return false;
         }
 
-        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 

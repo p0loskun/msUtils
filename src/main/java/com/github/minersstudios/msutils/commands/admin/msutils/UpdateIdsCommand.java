@@ -4,6 +4,7 @@ import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
 import com.github.minersstudios.msutils.config.ConfigCache;
 import com.github.minersstudios.msutils.player.PlayerInfo;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,15 +17,13 @@ public class UpdateIdsCommand {
         ConfigCache configCache = MSUtils.getConfigCache();
 
         configCache.idMap.reloadIds();
-
-        for (PlayerInfo playerInfo : configCache.playerInfoMap.getMap().values()) {
-            playerInfo.initNames();
-        }
-
-        ChatUtils.sendFine(sender,
-                text("Список айди был успешно перезагружен за ")
-                .append(text(System.currentTimeMillis() - time))
-                .append(text("ms"))
+        configCache.playerInfoMap.getMap().values().forEach(PlayerInfo::initNames);
+        ChatUtils.sendFine(
+                sender,
+                Component.translatable(
+                        "ms.command.msutils.update_ids.success",
+                        text(System.currentTimeMillis() - time)
+                )
         );
     }
 }

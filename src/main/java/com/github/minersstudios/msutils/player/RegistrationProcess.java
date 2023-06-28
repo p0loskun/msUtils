@@ -6,8 +6,8 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.github.minersstudios.msutils.MSUtils;
-import com.github.minersstudios.msutils.inventory.PronounsMenu;
-import com.github.minersstudios.msutils.inventory.ResourcePackMenu;
+import com.github.minersstudios.msutils.menu.PronounsMenu;
+import com.github.minersstudios.msutils.menu.ResourcePackMenu;
 import com.github.minersstudios.msutils.utils.MSPlayerUtils;
 import com.github.minersstudios.msutils.utils.MessageUtils;
 import com.google.common.collect.Lists;
@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.function.BiPredicate;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 
 public class RegistrationProcess {
     private Player player;
@@ -39,19 +40,24 @@ public class RegistrationProcess {
         this.player.playSound(this.playerLocation, Sound.MUSIC_DISC_FAR, SoundCategory.MUSIC, 0.15f, 1.25f);
         playerInfo.createPlayerFile();
 
-        this.sendDialogueMessage("Оу...", 100L);
-        this.sendDialogueMessage("Крайне странное местечко", 150L);
-        this.sendDialogueMessage("Ничего не напоминает?", 225L);
-        this.sendDialogueMessage("Ну ладно...", 300L);
-        this.sendDialogueMessage("Где-то я уже тебя видел", 350L);
-        this.sendDialogueMessage("Напомни-ка своё имя", 400L);
-        this.sendDialogueMessage("Только говори честно, иначе буду тебя ошибочно называть до конца дней своих", 450L);
+        this.sendDialogueMessage(translatable("ms.registration.message.0"), 100L);
+        this.sendDialogueMessage(translatable("ms.registration.message.1"), 150L);
+        this.sendDialogueMessage(translatable("ms.registration.message.2"), 225L);
+        this.sendDialogueMessage(translatable("ms.registration.message.3"), 300L);
+        this.sendDialogueMessage(translatable("ms.registration.message.4"), 350L);
+        this.sendDialogueMessage(translatable("ms.registration.message.5"), 400L);
+        this.sendDialogueMessage(translatable("ms.registration.message.6"), 450L);
 
         Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setFirstname, 550L);
     }
 
     private void setFirstname() {
-        SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "имя").response((player, strings) -> {
+        SignMenu menu = new SignMenu(
+                translatable("ms.registration.sign.first_name.0"),
+                translatable("ms.registration.sign.first_name.1"),
+                translatable("ms.registration.sign.first_name.2"),
+                translatable("ms.registration.sign.first_name.3")
+        ).response((player, strings) -> {
             String firstname = strings[0].trim();
 
             if (!MSPlayerUtils.matchesNameRegex(firstname)) {
@@ -61,10 +67,10 @@ public class RegistrationProcess {
 
             this.playerInfo.getPlayerFile().getPlayerName().setFirstName(firstname);
 
-            this.sendDialogueMessage("Интересно...", 25L);
-            this.sendDialogueMessage("За свою жизнь, я многих повидал с таким именем", 100L);
-            this.sendDialogueMessage("Но тебя вижу впервые", 225L);
-            this.sendDialogueMessage("Можешь, пожалуйста, уточнить свою фамилию и отчество?", 300L);
+            this.sendDialogueMessage(translatable("ms.registration.message.7"), 25L);
+            this.sendDialogueMessage(translatable("ms.registration.message.8"), 100L);
+            this.sendDialogueMessage(translatable("ms.registration.message.9"), 225L);
+            this.sendDialogueMessage(translatable("ms.registration.message.10"), 300L);
 
             Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setLastname, 375L);
             return true;
@@ -73,7 +79,12 @@ public class RegistrationProcess {
     }
 
     private void setLastname() {
-        SignMenu menu = new SignMenu("", "---===+===---", "Введите вашу", "фамилию").response((player, strings) -> {
+        SignMenu menu = new SignMenu(
+                translatable("ms.registration.sign.last_name.0"),
+                translatable("ms.registration.sign.last_name.1"),
+                translatable("ms.registration.sign.last_name.2"),
+                translatable("ms.registration.sign.last_name.3")
+        ).response((player, strings) -> {
             String lastname = strings[0].trim();
 
             if (!MSPlayerUtils.matchesNameRegex(lastname)) {
@@ -89,7 +100,12 @@ public class RegistrationProcess {
     }
 
     private void setPatronymic() {
-        SignMenu menu = new SignMenu("", "---===+===---", "Введите ваше", "отчество").response((player, strings) -> {
+        SignMenu menu = new SignMenu(
+                translatable("ms.registration.sign.patronymic.0"),
+                translatable("ms.registration.sign.patronymic.1"),
+                translatable("ms.registration.sign.patronymic.2"),
+                translatable("ms.registration.sign.patronymic.3")
+        ).response((player, strings) -> {
             String patronymic = strings[0].trim();
 
             if (!MSPlayerUtils.matchesNameRegex(patronymic)) {
@@ -106,15 +122,17 @@ public class RegistrationProcess {
             this.playerInfo.initNames();
 
             this.sendDialogueMessage(
-                    "Ну вот и отлично, "
-                    + "§7" + "[" + this.playerInfo.getID(true, false) + "] "
-                    + "§f" + name.getFirstName() + " "
-                    + name.getLastName() + " "
-                    + name.getPatronymic(),
+                    translatable(
+                            "ms.registration.message.11",
+                            text(this.playerInfo.getID(true, false)),
+                            text(name.getFirstName()),
+                            text(name.getLastName()),
+                            text(name.getPatronymic())
+                    ),
                     25L
             );
-            this.sendDialogueMessage("Слушай", 100L);
-            this.sendDialogueMessage("А как мне к тебе обращаться?", 150L);
+            this.sendDialogueMessage(translatable("ms.registration.message.12"), 100L);
+            this.sendDialogueMessage(translatable("ms.registration.message.13"), 150L);
 
             Bukkit.getScheduler().runTaskLater(
                     MSUtils.getInstance(),
@@ -135,10 +153,17 @@ public class RegistrationProcess {
         this.playerInfo = playerInfo;
         Pronouns pronouns = this.playerInfo.getPlayerFile().getPronouns();
 
-        this.sendDialogueMessage("Славно", 25L);
-        this.sendDialogueMessage("Ну что же...", 75L);
-        this.sendDialogueMessage("Мне уже пора", 125L);
-        this.sendDialogueMessage("Хорошей " + pronouns.getPronouns() + " дороги, " + pronouns.getTraveler(), 175L);
+        this.sendDialogueMessage(translatable("ms.registration.message.14"), 25L);
+        this.sendDialogueMessage(translatable("ms.registration.message.15"), 75L);
+        this.sendDialogueMessage(translatable("ms.registration.message.16"), 125L);
+        this.sendDialogueMessage(
+                translatable(
+                        "ms.registration.message.17",
+                        pronouns.getPronouns(),
+                        pronouns.getTraveler()
+                ),
+                175L
+        );
 
         Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), this::setOther, 225L);
     }
@@ -157,18 +182,20 @@ public class RegistrationProcess {
     }
 
     private void sendWarningMessage() {
-        this.player.sendMessage(text(" Используйте только кириллицу, без пробелов!", NamedTextColor.GOLD));
+        this.player.sendMessage(translatable("ms.registration.only_cyrillic", NamedTextColor.GOLD));
     }
 
     private void sendDialogueMessage(
-            @NotNull String message,
+            @NotNull Component message,
             long delay
     ) {
         Bukkit.getScheduler().runTaskLater(MSUtils.getInstance(), () -> {
             this.player.sendMessage(
-                    Component.space()
-                    .append(text(" [0] Незнакомец : ", MessageUtils.Colors.CHAT_COLOR_PRIMARY))
-                    .append(text(message, MessageUtils.Colors.CHAT_COLOR_SECONDARY))
+                    translatable(
+                            "ms.chat.local.format",
+                            translatable("ms.registration.anonymous.name"),
+                            message.color(MessageUtils.Colors.CHAT_COLOR_SECONDARY)
+                    ).color(MessageUtils.Colors.CHAT_COLOR_PRIMARY)
             );
             this.player.playSound(this.playerLocation, Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 0.5f, 1.5f);
         }, delay);
@@ -176,12 +203,12 @@ public class RegistrationProcess {
 
     public static final class SignMenu {
         private static final Map<Player, SignMenu> inputs = new HashMap<>();
-        private final List<String> text;
+        private final List<Component> text;
         private BiPredicate<Player, String[]> response;
         private Location location;
 
-        public SignMenu(String @NotNull ... text) {
-            this.text = List.of(text);
+        public SignMenu(Component @NotNull ... text) {
+            this.text = Lists.newArrayList(text);
 
             MSUtils.getProtocolManager().addPacketListener(new PacketAdapter(MSUtils.getInstance(), PacketType.Play.Client.UPDATE_SIGN) {
                 @Override
@@ -213,18 +240,14 @@ public class RegistrationProcess {
         }
 
         public void open(@NotNull Player player) {
+            //TODO fix open sign
             PacketContainer openSign = MSUtils.getProtocolManager().createPacket(PacketType.Play.Server.OPEN_SIGN_EDITOR);
             this.location = player.getLocation();
 
             this.location.setY(200);
 
             player.sendBlockChange(this.location, Material.OAK_SIGN.createBlockData());
-            player.sendSignChange(this.location, Lists.newArrayList(
-                    text(this.text.get(0)),
-                    text(this.text.get(1)),
-                    text(this.text.get(2)),
-                    text(this.text.get(3)))
-            );
+            player.sendSignChange(this.location, this.text);
 
             try {
                 openSign.getBlockPositionModifier().write(0, new BlockPosition(this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ()));

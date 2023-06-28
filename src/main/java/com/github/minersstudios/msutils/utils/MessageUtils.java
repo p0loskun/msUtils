@@ -210,7 +210,7 @@ public final class MessageUtils {
                     .append(speech
                     .color(RP_MESSAGE_MESSAGE_COLOR_SECONDARY))
                     .append(text(" - ")
-                    .append(text(playerInfo.getPlayerFile().getPronouns().getSaidMessage())))
+                    .append(playerInfo.getPlayerFile().getPronouns().getSaidMessage()))
                     .color(RP_MESSAGE_MESSAGE_COLOR_PRIMARY)
                     .append(space())
                     .append(playerInfo.getGrayIDGoldName())
@@ -263,14 +263,14 @@ public final class MessageUtils {
                 ? space()
                 .append(killerInfo.getGoldenName()
                 .append(space()))
-                .append(text(killerInfo.getPlayerFile().getPronouns().getKillMessage())
+                .append(killerInfo.getPlayerFile().getPronouns().getKillMessage()
                 .color(JOIN_MESSAGE_COLOR_PRIMARY)
                 .append(space()))
                 .append(killedInfo.getGoldenName())
                 : space()
                 .append(killedInfo.getGoldenName()
                 .append(space()))
-                .append(text(killedInfo.getPlayerFile().getPronouns().getDeathMessage()))
+                .append(killedInfo.getPlayerFile().getPronouns().getDeathMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
         String stringDeathMessage = serializeLegacyComponent(deathMessage);
 
@@ -282,18 +282,18 @@ public final class MessageUtils {
         });
         sendInfo(deathMessage);
 
-        sendInfo(text("Мир и координаты смерти игрока : \"")
-                .append(killedInfo.getDefaultName())
-                .append(text(" ("))
-                .append(text(killed.getName()))
-                .append(text(")\" : "))
-                .append(text(deathLocation.getBlock().getWorld().getName()))
-                .append(space())
-                .append(text(deathLocation.getBlockX()))
-                .append(space())
-                .append(text(deathLocation.getBlockY()))
-                .append(space())
-                .append(text(deathLocation.getBlockZ()))
+        sendInfo(
+                Component.translatable(
+                        "ms.info.player_death_info",
+                        killedInfo.getDefaultName(),
+                        text(killed.getName()),
+                        text(deathLocation.getBlock().getWorld().getName()),
+                        text(
+                                deathLocation.getBlockX() + " "
+                                + deathLocation.getBlockY() + " "
+                                + deathLocation.getBlockZ()
+                        )
+                )
         );
     }
 
@@ -314,7 +314,7 @@ public final class MessageUtils {
         Component joinMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
-                .append(text(playerInfo.getPlayerFile().getPronouns().getJoinMessage()))
+                .append(playerInfo.getPlayerFile().getPronouns().getJoinMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
         String stringJoinMessage = serializeLegacyComponent(joinMessage);
 
@@ -341,7 +341,7 @@ public final class MessageUtils {
         Component quitMessage = space()
                 .append(playerInfo.getGoldenName()
                 .append(space()))
-                .append(text(playerInfo.getPlayerFile().getPronouns().getQuitMessage()))
+                .append(playerInfo.getPlayerFile().getPronouns().getQuitMessage())
                 .color(JOIN_MESSAGE_COLOR_PRIMARY);
         String stringQuitMessage = serializeLegacyComponent(quitMessage);
 

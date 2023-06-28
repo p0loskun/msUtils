@@ -14,6 +14,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -55,7 +57,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = idMap.getPlayerByID(args[0]);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, "Вы ошиблись айди, игрока привязанного к нему не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.id_not_found"));
                 return true;
             }
 
@@ -67,7 +69,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
             OfflinePlayer offlinePlayer = PlayerUtils.getOfflinePlayerByNick(args[0]);
 
             if (offlinePlayer == null) {
-                ChatUtils.sendError(sender, "Данного игрока не существует");
+                ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
                 return true;
             }
 
@@ -75,7 +77,7 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
             return true;
         }
 
-        ChatUtils.sendWarning(sender, "Ник не может состоять менее чем из 3 символов!");
+        ChatUtils.sendWarning(sender, Component.translatable("ms.error.name_length"));
         return true;
     }
 
@@ -94,43 +96,40 @@ public class TeleportToLastDeathLocationCommand implements MSCommandExecutor {
             @NotNull OfflinePlayer offlinePlayer
     ) {
         if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getName() == null) {
-            ChatUtils.sendWarning(sender, "Данный игрок ещё ни разу не играл на сервере");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.player_not_found"));
             return;
         }
 
         PlayerInfoMap playerInfoMap = MSUtils.getConfigCache().playerInfoMap;
         PlayerInfo playerInfo = playerInfoMap.getPlayerInfo(offlinePlayer.getUniqueId(), offlinePlayer.getName());
         Location lastDeathLocation = playerInfo.getPlayerFile().getLastDeathLocation();
+        TranslatableComponent playerNotOnline = Component.translatable("ms.warning.player_not_online");
 
         if (offlinePlayer.getPlayer() == null) {
-            ChatUtils.sendWarning(sender,
-                    text("Игрок : \"")
-                    .append(playerInfo.getGrayIDGreenName())
-                    .append(text(" ("))
-                    .append(text(offlinePlayer.getName()))
-                    .append(text(")\" не в сети!"))
-            );
+            ChatUtils.sendWarning(sender, playerNotOnline);
             return;
         }
 
         if (lastDeathLocation == null) {
-            ChatUtils.sendWarning(sender,
-                    text("Игрок : \"")
-                    .append(playerInfo.getGrayIDGreenName())
-                    .append(text(" ("))
-                    .append(text(offlinePlayer.getName()))
-                    .append(text(")\" не имеет последней точки смерти!"))
+            ChatUtils.sendWarning(
+                    sender,
+                    Component.translatable(
+                            "ms.command.teleport_to_last_death.no_position",
+                            playerInfo.getGrayIDGoldName(),
+                            text(offlinePlayer.getName())
+                    )
             );
             return;
         }
 
         playerInfo.teleportToLastDeathLocation();
-        ChatUtils.sendFine(sender,
-                text("Игрок : \"")
-                .append(playerInfo.getGrayIDGreenName())
-                .append(text(" ("))
-                .append(text(offlinePlayer.getName()))
-                .append(text(")\" был телепортирован на последние координаты смерти"))
+        ChatUtils.sendFine(
+                sender,
+                Component.translatable(
+                        "ms.command.teleport_to_last_death.sender.message",
+                        playerInfo.getGrayIDGreenName(),
+                        text(offlinePlayer.getName())
+                )
         );
     }
 

@@ -4,6 +4,7 @@ import com.github.minersstudios.mscore.command.MSCommand;
 import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import com.github.minersstudios.msutils.MSUtils;
+
 import com.github.minersstudios.msutils.player.PlayerInfo;
 import com.github.minersstudios.msutils.player.PlayerInfoMap;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -40,7 +41,7 @@ public class TryCommand implements MSCommandExecutor {
             String @NotNull ... args
     ) {
         if (!(sender instanceof Player player)) {
-            ChatUtils.sendError(sender, "Только игрок может использовать эту команду!");
+            ChatUtils.sendError(sender, Component.translatable("ms.error.only_player_command"));
             return true;
         }
 
@@ -50,7 +51,7 @@ public class TryCommand implements MSCommandExecutor {
         if (!playerInfo.isOnline()) return true;
         if (args.length == 0) return false;
         if (playerInfo.isMuted()) {
-            ChatUtils.sendWarning(player, "Вы замьючены");
+            ChatUtils.sendWarning(player, Component.translatable("ms.command.mute.already.receiver"));
             return true;
         }
 
